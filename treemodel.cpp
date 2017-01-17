@@ -8,7 +8,6 @@ TreeModel::TreeModel(QObject *root, QObject *parent)
     : QAbstractItemModel(parent)
 {
     m_root = root;
-
     QVariant rootData = "Root";
     m_rootItem = new TreeItem(rootData);
     QVariant firstData = m_root->metaObject()->className();
