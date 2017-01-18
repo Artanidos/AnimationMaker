@@ -30,6 +30,7 @@ private:
     QObject *m_root;
 
     void readChildren(QObject *object, TreeItem *parent);
+    QString getTypeName(QString classname, QString objectName);
 };
 
 #endif // TREEMODEL_H

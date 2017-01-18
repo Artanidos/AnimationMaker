@@ -6,20 +6,18 @@
 #include <QtTest/QTest>
 #include <QMessageBox>
 
-
 void video_encode(const char *, QQuickView *);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    setDockNestingEnabled(true);
     registerTypes();
     createStatusBar();
     createActions();
     createMenus();
     createGui();
     readSettings();
-
-
 }
 
 MainWindow::~MainWindow()
@@ -28,11 +26,28 @@ MainWindow::~MainWindow()
     delete container;
     delete scroll;
     delete tree;
-    delete splitter;   
+    //delete splitter;
 }
 
 void MainWindow::createGui()
 {
+    QWidget *toolpanel = new QWidget();
+    QDockWidget *tooldock = new QDockWidget(tr("Tools"), this);
+    tooldock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    tooldock->setWidget(toolpanel);
+    addDockWidget(Qt::LeftDockWidgetArea, tooldock);
+
+    QLabel *propertiespanel = new QLabel();
+    propertiespanel->setMinimumWidth(320);
+    QImage propertiesimage;
+    propertiesimage.load("/home/olaf/SourceCode/AnimationMaker/properties.png");
+    propertiespanel->setPixmap(QPixmap::fromImage(propertiesimage));
+
+    QDockWidget *propertiesdock = new QDockWidget(tr("Properties"), this);
+    propertiesdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    propertiesdock->setWidget(propertiespanel);
+    addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
+
     view = new QQuickView;
     view->setSource(QUrl::fromLocalFile("/home/olaf/SourceCode/AnimationMaker/demo.qml"));
     model = new TreeModel(view->rootObject());
@@ -41,18 +56,43 @@ void MainWindow::createGui()
     tree = new QTreeView();
     tree->setModel(model);
     tree->header()->close();
+    tree->expandAll();
+    tree->setMinimumWidth(320);
+
+    QDockWidget *elementsdock = new QDockWidget(tr("Elements"), this);
+    elementsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    elementsdock->setWidget(tree);
+    addDockWidget(Qt::LeftDockWidgetArea, elementsdock);
+
     scroll = new QScrollArea();
     container = QWidget::createWindowContainer(view);
     container->setMaximumSize(size);
     container->setMinimumSize(size);
+
     scroll->setWidgetResizable(true);
     scroll->setWidget(container);
-    splitter = new QSplitter(Qt::Horizontal);
-    splitter->addWidget(tree);
-    splitter->addWidget(scroll);
-    splitter->setStretchFactor(0,0);
-    splitter->setStretchFactor(1,1);
-    setCentralWidget(splitter);
+
+    timeline = new QLabel();
+    timeline->setMaximumHeight(110);
+    timeline->setMinimumHeight(110);
+    QImage timelineimage;
+    timelineimage.load("/home/olaf/SourceCode/AnimationMaker/timeline.png");
+    timeline->setPixmap(QPixmap::fromImage(timelineimage));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(scroll);
+    layout->addWidget(timeline);
+
+    QWidget *w = new QWidget();
+    w->setLayout(layout);
+
+    //splitter = new QSplitter(Qt::Horizontal);
+    //splitter->addWidget(tree);
+    //splitter->addWidget(w);
+    //splitter->setStretchFactor(0,0);
+    //splitter->setStretchFactor(1,1);
+
+    setCentralWidget(w);
 }
 
 void MainWindow::registerTypes()
@@ -138,13 +178,10 @@ void MainWindow::playAnimation()
 
 void MainWindow::createActions()
 {
-    toolbar = new QToolBar("Play");
-    toolbar->setObjectName("PlayToolbar");
-    addToolBar(toolbar);
     playAct = new QAction(tr("&Play..."), this);
     playAct->setIcon(QIcon(":/images/play.png"));
+    playAct->setToolTip("Start the animation");
     connect(playAct, SIGNAL(triggered()), this, SLOT(playAnimation()));
-    toolbar->addAction(playAct);
 
     saveAsAct = new QAction(tr("&Export"), this);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(exportAnimation()));

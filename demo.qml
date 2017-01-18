@@ -6,7 +6,7 @@ Rectangle
 {
     width: 1280
     height: 720
-    color: "#FFFFFF"
+    color: "#0000FF"
 
     Ellipse
     {
@@ -16,7 +16,7 @@ Rectangle
         height: 100
         //border.width: 7
         //border.color: "green"
-        color: "blue"
+        color: "red"
     }
 
     Image

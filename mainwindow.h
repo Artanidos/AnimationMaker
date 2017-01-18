@@ -35,6 +35,7 @@ private:
     QSplitter *splitter;
     QScrollArea *scroll;
     QWidget *container;
+    QLabel *timeline;
     QToolBar *toolbar;
     QTreeView *tree;
     TreeModel *model;

@@ -10,8 +10,7 @@ TreeModel::TreeModel(QObject *root, QObject *parent)
     m_root = root;
     QVariant rootData = "Root";
     m_rootItem = new TreeItem(rootData);
-    QVariant firstData = m_root->metaObject()->className();
-    TreeItem *firstItem = new TreeItem(firstData, m_rootItem);
+    TreeItem *firstItem = new TreeItem(getTypeName(m_root->metaObject()->className(), m_root->objectName()), m_rootItem);
     m_rootItem->appendChild(firstItem);
     readChildren(m_root, firstItem);
 }
@@ -21,12 +20,22 @@ TreeModel::~TreeModel()
     delete m_rootItem;
 }
 
+QString TreeModel::getTypeName(QString classname, QString objectName)
+{
+    if(!objectName.isEmpty())
+        return objectName;
+    if(classname.contains("QQuick"))
+        classname.remove("QQuick");
+    if(classname.contains("_"))
+        classname.remove(QRegExp("_[0-9]*.*"));
+    return classname;
+}
+
 void TreeModel::readChildren(QObject *object, TreeItem *parent)
 {
     foreach(QObject *item, object->children())
     {
-        QVariant data = item->metaObject()->className();
-        TreeItem *treeitem = new TreeItem(data, parent);
+        TreeItem *treeitem = new TreeItem(getTypeName(item->metaObject()->className(), item->objectName()), parent);
         parent->appendChild(treeitem);
         readChildren(item, treeitem);
     }
