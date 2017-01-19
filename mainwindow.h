@@ -4,7 +4,8 @@
 #include <QMainWindow>
 #include <QtQuick>
 #include <QtWidgets>
-#include <treemodel.h>
+#include "treemodel.h"
+#include "scene.h"
 
 namespace Ui
 {
@@ -39,7 +40,10 @@ private:
     QToolBar *toolbar;
     QTreeView *tree;
     TreeModel *model;
+    Scene scene;
 
+    QAction *openAct;
+    QAction *saveAct;
     QAction *playAct;
     QAction *saveAsAct;
     QAction *exitAct;
@@ -51,6 +55,8 @@ public slots:
     void exportAnimation();
     void playAnimation();
     void about();
+    void save();
+    void open();
 };
 
 #endif // MAINWINDOW_H

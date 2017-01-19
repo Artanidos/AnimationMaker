@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "ellipse.h"
 #include "treemodel.h"
+#include "scene.h"
+#include "rectangle.h"
 
 #include <QtTest/QTest>
 #include <QMessageBox>
@@ -26,15 +28,79 @@ MainWindow::~MainWindow()
     delete container;
     delete scroll;
     delete tree;
-    //delete splitter;
+}
+
+void MainWindow::save()
+{
+    Scene *sc = new Scene(1200,720,25);
+    Rectangle *rect = new Rectangle(50, 150, 100, 200);
+    sc->addItem(rect);
+
+    QFile file("file.amd");
+    file.open(QIODevice::WriteOnly);
+    QDataStream out(&file);
+
+    // Write a header with a "magic number" and a version
+    out << (quint32)0xA0B0C0D0;
+    out << (qint32)123;
+    out.setVersion(QDataStream::Qt_5_7);
+
+    out << sc;
+    file.close();
+}
+
+void MainWindow::open()
+{
+    QFile file("file.amd");
+    file.open(QIODevice::ReadOnly);
+    QDataStream in(&file);
+
+    // Read and check the header
+    quint32 magic;
+    in >> magic;
+    if (magic != 0xA0B0C0D0)
+    {
+        file.close();
+        printf("bad fileformat\n");
+        return;
+    }
+
+    // Read the version
+    qint32 version;
+    in >> version;
+    if (version < 100)
+    {
+        file.close();
+        printf("file to old\n");
+        return;
+    }
+    if (version > 123)
+    {
+        file.close();
+        printf("file to new\n");
+        return;
+    }
+
+    if (version <= 110)
+        in.setVersion(QDataStream::Qt_4_0);
+    else
+        in.setVersion(QDataStream::Qt_5_7);
+
+    // Read the data
+    in >> scene;
+    file.close();
+
+    model->setScene(&scene);
 }
 
 void MainWindow::createGui()
 {
-    QWidget *toolpanel = new QWidget();
+    QToolBar *toolpanel = new QToolBar();
+    toolpanel->addAction(playAct);
     QDockWidget *tooldock = new QDockWidget(tr("Tools"), this);
     tooldock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     tooldock->setWidget(toolpanel);
+    tooldock->setObjectName("Tools");
     addDockWidget(Qt::LeftDockWidgetArea, tooldock);
 
     QLabel *propertiespanel = new QLabel();
@@ -42,17 +108,21 @@ void MainWindow::createGui()
     QImage propertiesimage;
     propertiesimage.load("/home/olaf/SourceCode/AnimationMaker/properties.png");
     propertiespanel->setPixmap(QPixmap::fromImage(propertiesimage));
+    propertiespanel->setAlignment(Qt::AlignTop);
 
     QDockWidget *propertiesdock = new QDockWidget(tr("Properties"), this);
     propertiesdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     propertiesdock->setWidget(propertiespanel);
+    propertiesdock->setObjectName("Properties");
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
+
 
     view = new QQuickView;
     view->setSource(QUrl::fromLocalFile("/home/olaf/SourceCode/AnimationMaker/demo.qml"));
-    model = new TreeModel(view->rootObject());
+    //model = new TreeModel(view->rootObject());
+    model = new TreeModel();
     QSize size = view->size();
-    view->setMinimumSize(size);
+    //view->setMinimumSize(size);
     tree = new QTreeView();
     tree->setModel(model);
     tree->header()->close();
@@ -62,7 +132,9 @@ void MainWindow::createGui()
     QDockWidget *elementsdock = new QDockWidget(tr("Elements"), this);
     elementsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     elementsdock->setWidget(tree);
+    elementsdock->setObjectName("Elements");
     addDockWidget(Qt::LeftDockWidgetArea, elementsdock);
+    splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
 
     scroll = new QScrollArea();
     container = QWidget::createWindowContainer(view);
@@ -73,11 +145,11 @@ void MainWindow::createGui()
     scroll->setWidget(container);
 
     timeline = new QLabel();
-    timeline->setMaximumHeight(110);
     timeline->setMinimumHeight(110);
     QImage timelineimage;
     timelineimage.load("/home/olaf/SourceCode/AnimationMaker/timeline.png");
     timeline->setPixmap(QPixmap::fromImage(timelineimage));
+    timeline->setMinimumWidth(300);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(scroll);
@@ -85,12 +157,6 @@ void MainWindow::createGui()
 
     QWidget *w = new QWidget();
     w->setLayout(layout);
-
-    //splitter = new QSplitter(Qt::Horizontal);
-    //splitter->addWidget(tree);
-    //splitter->addWidget(w);
-    //splitter->setStretchFactor(0,0);
-    //splitter->setStretchFactor(1,1);
 
     setCentralWidget(w);
 }
@@ -178,7 +244,13 @@ void MainWindow::playAnimation()
 
 void MainWindow::createActions()
 {
-    playAct = new QAction(tr("&Play..."), this);
+    openAct = new QAction(tr("&Open"), this);
+    connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+
+    saveAct = new QAction(tr("&Save"), this);
+    connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
+
+    playAct = new QAction(tr("&Play"), this);
     playAct->setIcon(QIcon(":/images/play.png"));
     playAct->setToolTip("Start the animation");
     connect(playAct, SIGNAL(triggered()), this, SLOT(playAnimation()));
@@ -193,6 +265,8 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(openAct);
+    fileMenu->addAction(saveAct);
     fileMenu->addAction(playAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addSeparator();

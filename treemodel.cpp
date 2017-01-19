@@ -4,15 +4,10 @@
 #include <QStringList>
 #include <QPixmap>
 
-TreeModel::TreeModel(QObject *root, QObject *parent)
+TreeModel::TreeModel(Scene *scene, QObject *parent)
     : QAbstractItemModel(parent)
 {
-    m_root = root;
-    QVariant rootData = "Root";
-    m_rootItem = new TreeItem(rootData);
-    TreeItem *firstItem = new TreeItem(getTypeName(m_root->metaObject()->className(), m_root->objectName()), m_rootItem);
-    m_rootItem->appendChild(firstItem);
-    readChildren(m_root, firstItem);
+    setScene(scene);
 }
 
 TreeModel::~TreeModel()
@@ -20,24 +15,32 @@ TreeModel::~TreeModel()
     delete m_rootItem;
 }
 
-QString TreeModel::getTypeName(QString classname, QString objectName)
+void TreeModel::setScene(Scene *scene)
 {
-    if(!objectName.isEmpty())
-        return objectName;
-    if(classname.contains("QQuick"))
-        classname.remove("QQuick");
-    if(classname.contains("_"))
-        classname.remove(QRegExp("_[0-9]*.*"));
-    return classname;
+    beginResetModel();
+    m_scene = scene;
+
+    QVariant rootData = "Root";
+    m_rootItem = new TreeItem(rootData);
+
+    if(scene)
+    {
+        TreeItem *firstItem = new TreeItem("Scene", m_rootItem);
+        m_rootItem->appendChild(firstItem);
+        readChildren(scene, firstItem);
+    }
+    endResetModel();
 }
 
-void TreeModel::readChildren(QObject *object, TreeItem *parent)
+void TreeModel::readChildren(Scene *scene, TreeItem *parent)
 {
-    foreach(QObject *item, object->children())
+    for(int i=0; i < scene->childCount(); i++)
     {
-        TreeItem *treeitem = new TreeItem(getTypeName(item->metaObject()->className(), item->objectName()), parent);
+        Item *item = scene->childAt(i);
+        QString name= item->getTypeName();
+        TreeItem *treeitem = new TreeItem(name, parent);
         parent->appendChild(treeitem);
-        readChildren(item, treeitem);
+        //readChildren(item, treeitem);
     }
 }
 

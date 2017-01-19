@@ -19,12 +19,18 @@ SOURCES += main.cpp\
     encode.cpp \
     ellipse.cpp \
     treemodel.cpp \
-    treeitem.cpp
+    treeitem.cpp \
+    scene.cpp \
+    item.cpp \
+    rectangle.cpp
 
 HEADERS  += mainwindow.h \
     ellipse.h \
     treemodel.h \
-    treeitem.h
+    treeitem.h \
+    scene.h \
+    item.h \
+    rectangle.h
 
 FORMS    +=
 
