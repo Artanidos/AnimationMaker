@@ -68,7 +68,7 @@ void Scene::addItem(Item *item)
 QDataStream& Scene::read(QDataStream &dataStream)
 {
     quint8 type;
-
+    m_children.clear();
     dataStream >> m_width;
     dataStream >> m_height;
     dataStream >> m_fps;
