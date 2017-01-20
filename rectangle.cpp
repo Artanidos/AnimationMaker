@@ -1,4 +1,5 @@
 #include "rectangle.h"
+#include "scene.h"
 
 Rectangle::Rectangle()
     : Rectangle(0,0,0,0)
@@ -34,7 +35,7 @@ QDataStream& Rectangle::read(QDataStream &dataStream)
 
 QDataStream& Rectangle::write(QDataStream &dataStream) const
 {
-    dataStream << (quint8)2;
+    dataStream << (quint8)RECTANGLE;
     dataStream << m_x;
     dataStream << m_y;
     dataStream << m_width;

@@ -1,4 +1,5 @@
 #include "item.h"
+#include "scene.h"
 
 Item::Item(int x, int y)
 {
@@ -33,7 +34,7 @@ QString Item::getTypeName()
 
 QDataStream& Item::write(QDataStream &dataStream) const
 {
-    dataStream << (quint8)1;
+    dataStream << (quint8)ITEM;
     dataStream << m_x;
     dataStream << m_y;
     return dataStream;

@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "rectangle.h"
 #include "ellipse.h"
+#include "text.h"
 
 Scene::Scene()
 {
@@ -87,6 +88,12 @@ QDataStream& Scene::read(QDataStream &dataStream)
             Ellipse *ellipse = new Ellipse();
             ellipse->read(dataStream);
             addItem(ellipse);
+        }
+        else if(type == TEXT)
+        {
+            Text *text = new Text();
+            text->read(dataStream);
+            addItem(text);
         }
     }
     return dataStream;

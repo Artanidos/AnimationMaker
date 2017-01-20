@@ -7,6 +7,7 @@
 #define ITEM 1
 #define RECTANGLE 2
 #define ELLIPSE 3
+#define TEXT 4
 
 class Scene
 {

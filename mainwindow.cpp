@@ -4,6 +4,7 @@
 #include "treemodel.h"
 #include "scene.h"
 #include "rectangle.h"
+#include "text.h"
 
 #include <QtTest/QTest>
 #include <QMessageBox>
@@ -34,6 +35,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::save()
 {
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Animation"), "", tr("AnimationMaker (*.amb);;All Files (*)"));
+    if (fileName.isEmpty())
+        return;
 
     scene.clear();
     Rectangle *rect = new Rectangle(5,5,150, 150);
@@ -52,11 +56,15 @@ void MainWindow::save()
     ellipse->setPenBrush(Qt::white);
     ellipse->setPenWidth(2);
 
+    Text *text = new Text(300, 50, "Hello world");
+    text->setTextColor(Qt::white);
+    text->setFont(QFont("Arial", 13, QFont::Bold));
+
     scene.addItem(rect);
     scene.addItem(ellipse);
+    scene.addItem(text);
 
-
-    QFile file("file.amd");
+    QFile file(fileName);
     file.open(QIODevice::WriteOnly);
     QDataStream out(&file);
 
@@ -71,7 +79,10 @@ void MainWindow::save()
 
 void MainWindow::open()
 {
-    QFile file("file.amd");
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Animation"), "", tr("AnimationMaker (*.amb);;All Files (*)"));
+    if (fileName.isEmpty())
+        return;
+    QFile file(fileName);
     file.open(QIODevice::ReadOnly);
     QDataStream in(&file);
 
@@ -112,6 +123,7 @@ void MainWindow::open()
 
     model->setScene(&scene);
     editor->setScene(&scene);
+    tree->expandAll();
 }
 
 void MainWindow::createGui()
@@ -137,15 +149,9 @@ void MainWindow::createGui()
     propertiesdock->setObjectName("Properties");
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
 
-
-    //view = new QQuickView;
-    //view->setSource(QUrl::fromLocalFile("/home/olaf/SourceCode/AnimationMaker/demo.qml"));
-    //model = new TreeModel(view->rootObject());
     editor = new Editor();
     editor->setScene(&scene);
     model = new TreeModel();
-    //QSize size = view->size();
-    //view->setMinimumSize(size);
     tree = new QTreeView();
     tree->setModel(model);
     tree->header()->close();
@@ -160,11 +166,6 @@ void MainWindow::createGui()
     splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
 
     scroll = new QScrollArea();
-    //container = QWidget::createWindowContainer(view);
-    //container->setMaximumSize(size);
-    //container->setMinimumSize(size);
-
-    //scroll->setWidgetResizable(true);
     scroll->setWidget(editor);
 
     timeline = new QLabel();
@@ -264,10 +265,10 @@ void MainWindow::playAnimation()
 
 void MainWindow::createActions()
 {
-    openAct = new QAction(tr("&Open"), this);
+    openAct = new QAction(tr("&Open..."), this);
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
 
-    saveAct = new QAction(tr("&Save"), this);
+    saveAct = new QAction(tr("Save &As..."), this);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
 
     playAct = new QAction(tr("&Play"), this);

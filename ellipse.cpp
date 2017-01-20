@@ -1,4 +1,5 @@
 #include "ellipse.h"
+#include "scene.h"
 
 #include <QPainter>
 #include <QColor>
@@ -52,7 +53,7 @@ QDataStream& Ellipse::read(QDataStream &dataStream)
 
 QDataStream& Ellipse::write(QDataStream &dataStream) const
 {
-    dataStream << (quint8)3;
+    dataStream << (quint8)ELLIPSE;
     dataStream << m_x;
     dataStream << m_y;
     dataStream << m_radius;
