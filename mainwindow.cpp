@@ -159,7 +159,6 @@ void MainWindow::createGui()
     sc->addRect(10,10,200,100,QPen(Qt::black), QBrush(Qt::blue))->setFlag(QGraphicsItem::ItemIsMovable, true);
     sc->addEllipse(200,200,300,250,QPen(Qt::black), QBrush(Qt::red))->setFlag(QGraphicsItem::ItemIsMovable, true);
     QGraphicsView *view = new QGraphicsView(sc);
-    //myImageItem->setFlag(QGraphicsItem::ItemIsMovable, true);
 
     model = new TreeModel();
     tree = new QTreeView();
