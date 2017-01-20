@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     item.cpp \
     rectangle.cpp \
     editor.cpp \
-    text.cpp
+    text.cpp \
+    animationscene.cpp
 
 HEADERS  += mainwindow.h \
     ellipse.h \
@@ -34,7 +35,8 @@ HEADERS  += mainwindow.h \
     item.h \
     rectangle.h \
     editor.h \
-    text.h
+    text.h \
+    animationscene.h
 
 FORMS    +=
 

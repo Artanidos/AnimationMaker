@@ -5,6 +5,7 @@
 #include "scene.h"
 #include "rectangle.h"
 #include "text.h"
+#include "animationscene.h"
 
 #include <QtTest/QTest>
 #include <QMessageBox>
@@ -74,6 +75,7 @@ void MainWindow::save()
     out.setVersion(QDataStream::Qt_5_7);
 
     out << scene;
+
     file.close();
 }
 
@@ -149,8 +151,16 @@ void MainWindow::createGui()
     propertiesdock->setObjectName("Properties");
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
 
-    editor = new Editor();
-    editor->setScene(&scene);
+    //editor = new Editor();
+    //editor->setScene(&scene);
+
+    AnimationScene *sc = new AnimationScene();
+    sc->setSceneRect(QRect(0,0,1200,720));
+    sc->addRect(10,10,200,100,QPen(Qt::black), QBrush(Qt::blue))->setFlag(QGraphicsItem::ItemIsMovable, true);
+    sc->addEllipse(200,200,300,250,QPen(Qt::black), QBrush(Qt::red))->setFlag(QGraphicsItem::ItemIsMovable, true);
+    QGraphicsView *view = new QGraphicsView(sc);
+    //myImageItem->setFlag(QGraphicsItem::ItemIsMovable, true);
+
     model = new TreeModel();
     tree = new QTreeView();
     tree->setModel(model);
@@ -166,7 +176,8 @@ void MainWindow::createGui()
     splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
 
     scroll = new QScrollArea();
-    scroll->setWidget(editor);
+    //scroll->setWidget(editor);
+    scroll->setWidget(view);
 
     timeline = new QLabel();
     timeline->setMinimumHeight(110);
