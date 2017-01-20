@@ -1,5 +1,6 @@
 #include "scene.h"
 #include "rectangle.h"
+#include "ellipse.h"
 
 Scene::Scene()
 {
@@ -81,6 +82,12 @@ QDataStream& Scene::read(QDataStream &dataStream)
             rect->read(dataStream);
             addItem(rect);
         }
+        else if(type == ELLIPSE)
+        {
+            Ellipse *ellipse = new Ellipse();
+            ellipse->read(dataStream);
+            addItem(ellipse);
+        }
     }
     return dataStream;
 }
@@ -106,4 +113,9 @@ QDataStream& operator <<(QDataStream &out, const Scene &s)
 QDataStream& operator >>(QDataStream &in, Scene &s)
 {
     return s.read(in);
+}
+
+void Scene::clear()
+{
+    m_children.clear();
 }

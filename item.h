@@ -2,6 +2,7 @@
 #define ITEM_H
 
 #include <QString>
+#include <QPainter>
 
 class Item
 {
@@ -10,13 +11,13 @@ public:
     //virtual ~Item(){}
     virtual QString getTypeName();
     virtual QDataStream& write(QDataStream &dataStream) const;
-
+    virtual void paint(QPainter *painter);
     quint16 x();
     quint16 y();
     void setX(int x);
     void setY(int y);
 
-private:
+protected:
     quint16 m_x;
     quint16 m_y;
 };

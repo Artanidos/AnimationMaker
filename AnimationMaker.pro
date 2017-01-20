@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     treeitem.cpp \
     scene.cpp \
     item.cpp \
-    rectangle.cpp
+    rectangle.cpp \
+    editor.cpp
 
 HEADERS  += mainwindow.h \
     ellipse.h \
@@ -30,7 +31,8 @@ HEADERS  += mainwindow.h \
     treeitem.h \
     scene.h \
     item.h \
-    rectangle.h
+    rectangle.h \
+    editor.h
 
 FORMS    +=
 

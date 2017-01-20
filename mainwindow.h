@@ -6,6 +6,7 @@
 #include <QtWidgets>
 #include "treemodel.h"
 #include "scene.h"
+#include "editor.h"
 
 namespace Ui
 {
@@ -28,11 +29,11 @@ private:
     void createActions();
     void createStatusBar();
     void createGui();
-    void registerTypes();
     void writeSettings();
     void readSettings();
 
-    QQuickView *view;
+    //QQuickView *view;
+    Editor *editor;
     QSplitter *splitter;
     QScrollArea *scroll;
     QWidget *container;

@@ -13,8 +13,10 @@ void video_encode(const char *, QQuickView *);
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    scene.setWidth(1200);
+    scene.setHeight(720);
+
     setDockNestingEnabled(true);
-    registerTypes();
     createStatusBar();
     createActions();
     createMenus();
@@ -24,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete view;
+    delete editor;
     delete container;
     delete scroll;
     delete tree;
@@ -32,9 +34,27 @@ MainWindow::~MainWindow()
 
 void MainWindow::save()
 {
-    Scene *sc = new Scene(1200,720,25);
-    Rectangle *rect = new Rectangle(50, 150, 100, 200);
-    sc->addItem(rect);
+
+    scene.clear();
+    Rectangle *rect = new Rectangle(5,5,150, 150);
+
+    QLinearGradient linearGrad(QPointF(50, 50), QPointF(150, 150));
+    linearGrad.setColorAt(0, Qt::white);
+    linearGrad.setColorAt(0.5, Qt::green);
+    linearGrad.setColorAt(1, Qt::black);
+
+    rect->setBrush(QBrush(linearGrad));
+    rect->setPenBrush(Qt::black);
+    rect->setPenWidth(1);
+
+    Ellipse *ellipse = new Ellipse(200, 200, 50);
+    ellipse->setBrush(Qt::blue);
+    ellipse->setPenBrush(Qt::white);
+    ellipse->setPenWidth(2);
+
+    scene.addItem(rect);
+    scene.addItem(ellipse);
+
 
     QFile file("file.amd");
     file.open(QIODevice::WriteOnly);
@@ -45,7 +65,7 @@ void MainWindow::save()
     out << (qint32)123;
     out.setVersion(QDataStream::Qt_5_7);
 
-    out << sc;
+    out << scene;
     file.close();
 }
 
@@ -91,6 +111,7 @@ void MainWindow::open()
     file.close();
 
     model->setScene(&scene);
+    editor->setScene(&scene);
 }
 
 void MainWindow::createGui()
@@ -117,11 +138,13 @@ void MainWindow::createGui()
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
 
 
-    view = new QQuickView;
-    view->setSource(QUrl::fromLocalFile("/home/olaf/SourceCode/AnimationMaker/demo.qml"));
+    //view = new QQuickView;
+    //view->setSource(QUrl::fromLocalFile("/home/olaf/SourceCode/AnimationMaker/demo.qml"));
     //model = new TreeModel(view->rootObject());
+    editor = new Editor();
+    editor->setScene(&scene);
     model = new TreeModel();
-    QSize size = view->size();
+    //QSize size = view->size();
     //view->setMinimumSize(size);
     tree = new QTreeView();
     tree->setModel(model);
@@ -137,12 +160,12 @@ void MainWindow::createGui()
     splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
 
     scroll = new QScrollArea();
-    container = QWidget::createWindowContainer(view);
-    container->setMaximumSize(size);
-    container->setMinimumSize(size);
+    //container = QWidget::createWindowContainer(view);
+    //container->setMaximumSize(size);
+    //container->setMinimumSize(size);
 
-    scroll->setWidgetResizable(true);
-    scroll->setWidget(container);
+    //scroll->setWidgetResizable(true);
+    scroll->setWidget(editor);
 
     timeline = new QLabel();
     timeline->setMinimumHeight(110);
@@ -159,12 +182,6 @@ void MainWindow::createGui()
     w->setLayout(layout);
 
     setCentralWidget(w);
-}
-
-void MainWindow::registerTypes()
-{
-    qmlRegisterType<EllipseBorder>();
-    qmlRegisterType<Ellipse>("CrowdWare", 1, 0, "Ellipse");
 }
 
 void MainWindow::createStatusBar()
@@ -204,16 +221,19 @@ void MainWindow::readSettings()
 
 void MainWindow::exportAnimation()
 {
+    /*
     if(view) delete view;
     view = new QQuickView;
     view->setSource(QUrl::fromLocalFile("/home/olaf/SourceCode/AnimationMaker/demo.qml"));
     view->setResizeMode( QQuickView::SizeViewToRootObject );
     view->create();
     video_encode("test.mpg", view);
+    */
 }
 
 void MainWindow::playAnimation()
 {
+    /*
     int duration = 0;
     int fps = 25;
 
@@ -239,7 +259,7 @@ void MainWindow::playAnimation()
             QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
         }
     }
-
+    */
 }
 
 void MainWindow::createActions()

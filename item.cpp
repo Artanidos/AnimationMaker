@@ -38,3 +38,8 @@ QDataStream& Item::write(QDataStream &dataStream) const
     dataStream << m_y;
     return dataStream;
 }
+
+void Item::paint(QPainter *painter)
+{
+
+}

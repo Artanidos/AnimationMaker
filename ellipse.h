@@ -1,66 +1,29 @@
 #ifndef ELLIPSE_H
 #define ELLIPSE_H
 
-#include <QtQuick/QQuickPaintedItem>
+#include "item.h"
 
-class EllipseBorder : public QObject
+class Ellipse : public Item
 {
-    Q_OBJECT
-    Q_PROPERTY(QColor color READ color WRITE setColor)
-    Q_PROPERTY(qreal width READ width WRITE setWidth)
-
 public:
-    EllipseBorder(QObject *parent = 0);
+    Ellipse();
+    Ellipse(int x, int y, int radius);
 
-    QColor color() const
-    {
-        return m_color;
-    }
-    void setColor(const QColor &color)
-    {
-        m_color = color;
-    }
-    qreal width() const
-    {
-        return m_width;
-    }
-    void setWidth(qreal width)
-    {
-        m_width = width;
-    }
-
-private:
-    qreal m_width;
-    QColor m_color;
-};
-
-class Ellipse : public QQuickPaintedItem
-{
-    Q_OBJECT
-    Q_PROPERTY(QColor color READ color WRITE setColor)
-    Q_PROPERTY(EllipseBorder * border READ border)
-
-public:
-    Ellipse(QQuickPaintedItem *parent = 0);
-
+    virtual QString getTypeName();
+    QDataStream& read(QDataStream &dataStream);
+    QDataStream& write(QDataStream &dataStream) const;
     void paint(QPainter *painter);
 
-    QColor color() const
-    {
-        return m_color;
-    }
-    void setColor(const QColor &color)
-    {
-        m_color = color;
-    }
-    EllipseBorder *border()
-    {
-        return &m_border;
-    }
+    void setRadius(int radius);
+    void setBrush(QBrush brush);
+    void setPenBrush(QBrush brush);
+    void setPenWidth(qreal width);
 
 private:
-    EllipseBorder m_border;
-    QColor m_color;
+    quint16 m_radius;
+    QBrush m_brush;
+    QBrush m_penBrush;
+    qreal m_penWidth;
 };
 
 #endif // ELLIPSE_H
