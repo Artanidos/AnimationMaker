@@ -4,7 +4,7 @@
 #include <QStringList>
 #include <QPixmap>
 
-TreeModel::TreeModel(Scene *scene, QObject *parent)
+TreeModel::TreeModel(AnimationScene *scene, QObject *parent)
     : QAbstractItemModel(parent)
 {
     setScene(scene);
@@ -15,7 +15,7 @@ TreeModel::~TreeModel()
     delete m_rootItem;
 }
 
-void TreeModel::setScene(Scene *scene)
+void TreeModel::setScene(AnimationScene *scene)
 {
     beginResetModel();
     m_scene = scene;
@@ -32,8 +32,9 @@ void TreeModel::setScene(Scene *scene)
     endResetModel();
 }
 
-void TreeModel::readChildren(Scene *scene, TreeItem *parent)
+void TreeModel::readChildren(AnimationScene *scene, TreeItem *parent)
 {
+    /*
     for(int i=0; i < scene->childCount(); i++)
     {
         Item *item = scene->childAt(i);
@@ -42,6 +43,7 @@ void TreeModel::readChildren(Scene *scene, TreeItem *parent)
         parent->appendChild(treeitem);
         //readChildren(item, treeitem);
     }
+    */
 }
 
 int TreeModel::columnCount(const QModelIndex &parent) const

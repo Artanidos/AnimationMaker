@@ -4,7 +4,8 @@
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
-#include "scene.h"
+
+#include "animationscene.h"
 
 class TreeItem;
 
@@ -13,7 +14,7 @@ class TreeModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    explicit TreeModel(Scene *scene = 0, QObject *parent = 0);
+    explicit TreeModel(AnimationScene *scene = 0, QObject *parent = 0);
     ~TreeModel();
 
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
@@ -23,13 +24,13 @@ public:
     QModelIndex parent(const QModelIndex &index) const Q_DECL_OVERRIDE;
     int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    void setScene(Scene *scene);
+    void setScene(AnimationScene *scene);
 
 private:
     TreeItem *m_rootItem;
-    Scene *m_scene;
+    AnimationScene *m_scene;
 
-    void readChildren(Scene *scene, TreeItem *parent);
+    void readChildren(AnimationScene *scene, TreeItem *parent);
 };
 
 #endif // TREEMODEL_H

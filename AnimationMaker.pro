@@ -20,25 +20,19 @@ SOURCES += main.cpp\
     ellipse.cpp \
     treemodel.cpp \
     treeitem.cpp \
-    scene.cpp \
-    item.cpp \
     rectangle.cpp \
-    editor.cpp \
     text.cpp \
-    animationscene.cpp
+    animationscene.cpp \
+    serializeableitem.cpp
 
 HEADERS  += mainwindow.h \
     ellipse.h \
     treemodel.h \
     treeitem.h \
-    scene.h \
-    item.h \
     rectangle.h \
-    editor.h \
     text.h \
-    animationscene.h
-
-FORMS    +=
+    animationscene.h \
+    serializeableitem.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

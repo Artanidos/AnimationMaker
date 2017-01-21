@@ -5,8 +5,7 @@
 #include <QtQuick>
 #include <QtWidgets>
 #include "treemodel.h"
-#include "scene.h"
-#include "editor.h"
+#include "animationscene.h"
 
 namespace Ui
 {
@@ -32,16 +31,13 @@ private:
     void writeSettings();
     void readSettings();
 
-    //QQuickView *view;
-    Editor *editor;
     QSplitter *splitter;
-    QScrollArea *scroll;
-    QWidget *container;
     QLabel *timeline;
     QToolBar *toolbar;
     QTreeView *tree;
     TreeModel *model;
-    Scene scene;
+    AnimationScene *scene;
+    QGraphicsView *view;
 
     QAction *openAct;
     QAction *saveAct;

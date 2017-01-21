@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include "ellipse.h"
 #include "treemodel.h"
-#include "scene.h"
 #include "rectangle.h"
 #include "text.h"
 #include "animationscene.h"
@@ -15,9 +14,6 @@ void video_encode(const char *, QQuickView *);
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    scene.setWidth(1200);
-    scene.setHeight(720);
-
     setDockNestingEnabled(true);
     createStatusBar();
     createActions();
@@ -28,10 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete editor;
-    delete container;
-    delete scroll;
     delete tree;
+    delete scene;
+    delete view;
 }
 
 void MainWindow::save()
@@ -39,31 +34,6 @@ void MainWindow::save()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save Animation"), "", tr("AnimationMaker (*.amb);;All Files (*)"));
     if (fileName.isEmpty())
         return;
-
-    scene.clear();
-    Rectangle *rect = new Rectangle(5,5,150, 150);
-
-    QLinearGradient linearGrad(QPointF(50, 50), QPointF(150, 150));
-    linearGrad.setColorAt(0, Qt::white);
-    linearGrad.setColorAt(0.5, Qt::green);
-    linearGrad.setColorAt(1, Qt::black);
-
-    rect->setBrush(QBrush(linearGrad));
-    rect->setPenBrush(Qt::black);
-    rect->setPenWidth(1);
-
-    Ellipse *ellipse = new Ellipse(200, 200, 50);
-    ellipse->setBrush(Qt::blue);
-    ellipse->setPenBrush(Qt::white);
-    ellipse->setPenWidth(2);
-
-    Text *text = new Text(300, 50, "Hello world");
-    text->setTextColor(Qt::white);
-    text->setFont(QFont("Arial", 13, QFont::Bold));
-
-    scene.addItem(rect);
-    scene.addItem(ellipse);
-    scene.addItem(text);
 
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
@@ -123,8 +93,8 @@ void MainWindow::open()
     in >> scene;
     file.close();
 
-    model->setScene(&scene);
-    editor->setScene(&scene);
+    //model->setScene(&scene);
+
     tree->expandAll();
 }
 
@@ -151,14 +121,18 @@ void MainWindow::createGui()
     propertiesdock->setObjectName("Properties");
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
 
-    //editor = new Editor();
-    //editor->setScene(&scene);
+    scene = new AnimationScene();
+    scene->setSceneRect(QRect(0,0,1200,720));
+    /*
+    QGraphicsRectItem *rect = scene->addRect(10,10,200,100,QPen(Qt::black), QBrush(Qt::blue));
+    rect->setFlag(QGraphicsItem::ItemIsMovable, true);
+    rect->setFlag(QGraphicsItem::ItemIsSelectable, true);
+    QGraphicsEllipseItem *el = scene->addEllipse(200,200,300,250,QPen(Qt::black), QBrush(Qt::red));
+    el->setFlag(QGraphicsItem::ItemIsMovable, true);
+    el->setFlag(QGraphicsItem::ItemIsSelectable, true);
+    */
+    view = new QGraphicsView(scene);
 
-    AnimationScene *sc = new AnimationScene();
-    sc->setSceneRect(QRect(0,0,1200,720));
-    sc->addRect(10,10,200,100,QPen(Qt::black), QBrush(Qt::blue))->setFlag(QGraphicsItem::ItemIsMovable, true);
-    sc->addEllipse(200,200,300,250,QPen(Qt::black), QBrush(Qt::red))->setFlag(QGraphicsItem::ItemIsMovable, true);
-    QGraphicsView *view = new QGraphicsView(sc);
 
     model = new TreeModel();
     tree = new QTreeView();
@@ -174,10 +148,6 @@ void MainWindow::createGui()
     addDockWidget(Qt::LeftDockWidgetArea, elementsdock);
     splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
 
-    scroll = new QScrollArea();
-    //scroll->setWidget(editor);
-    scroll->setWidget(view);
-
     timeline = new QLabel();
     timeline->setMinimumHeight(110);
     QImage timelineimage;
@@ -186,7 +156,7 @@ void MainWindow::createGui()
     timeline->setMinimumWidth(300);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(scroll);
+    layout->addWidget(view);
     layout->addWidget(timeline);
 
     QWidget *w = new QWidget();
