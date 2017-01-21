@@ -93,12 +93,33 @@ void MainWindow::open()
     model->setScene(scene);
 
     tree->expandAll();
+    QFileInfo info(fileName);
+    setWindowTitle(QCoreApplication::applicationName() + " - " + info.completeBaseName() + "." + info.suffix());
 }
 
 void MainWindow::createGui()
 {
     QToolBar *toolpanel = new QToolBar();
-    toolpanel->addAction(playAct);
+    toolpanel->setOrientation(Qt::Vertical);
+    QActionGroup *anActionGroup = new QActionGroup(toolpanel);
+    selectAct = new QAction("Select", anActionGroup);
+    selectAct->setIcon(QIcon(":/images/arrow.png"));
+    rectangleAct = new QAction("Rectangle", anActionGroup);
+    rectangleAct->setIcon(QIcon(":/images/rectangle.png"));
+    ellipseAct = new QAction("Ellipse", anActionGroup);
+    ellipseAct->setIcon(QIcon(":/images/ellipse.png"));
+    selectAct->setCheckable(true);
+    rectangleAct->setCheckable(true);
+    ellipseAct->setCheckable(true);
+    connect(selectAct, SIGNAL(triggered()), this, SLOT(setSelectMode()));
+    connect(rectangleAct, SIGNAL(triggered()), this, SLOT(setRectangleMode()));
+    connect(ellipseAct, SIGNAL(triggered()), this, SLOT(setEllipseMode()));
+    toolpanel->addAction(selectAct);
+    toolpanel->addAction(rectangleAct);
+    toolpanel->addAction(ellipseAct);
+
+    selectAct->toggle();
+
     QDockWidget *tooldock = new QDockWidget(tr("Tools"), this);
     tooldock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     tooldock->setWidget(toolpanel);
@@ -283,4 +304,19 @@ void MainWindow::about()
 {
    QMessageBox::about(this, tr("AnimationMaker"),
             tr("The AnimationMaker is a tool to create presentation videos."));
+}
+
+void MainWindow::setSelectMode()
+{
+    scene->setEditMode(AnimationScene::EditMode::ModeSelect);
+}
+
+void MainWindow::setRectangleMode()
+{
+    scene->setEditMode(AnimationScene::EditMode::ModeRectangle);
+}
+
+void MainWindow::setEllipseMode()
+{
+    scene->setEditMode(AnimationScene::EditMode::ModeEllipse);
 }

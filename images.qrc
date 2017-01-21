@@ -1,7 +1,9 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-<qresource>
-    <file>images/play.png</file>
-    <file>images/rect.png</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>images/play.png</file>
+        <file>images/rect.png</file>
+        <file>images/arrow.png</file>
+        <file>images/ellipse.png</file>
+        <file>images/rectangle.png</file>
+    </qresource>
 </RCC>

@@ -4,14 +4,32 @@
 
 AnimationScene::AnimationScene()
 {
-
+    m_editMode = EditMode::ModeSelect;
 }
 
 void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() != Qt::LeftButton)
         return;
-    QGraphicsScene::mousePressEvent(mouseEvent);
+
+    if(m_editMode == EditMode::ModeSelect)
+    {
+        QGraphicsScene::mousePressEvent(mouseEvent);
+    }
+    else if(m_editMode == EditMode::ModeRectangle)
+    {
+        QGraphicsRectItem *r = addRect(0, 0, 50, 50, QPen(Qt::black), QBrush(Qt::blue));
+        r->setFlag(QGraphicsItem::ItemIsMovable, true);
+        r->setFlag(QGraphicsItem::ItemIsSelectable, true);
+        r->setPos(mouseEvent->scenePos());
+    }
+    else if(m_editMode == EditMode::ModeEllipse)
+    {
+        QGraphicsEllipseItem *e = addEllipse(0, 0, 50, 50, QPen(Qt::black), QBrush(Qt::blue));
+        e->setFlag(QGraphicsItem::ItemIsMovable, true);
+        e->setFlag(QGraphicsItem::ItemIsSelectable, true);
+        e->setPos(mouseEvent->scenePos());
+    }
 }
 
 void AnimationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -22,6 +40,11 @@ void AnimationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void AnimationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
+}
+
+void AnimationScene::setEditMode(EditMode mode)
+{
+    m_editMode = mode;
 }
 
 QDataStream& AnimationScene::read(QDataStream &dataStream)
@@ -94,7 +117,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
             dataStream << r->rect().height();
             dataStream << r->pen();
             dataStream << r->brush();
-            printf("rect %f\n", r->zValue());
             break;
         }
         case QGraphicsEllipseItem::Type:
@@ -108,7 +130,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
             dataStream << e->rect().height();
             dataStream << e->pen();
             dataStream << e->brush();
-            printf("el %f\n", e->zValue());
             break;
         }
          default:

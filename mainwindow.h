@@ -45,6 +45,9 @@ private:
     QAction *saveAsAct;
     QAction *exitAct;
     QAction *aboutAct;
+    QAction *selectAct;
+    QAction *rectangleAct;
+    QAction *ellipseAct;
     QMenu *fileMenu;
     QMenu *helpMenu;
 
@@ -54,6 +57,9 @@ public slots:
     void about();
     void save();
     void open();
+    void setSelectMode();
+    void setRectangleMode();
+    void setEllipseMode();
 };
 
 #endif // MAINWINDOW_H
