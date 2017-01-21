@@ -17,22 +17,14 @@ QML_IMPORT_PATH += /home/olaf/SourceCode/AnimationMaker
 SOURCES += main.cpp\
         mainwindow.cpp \
     encode.cpp \
-    ellipse.cpp \
     treemodel.cpp \
     treeitem.cpp \
-    rectangle.cpp \
-    text.cpp \
-    animationscene.cpp \
-    serializeableitem.cpp
+    animationscene.cpp
 
 HEADERS  += mainwindow.h \
-    ellipse.h \
     treemodel.h \
     treeitem.h \
-    rectangle.h \
-    text.h \
-    animationscene.h \
-    serializeableitem.h
+    animationscene.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

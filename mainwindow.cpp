@@ -1,9 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "ellipse.h"
 #include "treemodel.h"
-#include "rectangle.h"
-#include "text.h"
 #include "animationscene.h"
 
 #include <QtTest/QTest>
@@ -93,7 +90,7 @@ void MainWindow::open()
     in >> scene;
     file.close();
 
-    //model->setScene(&scene);
+    model->setScene(scene);
 
     tree->expandAll();
 }

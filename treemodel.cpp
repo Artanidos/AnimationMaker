@@ -3,6 +3,7 @@
 
 #include <QStringList>
 #include <QPixmap>
+#include <QGraphicsItem>
 
 TreeModel::TreeModel(AnimationScene *scene, QObject *parent)
     : QAbstractItemModel(parent)
@@ -34,16 +35,25 @@ void TreeModel::setScene(AnimationScene *scene)
 
 void TreeModel::readChildren(AnimationScene *scene, TreeItem *parent)
 {
-    /*
-    for(int i=0; i < scene->childCount(); i++)
+    QList<QGraphicsItem*> itemList = scene->items(Qt::AscendingOrder);
+    foreach (QGraphicsItem *item, itemList)
     {
-        Item *item = scene->childAt(i);
-        QString name= item->getTypeName();
-        TreeItem *treeitem = new TreeItem(name, parent);
-        parent->appendChild(treeitem);
-        //readChildren(item, treeitem);
+        switch(item->type())
+        {
+            case QGraphicsRectItem::Type:
+            {
+                TreeItem *treeitem = new TreeItem("Rectangle", parent);
+                parent->appendChild(treeitem);
+                break;
+            }
+            case QGraphicsEllipseItem::Type:
+            {
+                TreeItem *treeitem = new TreeItem("Ellipse", parent);
+                parent->appendChild(treeitem);
+                break;
+            }
+        }
     }
-    */
 }
 
 int TreeModel::columnCount(const QModelIndex &parent) const
