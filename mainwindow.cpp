@@ -28,9 +28,22 @@ MainWindow::~MainWindow()
 
 void MainWindow::save()
 {
+    writeFile(loadedFile.fileName());
+}
+
+void MainWindow::saveAs()
+{
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save Animation"), "", tr("AnimationMaker (*.amb);;All Files (*)"));
     if (fileName.isEmpty())
         return;
+    writeFile(fileName);
+    loadedFile.setFile(fileName);
+    saveAct->setEnabled(true);
+}
+
+void MainWindow::writeFile(QString fileName)
+{
+    scene->deselectAll();
 
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
@@ -93,8 +106,9 @@ void MainWindow::open()
     model->setScene(scene);
 
     tree->expandAll();
-    QFileInfo info(fileName);
-    setWindowTitle(QCoreApplication::applicationName() + " - " + info.completeBaseName() + "." + info.suffix());
+    loadedFile.setFile(fileName);
+    saveAct->setEnabled(true);
+    setWindowTitle(QCoreApplication::applicationName() + " - " + loadedFile.completeBaseName() + "." + loadedFile.suffix());
 }
 
 void MainWindow::createGui()
@@ -141,16 +155,9 @@ void MainWindow::createGui()
 
     scene = new AnimationScene();
     scene->setSceneRect(QRect(0,0,1200,720));
-    /*
-    QGraphicsRectItem *rect = scene->addRect(10,10,200,100,QPen(Qt::black), QBrush(Qt::blue));
-    rect->setFlag(QGraphicsItem::ItemIsMovable, true);
-    rect->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    QGraphicsEllipseItem *el = scene->addEllipse(200,200,300,250,QPen(Qt::black), QBrush(Qt::red));
-    el->setFlag(QGraphicsItem::ItemIsMovable, true);
-    el->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    */
-    view = new QGraphicsView(scene);
 
+    view = new QGraphicsView(scene);
+    view->setRenderHint(QPainter::RenderHint::Antialiasing);
 
     model = new TreeModel();
     tree = new QTreeView();
@@ -158,6 +165,8 @@ void MainWindow::createGui()
     tree->header()->close();
     tree->expandAll();
     tree->setMinimumWidth(320);
+    QItemSelectionModel *selectionModel = tree->selectionModel();
+    connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
 
     QDockWidget *elementsdock = new QDockWidget(tr("Elements"), this);
     elementsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -266,16 +275,24 @@ void MainWindow::createActions()
     openAct = new QAction(tr("&Open..."), this);
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
 
-    saveAct = new QAction(tr("Save &As..."), this);
+    saveAct = new QAction(tr("&Save"), this);
+    saveAct->setEnabled(false);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
+
+    saveAsAct = new QAction(tr("Save &As..."), this);
+    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+
+    delAct = new QAction(tr("Delete"), this);
+    delAct->setShortcut(tr("Delete"));
+    connect(delAct, SIGNAL(triggered()), this, SLOT(deleteItem()));
 
     playAct = new QAction(tr("&Play"), this);
     playAct->setIcon(QIcon(":/images/play.png"));
     playAct->setToolTip("Start the animation");
     connect(playAct, SIGNAL(triggered()), this, SLOT(playAnimation()));
 
-    saveAsAct = new QAction(tr("&Export"), this);
-    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(exportAnimation()));
+    exportAct = new QAction(tr("&Export"), this);
+    connect(exportAct, SIGNAL(triggered()), this, SLOT(exportAnimation()));
 
     aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
@@ -286,14 +303,18 @@ void MainWindow::createMenus()
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
-    fileMenu->addAction(playAct);
     fileMenu->addAction(saveAsAct);
+    fileMenu->addAction(exportAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(playAct);
     fileMenu->addSeparator();
     const QIcon exitIcon = QIcon::fromTheme("application-exit");
     QAction *exitAct = fileMenu->addAction(exitIcon, tr("E&xit"), this, &QWidget::close);
     exitAct->setShortcuts(QKeySequence::Quit);
     exitAct->setStatusTip(tr("Exit the application"));
 
+    editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu->addAction(delAct);
     menuBar()->addSeparator();
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -319,4 +340,29 @@ void MainWindow::setRectangleMode()
 void MainWindow::setEllipseMode()
 {
     scene->setEditMode(AnimationScene::EditMode::ModeEllipse);
+}
+
+void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelection&)
+{
+    scene->deselectAll();
+
+    if(current.count() && current.at(0).indexes().count())
+    {
+        const QModelIndex index = current.at(0).indexes().at(0);
+        QVariant v = index.data(Qt::UserRole);
+        QGraphicsItem *item = (QGraphicsItem *) v.value<void *>();
+        if(item)
+            item->setSelected(true);
+    }
+    //qDebug() << current.at(0).indexes().at(0).row();
+
+    // todo: set property page
+}
+
+void MainWindow::deleteItem()
+{
+    foreach(QGraphicsItem *item, scene->selectedItems())
+    {
+        scene->removeItem(item);
+    }
 }

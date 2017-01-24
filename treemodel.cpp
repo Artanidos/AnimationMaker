@@ -1,5 +1,6 @@
 #include "treeitem.h"
 #include "treemodel.h"
+#include "rectangle.h"
 
 #include <QStringList>
 #include <QPixmap>
@@ -22,11 +23,12 @@ void TreeModel::setScene(AnimationScene *scene)
     m_scene = scene;
 
     QVariant rootData = "Root";
-    m_rootItem = new TreeItem(rootData);
+    QVariant item;
+    m_rootItem = new TreeItem(rootData, item);
 
     if(scene)
     {
-        TreeItem *firstItem = new TreeItem("Scene", m_rootItem);
+        TreeItem *firstItem = new TreeItem("Scene", item, m_rootItem);
         m_rootItem->appendChild(firstItem);
         readChildren(scene, firstItem);
     }
@@ -40,15 +42,15 @@ void TreeModel::readChildren(AnimationScene *scene, TreeItem *parent)
     {
         switch(item->type())
         {
-            case QGraphicsRectItem::Type:
+            case Rectangle::Type:
             {
-                TreeItem *treeitem = new TreeItem("Rectangle", parent);
+                TreeItem *treeitem = new TreeItem("Rectangle", qVariantFromValue((void *) item), parent);
                 parent->appendChild(treeitem);
                 break;
             }
             case QGraphicsEllipseItem::Type:
             {
-                TreeItem *treeitem = new TreeItem("Ellipse", parent);
+                TreeItem *treeitem = new TreeItem("Ellipse", qVariantFromValue((void *) item), parent);
                 parent->appendChild(treeitem);
                 break;
             }
@@ -75,8 +77,15 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole)
     {
         TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
-        return item->data(index.column());
+        return item->data(0);
     }
+
+    if (role == Qt::UserRole)
+    {
+        TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+        return item->data(1);
+    }
+
     return QVariant();
 }
 

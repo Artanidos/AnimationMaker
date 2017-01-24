@@ -1,0 +1,24 @@
+Rectangle neu
+    - Aufziehen mit der Maus
+    - Bei gedrückter ALT-Taste wird die Mausposition als Center genommen
+    - Bei gedrückter SHIFT-Taste werden width und height analog aufgezogen
+
+Selection eines Objektes triggert TreeSelection und PropertyPanel Selection
+
+ResizeHandles für Ellipse
+
+Textobject
+
+Property Editoren
+
+Items Translation wie Rotate
+
+Toolbar für Objekte
+
+Toolbar für Dateien (Save, Open)
+
+TimeLine Widget
+
+Animationen
+
+Export

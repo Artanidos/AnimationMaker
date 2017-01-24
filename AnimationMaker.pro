@@ -19,12 +19,16 @@ SOURCES += main.cpp\
     encode.cpp \
     treemodel.cpp \
     treeitem.cpp \
-    animationscene.cpp
+    animationscene.cpp \
+    rectangle.cpp \
+    itemhandle.cpp
 
 HEADERS  += mainwindow.h \
     treemodel.h \
     treeitem.h \
-    animationscene.h
+    animationscene.h \
+    rectangle.h \
+    itemhandle.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 
@@ -40,9 +44,9 @@ LIBS += -lswscale
 LIBS += -lm
 LIBS += -ldl
 
-DISTFILES += \
-    demo.qml
-
 RESOURCES += \
     images.qrc
+
+DISTFILES += \
+    todo.txt
 

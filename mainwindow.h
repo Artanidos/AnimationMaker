@@ -30,6 +30,7 @@ private:
     void createGui();
     void writeSettings();
     void readSettings();
+    void writeFile(QString fileName);
 
     QSplitter *splitter;
     QLabel *timeline;
@@ -38,17 +39,21 @@ private:
     TreeModel *model;
     AnimationScene *scene;
     QGraphicsView *view;
+    QFileInfo loadedFile;
 
     QAction *openAct;
     QAction *saveAct;
     QAction *playAct;
     QAction *saveAsAct;
+    QAction *exportAct;
+    QAction *delAct;
     QAction *exitAct;
     QAction *aboutAct;
     QAction *selectAct;
     QAction *rectangleAct;
     QAction *ellipseAct;
     QMenu *fileMenu;
+    QMenu *editMenu;
     QMenu *helpMenu;
 
 public slots:
@@ -56,10 +61,13 @@ public slots:
     void playAnimation();
     void about();
     void save();
+    void saveAs();
     void open();
     void setSelectMode();
     void setRectangleMode();
     void setEllipseMode();
+    void selectionChanged(const QItemSelection&,const QItemSelection&);
+    void deleteItem();
 };
 
 #endif // MAINWINDOW_H

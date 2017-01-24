@@ -2,10 +2,11 @@
 
 #include "treeitem.h"
 
-TreeItem::TreeItem(const QVariant &data, TreeItem *parent)
+TreeItem::TreeItem(const QVariant &data, const QVariant &item, TreeItem *parent)
 {
     m_parentItem = parent;
     m_itemData = data;
+    m_item = item;
 }
 
 TreeItem::~TreeItem()
@@ -30,12 +31,17 @@ int TreeItem::childCount() const
 
 int TreeItem::columnCount() const
 {
-    return 1;//m_itemData.count();
+    return 1;
 }
 
 QVariant TreeItem::data(int column) const
 {
-    return m_itemData;
+    if(column == 0)
+        return m_itemData;
+    else if(column == 1)
+        return m_item;
+
+    return QVariant();
 }
 
 TreeItem *TreeItem::parentItem()

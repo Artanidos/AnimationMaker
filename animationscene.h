@@ -10,12 +10,13 @@ class AnimationScene : public QGraphicsScene
 public:
     AnimationScene();
 
-    enum ItemType { Item, Rectangle, Ellipse, Text };
+    enum ItemType { TypeItem, TypeRectangle, TypeEllipse, TypeText };
     enum EditMode { ModeSelect, ModeRectangle, ModeEllipse };
 
     void setEditMode(EditMode mode);
     QDataStream& read(QDataStream &dataStream);
     QDataStream& write(QDataStream &dataStream) const;
+    void deselectAll();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;

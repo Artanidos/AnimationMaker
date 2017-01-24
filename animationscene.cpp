@@ -1,5 +1,8 @@
 #include "animationscene.h"
 #include "serializeableitem.h"
+#include "handleitem.h"
+#include "rectangle.h"
+
 #include <QGraphicsItem>
 
 AnimationScene::AnimationScene()
@@ -18,17 +21,33 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     else if(m_editMode == EditMode::ModeRectangle)
     {
-        QGraphicsRectItem *r = addRect(0, 0, 50, 50, QPen(Qt::black), QBrush(Qt::blue));
+        deselectAll();
+
+        Rectangle *r = new Rectangle(50, 50);
+        r->setPen(QPen(Qt::black));
+        r->setBrush(QBrush(Qt::blue));
         r->setFlag(QGraphicsItem::ItemIsMovable, true);
         r->setFlag(QGraphicsItem::ItemIsSelectable, true);
         r->setPos(mouseEvent->scenePos());
+        addItem(r);
     }
     else if(m_editMode == EditMode::ModeEllipse)
     {
+        deselectAll();
         QGraphicsEllipseItem *e = addEllipse(0, 0, 50, 50, QPen(Qt::black), QBrush(Qt::blue));
         e->setFlag(QGraphicsItem::ItemIsMovable, true);
         e->setFlag(QGraphicsItem::ItemIsSelectable, true);
         e->setPos(mouseEvent->scenePos());
+
+    }
+}
+
+void AnimationScene::deselectAll()
+{
+    QList<QGraphicsItem *> items = selectedItems();
+    foreach( QGraphicsItem *item, items )
+    {
+        item->setSelected(false);
     }
 }
 
@@ -61,7 +80,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
     while (!dataStream.atEnd())
     {
         dataStream >> type;
-        if(type == QGraphicsRectItem::Type)
+        if(type == Rectangle::Type)
         {
             dataStream >> x;
             dataStream >> y;
@@ -70,11 +89,15 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> height;
             dataStream >> pen;
             dataStream >> brush;
-            QGraphicsRectItem *r = addRect(0, 0, width, height, pen, brush);
+
+            Rectangle *r = new Rectangle(width, height);
             r->setPos(x, y);
+            r->setPen(pen);
+            r->setBrush(brush);
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
             r->setFlag(QGraphicsItem::ItemIsSelectable, true);
             r->setZValue(z);
+            addItem(r);
         }
         else if(type == QGraphicsEllipseItem::Type)
         {
@@ -106,10 +129,10 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
     {
         switch(item->type())
         {
-        case QGraphicsRectItem::Type:
+        case Rectangle::Type:
         {
-            QGraphicsRectItem *r = dynamic_cast<QGraphicsRectItem *>(item);
-            dataStream << QGraphicsRectItem::Type;
+            Rectangle *r = dynamic_cast<Rectangle *>(item);
+            dataStream << Rectangle::Type;
             dataStream << r->pos().x();
             dataStream << r->pos().y();
             dataStream << r->zValue();
