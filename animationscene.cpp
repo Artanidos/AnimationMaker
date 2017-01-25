@@ -2,6 +2,7 @@
 #include "serializeableitem.h"
 #include "handleitem.h"
 #include "rectangle.h"
+#include "ellipse.h"
 
 #include <QGraphicsItem>
 
@@ -30,15 +31,19 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         r->setFlag(QGraphicsItem::ItemIsSelectable, true);
         r->setPos(mouseEvent->scenePos());
         addItem(r);
+        emit itemAdded(r);
     }
     else if(m_editMode == EditMode::ModeEllipse)
     {
         deselectAll();
-        QGraphicsEllipseItem *e = addEllipse(0, 0, 50, 50, QPen(Qt::black), QBrush(Qt::blue));
+        Ellipse *e = new Ellipse(50, 50);
+        e->setPen(QPen(Qt::black));
+        e->setBrush(QBrush(Qt::blue));
         e->setFlag(QGraphicsItem::ItemIsMovable, true);
         e->setFlag(QGraphicsItem::ItemIsSelectable, true);
         e->setPos(mouseEvent->scenePos());
-
+        addItem(e);
+        emit itemAdded(e);
     }
 }
 
@@ -99,7 +104,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             r->setZValue(z);
             addItem(r);
         }
-        else if(type == QGraphicsEllipseItem::Type)
+        else if(type == Ellipse::Type)
         {
             dataStream >> x;
             dataStream >> y;
@@ -108,11 +113,14 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> height;
             dataStream >> pen;
             dataStream >> brush;
-            QGraphicsEllipseItem *e = addEllipse(0, 0, width, height, pen, brush);
+            Ellipse *e = new Ellipse(width, height);
             e->setPos(x, y);
+            e->setPen(pen);
+            e->setBrush(brush);
             e->setFlag(QGraphicsItem::ItemIsMovable, true);
             e->setFlag(QGraphicsItem::ItemIsSelectable, true);
             e->setZValue(z);
+            addItem(e);
         }
     }
 
@@ -142,10 +150,10 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
             dataStream << r->brush();
             break;
         }
-        case QGraphicsEllipseItem::Type:
+        case Ellipse::Type:
         {
-            QGraphicsEllipseItem *e = dynamic_cast<QGraphicsEllipseItem *>(item);
-            dataStream << QGraphicsEllipseItem::Type;
+            Ellipse *e = dynamic_cast<Ellipse *>(item);
+            dataStream << Ellipse::Type;
             dataStream << e->pos().x();
             dataStream << e->pos().y();
             dataStream << e->zValue();

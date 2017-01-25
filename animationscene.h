@@ -7,6 +7,7 @@
 
 class AnimationScene : public QGraphicsScene
 {
+    Q_OBJECT
 public:
     AnimationScene();
 
@@ -17,6 +18,9 @@ public:
     QDataStream& read(QDataStream &dataStream);
     QDataStream& write(QDataStream &dataStream) const;
     void deselectAll();
+
+signals:
+    void itemAdded(QGraphicsItem *item);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;

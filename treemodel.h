@@ -25,12 +25,14 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     void setScene(AnimationScene *scene);
+    void addItem(QGraphicsItem *item);
 
 private:
     TreeItem *m_rootItem;
     AnimationScene *m_scene;
 
     void readChildren(AnimationScene *scene, TreeItem *parent);
+    QString getItemTypeName(QGraphicsItem *item);
 };
 
 #endif // TREEMODEL_H

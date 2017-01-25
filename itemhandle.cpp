@@ -6,8 +6,8 @@ ItemHandle::ItemHandle(QGraphicsItem *parent,  int corner) :
     mouseDownY(0),
     m_color(Qt::black),
     m_pen(Qt::white),
-    m_width(11),
-    m_height(11),
+    m_width(9),
+    m_height(9),
     m_corner(corner),
     m_mouseButtonState(kMouseReleased)
 {
@@ -84,5 +84,5 @@ void ItemHandle::paint (QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     QBrush brush (Qt::SolidPattern);
     brush.setColor(m_color);
     painter->fillRect(rect,brush);
-    painter->drawRect(rect);
+    //painter->drawRect(rect);
 }

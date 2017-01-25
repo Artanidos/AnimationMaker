@@ -158,13 +158,18 @@ void MainWindow::createGui()
 
     view = new QGraphicsView(scene);
     view->setRenderHint(QPainter::RenderHint::Antialiasing);
+    connect(scene, SIGNAL(selectionChanged()), this, SLOT(sceneSeletionChanged()));
+    connect(scene, SIGNAL(itemAdded(QGraphicsItem*)), this, SLOT(sceneItemAdded(QGraphicsItem*)));
+    //connect(scene, SIGNAL(itemAdded(QGraphicsItem*)), this, SLOT(sceneItemAdded(QGraphicsItem*)));
 
     model = new TreeModel();
+    model->setScene(scene);
     tree = new QTreeView();
     tree->setModel(model);
     tree->header()->close();
     tree->expandAll();
     tree->setMinimumWidth(320);
+    tree->setCurrentIndex(model->index(0, 0));
     QItemSelectionModel *selectionModel = tree->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
 
@@ -365,4 +370,20 @@ void MainWindow::deleteItem()
     {
         scene->removeItem(item);
     }
+    // todo: tree view
+}
+
+void MainWindow::sceneSeletionChanged()
+{
+    qDebug() << "scenesel";
+    const QModelIndex index;
+
+    //tree->setCurrentIndex(index);
+}
+
+void MainWindow::sceneItemAdded(QGraphicsItem *item)
+{
+    model->addItem(item);
+    tree->reset();
+    tree->expandAll();
 }

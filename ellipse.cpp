@@ -1,29 +1,29 @@
-#include "rectangle.h"
+#include "ellipse.h"
 
 #include <QtTest/QTest>
 
-Rectangle::Rectangle(qreal width, qreal height)
-    : QGraphicsRectItem(0,0,width, height)
+Ellipse::Ellipse(qreal width, qreal height)
+    : QGraphicsEllipseItem(0,0,width, height)
 {
-    m_hasHandles = false;
+
 }
 
-int Rectangle::type() const
+int Ellipse::type() const
 {
-    return Rectangle::Type;
+    return Ellipse::Type;
 }
 
-void Rectangle::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Ellipse::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QGraphicsRectItem::paint(paint, option, widget);
+    QGraphicsEllipseItem::paint(paint, option, widget);
 }
 
-QRectF Rectangle::boundingRect() const
+QRectF Ellipse::boundingRect() const
 {
     return rect();
 }
 
-bool Rectangle::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
+bool Ellipse::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 {
     ItemHandle * handle = dynamic_cast<ItemHandle *>(watched);
     if ( handle == NULL)
@@ -180,7 +180,7 @@ bool Rectangle::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
     return true;
 }
 
-void Rectangle::setHandlePositions()
+void Ellipse::setHandlePositions()
 {
     m_handles[0]->setPos(-4, -4);
     m_handles[1]->setPos(rect().width() - 4,  -4);
@@ -192,7 +192,7 @@ void Rectangle::setHandlePositions()
     m_handles[7]->setPos(-4,  rect().height() / 2 - 4);
 }
 
-QVariant Rectangle::itemChange(GraphicsItemChange change, const QVariant &value)
+QVariant Ellipse::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (change == QGraphicsItem::ItemSelectedChange)
     {

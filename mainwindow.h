@@ -68,6 +68,8 @@ public slots:
     void setEllipseMode();
     void selectionChanged(const QItemSelection&,const QItemSelection&);
     void deleteItem();
+    void sceneSeletionChanged();
+    void sceneItemAdded(QGraphicsItem *);
 };
 
 #endif // MAINWINDOW_H

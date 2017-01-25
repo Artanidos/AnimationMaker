@@ -1,10 +1,12 @@
 #include "treeitem.h"
 #include "treemodel.h"
 #include "rectangle.h"
+#include "ellipse.h"
 
 #include <QStringList>
 #include <QPixmap>
 #include <QGraphicsItem>
+#include <QtTest/QTest>
 
 TreeModel::TreeModel(AnimationScene *scene, QObject *parent)
     : QAbstractItemModel(parent)
@@ -40,22 +42,33 @@ void TreeModel::readChildren(AnimationScene *scene, TreeItem *parent)
     QList<QGraphicsItem*> itemList = scene->items(Qt::AscendingOrder);
     foreach (QGraphicsItem *item, itemList)
     {
-        switch(item->type())
+        TreeItem *treeitem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), parent);
+        parent->appendChild(treeitem);
+    }
+}
+
+QString TreeModel::getItemTypeName(QGraphicsItem *item)
+{
+    switch(item->type())
+    {
+        case Rectangle::Type:
         {
-            case Rectangle::Type:
-            {
-                TreeItem *treeitem = new TreeItem("Rectangle", qVariantFromValue((void *) item), parent);
-                parent->appendChild(treeitem);
-                break;
-            }
-            case QGraphicsEllipseItem::Type:
-            {
-                TreeItem *treeitem = new TreeItem("Ellipse", qVariantFromValue((void *) item), parent);
-                parent->appendChild(treeitem);
-                break;
-            }
+            return QString("Rectangle");
+            break;
+        }
+        case Ellipse::Type:
+        {
+            return QString("Ellipse");
+            break;
         }
     }
+    return QString();
+}
+
+void TreeModel::addItem(QGraphicsItem *item)
+{
+    TreeItem *treeItem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), m_rootItem->child(0));
+    m_rootItem->child(0)->appendChild(treeItem);
 }
 
 int TreeModel::columnCount(const QModelIndex &parent) const
