@@ -6,6 +6,7 @@
 #include "text.h"
 
 #include <QGraphicsItem>
+#include <QTest>
 
 AnimationScene::AnimationScene()
 {
@@ -205,7 +206,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
             break;
         }
          default:
-            printf("undefined item type %d\n", item->type());
+            qWarning() << "undefined item type " << item->type();
             break;
         }
     }

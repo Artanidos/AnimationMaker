@@ -1,62 +1,80 @@
-#include "text.h"
-
-#include <QTest>
+#include "resizeableitem.h"
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-Text::Text(QString text)
-    : ResizeableItem()
+ResizeableItem::ResizeableItem()
 {
-   m_font = QFont("Arial", 13);
-   m_text = text;
-   QFontMetrics m(m_font);
-   setRect(0, 0, m.width(m_text), m.height());
-   m_textitem = new QGraphicsSimpleTextItem(m_text, this);
-   m_textitem->setFont(m_font);
-   setPen(QPen(QBrush(), 0));
+
 }
 
-int Text::type() const
+void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option)
 {
-    return Text::Type;
+    qreal itemPenWidth = m_pen.widthF();
+    const qreal pad = itemPenWidth / 2;
+    const qreal penWidth = 0;
+    const QColor fgcolor = option->palette.windowText().color();
+    const QColor bgcolor( fgcolor.red()   > 127 ? 0 : 255, fgcolor.green() > 127 ? 0 : 255, fgcolor.blue()  > 127 ? 0 : 255);
+
+    painter->setPen(QPen(bgcolor, penWidth, Qt::SolidLine));
+    painter->setBrush(Qt::NoBrush);
+    painter->drawRect(boundingRect().adjusted(pad, pad, -pad, -pad));
+
+    painter->setPen(QPen(option->palette.windowText(), 0, Qt::DashLine));
+    painter->setBrush(Qt::NoBrush);
+    painter->drawRect(boundingRect().adjusted(pad, pad, -pad, -pad));
 }
 
-void Text::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
+QRectF ResizeableItem::rect() const
 {
+    return m_rect;
+}
+
+void ResizeableItem::setRect(qreal x, qreal y, qreal w, qreal h)
+{
+    prepareGeometryChange();
+    m_rect = QRectF(x, y, w, h);
+    update();
+}
+
+QPen ResizeableItem::pen() const
+{
+    return m_pen;
+}
+
+void ResizeableItem::setPen(const QPen &pen)
+{
+    m_pen = pen;
+}
+
+QBrush ResizeableItem::brush() const
+{
+    return m_brush;
+}
+void ResizeableItem::setBrush(const QBrush &brush)
+{
+    m_brush = brush;
+}
+
+void ResizeableItem::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(paint);
+    Q_UNUSED(option);
     Q_UNUSED(widget);
-
-    if (option->state & QStyle::State_Selected)
-        drawHighlightSelected(paint, option);
 }
 
-void Text::setScale(qreal x, qreal y)
+QRectF ResizeableItem::boundingRect() const
 {
-    m_xscale = x;
-    m_yscale = y;
-    QTransform trans;
-    trans.scale(m_xscale, m_yscale);
-    m_textitem->setTransform(trans);
 
-    QFontMetrics m(m_font);
-    setRect(0, 0, m.width(m_text) * x, m.height() * y);
+//    qreal halfpw = pen().style() == Qt::NoPen ? qreal(0) : pen().widthF() / 2;
+//    QRectF rect = m_rect;
+//    if (halfpw > 0.0)
+//        rect.adjust(-halfpw, -halfpw, halfpw, halfpw);
+//    return rect;
+
+    return rect();
 }
 
-qreal Text::xscale()
-{
-    return m_xscale;
-}
-
-qreal Text::yscale()
-{
-    return m_yscale;
-}
-
-QString Text::text()
-{
-    return m_text;
-}
-
-bool Text::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
+bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 {
     ItemHandle * handle = dynamic_cast<ItemHandle *>(watched);
     if ( handle == NULL)
@@ -163,13 +181,6 @@ bool Text::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
         int deltaHeight =   newHeight - rect().height() ;
 
         setRect(0,0,rect().width() + deltaWidth, rect().height() + deltaHeight);
-        QFontMetrics m(m_font);
-        m_xscale = rect().width() / m.width(m_text);
-        m_yscale = rect().height() / m.height();
-
-        QTransform trans;
-        trans.scale(m_xscale, m_yscale);
-        m_textitem->setTransform(trans);
 
         deltaWidth *= (-1);
         deltaHeight *= (-1);
@@ -218,4 +229,47 @@ bool Text::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
         this->update();
     }
     return true;
+}
+
+void ResizeableItem::setHandlePositions()
+{
+    m_handles[0]->setPos(-4, -4);
+    m_handles[1]->setPos(rect().width() - 4,  -4);
+    m_handles[2]->setPos(rect().width() - 4, rect().height() - 4);
+    m_handles[3]->setPos(-4,  rect().height() - 4);
+    m_handles[4]->setPos(rect().width() / 2 - 4, -4);
+    m_handles[5]->setPos(rect().width() - 4,  rect().height() / 2 - 4);
+    m_handles[6]->setPos(rect().width() /2 - 4, rect().height() - 4);
+    m_handles[7]->setPos(-4,  rect().height() / 2 - 4);
+}
+
+QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == QGraphicsItem::ItemSelectedChange)
+    {
+        if (value == true)
+        {
+            if(!m_hasHandles)
+            {
+                for(int i = 0; i < 8; i++)
+                {
+                    m_handles[i] = new ItemHandle(this,i);
+                    m_handles[i]->installSceneEventFilter(this);
+                }
+                setHandlePositions();
+                m_hasHandles = true;
+            }
+        }
+        else
+        {
+            for(int i = 0; i < 8; i++)
+            {
+                m_handles[i]->setParentItem(NULL);
+                delete m_handles[i];
+            }
+            m_hasHandles = false;
+        }
+    }
+
+    return QGraphicsItem::itemChange(change, value);
 }
