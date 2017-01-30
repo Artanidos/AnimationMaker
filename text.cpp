@@ -1,29 +1,63 @@
-#include "ellipse.h"
+#include "text.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
-Ellipse::Ellipse(qreal width, qreal height)
-    : QGraphicsEllipseItem(0, 0, width, height)
+Text::Text(QString text)
+    : QGraphicsRectItem(0)
 {
-
+   m_hasHandles = false;
+   m_font = QFont("Arial", 13);
+   m_text = text;
+   QFontMetrics m(m_font);
+   setRect(0, 0, m.width(m_text), m.height());
+   m_textitem = new QGraphicsSimpleTextItem(m_text, this);
+   m_textitem->setFont(m_font);
+   setPen(QPen(QBrush(), 0));
 }
 
-int Ellipse::type() const
+int Text::type() const
 {
-    return Ellipse::Type;
+    return Text::Type;
 }
 
-void Ellipse::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Text::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QGraphicsEllipseItem::paint(paint, option, widget);
+    QGraphicsRectItem::paint(paint, option, widget);
 }
 
-QRectF Ellipse::boundingRect() const
+QRectF Text::boundingRect() const
 {
     return rect();
 }
 
-bool Ellipse::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
+void Text::setScale(qreal x, qreal y)
+{
+    m_xscale = x;
+    m_yscale = y;
+    QTransform trans;
+    trans.scale(m_xscale, m_yscale);
+    m_textitem->setTransform(trans);
+
+    QFontMetrics m(m_font);
+    setRect(0, 0, m.width(m_text) * x, m.height() * y);
+}
+
+qreal Text::xscale()
+{
+    return m_xscale;
+}
+
+qreal Text::yscale()
+{
+    return m_yscale;
+}
+
+QString Text::text()
+{
+    return m_text;
+}
+
+bool Text::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 {
     ItemHandle * handle = dynamic_cast<ItemHandle *>(watched);
     if ( handle == NULL)
@@ -130,6 +164,13 @@ bool Ellipse::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
         int deltaHeight =   newHeight - rect().height() ;
 
         setRect(0,0,rect().width() + deltaWidth, rect().height() + deltaHeight);
+        QFontMetrics m(m_font);
+        m_xscale = rect().width() / m.width(m_text);
+        m_yscale = rect().height() / m.height();
+
+        QTransform trans;
+        trans.scale(m_xscale, m_yscale);
+        m_textitem->setTransform(trans);
 
         deltaWidth *= (-1);
         deltaHeight *= (-1);
@@ -180,7 +221,7 @@ bool Ellipse::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
     return true;
 }
 
-void Ellipse::setHandlePositions()
+void Text::setHandlePositions()
 {
     m_handles[0]->setPos(-4, -4);
     m_handles[1]->setPos(rect().width() - 4,  -4);
@@ -192,7 +233,7 @@ void Ellipse::setHandlePositions()
     m_handles[7]->setPos(-4,  rect().height() / 2 - 4);
 }
 
-QVariant Ellipse::itemChange(GraphicsItemChange change, const QVariant &value)
+QVariant Text::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (change == QGraphicsItem::ItemSelectedChange)
     {
@@ -203,6 +244,7 @@ QVariant Ellipse::itemChange(GraphicsItemChange change, const QVariant &value)
                 for(int i = 0; i < 8; i++)
                 {
                     m_handles[i] = new ItemHandle(this,i);
+                    m_handles[i]->setFlag(QGraphicsItem::ItemIgnoresTransformations);
                     m_handles[i]->installSceneEventFilter(this);
                 }
                 setHandlePositions();

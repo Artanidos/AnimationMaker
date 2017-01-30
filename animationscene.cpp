@@ -3,6 +3,7 @@
 #include "handleitem.h"
 #include "rectangle.h"
 #include "ellipse.h"
+#include "text.h"
 
 #include <QGraphicsItem>
 
@@ -45,6 +46,17 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         addItem(e);
         emit itemAdded(e);
     }
+    else if(m_editMode == EditMode::ModeText)
+    {
+        deselectAll();
+
+        Text *t = new Text("Lorem ipsum dolor");
+        t->setFlag(QGraphicsItem::ItemIsMovable, true);
+        t->setFlag(QGraphicsItem::ItemIsSelectable, true);
+        t->setPos(mouseEvent->scenePos());
+        addItem(t);
+        emit itemAdded(t);
+    }
 }
 
 void AnimationScene::deselectAll()
@@ -74,9 +86,10 @@ void AnimationScene::setEditMode(EditMode mode)
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
     int type;
-    qreal x, y, z, width, height;
+    qreal x, y, z, width, height, xscale, yscale;
     QPen pen;
     QBrush brush;
+    QString text;
 
     clear();
     dataStream >> width;
@@ -122,6 +135,22 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             e->setZValue(z);
             addItem(e);
         }
+        else if(type == Text::Type)
+        {
+            dataStream >> x;
+            dataStream >> y;
+            dataStream >> z;
+            dataStream >> xscale;
+            dataStream >> yscale;
+            dataStream >> text;
+            Text *t = new Text(text);
+            t->setPos(x, y);
+            t->setFlag(QGraphicsItem::ItemIsMovable, true);
+            t->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            t->setZValue(z);
+            t->setScale(xscale, yscale);
+            addItem(t);
+        }
     }
 
     return dataStream;
@@ -161,6 +190,18 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
             dataStream << e->rect().height();
             dataStream << e->pen();
             dataStream << e->brush();
+            break;
+        }
+        case Text::Type:
+        {
+            Text *t = dynamic_cast<Text *>(item);
+            dataStream << Text::Type;
+            dataStream << t->pos().x();
+            dataStream << t->pos().y();
+            dataStream << t->zValue();
+            dataStream << t->xscale();
+            dataStream << t->yscale();
+            dataStream << t->text();
             break;
         }
          default:

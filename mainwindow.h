@@ -52,6 +52,7 @@ private:
     QAction *selectAct;
     QAction *rectangleAct;
     QAction *ellipseAct;
+    QAction *textAct;
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *helpMenu;
@@ -66,6 +67,7 @@ public slots:
     void setSelectMode();
     void setRectangleMode();
     void setEllipseMode();
+    void setTextMode();
     void selectionChanged(const QItemSelection&,const QItemSelection&);
     void deleteItem();
     void sceneSeletionChanged();

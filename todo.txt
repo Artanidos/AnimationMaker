@@ -5,8 +5,6 @@ Rectangle neu
 
 Selection eines Objektes triggert TreeSelection und PropertyPanel Selection
 
-ResizeHandles für Ellipse
-
 Textobject
 
 Property Editoren

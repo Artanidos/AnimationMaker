@@ -2,6 +2,7 @@
 #include "treemodel.h"
 #include "rectangle.h"
 #include "ellipse.h"
+#include "text.h"
 
 #include <QStringList>
 #include <QPixmap>
@@ -42,8 +43,11 @@ void TreeModel::readChildren(AnimationScene *scene, TreeItem *parent)
     QList<QGraphicsItem*> itemList = scene->items(Qt::AscendingOrder);
     foreach (QGraphicsItem *item, itemList)
     {
-        TreeItem *treeitem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), parent);
-        parent->appendChild(treeitem);
+        if(item->type() == Rectangle::Type || item->type() == Ellipse::Type || item->type() == Text::Type)
+        {
+            TreeItem *treeitem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), parent);
+            parent->appendChild(treeitem);
+        }
     }
 }
 
@@ -61,6 +65,13 @@ QString TreeModel::getItemTypeName(QGraphicsItem *item)
             return QString("Ellipse");
             break;
         }
+        case Text::Type:
+        {
+            return QString("Text");
+        }
+    default:
+        qWarning() << "unknown item type: " << item->type();
+        break;
     }
     return QString();
 }

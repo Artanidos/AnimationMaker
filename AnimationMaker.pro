@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     animationscene.cpp \
     rectangle.cpp \
     itemhandle.cpp \
-    ellipse.cpp
+    ellipse.cpp \
+    text.cpp
 
 HEADERS  += mainwindow.h \
     treemodel.h \
@@ -30,7 +31,8 @@ HEADERS  += mainwindow.h \
     animationscene.h \
     rectangle.h \
     itemhandle.h \
-    ellipse.h
+    ellipse.h \
+    text.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

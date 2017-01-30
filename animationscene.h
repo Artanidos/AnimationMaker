@@ -12,7 +12,7 @@ public:
     AnimationScene();
 
     enum ItemType { TypeItem, TypeRectangle, TypeEllipse, TypeText };
-    enum EditMode { ModeSelect, ModeRectangle, ModeEllipse };
+    enum EditMode { ModeSelect, ModeRectangle, ModeEllipse, ModeText };
 
     void setEditMode(EditMode mode);
     QDataStream& read(QDataStream &dataStream);

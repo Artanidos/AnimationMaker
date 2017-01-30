@@ -5,5 +5,6 @@
         <file>images/arrow.png</file>
         <file>images/ellipse.png</file>
         <file>images/rectangle.png</file>
+        <file>images/text.png</file>
     </qresource>
 </RCC>

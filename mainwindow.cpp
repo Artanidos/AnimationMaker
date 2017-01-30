@@ -122,15 +122,20 @@ void MainWindow::createGui()
     rectangleAct->setIcon(QIcon(":/images/rectangle.png"));
     ellipseAct = new QAction("Ellipse", anActionGroup);
     ellipseAct->setIcon(QIcon(":/images/ellipse.png"));
+    textAct = new QAction("Text", anActionGroup);
+    textAct->setIcon(QIcon(":/images/text.png"));
     selectAct->setCheckable(true);
     rectangleAct->setCheckable(true);
     ellipseAct->setCheckable(true);
+    textAct->setCheckable(true);
     connect(selectAct, SIGNAL(triggered()), this, SLOT(setSelectMode()));
     connect(rectangleAct, SIGNAL(triggered()), this, SLOT(setRectangleMode()));
     connect(ellipseAct, SIGNAL(triggered()), this, SLOT(setEllipseMode()));
+    connect(textAct, SIGNAL(triggered()), this, SLOT(setTextMode()));
     toolpanel->addAction(selectAct);
     toolpanel->addAction(rectangleAct);
     toolpanel->addAction(ellipseAct);
+    toolpanel->addAction(textAct);
 
     selectAct->toggle();
 
@@ -347,6 +352,11 @@ void MainWindow::setEllipseMode()
     scene->setEditMode(AnimationScene::EditMode::ModeEllipse);
 }
 
+void MainWindow::setTextMode()
+{
+    scene->setEditMode(AnimationScene::EditMode::ModeText);
+}
+
 void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelection&)
 {
     scene->deselectAll();
@@ -359,7 +369,6 @@ void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelec
         if(item)
             item->setSelected(true);
     }
-    //qDebug() << current.at(0).indexes().at(0).row();
 
     // todo: set property page
 }
@@ -375,7 +384,6 @@ void MainWindow::deleteItem()
 
 void MainWindow::sceneSeletionChanged()
 {
-    qDebug() << "scenesel";
     const QModelIndex index;
 
     //tree->setCurrentIndex(index);
