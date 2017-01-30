@@ -5,14 +5,12 @@
 #-------------------------------------------------
 
 QT += core gui
-QT += qml quick testlib
+QT += testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = AnimationMaker
 TEMPLATE = app
-
-QML_IMPORT_PATH += /home/olaf/SourceCode/AnimationMaker
 
 SOURCES += main.cpp\
         mainwindow.cpp \

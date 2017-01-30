@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtQuick>
 #include <QtWidgets>
 #include "treemodel.h"
 #include "animationscene.h"

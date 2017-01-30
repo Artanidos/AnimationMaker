@@ -2,11 +2,12 @@
 #include "ui_mainwindow.h"
 #include "treemodel.h"
 #include "animationscene.h"
+#include "rectangle.h"
 
 #include <QtTest/QTest>
 #include <QMessageBox>
 
-void video_encode(const char *, QQuickView *);
+void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -239,45 +240,74 @@ void MainWindow::readSettings()
 
 void MainWindow::exportAnimation()
 {
-    /*
-    if(view) delete view;
-    view = new QQuickView;
-    view->setSource(QUrl::fromLocalFile("/home/olaf/SourceCode/AnimationMaker/demo.qml"));
-    view->setResizeMode( QQuickView::SizeViewToRootObject );
-    view->create();
-    video_encode("test.mpg", view);
-    */
+    Rectangle *rect = new Rectangle(100, 100);
+    rect->setPen(QPen(Qt::black));
+    rect->setBrush(QBrush(Qt::blue));
+    rect->setPos(0, 0);
+    rect->setOpacity(0);
+    scene->addItem(rect);
+
+    QPropertyAnimation *animation = new QPropertyAnimation(rect, "opacity");
+    animation->setDuration(1000);
+    animation->setStartValue(0);
+    animation->setEndValue(1);
+
+    QPropertyAnimation *animationx = new QPropertyAnimation(rect, "x");
+    animationx->setDuration(1000);
+    animationx->setStartValue(0);
+    animationx->setEndValue(400);
+    animationx->setEasingCurve(QEasingCurve::InCubic);
+
+    QPropertyAnimation *animationy = new QPropertyAnimation(rect, "y");
+    animationy->setDuration(1000);
+    animationy->setStartValue(0);
+    animationy->setEndValue(50);
+
+    QParallelAnimationGroup *group = new QParallelAnimationGroup;
+    group->addAnimation(animation);
+    group->addAnimation(animationx);
+    group->addAnimation(animationy);
+    group->start();
+    group->pause();
+
+    QGraphicsView *view = new QGraphicsView(scene);
+    view->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    view->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    view->setGeometry(0,0,scene->width(), scene->height());
+    video_encode("test.mpg", view, group);
 }
 
 void MainWindow::playAnimation()
 {
-    /*
-    int duration = 0;
-    int fps = 25;
+    Rectangle *rect = new Rectangle(100, 100);
+    rect->setPen(QPen(Qt::black));
+    rect->setBrush(QBrush(Qt::blue));
+    rect->setPos(0, 0);
+    rect->setOpacity(0);
+    scene->addItem(rect);
 
-    QObject *obj = view->rootObject();
-    QObject *ac = obj->findChild<QObject*>("animationController");
-    if(ac)
-    {
-        QObject *animation = ac->findChild<QObject*>();
-        if(strcmp(animation->metaObject()->className(), "QQuickParallelAnimation") == 0 )
-        {
-            foreach(QObject *a, animation->children())
-            {
-                duration = std::max(a->property("duration").toInt(), duration);
-            }
-        }
+    QPropertyAnimation *animation = new QPropertyAnimation(rect, "opacity");
+    animation->setDuration(1000);
+    animation->setStartValue(0);
+    animation->setEndValue(1);
 
-        int frames = duration/ fps;
+    QPropertyAnimation *animationx = new QPropertyAnimation(rect, "x");
+    animationx->setDuration(1000);
+    animationx->setStartValue(0);
+    animationx->setEndValue(400);
+    animationx->setEasingCurve(QEasingCurve::InCubic);
 
-        for (int i = 0; i < frames; i++)
-        {
-            ac->setProperty("progress", 1.0/frames * i);
-            QTest::qSleep(40);
-            QCoreApplication::processEvents(QEventLoop::AllEvents, 1000);
-        }
-    }
-    */
+    QPropertyAnimation *animationy = new QPropertyAnimation(rect, "y");
+    animationy->setDuration(1000);
+    animationy->setStartValue(0);
+    animationy->setEndValue(50);
+
+    QParallelAnimationGroup *group = new QParallelAnimationGroup;
+    group->addAnimation(animation);
+    group->addAnimation(animationx);
+    group->addAnimation(animationy);
+
+    group->start();
 }
 
 void MainWindow::createActions()

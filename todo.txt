@@ -5,6 +5,8 @@ Rectangle neu
 
 Selection eines Objektes triggert TreeSelection und PropertyPanel Selection
 
+Item delete muss auch im Tree passieren
+
 Textobject
 
 Property Editoren

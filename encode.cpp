@@ -1,10 +1,11 @@
 #include <math.h>
 
+#include <QtWidgets>
 #include <QImage>
 #include <QPainter>
-#include <QtQuick>
 #include <QAbstractAnimation>
 #include <QtTest/QTest>
+
 
 extern "C"
 {
@@ -37,7 +38,7 @@ int encode(AVCodecContext *avctx, AVPacket *pkt, AVFrame *frame, int *got_packet
     return ret;
 }
 
-void video_encode(const char *filename, QQuickView *view)
+void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group)
 {
     int width = view->width();
     int height = view->height();
@@ -119,25 +120,18 @@ void video_encode(const char *filename, QQuickView *view)
 
     struct SwsContext * ctx = sws_getContext(c->width, c->height, AV_PIX_FMT_BGRA, c->width, c->height, AV_PIX_FMT_YUV420P, 0, 0, 0, 0);
 
+    int frames = group->duration() / fps;
+    //char buf[1024];
 
-    int duration = 0;
-    QObject *obj = view->rootObject();
-    QObject *ac = obj->findChild<QObject*>("animationController");
-    QObject *animation = ac->findChild<QObject*>();
-    if(strcmp(animation->metaObject()->className(), "QQuickParallelAnimation") == 0 )
-    {
-        foreach(QObject *a, animation->children())
-        {
-            duration = std::max(a->property("duration").toInt(), duration);
-        }
-    }
-
-    int frames = duration/ fps;
     for (i = 0; i < frames; i++)
     {
-        ac->setProperty("progress", 1.0 / frames * i);
+        group->setCurrentTime(i * 40);
+        QTest::qSleep(40);
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 
-        QImage img = view->grabWindow();
+        QImage img = view->grab().toImage();
+        //snprintf(buf, sizeof(buf), "out%d.png", i);
+        //img.save(buf);
         av_init_packet(&pkt);
         pkt.data = NULL;
         pkt.size = 0;

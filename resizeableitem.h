@@ -4,7 +4,7 @@
 #include <QGraphicsItem>
 #include "itemhandle.h"
 
-class ResizeableItem : public QGraphicsItem
+class ResizeableItem : public QGraphicsItem, public QObject
 {
 public:
     ResizeableItem();
