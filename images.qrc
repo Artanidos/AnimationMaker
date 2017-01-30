@@ -6,5 +6,7 @@
         <file>images/ellipse.png</file>
         <file>images/rectangle.png</file>
         <file>images/text.png</file>
+        <file>images/camera.png</file>
+        <file>images/svg.png</file>
     </qresource>
 </RCC>

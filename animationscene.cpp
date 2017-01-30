@@ -4,6 +4,7 @@
 #include "rectangle.h"
 #include "ellipse.h"
 #include "text.h"
+#include "bitmap.h"
 
 #include <QGraphicsItem>
 #include <QTest>
@@ -57,6 +58,17 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         t->setPos(mouseEvent->scenePos());
         addItem(t);
         emit itemAdded(t);
+    }
+    else if(m_editMode == EditMode::ModeBitmap)
+    {
+        deselectAll();
+
+        Bitmap *b = new Bitmap("/home/olaf/Bilder/portrait.png");
+        b->setFlag(QGraphicsItem::ItemIsMovable, true);
+        b->setFlag(QGraphicsItem::ItemIsSelectable, true);
+        b->setPos(mouseEvent->scenePos());
+        addItem(b);
+        emit itemAdded(b);
     }
 }
 

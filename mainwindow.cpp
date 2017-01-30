@@ -6,6 +6,7 @@
 
 #include <QtTest/QTest>
 #include <QMessageBox>
+#include <QGraphicsSvgItem>
 
 void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group);
 
@@ -119,24 +120,41 @@ void MainWindow::createGui()
     QActionGroup *anActionGroup = new QActionGroup(toolpanel);
     selectAct = new QAction("Select", anActionGroup);
     selectAct->setIcon(QIcon(":/images/arrow.png"));
+    selectAct->setCheckable(true);
+
     rectangleAct = new QAction("Rectangle", anActionGroup);
     rectangleAct->setIcon(QIcon(":/images/rectangle.png"));
+    rectangleAct->setCheckable(true);
+
     ellipseAct = new QAction("Ellipse", anActionGroup);
     ellipseAct->setIcon(QIcon(":/images/ellipse.png"));
+    ellipseAct->setCheckable(true);
+
     textAct = new QAction("Text", anActionGroup);
     textAct->setIcon(QIcon(":/images/text.png"));
-    selectAct->setCheckable(true);
-    rectangleAct->setCheckable(true);
-    ellipseAct->setCheckable(true);
     textAct->setCheckable(true);
+
+    bitmapAct = new QAction("Bitmap", anActionGroup);
+    bitmapAct->setIcon(QIcon(":/images/camera.png"));
+    bitmapAct->setCheckable(true);
+
+    svgAct = new QAction("SVG", anActionGroup);
+    svgAct->setIcon(QIcon(":/images/svg.png"));
+    svgAct->setCheckable(true);
+
     connect(selectAct, SIGNAL(triggered()), this, SLOT(setSelectMode()));
     connect(rectangleAct, SIGNAL(triggered()), this, SLOT(setRectangleMode()));
     connect(ellipseAct, SIGNAL(triggered()), this, SLOT(setEllipseMode()));
     connect(textAct, SIGNAL(triggered()), this, SLOT(setTextMode()));
+    connect(bitmapAct, SIGNAL(triggered()), this, SLOT(setBitmapMode()));
+    connect(svgAct, SIGNAL(triggered()), this, SLOT(setSvgMode()));
+
     toolpanel->addAction(selectAct);
     toolpanel->addAction(rectangleAct);
     toolpanel->addAction(ellipseAct);
     toolpanel->addAction(textAct);
+    toolpanel->addAction(bitmapAct);
+    toolpanel->addAction(svgAct);
 
     selectAct->toggle();
 
@@ -279,6 +297,9 @@ void MainWindow::exportAnimation()
 
 void MainWindow::playAnimation()
 {
+    QGraphicsSvgItem *item = new QGraphicsSvgItem("/home/olaf/Bilder/Lotus.svg");
+    item->setScale(0.5);
+    scene->addItem(item);
     Rectangle *rect = new Rectangle(100, 100);
     rect->setPen(QPen(Qt::black));
     rect->setBrush(QBrush(Qt::blue));
@@ -385,6 +406,16 @@ void MainWindow::setEllipseMode()
 void MainWindow::setTextMode()
 {
     scene->setEditMode(AnimationScene::EditMode::ModeText);
+}
+
+void MainWindow::setBitmapMode()
+{
+    scene->setEditMode(AnimationScene::EditMode::ModeBitmap);
+}
+
+void MainWindow::setSvgMode()
+{
+    scene->setEditMode(AnimationScene::EditMode::ModeSvg);
 }
 
 void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelection&)

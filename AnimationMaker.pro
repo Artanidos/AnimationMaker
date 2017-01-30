@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui
+QT += core gui svg
 QT += testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     itemhandle.cpp \
     ellipse.cpp \
     text.cpp \
-    resizeableitem.cpp
+    resizeableitem.cpp \
+    bitmap.cpp
 
 HEADERS  += mainwindow.h \
     treemodel.h \
@@ -32,7 +33,8 @@ HEADERS  += mainwindow.h \
     itemhandle.h \
     ellipse.h \
     text.h \
-    resizeableitem.h
+    resizeableitem.h \
+    bitmap.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

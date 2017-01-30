@@ -11,8 +11,8 @@ class AnimationScene : public QGraphicsScene
 public:
     AnimationScene();
 
-    enum ItemType { TypeItem, TypeRectangle, TypeEllipse, TypeText };
-    enum EditMode { ModeSelect, ModeRectangle, ModeEllipse, ModeText };
+    enum ItemType { TypeItem, TypeRectangle, TypeEllipse, TypeText, TypeBitmap, TypeSvg };
+    enum EditMode { ModeSelect, ModeRectangle, ModeEllipse, ModeText, ModeBitmap, ModeSvg };
 
     void setEditMode(EditMode mode);
     QDataStream& read(QDataStream &dataStream);
