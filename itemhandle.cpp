@@ -13,7 +13,7 @@ ItemHandle::ItemHandle(QGraphicsItem *parent,  int corner) :
 {
     setParentItem(parent);
     m_pen.setWidth(1);
-   this->setAcceptHoverEvents(true);
+    this->setAcceptHoverEvents(true);
 }
 
 void ItemHandle::setMouseState(int s)
@@ -84,5 +84,4 @@ void ItemHandle::paint (QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     QBrush brush (Qt::SolidPattern);
     brush.setColor(m_color);
     painter->fillRect(rect,brush);
-    //painter->drawRect(rect);
 }

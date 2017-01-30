@@ -26,6 +26,7 @@ MainWindow::~MainWindow()
     delete tree;
     delete scene;
     delete view;
+    delete model;
 }
 
 void MainWindow::save()
@@ -138,7 +139,7 @@ void MainWindow::createGui()
     bitmapAct->setIcon(QIcon(":/images/camera.png"));
     bitmapAct->setCheckable(true);
 
-    svgAct = new QAction("SVG", anActionGroup);
+    svgAct = new QAction("Vectorgraphic", anActionGroup);
     svgAct->setIcon(QIcon(":/images/svg.png"));
     svgAct->setCheckable(true);
 

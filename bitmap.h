@@ -16,8 +16,6 @@ public:
 
 private:
     QImage m_image;
-    qreal m_xscale;
-    qreal m_yscale;
 };
 
 #endif // BITMAP_H

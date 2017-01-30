@@ -5,9 +5,11 @@
 #include "ellipse.h"
 #include "text.h"
 #include "bitmap.h"
+#include "vectorgraphic.h"
 
 #include <QGraphicsItem>
 #include <QTest>
+#include <QFileDialog>
 
 AnimationScene::AnimationScene()
 {
@@ -63,12 +65,31 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         deselectAll();
 
-        Bitmap *b = new Bitmap("/home/olaf/Bilder/portrait.png");
+        QString fileName = QFileDialog::getOpenFileName(0, tr("Open Bitmap"), "", tr("Image Files (*.png *.jpeg *.jpg *.gif *.bmp);;All Files (*)"));
+        if (fileName.isEmpty())
+            return;
+
+        Bitmap *b = new Bitmap(fileName);
         b->setFlag(QGraphicsItem::ItemIsMovable, true);
         b->setFlag(QGraphicsItem::ItemIsSelectable, true);
         b->setPos(mouseEvent->scenePos());
         addItem(b);
         emit itemAdded(b);
+    }
+    else if(m_editMode == EditMode::ModeSvg)
+    {
+        deselectAll();
+
+        QString fileName = QFileDialog::getOpenFileName(0, tr("Open SVG"), "", tr("SVG Files (*.svg);;All Files (*)"));
+        if (fileName.isEmpty())
+            return;
+
+        Vectorgraphic *v = new Vectorgraphic(fileName);
+        v->setFlag(QGraphicsItem::ItemIsMovable, true);
+        v->setFlag(QGraphicsItem::ItemIsSelectable, true);
+        v->setPos(mouseEvent->scenePos());
+        addItem(v);
+        emit itemAdded(v);
     }
 }
 

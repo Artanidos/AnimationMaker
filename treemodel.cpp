@@ -4,6 +4,7 @@
 #include "ellipse.h"
 #include "text.h"
 #include "bitmap.h"
+#include "vectorgraphic.h"
 
 #include <QStringList>
 #include <QPixmap>
@@ -28,6 +29,8 @@ void TreeModel::setScene(AnimationScene *scene)
 
     QVariant rootData = "Root";
     QVariant item;
+    if(m_rootItem)
+        delete m_rootItem;
     m_rootItem = new TreeItem(rootData, item);
 
     if(scene)
@@ -60,12 +63,10 @@ QString TreeModel::getItemTypeName(QGraphicsItem *item)
         case Rectangle::Type:
         {
             return QString("Rectangle");
-            break;
         }
         case Ellipse::Type:
         {
             return QString("Ellipse");
-            break;
         }
         case Text::Type:
         {
@@ -74,6 +75,10 @@ QString TreeModel::getItemTypeName(QGraphicsItem *item)
         case Bitmap::Type:
         {
             return QString("Bitmap");
+        }
+        case Vectorgraphic::Type:
+        {
+            return QString("Vectorgraphic");
         }
         default:
         qWarning() << "unknown item type: " << item->type();

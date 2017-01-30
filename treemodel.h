@@ -28,7 +28,7 @@ public:
     void addItem(QGraphicsItem *item);
 
 private:
-    TreeItem *m_rootItem;
+    TreeItem *m_rootItem = NULL;
     AnimationScene *m_scene;
 
     void readChildren(AnimationScene *scene, TreeItem *parent);
