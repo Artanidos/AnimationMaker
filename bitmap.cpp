@@ -11,6 +11,13 @@ Bitmap::Bitmap(QString filename)
     setRect(0, 0, m_image.width(), m_image.height());
 }
 
+Bitmap::Bitmap(QImage image, qreal width, qreal height)
+    :ResizeableItem()
+{
+    m_image = image;
+    setRect(0, 0, width, height);
+}
+
 int Bitmap::type() const
 {
     return Bitmap::Type;
@@ -24,4 +31,9 @@ void Bitmap::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWi
 
     if (option->state & QStyle::State_Selected)
         drawHighlightSelected(paint, option);
+}
+
+QImage Bitmap::getImage()
+{
+    return m_image;
 }

@@ -185,6 +185,40 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             t->setScale(xscale, yscale);
             addItem(t);
         }
+        else if(type == Bitmap::Type)
+        {
+            QImage img;
+            dataStream >> x;
+            dataStream >> y;
+            dataStream >> z;
+            dataStream >> width;
+            dataStream >> height;
+            dataStream >> img;
+            Bitmap *b = new Bitmap(img, width, height);
+            b->setPos(x, y);
+            b->setFlag(QGraphicsItem::ItemIsMovable, true);
+            b->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            b->setZValue(z);
+            b->setScale(xscale, yscale);
+            addItem(b);
+        }
+        else if(type == Vectorgraphic::Type)
+        {
+            QByteArray arr;
+            dataStream >> x;
+            dataStream >> y;
+            dataStream >> z;
+            dataStream >> xscale;
+            dataStream >> yscale;
+            dataStream >> arr;
+            Vectorgraphic *v = new Vectorgraphic(arr);
+            v->setPos(x, y);
+            v->setFlag(QGraphicsItem::ItemIsMovable, true);
+            v->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            v->setZValue(z);
+            v->setScale(xscale, yscale);
+            addItem(v);
+        }
     }
 
     return dataStream;
@@ -200,47 +234,71 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
     {
         switch(item->type())
         {
-        case Rectangle::Type:
-        {
-            Rectangle *r = dynamic_cast<Rectangle *>(item);
-            dataStream << Rectangle::Type;
-            dataStream << r->pos().x();
-            dataStream << r->pos().y();
-            dataStream << r->zValue();
-            dataStream << r->rect().width();
-            dataStream << r->rect().height();
-            dataStream << r->pen();
-            dataStream << r->brush();
-            break;
-        }
-        case Ellipse::Type:
-        {
-            Ellipse *e = dynamic_cast<Ellipse *>(item);
-            dataStream << Ellipse::Type;
-            dataStream << e->pos().x();
-            dataStream << e->pos().y();
-            dataStream << e->zValue();
-            dataStream << e->rect().width();
-            dataStream << e->rect().height();
-            dataStream << e->pen();
-            dataStream << e->brush();
-            break;
-        }
-        case Text::Type:
-        {
-            Text *t = dynamic_cast<Text *>(item);
-            dataStream << Text::Type;
-            dataStream << t->pos().x();
-            dataStream << t->pos().y();
-            dataStream << t->zValue();
-            dataStream << t->xscale();
-            dataStream << t->yscale();
-            dataStream << t->text();
-            break;
-        }
-         default:
-            qWarning() << "undefined item type " << item->type();
-            break;
+            case Rectangle::Type:
+            {
+                Rectangle *r = dynamic_cast<Rectangle *>(item);
+                dataStream << Rectangle::Type;
+                dataStream << r->pos().x();
+                dataStream << r->pos().y();
+                dataStream << r->zValue();
+                dataStream << r->rect().width();
+                dataStream << r->rect().height();
+                dataStream << r->pen();
+                dataStream << r->brush();
+                break;
+            }
+            case Ellipse::Type:
+            {
+                Ellipse *e = dynamic_cast<Ellipse *>(item);
+                dataStream << Ellipse::Type;
+                dataStream << e->pos().x();
+                dataStream << e->pos().y();
+                dataStream << e->zValue();
+                dataStream << e->rect().width();
+                dataStream << e->rect().height();
+                dataStream << e->pen();
+                dataStream << e->brush();
+                break;
+            }
+            case Text::Type:
+            {
+                Text *t = dynamic_cast<Text *>(item);
+                dataStream << Text::Type;
+                dataStream << t->pos().x();
+                dataStream << t->pos().y();
+                dataStream << t->zValue();
+                dataStream << t->xscale();
+                dataStream << t->yscale();
+                dataStream << t->text();
+                break;
+            }
+            case Bitmap::Type:
+            {
+                Bitmap *b = dynamic_cast<Bitmap *>(item);
+                dataStream << Bitmap::Type;
+                dataStream << b->pos().x();
+                dataStream << b->pos().y();
+                dataStream << b->zValue();
+                dataStream << b->rect().width();
+                dataStream << b->rect().height();
+                dataStream << b->getImage();
+                break;
+            }
+            case Vectorgraphic::Type:
+            {
+                Vectorgraphic *v = dynamic_cast<Vectorgraphic *>(item);
+                dataStream << Vectorgraphic::Type;
+                dataStream << v->pos().x();
+                dataStream << v->pos().y();
+                dataStream << v->zValue();
+                dataStream << v->xscale();
+                dataStream << v->yscale();
+                dataStream << v->getData();
+                break;
+            }
+            default:
+                qWarning() << "undefined item type " << item->type();
+                break;
         }
     }
     return dataStream;

@@ -31,7 +31,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::save()
 {
-    writeFile(loadedFile.fileName());
+    writeFile(loadedFile.filePath());
 }
 
 void MainWindow::saveAs()
@@ -42,6 +42,7 @@ void MainWindow::saveAs()
     writeFile(fileName);
     loadedFile.setFile(fileName);
     saveAct->setEnabled(true);
+    setTitle();
 }
 
 void MainWindow::writeFile(QString fileName)
@@ -49,7 +50,11 @@ void MainWindow::writeFile(QString fileName)
     scene->deselectAll();
 
     QFile file(fileName);
-    file.open(QIODevice::WriteOnly);
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        QMessageBox::warning(this, "Error", "Unable to open file " + fileName);
+        return;
+    }
     QDataStream out(&file);
 
     // Write a header with a "magic number" and a version
@@ -60,6 +65,11 @@ void MainWindow::writeFile(QString fileName)
     out << scene;
 
     file.close();
+}
+
+void MainWindow::setTitle()
+{
+    setWindowTitle(QCoreApplication::applicationName() + " - " + loadedFile.completeBaseName() + "." + loadedFile.suffix());
 }
 
 void MainWindow::open()
@@ -111,7 +121,7 @@ void MainWindow::open()
     tree->expandAll();
     loadedFile.setFile(fileName);
     saveAct->setEnabled(true);
-    setWindowTitle(QCoreApplication::applicationName() + " - " + loadedFile.completeBaseName() + "." + loadedFile.suffix());
+    setTitle();
 }
 
 void MainWindow::createGui()

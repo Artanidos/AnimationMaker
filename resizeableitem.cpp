@@ -8,6 +8,8 @@
 ResizeableItem::ResizeableItem()
 {
     m_hasHandles = false;
+    m_xscale = 1;
+    m_yscale = 1;
 }
 
 void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option)

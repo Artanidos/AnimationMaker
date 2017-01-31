@@ -19,6 +19,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void setTitle();
+    
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 

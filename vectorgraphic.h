@@ -9,15 +9,20 @@ class Vectorgraphic : public ResizeableItem
 {
 public:
     Vectorgraphic(QString filename);
+    Vectorgraphic(QByteArray arr);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
     void scaleObjects();
+    void setScale(qreal x, qreal y);
+    QByteArray getData();
 
     enum { Type = UserType + 5 };
     int type() const Q_DECL_OVERRIDE;
 
 private:
     QGraphicsSvgItem *m_svg;
+    QSvgRenderer *m_renderer;
+    QByteArray m_data;
 };
 
 #endif // VECTORGRAPHIC_H

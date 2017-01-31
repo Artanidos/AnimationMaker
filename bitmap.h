@@ -8,8 +8,11 @@ class Bitmap : public ResizeableItem
 {
 public:
     Bitmap(QString filename);
+    Bitmap(QImage img, qreal width, qreal height);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
+
+    QImage getImage();
 
     enum { Type = UserType + 4 };
     int type() const Q_DECL_OVERRIDE;
