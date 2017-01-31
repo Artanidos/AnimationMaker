@@ -14,6 +14,10 @@ public:
     QRectF boundingRect() const;
     bool sceneEventFilter(QGraphicsItem * watched, QEvent * event);
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    virtual void scaleObjects();
+    virtual void setScale(qreal x, qreal y);
+    qreal xscale();
+    qreal yscale();
 
     QRectF rect() const;
     void setRect(qreal x, qreal y, qreal w, qreal h);
@@ -33,6 +37,8 @@ private:
 
 protected:
     void setHandlePositions();
+    qreal m_xscale;
+    qreal m_yscale;
 };
 
 #endif // RESIZEABLEITEM_H

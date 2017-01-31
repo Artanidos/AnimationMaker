@@ -18,6 +18,7 @@ class ItemHandle : public QGraphicsItem
 public:
     explicit ItemHandle(QGraphicsItem *parent = 0,  int corner = 0);
 
+
     int  getCorner();
     void setMouseState(int);
     int  getMouseState();
@@ -25,7 +26,7 @@ public:
     qreal mouseDownX;
     qreal mouseDownY;
 
-     enum {kMouseReleased=0, kMouseDown, kMouseMoving};
+    enum {kMouseReleased=0, kMouseDown, kMouseMoving};
 
 private:
     virtual QRectF boundingRect() const;

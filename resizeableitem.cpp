@@ -1,6 +1,9 @@
 #include "resizeableitem.h"
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
+#include <QGuiApplication>
+
+#include <QTest>
 
 ResizeableItem::ResizeableItem()
 {
@@ -27,6 +30,23 @@ void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOption
 QRectF ResizeableItem::rect() const
 {
     return m_rect;
+}
+
+void ResizeableItem::scaleObjects() {}
+void ResizeableItem::setScale(qreal x, qreal y)
+{
+    Q_UNUSED(x)
+    Q_UNUSED(y)
+}
+
+qreal ResizeableItem::xscale()
+{
+    return m_xscale;
+}
+
+qreal ResizeableItem::yscale()
+{
+    return m_yscale;
 }
 
 void ResizeableItem::setRect(qreal x, qreal y, qreal w, qreal h)
@@ -64,13 +84,6 @@ void ResizeableItem::paint( QPainter *paint, const QStyleOptionGraphicsItem *opt
 
 QRectF ResizeableItem::boundingRect() const
 {
-
-//    qreal halfpw = pen().style() == Qt::NoPen ? qreal(0) : pen().widthF() / 2;
-//    QRectF rect = m_rect;
-//    if (halfpw > 0.0)
-//        rect.adjust(-halfpw, -halfpw, halfpw, halfpw);
-//    return rect;
-
     return rect();
 }
 
@@ -88,24 +101,24 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 
     switch (event->type() )
     {
-    case QEvent::GraphicsSceneMousePress:
-    {
-        handle->setMouseState(ItemHandle::kMouseDown);
-        handle->mouseDownX = mevent->pos().x();
-        handle->mouseDownY = mevent->pos().y();
-    }
-        break;
+        case QEvent::GraphicsSceneMousePress:
+        {
+            handle->setMouseState(ItemHandle::kMouseDown);
+            handle->mouseDownX = mevent->pos().x();
+            handle->mouseDownY = mevent->pos().y();
+        }
+            break;
 
-    case QEvent::GraphicsSceneMouseRelease:
-        handle->setMouseState(ItemHandle::kMouseReleased);
-        break;
+        case QEvent::GraphicsSceneMouseRelease:
+            handle->setMouseState(ItemHandle::kMouseReleased);
+            break;
 
-    case QEvent::GraphicsSceneMouseMove:
-        handle->setMouseState(ItemHandle::kMouseMoving );
-        break;
+        case QEvent::GraphicsSceneMouseMove:
+            handle->setMouseState(ItemHandle::kMouseMoving );
+            break;
 
-    default:
-        return false;
+        default:
+            return false;
     }
 
     if ( handle->getMouseState() == ItemHandle::kMouseMoving )
@@ -114,58 +127,52 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 
         int XaxisSign = 0;
         int YaxisSign = 0;
-        switch( handle->getCorner() )
+        switch(handle->getCorner())
         {
-        case 0:
-        {
-            XaxisSign = +1;
-            YaxisSign = +1;
-        }
-            break;
-
-        case 1:
-        {
-            XaxisSign = -1;
-            YaxisSign = +1;
-        }
-            break;
-
-        case 2:
-        {
-            XaxisSign = -1;
-            YaxisSign = -1;
-        }
-            break;
-
-        case 3:
-        {
-            XaxisSign = +1;
-            YaxisSign = -1;
-        }
-            break;
-
-        case 4:
-        {
-            YaxisSign = +1;
-        }
-            break;
-        case 5:
-        {
-            XaxisSign = -1;
-        }
-            break;
-
-        case 6:
-        {
-            YaxisSign = -1;
-        }
-            break;
-        case 7:
-        {
-            XaxisSign = +1;
-
-        }
-            break;
+            case 0:
+            {
+                XaxisSign = +1;
+                YaxisSign = +1;
+                break;
+            }
+            case 1:
+            {
+                XaxisSign = -1;
+                YaxisSign = +1;
+                break;
+            }
+            case 2:
+            {
+                XaxisSign = -1;
+                YaxisSign = -1;
+                break;
+            }
+            case 3:
+            {
+                XaxisSign = +1;
+                YaxisSign = -1;
+                break;
+            }
+            case 4:
+            {
+                YaxisSign = +1;
+                break;
+            }
+            case 5:
+            {
+                XaxisSign = -1;
+                break;
+            }
+            case 6:
+            {
+                YaxisSign = -1;
+                break;
+            }
+            case 7:
+            {
+                XaxisSign = +1;
+                break;
+            }
         }
 
         int xMoved = handle->mouseDownX - x;
@@ -174,13 +181,35 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
         int newWidth = rect().width() + ( XaxisSign * xMoved);
         if ( newWidth < 40 ) newWidth  = 40;
 
-        int newHeight = rect().height() + (YaxisSign * yMoved) ;
+        int newHeight = rect().height() + (YaxisSign * yMoved);
         if ( newHeight < 40 ) newHeight = 40;
 
-        int deltaWidth  =   newWidth - rect().width() ;
-        int deltaHeight =   newHeight - rect().height() ;
+        qreal deltaWidth = newWidth - rect().width();
+        qreal deltaHeight = newHeight - rect().height();
+
+        bool controlPressed = QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ControlModifier);
+        if(controlPressed)
+        {
+            qreal ratio = rect().width() / rect().height();
+            if(handle->getCorner() < 4) // corners
+            {
+                if(newWidth > newHeight)
+                    deltaWidth = (int)(deltaHeight * ratio);
+                else
+                    deltaHeight = (int)(deltaWidth / ratio);
+            }
+            else
+            {
+                if(handle->getCorner() == 4 || handle->getCorner() == 6) // top | bottom
+                    deltaWidth = deltaHeight * ratio;
+                else // left | right
+                    deltaHeight = deltaWidth / ratio;
+            }
+        }
 
         setRect(0,0,rect().width() + deltaWidth, rect().height() + deltaHeight);
+
+        scaleObjects();
 
         deltaWidth *= (-1);
         deltaHeight *= (-1);
@@ -192,36 +221,68 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
                 int newXpos = this->pos().x() + deltaWidth;
                 int newYpos = this->pos().y() + deltaHeight;
                 this->setPos(newXpos, newYpos);
+                break;
             }
-            break;
-
             case 1:
             {
                 int newYpos = this->pos().y() + deltaHeight;
                 this->setPos(this->pos().x(), newYpos);
+                break;
             }
-            break;
-
             case 3:
             {
                 int newXpos = this->pos().x() + deltaWidth;
                 this->setPos(newXpos, this->pos().y());
+                break;
             }
-            break;
-
-            case 4:
+            case 4: // top
             {
-                int newYpos = this->pos().y() + deltaHeight;
-                this->setPos(this->pos().x(), newYpos);
+                if(controlPressed)
+                {
+                    int newYpos = this->pos().y() + deltaHeight;
+                    qreal newXpos = this->pos().x() + deltaWidth / 2;
+                    this->setPos(newXpos, newYpos);
+                }
+                else
+                {
+                    int newYpos = this->pos().y() + deltaHeight;
+                    this->setPos(this->pos().x(), newYpos);
+                }
+                break;
             }
-            break;
-
-            case 7:
+            case 5: // right
             {
-                int newXpos = this->pos().x() + deltaWidth;
-                this->setPos(newXpos, this->pos().y());
+                if(controlPressed)
+                {
+                    qreal newYpos = this->pos().y() + deltaHeight / 2;
+                    this->setPos(this->pos().x(), newYpos);
+                }
+                break;
             }
-            break;
+            case 6: // bottom
+            {
+                if(controlPressed)
+                {
+                    qreal newXpos = this->pos().x() + deltaWidth / 2;
+                    this->setPos(newXpos, this->pos().y());
+                }
+                break;
+            }
+            case 7: // left
+            {
+                if(controlPressed)
+                {
+                    int newXpos = this->pos().x() + deltaWidth;
+                    qreal newYpos = this->pos().y() + deltaHeight / 2;
+                    this->setPos(newXpos, newYpos);
+                }
+                else
+                {
+                    int newXpos = this->pos().x() + deltaWidth;
+                    this->setPos(newXpos, this->pos().y());
+                }
+                break;
+            }
         }
 
         setHandlePositions();
@@ -270,6 +331,5 @@ QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &v
             m_hasHandles = false;
         }
     }
-
     return QGraphicsItem::itemChange(change, value);
 }
