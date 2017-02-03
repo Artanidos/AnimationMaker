@@ -12,7 +12,7 @@ class Rectangle : public ResizeableItem
     Q_PROPERTY(qreal x READ x WRITE setX)
     Q_PROPERTY(qreal y READ y WRITE setY)
 public:
-    Rectangle(qreal width, qreal height);
+    Rectangle(qreal width, qreal height, QMenu *menu);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 

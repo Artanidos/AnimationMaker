@@ -55,10 +55,13 @@ private:
     QAction *ellipseAct;
     QAction *textAct;
     QAction *svgAct;
+    QAction *bringToFrontAct;
+    QAction *sendToBackAct;
     QAction *bitmapAct;
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *helpMenu;
+    QMenu *itemMenu;
 
 public slots:
     void exportAnimation();
@@ -75,6 +78,8 @@ public slots:
     void setSvgMode();
     void selectionChanged(const QItemSelection&,const QItemSelection&);
     void deleteItem();
+    void bringToFront();
+    void sendToBack();
     void sceneSeletionChanged();
     void sceneItemAdded(QGraphicsItem *);
 };

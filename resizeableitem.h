@@ -7,7 +7,7 @@
 class ResizeableItem : public QGraphicsItem, public QObject
 {
 public:
-    ResizeableItem();
+    ResizeableItem(QMenu *menu);
 
     void drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option);
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
@@ -34,9 +34,11 @@ private:
     QRectF m_rect;
     QPen m_pen;
     QBrush m_brush;
+    QMenu *m_contextMenu;
 
 protected:
     void setHandlePositions();
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) Q_DECL_OVERRIDE;
     qreal m_xscale;
     qreal m_yscale;
 };

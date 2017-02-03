@@ -7,13 +7,10 @@
 #include "bitmap.h"
 #include "vectorgraphic.h"
 
-#include <QGraphicsItem>
-#include <QTest>
-#include <QFileDialog>
-
-AnimationScene::AnimationScene()
+AnimationScene::AnimationScene(QMenu *menu)
 {
     m_editMode = EditMode::ModeSelect;
+    m_itemMenu = menu;
 }
 
 void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -27,9 +24,9 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     else if(m_editMode == EditMode::ModeRectangle)
     {
-        deselectAll();
+        clearSelection();
 
-        Rectangle *r = new Rectangle(50, 50);
+        Rectangle *r = new Rectangle(50, 50, m_itemMenu);
         r->setPen(QPen(Qt::black));
         r->setBrush(QBrush(Qt::blue));
         r->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -40,8 +37,9 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     else if(m_editMode == EditMode::ModeEllipse)
     {
-        deselectAll();
-        Ellipse *e = new Ellipse(50, 50);
+        clearSelection();
+
+        Ellipse *e = new Ellipse(50, 50, m_itemMenu);
         e->setPen(QPen(Qt::black));
         e->setBrush(QBrush(Qt::blue));
         e->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -52,9 +50,9 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     else if(m_editMode == EditMode::ModeText)
     {
-        deselectAll();
+        clearSelection();
 
-        Text *t = new Text("Lorem ipsum dolor");
+        Text *t = new Text("Lorem ipsum dolor", m_itemMenu);
         t->setFlag(QGraphicsItem::ItemIsMovable, true);
         t->setFlag(QGraphicsItem::ItemIsSelectable, true);
         t->setPos(mouseEvent->scenePos());
@@ -63,13 +61,13 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     else if(m_editMode == EditMode::ModeBitmap)
     {
-        deselectAll();
+        clearSelection();
 
         QString fileName = QFileDialog::getOpenFileName(0, tr("Open Bitmap"), "", tr("Image Files (*.png *.jpeg *.jpg *.gif *.bmp);;All Files (*)"));
         if (fileName.isEmpty())
             return;
 
-        Bitmap *b = new Bitmap(fileName);
+        Bitmap *b = new Bitmap(fileName, m_itemMenu);
         b->setFlag(QGraphicsItem::ItemIsMovable, true);
         b->setFlag(QGraphicsItem::ItemIsSelectable, true);
         b->setPos(mouseEvent->scenePos());
@@ -78,27 +76,18 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     else if(m_editMode == EditMode::ModeSvg)
     {
-        deselectAll();
+        clearSelection();
 
         QString fileName = QFileDialog::getOpenFileName(0, tr("Open SVG"), "", tr("SVG Files (*.svg);;All Files (*)"));
         if (fileName.isEmpty())
             return;
 
-        Vectorgraphic *v = new Vectorgraphic(fileName);
+        Vectorgraphic *v = new Vectorgraphic(fileName, m_itemMenu);
         v->setFlag(QGraphicsItem::ItemIsMovable, true);
         v->setFlag(QGraphicsItem::ItemIsSelectable, true);
         v->setPos(mouseEvent->scenePos());
         addItem(v);
         emit itemAdded(v);
-    }
-}
-
-void AnimationScene::deselectAll()
-{
-    QList<QGraphicsItem *> items = selectedItems();
-    foreach( QGraphicsItem *item, items )
-    {
-        item->setSelected(false);
     }
 }
 
@@ -142,7 +131,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> pen;
             dataStream >> brush;
 
-            Rectangle *r = new Rectangle(width, height);
+            Rectangle *r = new Rectangle(width, height, m_itemMenu);
             r->setPos(x, y);
             r->setPen(pen);
             r->setBrush(brush);
@@ -160,7 +149,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> height;
             dataStream >> pen;
             dataStream >> brush;
-            Ellipse *e = new Ellipse(width, height);
+            Ellipse *e = new Ellipse(width, height, m_itemMenu);
             e->setPos(x, y);
             e->setPen(pen);
             e->setBrush(brush);
@@ -177,7 +166,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> xscale;
             dataStream >> yscale;
             dataStream >> text;
-            Text *t = new Text(text);
+            Text *t = new Text(text, m_itemMenu);
             t->setPos(x, y);
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -194,7 +183,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> width;
             dataStream >> height;
             dataStream >> img;
-            Bitmap *b = new Bitmap(img, width, height);
+            Bitmap *b = new Bitmap(img, width, height, m_itemMenu);
             b->setPos(x, y);
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -211,7 +200,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> xscale;
             dataStream >> yscale;
             dataStream >> arr;
-            Vectorgraphic *v = new Vectorgraphic(arr);
+            Vectorgraphic *v = new Vectorgraphic(arr, m_itemMenu);
             v->setPos(x, y);
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);

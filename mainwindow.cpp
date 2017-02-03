@@ -3,6 +3,7 @@
 #include "treemodel.h"
 #include "animationscene.h"
 #include "rectangle.h"
+#include "bitmap.h"
 
 #include <QtTest/QTest>
 #include <QMessageBox>
@@ -47,7 +48,7 @@ void MainWindow::saveAs()
 
 void MainWindow::writeFile(QString fileName)
 {
-    scene->deselectAll();
+    scene->clearSelection();
 
     QFile file(fileName);
     if(!file.open(QIODevice::WriteOnly))
@@ -188,7 +189,7 @@ void MainWindow::createGui()
     propertiesdock->setObjectName("Properties");
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
 
-    scene = new AnimationScene();
+    scene = new AnimationScene(itemMenu);
     scene->setSceneRect(QRect(0,0,1200,720));
 
     view = new QGraphicsView(scene);
@@ -269,7 +270,7 @@ void MainWindow::readSettings()
 
 void MainWindow::exportAnimation()
 {
-    Rectangle *rect = new Rectangle(100, 100);
+    Rectangle *rect = new Rectangle(100, 100, itemMenu);
     rect->setPen(QPen(Qt::black));
     rect->setBrush(QBrush(Qt::blue));
     rect->setPos(0, 0);
@@ -311,7 +312,7 @@ void MainWindow::playAnimation()
     QGraphicsSvgItem *item = new QGraphicsSvgItem("/home/olaf/Bilder/Lotus.svg");
     item->setScale(0.5);
     scene->addItem(item);
-    Rectangle *rect = new Rectangle(100, 100);
+    Rectangle *rect = new Rectangle(100, 100, itemMenu);
     rect->setPen(QPen(Qt::black));
     rect->setBrush(QBrush(Qt::blue));
     rect->setPos(0, 0);
@@ -358,6 +359,12 @@ void MainWindow::createActions()
     delAct->setShortcut(tr("Delete"));
     connect(delAct, SIGNAL(triggered()), this, SLOT(deleteItem()));
 
+    bringToFrontAct = new QAction("Bring to front");
+    connect(bringToFrontAct, SIGNAL(triggered()), this, SLOT(bringToFront()));
+
+    sendToBackAct = new QAction("Send to back");
+    connect(sendToBackAct, SIGNAL(triggered()), this, SLOT(sendToBack()));
+
     playAct = new QAction(tr("&Play"), this);
     playAct->setIcon(QIcon(":/images/play.png"));
     playAct->setToolTip("Start the animation");
@@ -388,6 +395,11 @@ void MainWindow::createMenus()
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(delAct);
     menuBar()->addSeparator();
+
+    itemMenu = new QMenu();
+    itemMenu->addAction(delAct);
+    itemMenu->addAction(bringToFrontAct);
+    itemMenu->addAction(sendToBackAct);
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
@@ -431,7 +443,7 @@ void MainWindow::setSvgMode()
 
 void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelection&)
 {
-    scene->deselectAll();
+    scene->clearSelection();
 
     if(current.count() && current.at(0).indexes().count())
     {
@@ -452,6 +464,40 @@ void MainWindow::deleteItem()
         scene->removeItem(item);
     }
     // todo: tree view
+}
+
+void MainWindow::bringToFront()
+{
+    if (scene->selectedItems().isEmpty())
+        return;
+
+    QGraphicsItem *selectedItem = scene->selectedItems().first();
+    QList<QGraphicsItem *> overlapItems = selectedItem->collidingItems();
+
+    qreal zValue = 0;
+    foreach (QGraphicsItem *item, overlapItems)
+    {
+        if (item->zValue() >= zValue)
+            zValue = item->zValue() + 0.1;
+    }
+    selectedItem->setZValue(zValue);
+}
+
+void MainWindow::sendToBack()
+{
+    if (scene->selectedItems().isEmpty())
+        return;
+
+    QGraphicsItem *selectedItem = scene->selectedItems().first();
+    QList<QGraphicsItem *> overlapItems = selectedItem->collidingItems();
+
+    qreal zValue = 0;
+    foreach (QGraphicsItem *item, overlapItems)
+    {
+        if (item->zValue() <= zValue)
+            zValue = item->zValue() - 0.1;
+    }
+    selectedItem->setZValue(zValue);
 }
 
 void MainWindow::sceneSeletionChanged()

@@ -4,12 +4,15 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QDataStream>
+#include <QGraphicsItem>
+#include <QTest>
+#include <QFileDialog>
 
 class AnimationScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    AnimationScene();
+    AnimationScene(QMenu *menu);
 
     enum ItemType { TypeItem, TypeRectangle, TypeEllipse, TypeText, TypeBitmap, TypeSvg };
     enum EditMode { ModeSelect, ModeRectangle, ModeEllipse, ModeText, ModeBitmap, ModeSvg };
@@ -17,7 +20,6 @@ public:
     void setEditMode(EditMode mode);
     QDataStream& read(QDataStream &dataStream);
     QDataStream& write(QDataStream &dataStream) const;
-    void deselectAll();
 
 signals:
     void itemAdded(QGraphicsItem *item);
@@ -29,6 +31,7 @@ protected:
 
 private:
     EditMode m_editMode;
+    QMenu *m_itemMenu;
 };
 
 QDataStream &operator<<(QDataStream &, const AnimationScene *);

@@ -1,24 +1,33 @@
 Rectangle neu
     - Aufziehen mit der Maus
     - Bei gedrückter ALT-Taste wird die Mausposition als Center genommen
-    - Bei gedrückter SHIFT-Taste werden width und height analog aufgezogen
 
 Selection eines Objektes triggert TreeSelection und PropertyPanel Selection
 
 Item delete muss auch im Tree passieren
 
-Textobject
+Toolbar für Dateien (Save, Open)
+
+TimeLine Widget
 
 Property Editoren
 
 Items Translation wie Rotate
 
-Toolbar für Objekte
+Scene Zoom
 
-Toolbar für Dateien (Save, Open)
+Gruppieren / Gruppe auflösen
 
-TimeLine Widget
+Treeview
+    - Object unsichtbar machen
+    - Object sperren
 
-Animationen
+* Textobject
 
-Export
+* Toolbar für Objekte
+
+* Animationen
+
+* Export
+
+* Bei gedrückter CONTROL-Taste werden width und height analog aufgezogen

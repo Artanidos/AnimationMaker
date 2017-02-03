@@ -4,12 +4,15 @@
 #include <QGuiApplication>
 
 #include <QTest>
+#include <QGraphicsScene>
+#include <QMenu>
 
-ResizeableItem::ResizeableItem()
+ResizeableItem::ResizeableItem(QMenu *menu)
 {
     m_hasHandles = false;
     m_xscale = 1;
     m_yscale = 1;
+    m_contextMenu = menu;
 }
 
 void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option)
@@ -334,4 +337,11 @@ QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &v
         }
     }
     return QGraphicsItem::itemChange(change, value);
+}
+
+void ResizeableItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    scene()->clearSelection();
+    setSelected(true);
+    m_contextMenu->exec(event->screenPos());
 }

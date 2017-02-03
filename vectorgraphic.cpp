@@ -5,8 +5,8 @@
 #include <QGraphicsItem>
 #include <QSvgRenderer>
 
-Vectorgraphic::Vectorgraphic(QString filename)
-    : ResizeableItem()
+Vectorgraphic::Vectorgraphic(QString filename, QMenu *menu)
+    : ResizeableItem(menu)
 {
     QFile file(filename);
     file.open(QIODevice::ReadOnly);
@@ -19,8 +19,8 @@ Vectorgraphic::Vectorgraphic(QString filename)
     setRect(0, 0, m_svg->boundingRect().width(), m_svg->boundingRect().height());
 }
 
-Vectorgraphic::Vectorgraphic(QByteArray arr)
-    : ResizeableItem()
+Vectorgraphic::Vectorgraphic(QByteArray arr, QMenu *menu)
+    : ResizeableItem(menu)
 {
     m_data = arr;
     m_renderer = new QSvgRenderer();

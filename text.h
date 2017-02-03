@@ -9,7 +9,7 @@
 class Text : public ResizeableItem
 {
 public:
-    Text(QString text);
+    Text(QString text, QMenu *menu);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
     void scaleObjects();

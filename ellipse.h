@@ -7,7 +7,7 @@
 class Ellipse : public ResizeableItem
 {
 public:
-    Ellipse(qreal width, qreal height);
+    Ellipse(qreal width, qreal height, QMenu *menu);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 

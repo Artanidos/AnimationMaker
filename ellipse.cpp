@@ -4,8 +4,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-Ellipse::Ellipse(qreal width, qreal height)
-    : ResizeableItem()
+Ellipse::Ellipse(qreal width, qreal height, QMenu *menu)
+    : ResizeableItem(menu)
 {
     setRect(0, 0, width, height);
 }

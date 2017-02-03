@@ -7,8 +7,8 @@
 class Bitmap : public ResizeableItem
 {
 public:
-    Bitmap(QString filename);
-    Bitmap(QImage img, qreal width, qreal height);
+    Bitmap(QString filename, QMenu *menu);
+    Bitmap(QImage img, qreal width, qreal height, QMenu *menu);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 
