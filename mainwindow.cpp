@@ -3,6 +3,9 @@
 #include "treemodel.h"
 #include "animationscene.h"
 #include "rectangle.h"
+#include "ellipse.h"
+#include "vectorgraphic.h"
+#include "text.h"
 #include "bitmap.h"
 
 #include <QtTest/QTest>
@@ -365,6 +368,12 @@ void MainWindow::createActions()
     sendToBackAct = new QAction("Send to back");
     connect(sendToBackAct, SIGNAL(triggered()), this, SLOT(sendToBack()));
 
+    raiseAct = new QAction("Raise");
+    connect(raiseAct, SIGNAL(triggered()), this, SLOT(raise()));
+
+    lowerAct = new QAction("Lower");
+    connect(lowerAct, SIGNAL(triggered()), this, SLOT(lower()));
+
     playAct = new QAction(tr("&Play"), this);
     playAct->setIcon(QIcon(":/images/play.png"));
     playAct->setToolTip("Start the animation");
@@ -398,6 +407,8 @@ void MainWindow::createMenus()
 
     itemMenu = new QMenu();
     itemMenu->addAction(delAct);
+    itemMenu->addAction(lowerAct);
+    itemMenu->addAction(raiseAct);
     itemMenu->addAction(bringToFrontAct);
     itemMenu->addAction(sendToBackAct);
 
@@ -466,18 +477,68 @@ void MainWindow::deleteItem()
     // todo: tree view
 }
 
+static bool isAnimationMakerItem(QGraphicsItem *item)
+{
+    switch(item->type())
+    {
+        case Rectangle::Type:
+        case Ellipse::Type:
+        case Text::Type:
+        case Bitmap::Type:
+        case Vectorgraphic::Type:
+            return true;
+    }
+    return false;
+}
+
+void MainWindow::lower()
+{
+    if (scene->selectedItems().isEmpty())
+        return;
+
+    qreal zValue = 1000;
+    foreach(QGraphicsItem *item, scene->items())
+    {
+        if(isAnimationMakerItem(item))
+        {
+            item->setZValue(zValue);
+            zValue -= 1;
+        }
+    }
+    QGraphicsItem *selectedItem = scene->selectedItems().first();
+    selectedItem->setZValue(selectedItem->zValue() - 1.5);
+}
+
+void MainWindow::raise()
+{
+    if (scene->selectedItems().isEmpty())
+        return;
+
+    QGraphicsItem *selectedItem = scene->selectedItems().first();
+
+    qreal zValue = 1000;
+    foreach(QGraphicsItem *item, scene->items())
+    {
+        if(isAnimationMakerItem(item))
+        {
+            item->setZValue(zValue);
+            zValue -= 1;
+        }
+    }
+    selectedItem->setZValue(selectedItem->zValue() + 1.5);
+}
+
 void MainWindow::bringToFront()
 {
     if (scene->selectedItems().isEmpty())
         return;
 
     QGraphicsItem *selectedItem = scene->selectedItems().first();
-    QList<QGraphicsItem *> overlapItems = selectedItem->collidingItems();
 
     qreal zValue = 0;
-    foreach (QGraphicsItem *item, overlapItems)
+    foreach (QGraphicsItem *item, scene->items())
     {
-        if (item->zValue() >= zValue)
+        if (item->zValue() >= zValue && isAnimationMakerItem(item))
             zValue = item->zValue() + 0.1;
     }
     selectedItem->setZValue(zValue);
@@ -489,12 +550,11 @@ void MainWindow::sendToBack()
         return;
 
     QGraphicsItem *selectedItem = scene->selectedItems().first();
-    QList<QGraphicsItem *> overlapItems = selectedItem->collidingItems();
 
     qreal zValue = 0;
-    foreach (QGraphicsItem *item, overlapItems)
+    foreach (QGraphicsItem *item, scene->items())
     {
-        if (item->zValue() <= zValue)
+        if (item->zValue() <= zValue && isAnimationMakerItem(item))
             zValue = item->zValue() - 0.1;
     }
     selectedItem->setZValue(zValue);

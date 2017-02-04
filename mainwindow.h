@@ -57,6 +57,8 @@ private:
     QAction *svgAct;
     QAction *bringToFrontAct;
     QAction *sendToBackAct;
+    QAction *lowerAct;
+    QAction *raiseAct;
     QAction *bitmapAct;
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -80,6 +82,8 @@ public slots:
     void deleteItem();
     void bringToFront();
     void sendToBack();
+    void lower();
+    void raise();
     void sceneSeletionChanged();
     void sceneItemAdded(QGraphicsItem *);
 };
