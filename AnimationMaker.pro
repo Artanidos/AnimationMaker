@@ -24,7 +24,9 @@ SOURCES += main.cpp\
     text.cpp \
     resizeableitem.cpp \
     bitmap.cpp \
-    vectorgraphic.cpp
+    vectorgraphic.cpp \
+    timeline.cpp \
+    timelinemodel.cpp
 
 HEADERS  += mainwindow.h \
     treemodel.h \
@@ -36,7 +38,9 @@ HEADERS  += mainwindow.h \
     text.h \
     resizeableitem.h \
     bitmap.h \
-    vectorgraphic.h
+    vectorgraphic.h \
+    timeline.h \
+    timelinemodel.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

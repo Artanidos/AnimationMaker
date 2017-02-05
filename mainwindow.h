@@ -5,6 +5,7 @@
 #include <QtWidgets>
 #include "treemodel.h"
 #include "animationscene.h"
+#include "timeline.h"
 
 namespace Ui
 {
@@ -34,13 +35,14 @@ private:
     void writeFile(QString fileName);
 
     QSplitter *splitter;
-    QLabel *timeline;
+    //QLabel *timeline;
     QToolBar *toolbar;
     QTreeView *tree;
     TreeModel *model;
     AnimationScene *scene;
     QGraphicsView *view;
     QFileInfo loadedFile;
+    Timeline *timeline;
 
     QAction *openAct;
     QAction *saveAct;

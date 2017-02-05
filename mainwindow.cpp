@@ -219,12 +219,14 @@ void MainWindow::createGui()
     addDockWidget(Qt::LeftDockWidgetArea, elementsdock);
     splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
 
-    timeline = new QLabel();
+    //timeline = new QLabel();
+    timeline = new Timeline();
     timeline->setMinimumHeight(110);
-    QImage timelineimage;
-    timelineimage.load("/home/olaf/SourceCode/AnimationMaker/timeline.png");
-    timeline->setPixmap(QPixmap::fromImage(timelineimage));
-    timeline->setMinimumWidth(300);
+
+    //QImage timelineimage;
+    //timelineimage.load("/home/olaf/SourceCode/AnimationMaker/timeline.png");
+    //timeline->setPixmap(QPixmap::fromImage(timelineimage));
+    //timeline->setMinimumWidth(300);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(view);
