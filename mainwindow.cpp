@@ -407,9 +407,10 @@ void MainWindow::createMenus()
 
     itemMenu = new QMenu();
     itemMenu->addAction(delAct);
-    itemMenu->addAction(lowerAct);
-    itemMenu->addAction(raiseAct);
+    itemMenu->addSeparator();
     itemMenu->addAction(bringToFrontAct);
+    itemMenu->addAction(raiseAct);
+    itemMenu->addAction(lowerAct);
     itemMenu->addAction(sendToBackAct);
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -496,17 +497,21 @@ void MainWindow::lower()
     if (scene->selectedItems().isEmpty())
         return;
 
-    qreal zValue = 1000;
-    foreach(QGraphicsItem *item, scene->items())
+    QGraphicsItem *selectedItem = scene->selectedItems().first();
+    int pos = scene->items().indexOf(selectedItem);
+    for(int i = pos + 1; i < scene->items().count(); i++)
     {
+        QGraphicsItem *item = scene->items().at(i);
         if(isAnimationMakerItem(item))
         {
-            item->setZValue(zValue);
-            zValue -= 1;
+            selectedItem->stackBefore(item);
+            break;
         }
     }
-    QGraphicsItem *selectedItem = scene->selectedItems().first();
-    selectedItem->setZValue(selectedItem->zValue() - 1.5);
+    // trick to repaint item
+    //selectedItem->setSelected(false);
+    //selectedItem->setSelected(true);
+    selectedItem->update();
 }
 
 void MainWindow::raise()
@@ -515,17 +520,19 @@ void MainWindow::raise()
         return;
 
     QGraphicsItem *selectedItem = scene->selectedItems().first();
-
-    qreal zValue = 1000;
-    foreach(QGraphicsItem *item, scene->items())
+    int pos = scene->items().indexOf(selectedItem);
+    for(int i = pos - 1; i >= 0; i--)
     {
+        QGraphicsItem *item = scene->items().at(i);
         if(isAnimationMakerItem(item))
         {
-            item->setZValue(zValue);
-            zValue -= 1;
+            item->stackBefore(selectedItem);
+            break;
         }
     }
-    selectedItem->setZValue(selectedItem->zValue() + 1.5);
+    // trick to repaint item
+    selectedItem->setSelected(false);
+    selectedItem->setSelected(true);
 }
 
 void MainWindow::bringToFront()
@@ -534,14 +541,18 @@ void MainWindow::bringToFront()
         return;
 
     QGraphicsItem *selectedItem = scene->selectedItems().first();
-
-    qreal zValue = 0;
-    foreach (QGraphicsItem *item, scene->items())
+    int pos = scene->items().indexOf(selectedItem);
+    for(int i = pos - 1; i >= 0; i--)
     {
-        if (item->zValue() >= zValue && isAnimationMakerItem(item))
-            zValue = item->zValue() + 0.1;
+        QGraphicsItem *item = scene->items().at(i);
+        if(isAnimationMakerItem(item))
+        {
+            item->stackBefore(selectedItem);
+        }
     }
-    selectedItem->setZValue(zValue);
+    // trick to repaint item
+    selectedItem->setSelected(false);
+    selectedItem->setSelected(true);
 }
 
 void MainWindow::sendToBack()
@@ -550,14 +561,18 @@ void MainWindow::sendToBack()
         return;
 
     QGraphicsItem *selectedItem = scene->selectedItems().first();
-
-    qreal zValue = 0;
-    foreach (QGraphicsItem *item, scene->items())
+    int pos = scene->items().indexOf(selectedItem);
+    for(int i = pos + 1; i < scene->items().count(); i++)
     {
-        if (item->zValue() <= zValue && isAnimationMakerItem(item))
-            zValue = item->zValue() - 0.1;
+        QGraphicsItem *item = scene->items().at(i);
+        if(isAnimationMakerItem(item))
+        {
+            selectedItem->stackBefore(item);
+        }
     }
-    selectedItem->setZValue(zValue);
+    // trick to repaint item
+    selectedItem->setSelected(false);
+    selectedItem->setSelected(true);
 }
 
 void MainWindow::sceneSeletionChanged()
