@@ -509,9 +509,8 @@ void MainWindow::lower()
         }
     }
     // trick to repaint item
-    //selectedItem->setSelected(false);
-    //selectedItem->setSelected(true);
-    selectedItem->update();
+    selectedItem->setSelected(false);
+    selectedItem->setSelected(true);
 }
 
 void MainWindow::raise()
