@@ -1,25 +1,41 @@
 #include "timelinemodel.h"
-
+#include "animationscene.h"
+#include "rectangle.h"
 #include <QPixmap>
+#include <QPropertyAnimation>
 
 TimelineModel::TimelineModel()
 {
-    beginResetModel();
-
     QVariant rootData = "Root";
-    QVariant item;
+    QVariant data;
 
-    m_rootItem = new TreeItem(rootData, item);
+    m_rootItem = new TreeItem(rootData, data);
+}
 
-    TreeItem *firstItem = new TreeItem("Rectangle", item, m_rootItem);
-    m_rootItem->appendChild(firstItem);
+void TimelineModel::addItemToAnimate(QGraphicsItem *item)
+{
+    beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
+    TreeItem *treeItem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), m_rootItem, 1);
+    m_rootItem->appendChild(treeItem);
+    endInsertRows();
+}
 
-    TreeItem *prop1 = new TreeItem("X", item, firstItem);
-    firstItem->appendChild(prop1);
-    TreeItem *prop2 = new TreeItem("Opacity", item, firstItem);
-    firstItem->appendChild(prop2);
-
-    endResetModel();
+void TimelineModel::addProperty(QString text, QModelIndex index)
+{
+    QVariant v = index.data(Qt::UserRole);
+    ResizeableItem *item = (ResizeableItem *) v.value<void *>();
+    if(item)
+    {
+        TreeItem *parent = static_cast<TreeItem*>(index.internalPointer());
+        beginInsertRows(index, parent->childCount() - 1, parent->childCount() - 1);
+        const QByteArray propName(text.toLatin1());
+        QPropertyAnimation *anim = new QPropertyAnimation();
+        anim->setTargetObject(item);
+        anim->setPropertyName(propName);
+        TreeItem *treeItem = new TreeItem(text, qVariantFromValue((void *) anim), parent, 2);
+        parent->appendChild(treeItem);
+        endInsertRows();
+    }
 }
 
 int TimelineModel::columnCount(const QModelIndex &parent) const
@@ -48,6 +64,12 @@ QVariant TimelineModel::data(const QModelIndex &index, int role) const
     {
         TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
         return item->data(1);
+    }
+
+    if (role == Qt::UserRole + 1)
+    {
+        TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+        return item->data(2);
     }
 
     return QVariant();

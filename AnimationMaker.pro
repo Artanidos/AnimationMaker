@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     bitmap.cpp \
     vectorgraphic.cpp \
     timeline.cpp \
-    timelinemodel.cpp
+    timelinemodel.cpp \
+    animationpropertyeditor.cpp
 
 HEADERS  += mainwindow.h \
     treemodel.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     bitmap.h \
     vectorgraphic.h \
     timeline.h \
-    timelinemodel.h
+    timelinemodel.h \
+    animationpropertyeditor.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

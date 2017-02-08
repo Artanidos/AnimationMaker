@@ -5,6 +5,7 @@
 #include "text.h"
 #include "bitmap.h"
 #include "vectorgraphic.h"
+#include "animationscene.h"
 
 #include <QStringList>
 #include <QPixmap>
@@ -54,37 +55,6 @@ void TreeModel::readChildren(AnimationScene *scene, TreeItem *parent)
             parent->appendChild(treeitem);
         }
     }
-}
-
-QString TreeModel::getItemTypeName(QGraphicsItem *item)
-{
-    switch(item->type())
-    {
-        case Rectangle::Type:
-        {
-            return QString("Rectangle");
-        }
-        case Ellipse::Type:
-        {
-            return QString("Ellipse");
-        }
-        case Text::Type:
-        {
-            return QString("Text");
-        }
-        case Bitmap::Type:
-        {
-            return QString("Bitmap");
-        }
-        case Vectorgraphic::Type:
-        {
-            return QString("Vectorgraphic");
-        }
-        default:
-        qWarning() << "unknown item type: " << item->type();
-        break;
-    }
-    return QString();
 }
 
 void TreeModel::addItem(QGraphicsItem *item)

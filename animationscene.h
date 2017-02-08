@@ -8,6 +8,8 @@
 #include <QTest>
 #include <QFileDialog>
 
+#include "resizeableitem.h"
+
 class AnimationScene : public QGraphicsScene
 {
     Q_OBJECT
@@ -23,6 +25,7 @@ public:
 
 signals:
     void itemAdded(QGraphicsItem *item);
+    void itemSelectionChanged(ResizeableItem *item);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
@@ -36,5 +39,6 @@ private:
 
 QDataStream &operator<<(QDataStream &, const AnimationScene *);
 QDataStream &operator>>(QDataStream &, AnimationScene *);
+QString getItemTypeName(QGraphicsItem *item);
 
 #endif // ANIMATIONSCENE_H

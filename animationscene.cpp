@@ -21,6 +21,12 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if(m_editMode == EditMode::ModeSelect)
     {
         QGraphicsScene::mousePressEvent(mouseEvent);
+        if(!this->selectedItems().isEmpty())
+        {
+            ResizeableItem *item =  dynamic_cast<ResizeableItem *>(this->selectedItems().first());
+            if(item)
+                emit itemSelectionChanged(item);
+        }
     }
     else if(m_editMode == EditMode::ModeRectangle)
     {
@@ -301,4 +307,35 @@ QDataStream& operator <<(QDataStream &out, const AnimationScene *s)
 QDataStream& operator >>(QDataStream &in, AnimationScene *s)
 {
     return s->read(in);
+}
+
+QString getItemTypeName(QGraphicsItem *item)
+{
+    switch(item->type())
+    {
+        case Rectangle::Type:
+        {
+            return QString("Rectangle");
+        }
+        case Ellipse::Type:
+        {
+            return QString("Ellipse");
+        }
+        case Text::Type:
+        {
+            return QString("Text");
+        }
+        case Bitmap::Type:
+        {
+            return QString("Bitmap");
+        }
+        case Vectorgraphic::Type:
+        {
+            return QString("Vectorgraphic");
+        }
+        default:
+        qWarning() << "unknown item type: " << item->type();
+        break;
+    }
+    return QString();
 }

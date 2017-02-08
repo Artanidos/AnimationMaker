@@ -179,14 +179,16 @@ void MainWindow::createGui()
     tooldock->setObjectName("Tools");
     addDockWidget(Qt::LeftDockWidgetArea, tooldock);
 
-    QLabel *propertiespanel = new QLabel();
+    m_animationPropertyEditor = new AnimationPropertyEditor();
+
+    propertiespanel = new QLabel();
     propertiespanel->setMinimumWidth(320);
     QImage propertiesimage;
     propertiesimage.load("/home/olaf/SourceCode/AnimationMaker/properties.png");
     propertiespanel->setPixmap(QPixmap::fromImage(propertiesimage));
     propertiespanel->setAlignment(Qt::AlignTop);
 
-    QDockWidget *propertiesdock = new QDockWidget(tr("Properties"), this);
+    propertiesdock = new QDockWidget(tr("Properties"), this);
     propertiesdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     propertiesdock->setWidget(propertiespanel);
     propertiesdock->setObjectName("Properties");
@@ -197,9 +199,8 @@ void MainWindow::createGui()
 
     view = new QGraphicsView(scene);
     view->setRenderHint(QPainter::RenderHint::Antialiasing);
-    connect(scene, SIGNAL(selectionChanged()), this, SLOT(sceneSeletionChanged()));
+    connect(scene, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(itemSelectionChanged(ResizeableItem *)));
     connect(scene, SIGNAL(itemAdded(QGraphicsItem*)), this, SLOT(sceneItemAdded(QGraphicsItem*)));
-    //connect(scene, SIGNAL(itemAdded(QGraphicsItem*)), this, SLOT(sceneItemAdded(QGraphicsItem*)));
 
     model = new TreeModel();
     model->setScene(scene);
@@ -219,14 +220,11 @@ void MainWindow::createGui()
     addDockWidget(Qt::LeftDockWidgetArea, elementsdock);
     splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
 
-    //timeline = new QLabel();
     timeline = new Timeline();
     timeline->setMinimumHeight(110);
-
-    //QImage timelineimage;
-    //timelineimage.load("/home/olaf/SourceCode/AnimationMaker/timeline.png");
-    //timeline->setPixmap(QPixmap::fromImage(timelineimage));
-    //timeline->setMinimumWidth(300);
+    connect(timeline, SIGNAL(playAnimationPressed()), this, SLOT(playAnimation()));
+    connect(timeline, SIGNAL(animationSelectionChanged(QPropertyAnimation *)), this, SLOT(changePropertyEditor(QPropertyAnimation *)));
+    connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(itemSelectionChanged(ResizeableItem*)));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(view);
@@ -314,9 +312,9 @@ void MainWindow::exportAnimation()
 
 void MainWindow::playAnimation()
 {
-    QGraphicsSvgItem *item = new QGraphicsSvgItem("/home/olaf/Bilder/Lotus.svg");
-    item->setScale(0.5);
-    scene->addItem(item);
+    //QGraphicsSvgItem *item = new QGraphicsSvgItem("/home/olaf/Bilder/Lotus.svg");
+    //item->setScale(0.5);
+    //scene->addItem(item);
     Rectangle *rect = new Rectangle(100, 100, itemMenu);
     rect->setPen(QPen(Qt::black));
     rect->setBrush(QBrush(Qt::blue));
@@ -376,13 +374,14 @@ void MainWindow::createActions()
     lowerAct = new QAction("Lower");
     connect(lowerAct, SIGNAL(triggered()), this, SLOT(lower()));
 
-    playAct = new QAction(tr("&Play"), this);
-    playAct->setIcon(QIcon(":/images/play.png"));
-    playAct->setToolTip("Start the animation");
-    connect(playAct, SIGNAL(triggered()), this, SLOT(playAnimation()));
+    animateItemAct = new QAction("Animate");
+    connect(animateItemAct, SIGNAL(triggered()), this, SLOT(animateItem()));
 
     exportAct = new QAction(tr("&Export"), this);
     connect(exportAct, SIGNAL(triggered()), this, SLOT(exportAnimation()));
+
+    showPropertyPanelAct = new QAction("Properties");
+    connect(showPropertyPanelAct, SIGNAL(triggered()), this, SLOT(showPropertyPanel()));
 
     aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
@@ -396,8 +395,6 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAsAct);
     fileMenu->addAction(exportAct);
     fileMenu->addSeparator();
-    fileMenu->addAction(playAct);
-    fileMenu->addSeparator();
     const QIcon exitIcon = QIcon::fromTheme("application-exit");
     QAction *exitAct = fileMenu->addAction(exitIcon, tr("E&xit"), this, &QWidget::close);
     exitAct->setShortcuts(QKeySequence::Quit);
@@ -405,6 +402,10 @@ void MainWindow::createMenus()
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(delAct);
+
+    viewMenu = menuBar()->addMenu(tr("&View"));
+    viewMenu->addAction(showPropertyPanelAct);
+
     menuBar()->addSeparator();
 
     itemMenu = new QMenu();
@@ -414,6 +415,8 @@ void MainWindow::createMenus()
     itemMenu->addAction(raiseAct);
     itemMenu->addAction(lowerAct);
     itemMenu->addAction(sendToBackAct);
+    itemMenu->addSeparator();
+    itemMenu->addAction(animateItemAct);
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
@@ -465,10 +468,21 @@ void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelec
         QVariant v = index.data(Qt::UserRole);
         QGraphicsItem *item = (QGraphicsItem *) v.value<void *>();
         if(item)
+        {
             item->setSelected(true);
+            propertiesdock->setWidget(propertiespanel);
+        }
     }
 
     // todo: set property page
+}
+
+void MainWindow::itemSelectionChanged(ResizeableItem *item)
+{
+    scene->clearSelection();
+    item->setSelected(true);
+
+    propertiesdock->setWidget(propertiespanel);
 }
 
 void MainWindow::deleteItem()
@@ -576,16 +590,29 @@ void MainWindow::sendToBack()
     selectedItem->setSelected(true);
 }
 
-void MainWindow::sceneSeletionChanged()
-{
-    const QModelIndex index;
-
-    //tree->setCurrentIndex(index);
-}
 
 void MainWindow::sceneItemAdded(QGraphicsItem *item)
 {
     model->addItem(item);
     tree->reset();
     tree->expandAll();
+}
+
+void MainWindow::animateItem()
+{
+    if (scene->selectedItems().isEmpty())
+        return;
+
+    QGraphicsItem *selectedItem = scene->selectedItems().first();
+    timeline->addItemToAnimate(selectedItem);
+}
+
+void MainWindow::showPropertyPanel()
+{
+    propertiesdock->setVisible(true);
+}
+
+void MainWindow::changePropertyEditor(QPropertyAnimation *anim)
+{
+    propertiesdock->setWidget(m_animationPropertyEditor);
 }

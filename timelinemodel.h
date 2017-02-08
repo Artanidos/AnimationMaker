@@ -2,12 +2,16 @@
 #define TIMELINEMODEL_H
 
 #include <QAbstractItemModel>
+#include <QGraphicsItem>
 #include "treeitem.h"
 
 class TimelineModel : public QAbstractItemModel
 {
 public:
     TimelineModel();
+
+    void addItemToAnimate(QGraphicsItem *item);
+    void addProperty(QString text, QModelIndex index);
 
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
     Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;

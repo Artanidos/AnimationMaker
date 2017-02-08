@@ -32,7 +32,6 @@ private:
     AnimationScene *m_scene;
 
     void readChildren(AnimationScene *scene, TreeItem *parent);
-    QString getItemTypeName(QGraphicsItem *item);
 };
 
 #endif // TREEMODEL_H

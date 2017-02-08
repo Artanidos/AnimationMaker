@@ -6,6 +6,7 @@
 #include "treemodel.h"
 #include "animationscene.h"
 #include "timeline.h"
+#include "animationpropertyeditor.h"
 
 namespace Ui
 {
@@ -43,10 +44,12 @@ private:
     QGraphicsView *view;
     QFileInfo loadedFile;
     Timeline *timeline;
+    AnimationPropertyEditor *m_animationPropertyEditor;
+    QDockWidget *propertiesdock;
+    QLabel *propertiespanel;
 
     QAction *openAct;
     QAction *saveAct;
-    QAction *playAct;
     QAction *saveAsAct;
     QAction *exportAct;
     QAction *delAct;
@@ -61,11 +64,14 @@ private:
     QAction *sendToBackAct;
     QAction *lowerAct;
     QAction *raiseAct;
+    QAction *animateItemAct;
     QAction *bitmapAct;
+    QAction *showPropertyPanelAct;
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *helpMenu;
     QMenu *itemMenu;
+    QMenu *viewMenu;
 
 public slots:
     void exportAnimation();
@@ -86,8 +92,11 @@ public slots:
     void sendToBack();
     void lower();
     void raise();
-    void sceneSeletionChanged();
     void sceneItemAdded(QGraphicsItem *);
+    void animateItem();
+    void showPropertyPanel();
+    void changePropertyEditor(QPropertyAnimation *);
+    void itemSelectionChanged(ResizeableItem *item);
 };
 
 #endif // MAINWINDOW_H

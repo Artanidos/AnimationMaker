@@ -2,11 +2,12 @@
 
 #include "treeitem.h"
 
-TreeItem::TreeItem(const QVariant &data, const QVariant &item, TreeItem *parent)
+TreeItem::TreeItem(const QVariant &data, const QVariant &item, TreeItem *parent, const QVariant &level)
 {
     m_parentItem = parent;
     m_itemData = data;
     m_item = item;
+    m_level = level;
 }
 
 TreeItem::~TreeItem()
@@ -40,7 +41,8 @@ QVariant TreeItem::data(int column) const
         return m_itemData;
     else if(column == 1)
         return m_item;
-
+    else if(column == 2)
+        return m_level;
     return QVariant();
 }
 
