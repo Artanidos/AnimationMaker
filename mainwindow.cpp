@@ -194,7 +194,7 @@ void MainWindow::createGui()
     propertiesdock->setObjectName("Properties");
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
 
-    scene = new AnimationScene(itemMenu);
+    scene = new AnimationScene();
     scene->setSceneRect(QRect(0,0,1200,720));
 
     view = new QGraphicsView(scene);
@@ -225,6 +225,8 @@ void MainWindow::createGui()
     connect(timeline, SIGNAL(playAnimationPressed()), this, SLOT(playAnimation()));
     connect(timeline, SIGNAL(animationSelectionChanged(QPropertyAnimation *)), this, SLOT(changePropertyEditor(QPropertyAnimation *)));
     connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(itemSelectionChanged(ResizeableItem*)));
+
+    connect(scene, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString)), timeline, SLOT(addPropertyAnimation(ResizeableItem *, const QString)));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(view);
@@ -273,7 +275,7 @@ void MainWindow::readSettings()
 
 void MainWindow::exportAnimation()
 {
-    Rectangle *rect = new Rectangle(100, 100, itemMenu);
+    Rectangle *rect = new Rectangle(100, 100);
     rect->setPen(QPen(Qt::black));
     rect->setBrush(QBrush(Qt::blue));
     rect->setPos(0, 0);
@@ -312,10 +314,7 @@ void MainWindow::exportAnimation()
 
 void MainWindow::playAnimation()
 {
-    //QGraphicsSvgItem *item = new QGraphicsSvgItem("/home/olaf/Bilder/Lotus.svg");
-    //item->setScale(0.5);
-    //scene->addItem(item);
-    Rectangle *rect = new Rectangle(100, 100, itemMenu);
+    Rectangle *rect = new Rectangle(100, 100);
     rect->setPen(QPen(Qt::black));
     rect->setBrush(QBrush(Qt::blue));
     rect->setPos(0, 0);
@@ -358,25 +357,6 @@ void MainWindow::createActions()
     saveAsAct = new QAction(tr("Save &As..."), this);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
-    delAct = new QAction(tr("Delete"), this);
-    delAct->setShortcut(tr("Delete"));
-    connect(delAct, SIGNAL(triggered()), this, SLOT(deleteItem()));
-
-    bringToFrontAct = new QAction("Bring to front");
-    connect(bringToFrontAct, SIGNAL(triggered()), this, SLOT(bringToFront()));
-
-    sendToBackAct = new QAction("Send to back");
-    connect(sendToBackAct, SIGNAL(triggered()), this, SLOT(sendToBack()));
-
-    raiseAct = new QAction("Raise");
-    connect(raiseAct, SIGNAL(triggered()), this, SLOT(raise()));
-
-    lowerAct = new QAction("Lower");
-    connect(lowerAct, SIGNAL(triggered()), this, SLOT(lower()));
-
-    animateItemAct = new QAction("Animate");
-    connect(animateItemAct, SIGNAL(triggered()), this, SLOT(animateItem()));
-
     exportAct = new QAction(tr("&Export"), this);
     connect(exportAct, SIGNAL(triggered()), this, SLOT(exportAnimation()));
 
@@ -400,23 +380,10 @@ void MainWindow::createMenus()
     exitAct->setShortcuts(QKeySequence::Quit);
     exitAct->setStatusTip(tr("Exit the application"));
 
-    editMenu = menuBar()->addMenu(tr("&Edit"));
-    editMenu->addAction(delAct);
-
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(showPropertyPanelAct);
 
     menuBar()->addSeparator();
-
-    itemMenu = new QMenu();
-    itemMenu->addAction(delAct);
-    itemMenu->addSeparator();
-    itemMenu->addAction(bringToFrontAct);
-    itemMenu->addAction(raiseAct);
-    itemMenu->addAction(lowerAct);
-    itemMenu->addAction(sendToBackAct);
-    itemMenu->addSeparator();
-    itemMenu->addAction(animateItemAct);
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
@@ -485,126 +452,11 @@ void MainWindow::itemSelectionChanged(ResizeableItem *item)
     propertiesdock->setWidget(propertiespanel);
 }
 
-void MainWindow::deleteItem()
-{
-    foreach(QGraphicsItem *item, scene->selectedItems())
-    {
-        scene->removeItem(item);
-    }
-    // todo: tree view
-}
-
-static bool isAnimationMakerItem(QGraphicsItem *item)
-{
-    switch(item->type())
-    {
-        case Rectangle::Type:
-        case Ellipse::Type:
-        case Text::Type:
-        case Bitmap::Type:
-        case Vectorgraphic::Type:
-            return true;
-    }
-    return false;
-}
-
-void MainWindow::lower()
-{
-    if (scene->selectedItems().isEmpty())
-        return;
-
-    QGraphicsItem *selectedItem = scene->selectedItems().first();
-    int pos = scene->items().indexOf(selectedItem);
-    for(int i = pos + 1; i < scene->items().count(); i++)
-    {
-        QGraphicsItem *item = scene->items().at(i);
-        if(isAnimationMakerItem(item))
-        {
-            selectedItem->stackBefore(item);
-            break;
-        }
-    }
-    // trick to repaint item
-    selectedItem->setSelected(false);
-    selectedItem->setSelected(true);
-}
-
-void MainWindow::raise()
-{
-    if (scene->selectedItems().isEmpty())
-        return;
-
-    QGraphicsItem *selectedItem = scene->selectedItems().first();
-    int pos = scene->items().indexOf(selectedItem);
-    for(int i = pos - 1; i >= 0; i--)
-    {
-        QGraphicsItem *item = scene->items().at(i);
-        if(isAnimationMakerItem(item))
-        {
-            item->stackBefore(selectedItem);
-            break;
-        }
-    }
-    // trick to repaint item
-    selectedItem->setSelected(false);
-    selectedItem->setSelected(true);
-}
-
-void MainWindow::bringToFront()
-{
-    if (scene->selectedItems().isEmpty())
-        return;
-
-    QGraphicsItem *selectedItem = scene->selectedItems().first();
-    int pos = scene->items().indexOf(selectedItem);
-    for(int i = pos - 1; i >= 0; i--)
-    {
-        QGraphicsItem *item = scene->items().at(i);
-        if(isAnimationMakerItem(item))
-        {
-            item->stackBefore(selectedItem);
-        }
-    }
-    // trick to repaint item
-    selectedItem->setSelected(false);
-    selectedItem->setSelected(true);
-}
-
-void MainWindow::sendToBack()
-{
-    if (scene->selectedItems().isEmpty())
-        return;
-
-    QGraphicsItem *selectedItem = scene->selectedItems().first();
-    int pos = scene->items().indexOf(selectedItem);
-    for(int i = pos + 1; i < scene->items().count(); i++)
-    {
-        QGraphicsItem *item = scene->items().at(i);
-        if(isAnimationMakerItem(item))
-        {
-            selectedItem->stackBefore(item);
-        }
-    }
-    // trick to repaint item
-    selectedItem->setSelected(false);
-    selectedItem->setSelected(true);
-}
-
-
 void MainWindow::sceneItemAdded(QGraphicsItem *item)
 {
     model->addItem(item);
     tree->reset();
     tree->expandAll();
-}
-
-void MainWindow::animateItem()
-{
-    if (scene->selectedItems().isEmpty())
-        return;
-
-    QGraphicsItem *selectedItem = scene->selectedItems().first();
-    timeline->addItemToAnimate(selectedItem);
 }
 
 void MainWindow::showPropertyPanel()

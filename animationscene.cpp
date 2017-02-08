@@ -7,10 +7,9 @@
 #include "bitmap.h"
 #include "vectorgraphic.h"
 
-AnimationScene::AnimationScene(QMenu *menu)
+AnimationScene::AnimationScene()
 {
     m_editMode = EditMode::ModeSelect;
-    m_itemMenu = menu;
 }
 
 void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -32,12 +31,13 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         clearSelection();
 
-        Rectangle *r = new Rectangle(50, 50, m_itemMenu);
+        Rectangle *r = new Rectangle(50, 50);
         r->setPen(QPen(Qt::black));
         r->setBrush(QBrush(Qt::blue));
         r->setFlag(QGraphicsItem::ItemIsMovable, true);
         r->setFlag(QGraphicsItem::ItemIsSelectable, true);
         r->setPos(mouseEvent->scenePos());
+        connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString)));
         addItem(r);
         emit itemAdded(r);
     }
@@ -45,7 +45,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         clearSelection();
 
-        Ellipse *e = new Ellipse(50, 50, m_itemMenu);
+        Ellipse *e = new Ellipse(50, 50);
         e->setPen(QPen(Qt::black));
         e->setBrush(QBrush(Qt::blue));
         e->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -58,7 +58,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         clearSelection();
 
-        Text *t = new Text("Lorem ipsum dolor", m_itemMenu);
+        Text *t = new Text("Lorem ipsum dolor");
         t->setFlag(QGraphicsItem::ItemIsMovable, true);
         t->setFlag(QGraphicsItem::ItemIsSelectable, true);
         t->setPos(mouseEvent->scenePos());
@@ -73,7 +73,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         if (fileName.isEmpty())
             return;
 
-        Bitmap *b = new Bitmap(fileName, m_itemMenu);
+        Bitmap *b = new Bitmap(fileName);
         b->setFlag(QGraphicsItem::ItemIsMovable, true);
         b->setFlag(QGraphicsItem::ItemIsSelectable, true);
         b->setPos(mouseEvent->scenePos());
@@ -88,7 +88,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         if (fileName.isEmpty())
             return;
 
-        Vectorgraphic *v = new Vectorgraphic(fileName, m_itemMenu);
+        Vectorgraphic *v = new Vectorgraphic(fileName);
         v->setFlag(QGraphicsItem::ItemIsMovable, true);
         v->setFlag(QGraphicsItem::ItemIsSelectable, true);
         v->setPos(mouseEvent->scenePos());
@@ -137,13 +137,14 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> pen;
             dataStream >> brush;
 
-            Rectangle *r = new Rectangle(width, height, m_itemMenu);
+            Rectangle *r = new Rectangle(width, height);
             r->setPos(x, y);
             r->setPen(pen);
             r->setBrush(brush);
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
             r->setFlag(QGraphicsItem::ItemIsSelectable, true);
             r->setZValue(z);
+            connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString )), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString )));
             addItem(r);
         }
         else if(type == Ellipse::Type)
@@ -155,7 +156,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> height;
             dataStream >> pen;
             dataStream >> brush;
-            Ellipse *e = new Ellipse(width, height, m_itemMenu);
+            Ellipse *e = new Ellipse(width, height);
             e->setPos(x, y);
             e->setPen(pen);
             e->setBrush(brush);
@@ -172,7 +173,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> xscale;
             dataStream >> yscale;
             dataStream >> text;
-            Text *t = new Text(text, m_itemMenu);
+            Text *t = new Text(text);
             t->setPos(x, y);
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -189,7 +190,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> width;
             dataStream >> height;
             dataStream >> img;
-            Bitmap *b = new Bitmap(img, width, height, m_itemMenu);
+            Bitmap *b = new Bitmap(img, width, height);
             b->setPos(x, y);
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -206,7 +207,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> xscale;
             dataStream >> yscale;
             dataStream >> arr;
-            Vectorgraphic *v = new Vectorgraphic(arr, m_itemMenu);
+            Vectorgraphic *v = new Vectorgraphic(arr);
             v->setPos(x, y);
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -299,6 +300,11 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
     return dataStream;
 }
 
+void AnimationScene::addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName)
+{
+    emit addPropertyAnimation(item, propertyName);
+}
+
 QDataStream& operator <<(QDataStream &out, const AnimationScene *s)
 {
     return s->write(out);
@@ -338,4 +344,18 @@ QString getItemTypeName(QGraphicsItem *item)
         break;
     }
     return QString();
+}
+
+bool isAnimationMakerItem(QGraphicsItem *item)
+{
+    switch(item->type())
+    {
+        case Rectangle::Type:
+        case Ellipse::Type:
+        case Text::Type:
+        case Bitmap::Type:
+        case Vectorgraphic::Type:
+            return true;
+    }
+    return false;
 }

@@ -13,15 +13,11 @@ class Timeline : public QWidget
 public:
     Timeline();
 
-    void addItemToAnimate(QGraphicsItem *item);
-
 public slots:
-    void addXProperty();
-    void addYProperty();
-    void addOpacityProperty();
     void onCustomContextMenu(const QPoint &point);
     void playAnimation();
-    void selectionChanged(const QItemSelection&, const QItemSelection&);
+    void addPropertyAnimation(ResizeableItem *item, const QString propertyName);
+    void selectionChanged(const QItemSelection& current,const QItemSelection&);
 
 signals:
     void playAnimationPressed();

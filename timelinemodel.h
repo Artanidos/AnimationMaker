@@ -4,14 +4,16 @@
 #include <QAbstractItemModel>
 #include <QGraphicsItem>
 #include "treeitem.h"
+#include "resizeableitem.h"
 
 class TimelineModel : public QAbstractItemModel
 {
 public:
     TimelineModel();
 
-    void addItemToAnimate(QGraphicsItem *item);
-    void addProperty(QString text, QModelIndex index);
+    //void addItemToAnimate(QGraphicsItem *item);
+    //void addProperty(QString text, QModelIndex index);
+    void addPropertyAnimation(ResizeableItem *item, QString propertyName);
 
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
     Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;

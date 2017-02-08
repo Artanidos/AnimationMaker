@@ -2,12 +2,17 @@
 #define RESIZEABLEITEM_H
 
 #include <QGraphicsItem>
+#include <QAction>
 #include "itemhandle.h"
 
-class ResizeableItem : public QGraphicsItem, public QObject
+class ResizeableItem : public QObject, public QGraphicsItem
 {
+    Q_OBJECT
+    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
+    //Q_PROPERTY(qreal left READ left WRITE setLeft)
+    //Q_PROPERTY(qreal top READ top WRITE setTop)
 public:
-    ResizeableItem(QMenu *menu);
+    ResizeableItem();
 
     void drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option);
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
@@ -35,6 +40,28 @@ private:
     QPen m_pen;
     QBrush m_brush;
     QMenu *m_contextMenu;
+    QAction *delAct;
+    QAction *bringToFrontAct;
+    QAction *sendToBackAct;
+    QAction *lowerAct;
+    QAction *raiseAct;
+    QMenu *m_animateMenu;
+    QAction *m_opacityAct;
+    QAction *m_leftAct;
+    QAction *m_topAct;
+
+private slots:
+    void deleteItem();
+    void bringToFront();
+    void sendToBack();
+    void lower();
+    void raise();
+    void addOpacityAnimation();
+    void addLeftAnimation();
+    void addTopAnimation();
+
+signals:
+    void addPropertyAnimation(ResizeableItem *item, const QString propertyName);
 
 protected:
     void setHandlePositions();

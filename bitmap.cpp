@@ -4,15 +4,15 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-Bitmap::Bitmap(QString filename, QMenu *menu)
-    : ResizeableItem(menu)
+Bitmap::Bitmap(QString filename)
+    : ResizeableItem()
 {
     m_image.load(filename);
     setRect(0, 0, m_image.width(), m_image.height());
 }
 
-Bitmap::Bitmap(QImage image, qreal width, qreal height, QMenu *menu)
-    :ResizeableItem(menu)
+Bitmap::Bitmap(QImage image, qreal width, qreal height)
+    :ResizeableItem()
 {
     m_image = image;
     setRect(0, 0, width, height);

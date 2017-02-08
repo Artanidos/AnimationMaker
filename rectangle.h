@@ -8,11 +8,8 @@
 class Rectangle : public ResizeableItem
 {
     Q_OBJECT
-    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
-    Q_PROPERTY(qreal x READ x WRITE setX)
-    Q_PROPERTY(qreal y READ y WRITE setY)
 public:
-    Rectangle(qreal width, qreal height, QMenu *menu);
+    Rectangle(qreal width, qreal height);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 

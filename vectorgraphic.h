@@ -8,8 +8,8 @@
 class Vectorgraphic : public ResizeableItem
 {
 public:
-    Vectorgraphic(QString filename, QMenu *menu);
-    Vectorgraphic(QByteArray arr, QMenu *menu);
+    Vectorgraphic(QString filename);
+    Vectorgraphic(QByteArray arr);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
     void scaleObjects();

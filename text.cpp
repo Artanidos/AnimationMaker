@@ -4,8 +4,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-Text::Text(QString text, QMenu *menu)
-    : ResizeableItem(menu)
+Text::Text(QString text)
+    : ResizeableItem()
 {
    m_font = QFont("Arial", 13);
    m_text = text;

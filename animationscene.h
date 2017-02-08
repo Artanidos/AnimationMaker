@@ -14,7 +14,7 @@ class AnimationScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    AnimationScene(QMenu *menu);
+    AnimationScene();
 
     enum ItemType { TypeItem, TypeRectangle, TypeEllipse, TypeText, TypeBitmap, TypeSvg };
     enum EditMode { ModeSelect, ModeRectangle, ModeEllipse, ModeText, ModeBitmap, ModeSvg };
@@ -26,6 +26,10 @@ public:
 signals:
     void itemAdded(QGraphicsItem *item);
     void itemSelectionChanged(ResizeableItem *item);
+    void addPropertyAnimation(ResizeableItem *item, const QString propertyName);
+
+public slots:
+    void addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
@@ -34,11 +38,11 @@ protected:
 
 private:
     EditMode m_editMode;
-    QMenu *m_itemMenu;
 };
 
 QDataStream &operator<<(QDataStream &, const AnimationScene *);
 QDataStream &operator>>(QDataStream &, AnimationScene *);
 QString getItemTypeName(QGraphicsItem *item);
+bool isAnimationMakerItem(QGraphicsItem *item);
 
 #endif // ANIMATIONSCENE_H

@@ -4,8 +4,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-Rectangle::Rectangle(qreal width, qreal height, QMenu *menu)
-    : ResizeableItem(menu)
+Rectangle::Rectangle(qreal width, qreal height)
+    : ResizeableItem()
 {
     setRect(0, 0, width, height);
 }

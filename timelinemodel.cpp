@@ -12,30 +12,18 @@ TimelineModel::TimelineModel()
     m_rootItem = new TreeItem(rootData, data);
 }
 
-void TimelineModel::addItemToAnimate(QGraphicsItem *item)
+void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyName)
 {
     beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
     TreeItem *treeItem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), m_rootItem, 1);
+    const QByteArray propName(propertyName.toLatin1());
+    QPropertyAnimation *anim = new QPropertyAnimation();
+    anim->setTargetObject(item);
+    anim->setPropertyName(propName);
+    TreeItem *treeChildItem = new TreeItem(propertyName, qVariantFromValue((void *) anim), treeItem, 2);
+    treeItem->appendChild(treeChildItem);
     m_rootItem->appendChild(treeItem);
     endInsertRows();
-}
-
-void TimelineModel::addProperty(QString text, QModelIndex index)
-{
-    QVariant v = index.data(Qt::UserRole);
-    ResizeableItem *item = (ResizeableItem *) v.value<void *>();
-    if(item)
-    {
-        TreeItem *parent = static_cast<TreeItem*>(index.internalPointer());
-        beginInsertRows(index, parent->childCount() - 1, parent->childCount() - 1);
-        const QByteArray propName(text.toLatin1());
-        QPropertyAnimation *anim = new QPropertyAnimation();
-        anim->setTargetObject(item);
-        anim->setPropertyName(propName);
-        TreeItem *treeItem = new TreeItem(text, qVariantFromValue((void *) anim), parent, 2);
-        parent->appendChild(treeItem);
-        endInsertRows();
-    }
 }
 
 int TimelineModel::columnCount(const QModelIndex &parent) const

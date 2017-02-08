@@ -1,4 +1,5 @@
 #include "resizeableitem.h"
+#include "animationscene.h"
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 #include <QGuiApplication>
@@ -7,12 +8,51 @@
 #include <QGraphicsScene>
 #include <QMenu>
 
-ResizeableItem::ResizeableItem(QMenu *menu)
+ResizeableItem::ResizeableItem()
 {
+
     m_hasHandles = false;
     m_xscale = 1;
     m_yscale = 1;
-    m_contextMenu = menu;
+
+    delAct = new QAction(tr("Delete"), this);
+    delAct->setShortcut(tr("Delete"));
+    connect(delAct, SIGNAL(triggered()), this, SLOT(deleteItem()));
+
+    bringToFrontAct = new QAction("Bring to front");
+    connect(bringToFrontAct, SIGNAL(triggered()), this, SLOT(bringToFront()));
+
+    sendToBackAct = new QAction("Send to back");
+    connect(sendToBackAct, SIGNAL(triggered()), this, SLOT(sendToBack()));
+
+    raiseAct = new QAction("Raise");
+    connect(raiseAct, SIGNAL(triggered()), this, SLOT(raise()));
+
+    lowerAct = new QAction("Lower");
+    connect(lowerAct, SIGNAL(triggered()), this, SLOT(lower()));
+
+    m_opacityAct = new QAction("Opacity");
+    connect(m_opacityAct, SIGNAL(triggered()), this, SLOT(addOpacityAnimation()));
+
+    m_leftAct = new QAction("Left");
+    connect(m_leftAct, SIGNAL(triggered()), this, SLOT(addLeftAnimation()));
+
+    m_topAct = new QAction("Top");
+    connect(m_topAct, SIGNAL(triggered()), this, SLOT(addTopAnimation()));
+
+    m_animateMenu = new QMenu("Animate");
+    m_animateMenu->addAction(m_opacityAct);
+    m_animateMenu->addAction(m_leftAct);
+    m_animateMenu->addAction(m_topAct);
+    m_contextMenu = new QMenu();
+    m_contextMenu->addAction(delAct);
+    m_contextMenu->addSeparator();
+    m_contextMenu->addAction(bringToFrontAct);
+    m_contextMenu->addAction(raiseAct);
+    m_contextMenu->addAction(lowerAct);
+    m_contextMenu->addAction(sendToBackAct);
+    m_contextMenu->addSeparator();
+    m_contextMenu->addMenu(m_animateMenu);
 }
 
 void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option)
@@ -344,4 +384,90 @@ void ResizeableItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     scene()->clearSelection();
     setSelected(true);
     m_contextMenu->exec(event->screenPos());
+}
+
+void ResizeableItem::lower()
+{
+    int pos = scene()->items().indexOf(this);
+    for(int i = pos + 1; i < scene()->items().count(); i++)
+    {
+        QGraphicsItem *item = scene()->items().at(i);
+        if(isAnimationMakerItem(item))
+        {
+            this->stackBefore(item);
+            break;
+        }
+    }
+    // trick to repaint item
+    this->setSelected(false);
+    this->setSelected(true);
+}
+
+void ResizeableItem::raise()
+{
+    int pos = scene()->items().indexOf(this);
+    for(int i = pos - 1; i >= 0; i--)
+    {
+        QGraphicsItem *item = scene()->items().at(i);
+        if(isAnimationMakerItem(item))
+        {
+            item->stackBefore(this);
+            break;
+        }
+    }
+    // trick to repaint item
+    this->setSelected(false);
+    this->setSelected(true);
+}
+
+void ResizeableItem::bringToFront()
+{
+    int pos = scene()->items().indexOf(this);
+    for(int i = pos - 1; i >= 0; i--)
+    {
+        QGraphicsItem *item = scene()->items().at(i);
+        if(isAnimationMakerItem(item))
+        {
+            item->stackBefore(this);
+        }
+    }
+    // trick to repaint item
+    this->setSelected(false);
+    this->setSelected(true);
+}
+
+void ResizeableItem::sendToBack()
+{
+    int pos = scene()->items().indexOf(this);
+    for(int i = pos + 1; i < scene()->items().count(); i++)
+    {
+        QGraphicsItem *item = scene()->items().at(i);
+        if(isAnimationMakerItem(item))
+        {
+            this->stackBefore(item);
+        }
+    }
+    // trick to repaint item
+    this->setSelected(false);
+    this->setSelected(true);
+}
+
+void ResizeableItem::deleteItem()
+{
+    scene()->removeItem(this);
+}
+
+void ResizeableItem::addOpacityAnimation()
+{
+    emit addPropertyAnimation(this, "opacity");
+}
+
+void ResizeableItem::addLeftAnimation()
+{
+    emit addPropertyAnimation(this, "left");
+}
+
+void ResizeableItem::addTopAnimation()
+{
+    emit addPropertyAnimation(this, "top");
 }

@@ -52,7 +52,6 @@ private:
     QAction *saveAct;
     QAction *saveAsAct;
     QAction *exportAct;
-    QAction *delAct;
     QAction *exitAct;
     QAction *aboutAct;
     QAction *selectAct;
@@ -60,17 +59,10 @@ private:
     QAction *ellipseAct;
     QAction *textAct;
     QAction *svgAct;
-    QAction *bringToFrontAct;
-    QAction *sendToBackAct;
-    QAction *lowerAct;
-    QAction *raiseAct;
-    QAction *animateItemAct;
     QAction *bitmapAct;
     QAction *showPropertyPanelAct;
     QMenu *fileMenu;
-    QMenu *editMenu;
     QMenu *helpMenu;
-    QMenu *itemMenu;
     QMenu *viewMenu;
 
 public slots:
@@ -87,13 +79,7 @@ public slots:
     void setBitmapMode();
     void setSvgMode();
     void selectionChanged(const QItemSelection&,const QItemSelection&);
-    void deleteItem();
-    void bringToFront();
-    void sendToBack();
-    void lower();
-    void raise();
     void sceneItemAdded(QGraphicsItem *);
-    void animateItem();
     void showPropertyPanel();
     void changePropertyEditor(QPropertyAnimation *);
     void itemSelectionChanged(ResizeableItem *item);

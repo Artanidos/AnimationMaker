@@ -42,80 +42,53 @@ Timeline::Timeline()
 
     QItemSelectionModel *selectionModel = m_treeview->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
-
-    m_xAct = new QAction("X");
-    m_yAct = new QAction("Y");
-    m_opacityAct = new QAction("Opacity");
-
-    connect(m_xAct, SIGNAL(triggered()), this, SLOT(addXProperty()));
-    connect(m_yAct, SIGNAL(triggered()), this, SLOT(addYProperty()));
-    connect(m_opacityAct, SIGNAL(triggered()), this, SLOT(addOpacityProperty()));
 }
 
- void Timeline::addItemToAnimate(QGraphicsItem *item)
- {
-     m_timelineModel->addItemToAnimate(item);
- }
+void Timeline::addPropertyAnimation(ResizeableItem *item, const QString propertyName)
+{
+    //QModelIndex index = m_treeview->selectionModel()->selectedIndexes().first();
+    //m_timelineModel->addProperty(name, index);
+    //m_treeview->setExpanded(index, true);
+    m_timelineModel->addPropertyAnimation(item, propertyName);
+}
 
- void Timeline::addXProperty()
- {
-     addProperty("X");
- }
+void Timeline::onCustomContextMenu(const QPoint &point)
+{
+    QModelIndex index = m_treeview->indexAt(point);
+    if (index.isValid())
+    {
+        m_propertiesMenu->clear();
+        m_propertiesMenu->addAction(m_xAct);
+        m_propertiesMenu->addAction(m_yAct);
+        m_propertiesMenu->addAction(m_opacityAct);
+        m_contextMenu->exec(m_treeview->mapToGlobal(point));
+    }
+}
 
- void Timeline::addYProperty()
- {
-     addProperty("Y");
- }
+void Timeline::playAnimation()
+{
+    emit playAnimationPressed();
+}
 
- void Timeline::addOpacityProperty()
- {
-     addProperty("opacity");
- }
+void Timeline::selectionChanged(const QItemSelection& current,const QItemSelection&)
+{
+    if(current.count() && current.at(0).indexes().count())
+    {
+        const QModelIndex index = current.at(0).indexes().at(0);
+        QVariant v = index.data(Qt::UserRole);
+        QVariant level = index.data(Qt::UserRole + 1);
 
- void Timeline::addProperty(const QString name)
- {   
-     QModelIndex index = m_treeview->selectionModel()->selectedIndexes().first();
-     m_timelineModel->addProperty(name, index);
-     m_treeview->setExpanded(index, true);
- }
-
- void Timeline::onCustomContextMenu(const QPoint &point)
- {
-     QModelIndex index = m_treeview->indexAt(point);
-     if (index.isValid())
-     {
-         m_propertiesMenu->clear();
-         m_propertiesMenu->addAction(m_xAct);
-         m_propertiesMenu->addAction(m_yAct);
-         m_propertiesMenu->addAction(m_opacityAct);
-         m_contextMenu->exec(m_treeview->mapToGlobal(point));
-     }
- }
-
- void Timeline::playAnimation()
- {
-     emit playAnimationPressed();
- }
-
- void Timeline::selectionChanged(const QItemSelection& current,const QItemSelection&)
- {
-     if(current.count() && current.at(0).indexes().count())
-     {
-         const QModelIndex index = current.at(0).indexes().at(0);
-         QVariant v = index.data(Qt::UserRole);
-         QVariant level = index.data(Qt::UserRole + 1);
-
-         if(level == 1)
-         {
+        if(level == 1)
+        {
             ResizeableItem *item = (ResizeableItem *) v.value<void *>();
             if(item)
                 emit itemSelectionChanged(item);
-         }
-         if(level == 2)
-         {
+        }
+        if(level == 2)
+        {
             QPropertyAnimation *anim = (QPropertyAnimation *) v.value<void *>();
             if(anim)
                 emit animationSelectionChanged(anim);
-         }
-     }
- }
+        }
+    }
+}
