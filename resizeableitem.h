@@ -9,8 +9,8 @@ class ResizeableItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
-    //Q_PROPERTY(qreal left READ left WRITE setLeft)
-    //Q_PROPERTY(qreal top READ top WRITE setTop)
+    Q_PROPERTY(qreal left READ left WRITE setLeft)
+    Q_PROPERTY(qreal top READ top WRITE setTop)
 public:
     ResizeableItem();
 
@@ -32,6 +32,11 @@ public:
 
     QBrush brush() const;
     void setBrush(const QBrush &brush);
+
+    inline qreal left() {return x();}
+    inline qreal top() {return y();}
+    inline void setLeft(qreal val) {setX(val);}
+    inline void setTop(qreal val) {setY(val);}
 
 private:
     ItemHandle*  m_handles[8];
@@ -61,7 +66,7 @@ private slots:
     void addTopAnimation();
 
 signals:
-    void addPropertyAnimation(ResizeableItem *item, const QString propertyName);
+    void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value);
 
 protected:
     void setHandlePositions();

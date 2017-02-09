@@ -16,7 +16,7 @@ public:
 public slots:
     void onCustomContextMenu(const QPoint &point);
     void playAnimation();
-    void addPropertyAnimation(ResizeableItem *item, const QString propertyName);
+    void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value);
     void selectionChanged(const QItemSelection& current,const QItemSelection&);
 
 signals:

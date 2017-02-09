@@ -44,12 +44,10 @@ Timeline::Timeline()
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
 }
 
-void Timeline::addPropertyAnimation(ResizeableItem *item, const QString propertyName)
+void Timeline::addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value)
 {
-    //QModelIndex index = m_treeview->selectionModel()->selectedIndexes().first();
-    //m_timelineModel->addProperty(name, index);
+    m_timelineModel->addPropertyAnimation(item, propertyName, value);
     //m_treeview->setExpanded(index, true);
-    m_timelineModel->addPropertyAnimation(item, propertyName);
 }
 
 void Timeline::onCustomContextMenu(const QPoint &point)
@@ -67,7 +65,9 @@ void Timeline::onCustomContextMenu(const QPoint &point)
 
 void Timeline::playAnimation()
 {
-    emit playAnimationPressed();
+    //emit playAnimationPressed();
+
+    m_timelineModel->getAnimations()->start();
 }
 
 void Timeline::selectionChanged(const QItemSelection& current,const QItemSelection&)

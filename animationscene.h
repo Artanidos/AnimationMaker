@@ -26,10 +26,10 @@ public:
 signals:
     void itemAdded(QGraphicsItem *item);
     void itemSelectionChanged(ResizeableItem *item);
-    void addPropertyAnimation(ResizeableItem *item, const QString propertyName);
+    void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value);
 
 public slots:
-    void addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName);
+    void addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName, qreal value);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;

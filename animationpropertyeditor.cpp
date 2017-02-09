@@ -1,10 +1,7 @@
 #include "animationpropertyeditor.h"
 
 #include <QGridLayout>
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QComboBox>
-#include <QIntValidator>
+#include <limits.h>
 
 AnimationPropertyEditor::AnimationPropertyEditor()
 {
@@ -14,24 +11,20 @@ AnimationPropertyEditor::AnimationPropertyEditor()
     font.setBold(true);
     label->setFont(font);
 
-    //new QDoubleValidator(0, 100, 2, this
-    QLineEdit *m_property = new QLineEdit();
-    QSpinBox *m_begin = new QSpinBox();
-    QSpinBox *m_duration = new QSpinBox();
-    QSpinBox *m_from = new QSpinBox();
-    QSpinBox *m_to = new QSpinBox();
-    QComboBox *m_easing = new QComboBox();
-    m_begin->setValue(0);
+    m_property = new QLineEdit();
+    m_begin = new QSpinBox();
+    m_duration = new QSpinBox();
+    m_from = new QSpinBox();
+    m_to = new QSpinBox();
+    m_easing = new QComboBox();
     m_begin->setMinimum(0);
-    m_duration->setValue(0);
+    m_begin->setMaximum(std::numeric_limits<int>::max());
     m_duration->setMinimum(0);
+    m_duration->setMaximum(std::numeric_limits<int>::max());
     m_from->setMinimum(0);
-    m_from->setMaximum(100);
-    m_from->setValue(100);
+    m_from->setMaximum(std::numeric_limits<int>::max());
     m_to->setMinimum(0);
-    m_to->setMaximum(100);
-    m_to->setValue(100);
-    m_property->setText("Opacity");
+    m_to->setMaximum(std::numeric_limits<int>::max());
     m_property->setEnabled(false);
     m_easing->addItem("Linear");
     m_easing->addItem("InQuad");
@@ -57,4 +50,39 @@ AnimationPropertyEditor::AnimationPropertyEditor()
     vbox->addLayout(layout);
     vbox->addStretch();
     this->setLayout(vbox);
+
+    connect(m_begin, SIGNAL(valueChanged(int)), this, SLOT(beginChanged(int)));
+    connect(m_duration, SIGNAL(valueChanged(int)), this, SLOT(durationChanged(int)));
+    connect(m_from, SIGNAL(valueChanged(int)), this, SLOT(fromChanged(int)));
+    connect(m_to, SIGNAL(valueChanged(int)), this, SLOT(toChanged(int)));
+}
+
+void AnimationPropertyEditor::setAnimation(QPropertyAnimation *anim)
+{
+    m_animation = anim;
+    m_property->setText(anim->propertyName());
+    m_begin->setValue(anim->property("begin").toInt());
+    m_duration->setValue(anim->duration());
+    m_from->setValue(anim->startValue().toInt());
+    m_to->setValue(anim->endValue().toInt());
+}
+
+void AnimationPropertyEditor::beginChanged(int newValue)
+{
+    m_animation->setProperty("begin", newValue);
+}
+
+void AnimationPropertyEditor::durationChanged(int newValue)
+{
+    m_animation->setDuration(newValue);
+}
+
+void AnimationPropertyEditor::fromChanged(int newValue)
+{
+    m_animation->setStartValue(newValue);
+}
+
+void AnimationPropertyEditor::toChanged(int newValue)
+{
+    m_animation->setEndValue(newValue);
 }

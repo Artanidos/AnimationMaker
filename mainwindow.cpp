@@ -226,7 +226,7 @@ void MainWindow::createGui()
     connect(timeline, SIGNAL(animationSelectionChanged(QPropertyAnimation *)), this, SLOT(changePropertyEditor(QPropertyAnimation *)));
     connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(itemSelectionChanged(ResizeableItem*)));
 
-    connect(scene, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString)), timeline, SLOT(addPropertyAnimation(ResizeableItem *, const QString)));
+    connect(scene, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), timeline, SLOT(addPropertyAnimation(ResizeableItem *, const QString, qreal)));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(view);
@@ -466,5 +466,6 @@ void MainWindow::showPropertyPanel()
 
 void MainWindow::changePropertyEditor(QPropertyAnimation *anim)
 {
+    m_animationPropertyEditor->setAnimation(anim);
     propertiesdock->setWidget(m_animationPropertyEditor);
 }

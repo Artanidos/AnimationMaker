@@ -2,7 +2,7 @@
 #include "animationscene.h"
 #include "rectangle.h"
 #include <QPixmap>
-#include <QPropertyAnimation>
+
 
 TimelineModel::TimelineModel()
 {
@@ -10,9 +10,10 @@ TimelineModel::TimelineModel()
     QVariant data;
 
     m_rootItem = new TreeItem(rootData, data);
+    m_animations = new QParallelAnimationGroup();
 }
 
-void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyName)
+void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value)
 {
     beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
     TreeItem *treeItem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), m_rootItem, 1);
@@ -20,10 +21,18 @@ void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyN
     QPropertyAnimation *anim = new QPropertyAnimation();
     anim->setTargetObject(item);
     anim->setPropertyName(propName);
+    anim->setStartValue(value);
+    anim->setEndValue(value);
     TreeItem *treeChildItem = new TreeItem(propertyName, qVariantFromValue((void *) anim), treeItem, 2);
     treeItem->appendChild(treeChildItem);
     m_rootItem->appendChild(treeItem);
     endInsertRows();
+    m_animations->addAnimation(anim);
+}
+
+QParallelAnimationGroup *TimelineModel::getAnimations()
+{
+    return m_animations;
 }
 
 int TimelineModel::columnCount(const QModelIndex &parent) const

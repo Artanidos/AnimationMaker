@@ -37,7 +37,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         r->setFlag(QGraphicsItem::ItemIsMovable, true);
         r->setFlag(QGraphicsItem::ItemIsSelectable, true);
         r->setPos(mouseEvent->scenePos());
-        connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString)));
+        connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
         addItem(r);
         emit itemAdded(r);
     }
@@ -300,9 +300,9 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
     return dataStream;
 }
 
-void AnimationScene::addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName)
+void AnimationScene::addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName, qreal value)
 {
-    emit addPropertyAnimation(item, propertyName);
+    emit addPropertyAnimation(item, propertyName, value);
 }
 
 QDataStream& operator <<(QDataStream &out, const AnimationScene *s)
