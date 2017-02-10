@@ -12,14 +12,33 @@ Timeline::Timeline(AnimationScene *scene)
     : QWidget(0)
 {
     m_scene = scene;
-    QVBoxLayout *vbox = new QVBoxLayout();
+    QHBoxLayout *hbox = new QHBoxLayout();
     QToolButton *playButton = new QToolButton();
+    QToolButton *revertButton = new QToolButton();
+    QToolButton *forwardButton = new QToolButton();
+
     QAction *playAct = new QAction("Play");
     playAct->setIcon(QIcon(":/images/play.png"));
     playAct->setToolTip("Start the animation");
     connect(playAct, SIGNAL(triggered()), this, SLOT(playAnimation()));
+
+    QAction *reverseAct = new QAction("Reverse");
+    reverseAct->setIcon(QIcon(":/images/reverse.png"));
+    reverseAct->setToolTip("Reset the animation");
+    connect(reverseAct, SIGNAL(triggered()), this, SLOT(revertAnimation()));
+
+    QAction *forwardAct = new QAction("Forward");
+    forwardAct->setIcon(QIcon(":/images/forward.png"));
+    forwardAct->setToolTip("Forward the animation");
+    connect(forwardAct, SIGNAL(triggered()), this, SLOT(forwardAnimation()));
+
+    revertButton->setDefaultAction(reverseAct);
     playButton->setDefaultAction(playAct);
-    vbox->addWidget(playButton);
+    forwardButton->setDefaultAction(forwardAct);
+    hbox->addWidget(revertButton);
+    hbox->addWidget(playButton);
+    hbox->addWidget(forwardButton);
+    hbox->addStretch();
     QGridLayout *layout = new QGridLayout;
     m_timelineModel = new TimelineModel();
     m_treeview = new QTreeView(this);
@@ -28,7 +47,7 @@ Timeline::Timeline(AnimationScene *scene)
 
 
     QLabel *label2 = new QLabel("TIMELINE..................................");
-    layout->addItem(vbox, 0, 0);
+    layout->addItem(hbox, 0, 0);
     layout->addWidget(m_treeview, 1, 0);
     layout->addWidget(label2, 1, 1);
 
@@ -71,6 +90,22 @@ void Timeline::playAnimation()
     //emit playAnimationPressed();
     m_scene->clearSelection();
     m_timelineModel->getAnimations()->start();
+}
+
+void Timeline::revertAnimation()
+{
+    m_scene->clearSelection();
+    m_timelineModel->getAnimations()->start();
+    m_timelineModel->getAnimations()->pause();
+    m_timelineModel->getAnimations()->setCurrentTime(0);
+}
+
+void Timeline::forwardAnimation()
+{
+    m_scene->clearSelection();
+    m_timelineModel->getAnimations()->start();
+    m_timelineModel->getAnimations()->pause();
+    m_timelineModel->getAnimations()->setCurrentTime(m_timelineModel->getAnimations()->totalDuration());
 }
 
 void Timeline::selectionChanged(const QItemSelection& current,const QItemSelection&)

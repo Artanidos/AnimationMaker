@@ -8,5 +8,7 @@
         <file>images/text.png</file>
         <file>images/camera.png</file>
         <file>images/svg.png</file>
+        <file>images/forward.png</file>
+        <file>images/reverse.png</file>
     </qresource>
 </RCC>
