@@ -80,7 +80,8 @@ public slots:
     void sceneItemAdded(QGraphicsItem *);
     void showPropertyPanel();
     void changePropertyEditor(QPropertyAnimation *);
-    void itemSelectionChanged(ResizeableItem *item);
+    void sceneSelectionChanged();
+    void timelineSelectionChanged(ResizeableItem*);
 };
 
 #endif // MAINWINDOW_H

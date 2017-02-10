@@ -199,7 +199,7 @@ void MainWindow::createGui()
 
     view = new QGraphicsView(scene);
     view->setRenderHint(QPainter::RenderHint::Antialiasing);
-    connect(scene, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(itemSelectionChanged(ResizeableItem *)));
+    connect(scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
     connect(scene, SIGNAL(itemAdded(QGraphicsItem*)), this, SLOT(sceneItemAdded(QGraphicsItem*)));
 
     model = new TreeModel();
@@ -224,7 +224,7 @@ void MainWindow::createGui()
     timeline->setMinimumHeight(110);
 
     connect(timeline, SIGNAL(animationSelectionChanged(QPropertyAnimation *)), this, SLOT(changePropertyEditor(QPropertyAnimation *)));
-    connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(itemSelectionChanged(ResizeableItem*)));
+    connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(timelineSelectionChanged(ResizeableItem*)));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(view);
@@ -409,7 +409,12 @@ void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelec
     // todo: set property page
 }
 
-void MainWindow::itemSelectionChanged(ResizeableItem *item)
+void MainWindow::sceneSelectionChanged()
+{
+    propertiesdock->setWidget(propertiespanel);
+}
+
+void MainWindow::timelineSelectionChanged(ResizeableItem* item)
 {
     scene->clearSelection();
     item->setSelected(true);
