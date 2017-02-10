@@ -1,4 +1,5 @@
 #include "animationpropertyeditor.h"
+#include "expander.h"
 
 #include <QGridLayout>
 #include <limits.h>
@@ -48,6 +49,7 @@ AnimationPropertyEditor::AnimationPropertyEditor()
     layout->addWidget(m_easing, 3, 1, 1, 4);
     vbox->addWidget(label);
     vbox->addLayout(layout);
+    vbox->addWidget(new Expander("Test"));
     vbox->addStretch();
     this->setLayout(vbox);
 

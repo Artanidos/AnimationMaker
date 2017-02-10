@@ -7,7 +7,6 @@
 #include "vectorgraphic.h"
 #include "text.h"
 #include "bitmap.h"
-
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>

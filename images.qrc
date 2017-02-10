@@ -10,5 +10,6 @@
         <file>images/svg.png</file>
         <file>images/forward.png</file>
         <file>images/reverse.png</file>
+        <file>images/expanderButton.png</file>
     </qresource>
 </RCC>
