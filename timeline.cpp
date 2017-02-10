@@ -8,9 +8,10 @@
 #include <QPropertyAnimation>
 #include <QTest>
 
-Timeline::Timeline()
+Timeline::Timeline(AnimationScene *scene)
     : QWidget(0)
 {
+    m_scene = scene;
     QVBoxLayout *vbox = new QVBoxLayout();
     QToolButton *playButton = new QToolButton();
     QAction *playAct = new QAction("Play");
@@ -42,6 +43,8 @@ Timeline::Timeline()
 
     QItemSelectionModel *selectionModel = m_treeview->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
+
+    connect(scene, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimation(ResizeableItem *, const QString, qreal)));
 }
 
 void Timeline::addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value)
@@ -66,7 +69,7 @@ void Timeline::onCustomContextMenu(const QPoint &point)
 void Timeline::playAnimation()
 {
     //emit playAnimationPressed();
-
+    m_scene->clearSelection();
     m_timelineModel->getAnimations()->start();
 }
 

@@ -36,7 +36,6 @@ private:
     void writeFile(QString fileName);
 
     QSplitter *splitter;
-    //QLabel *timeline;
     QToolBar *toolbar;
     QTreeView *tree;
     TreeModel *model;
@@ -67,7 +66,6 @@ private:
 
 public slots:
     void exportAnimation();
-    void playAnimation();
     void about();
     void save();
     void saveAs();

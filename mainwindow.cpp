@@ -220,13 +220,11 @@ void MainWindow::createGui()
     addDockWidget(Qt::LeftDockWidgetArea, elementsdock);
     splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
 
-    timeline = new Timeline();
+    timeline = new Timeline(scene);
     timeline->setMinimumHeight(110);
-    connect(timeline, SIGNAL(playAnimationPressed()), this, SLOT(playAnimation()));
+
     connect(timeline, SIGNAL(animationSelectionChanged(QPropertyAnimation *)), this, SLOT(changePropertyEditor(QPropertyAnimation *)));
     connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(itemSelectionChanged(ResizeableItem*)));
-
-    connect(scene, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), timeline, SLOT(addPropertyAnimation(ResizeableItem *, const QString, qreal)));
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(view);
@@ -310,39 +308,6 @@ void MainWindow::exportAnimation()
     view->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setGeometry(0,0,scene->width(), scene->height());
     video_encode("test.mpg", view, group);
-}
-
-void MainWindow::playAnimation()
-{
-    Rectangle *rect = new Rectangle(100, 100);
-    rect->setPen(QPen(Qt::black));
-    rect->setBrush(QBrush(Qt::blue));
-    rect->setPos(0, 0);
-    rect->setOpacity(0);
-    scene->addItem(rect);
-
-    QPropertyAnimation *animation = new QPropertyAnimation(rect, "opacity");
-    animation->setDuration(1000);
-    animation->setStartValue(0);
-    animation->setEndValue(1);
-
-    QPropertyAnimation *animationx = new QPropertyAnimation(rect, "x");
-    animationx->setDuration(1000);
-    animationx->setStartValue(0);
-    animationx->setEndValue(400);
-    animationx->setEasingCurve(QEasingCurve::InCubic);
-
-    QPropertyAnimation *animationy = new QPropertyAnimation(rect, "y");
-    animationy->setDuration(1000);
-    animationy->setStartValue(0);
-    animationy->setEndValue(50);
-
-    QParallelAnimationGroup *group = new QParallelAnimationGroup;
-    group->addAnimation(animation);
-    group->addAnimation(animationx);
-    group->addAnimation(animationy);
-
-    group->start();
 }
 
 void MainWindow::createActions()

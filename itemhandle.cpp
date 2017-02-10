@@ -1,5 +1,7 @@
 #include "itemhandle.h"
 
+#include <QTest>
+
 ItemHandle::ItemHandle(QGraphicsItem *parent,  int corner) :
     QGraphicsItem(parent),
     mouseDownX(0),

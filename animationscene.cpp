@@ -20,12 +20,6 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if(m_editMode == EditMode::ModeSelect)
     {
         QGraphicsScene::mousePressEvent(mouseEvent);
-        if(!this->selectedItems().isEmpty())
-        {
-            ResizeableItem *item =  dynamic_cast<ResizeableItem *>(this->selectedItems().first());
-            if(item)
-                emit itemSelectionChanged(item);
-        }
     }
     else if(m_editMode == EditMode::ModeRectangle)
     {

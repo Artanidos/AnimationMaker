@@ -6,12 +6,13 @@
 #include <QPropertyAnimation>
 #include "timelinemodel.h"
 #include "resizeableitem.h"
+#include "animationscene.h"
 
 class Timeline : public QWidget
 {
     Q_OBJECT
 public:
-    Timeline();
+    Timeline(AnimationScene *scene);
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
@@ -32,6 +33,7 @@ private:
     QAction *m_xAct;
     QAction *m_yAct;
     QAction *m_opacityAct;
+    AnimationScene *m_scene;
 
     void addProperty(const QString name);
 };

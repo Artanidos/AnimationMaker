@@ -136,8 +136,9 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 {
     ItemHandle * handle = dynamic_cast<ItemHandle *>(watched);
     if ( handle == NULL)
+    {
         return false;
-
+    }
     QGraphicsSceneMouseEvent * mevent = dynamic_cast<QGraphicsSceneMouseEvent*>(event);
     if ( mevent == NULL)
     {
