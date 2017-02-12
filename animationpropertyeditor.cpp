@@ -17,11 +17,13 @@ AnimationPropertyEditor::AnimationPropertyEditor()
     m_begin->setMinimum(0);
     //m_begin->setMaximum(std::numeric_limits<int>::max());
     m_duration->setMinimum(0);
+    m_duration->setMaximum(10000);
     //m_duration->setMaximum(std::numeric_limits<int>::max());
     m_from->setMinimum(0);
     //m_from->setMaximum(std::numeric_limits<int>::max());
     m_to->setMinimum(0);
     //m_to->setMaximum(std::numeric_limits<int>::max());
+    m_to->setMaximum(10000);
     m_property->setEnabled(false);
     m_easing->addItem("Linear");
     m_easing->addItem("InQuad");

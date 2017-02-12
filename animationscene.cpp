@@ -10,6 +10,7 @@
 AnimationScene::AnimationScene()
 {
     m_editMode = EditMode::ModeSelect;
+    m_fps = 24;
 }
 
 void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -45,6 +46,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         e->setFlag(QGraphicsItem::ItemIsMovable, true);
         e->setFlag(QGraphicsItem::ItemIsSelectable, true);
         e->setPos(mouseEvent->scenePos());
+        connect(e, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
         addItem(e);
         emit itemAdded(e);
     }
@@ -56,6 +58,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         t->setFlag(QGraphicsItem::ItemIsMovable, true);
         t->setFlag(QGraphicsItem::ItemIsSelectable, true);
         t->setPos(mouseEvent->scenePos());
+        connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
         addItem(t);
         emit itemAdded(t);
     }
@@ -71,6 +74,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         b->setFlag(QGraphicsItem::ItemIsMovable, true);
         b->setFlag(QGraphicsItem::ItemIsSelectable, true);
         b->setPos(mouseEvent->scenePos());
+        connect(b, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
         addItem(b);
         emit itemAdded(b);
     }
@@ -86,6 +90,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         v->setFlag(QGraphicsItem::ItemIsMovable, true);
         v->setFlag(QGraphicsItem::ItemIsSelectable, true);
         v->setPos(mouseEvent->scenePos());
+        connect(v, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
         addItem(v);
         emit itemAdded(v);
     }
@@ -108,7 +113,7 @@ void AnimationScene::setEditMode(EditMode mode)
 
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
-    int type;
+    int type, fps;
     qreal x, y, z, width, height, xscale, yscale;
     QPen pen;
     QBrush brush;
@@ -117,6 +122,10 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
     clear();
     dataStream >> width;
     dataStream >> height;
+    dataStream >> fps;
+
+    this->setSceneRect(0, 0, width, height);
+    this->setFps(fps);
 
     while (!dataStream.atEnd())
     {
@@ -138,7 +147,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
             r->setFlag(QGraphicsItem::ItemIsSelectable, true);
             r->setZValue(z);
-            connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString )), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString )));
+            connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
             addItem(r);
         }
         else if(type == Ellipse::Type)
@@ -157,6 +166,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             e->setFlag(QGraphicsItem::ItemIsMovable, true);
             e->setFlag(QGraphicsItem::ItemIsSelectable, true);
             e->setZValue(z);
+            connect(e, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
             addItem(e);
         }
         else if(type == Text::Type)
@@ -173,6 +183,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
             t->setZValue(z);
             t->setScale(xscale, yscale);
+            connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
             addItem(t);
         }
         else if(type == Bitmap::Type)
@@ -190,6 +201,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
             b->setZValue(z);
             b->setScale(xscale, yscale);
+            connect(b, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
             addItem(b);
         }
         else if(type == Vectorgraphic::Type)
@@ -207,6 +219,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
             v->setZValue(z);
             v->setScale(xscale, yscale);
+            connect(v, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
             addItem(v);
         }
     }
@@ -218,6 +231,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
 {
     dataStream << width();
     dataStream << height();
+    dataStream << fps();
 
     QList<QGraphicsItem*> itemList = items(Qt::AscendingOrder);
     foreach (QGraphicsItem *item, itemList)

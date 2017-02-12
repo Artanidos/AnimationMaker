@@ -44,12 +44,15 @@ Timeline::Timeline(AnimationScene *scene)
     m_treeview = new QTreeView(this);
     m_treeview->setModel(m_timelineModel);
     m_treeview->header()->close();
+    m_treeview->setFixedWidth(300);
 
-
-    QLabel *label2 = new QLabel("TIMELINE..................................");
+    QWidget *time = new QWidget();
+    time->setStyleSheet("background-color: #4c4e50");
+    time->setMinimumWidth(300);
+    time->setMinimumHeight(50);
     layout->addItem(hbox, 0, 0);
     layout->addWidget(m_treeview, 1, 0);
-    layout->addWidget(label2, 1, 1);
+    layout->addWidget(time, 1, 1);
 
     this->setLayout(layout);
 

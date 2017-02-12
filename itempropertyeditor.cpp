@@ -1,7 +1,6 @@
 #include "itempropertyeditor.h"
 #include "expander.h"
-
-#include <QLabel>
+#include "animationscene.h"
 
 ItemPropertyEditor::ItemPropertyEditor()
 {
@@ -9,11 +8,11 @@ ItemPropertyEditor::ItemPropertyEditor()
     Expander *expTyp = new Expander("Typ");
     QGridLayout *layoutTyp = new QGridLayout();
     QLabel *labelTyp = new QLabel("Typ");
-    QLabel *typ = new QLabel("Rectangle");
+    m_typ = new QLabel("Unknown");
     QLabel *labelId = new QLabel("Id");
     m_id = new QLineEdit();
     layoutTyp->addWidget(labelTyp, 0, 0);
-    layoutTyp->addWidget(typ, 0, 1);
+    layoutTyp->addWidget(m_typ, 0, 1);
     layoutTyp->addWidget(labelId, 1, 0);
     layoutTyp->addWidget(m_id, 1, 1);
     expTyp->addLayout(layoutTyp);
@@ -35,6 +34,10 @@ ItemPropertyEditor::ItemPropertyEditor()
     m_y = new QSpinBox();
     m_width = new QSpinBox();
     m_height = new QSpinBox();
+    m_x->setMaximum(10000);
+    m_y->setMaximum(10000);
+    m_width->setMaximum(10000);
+    m_height->setMaximum(10000);
     layoutGeo->addWidget(labelPosition, 0, 0);
     layoutGeo->addWidget(labelX, 0, 1);
     layoutGeo->addWidget(m_x, 0, 2);
@@ -50,4 +53,40 @@ ItemPropertyEditor::ItemPropertyEditor()
     vbox->addWidget(expGeo);
     vbox->addStretch();
     this->setLayout(vbox);
+
+    connect(m_x, SIGNAL(valueChanged(int)), this, SLOT(xChanged(int)));
+    connect(m_y, SIGNAL(valueChanged(int)), this, SLOT(yChanged(int)));
+    connect(m_width, SIGNAL(valueChanged(int)), this, SLOT(widthChanged(int)));
+    connect(m_height, SIGNAL(valueChanged(int)), this, SLOT(heightChanged(int)));
+}
+
+void ItemPropertyEditor::setItem(ResizeableItem *item)
+{
+    m_item = item;
+    m_x->setValue(m_item->x());
+    m_y->setValue(m_item->y());
+    m_width->setValue(m_item->rect().width());
+    m_height->setValue(m_item->rect().height());
+    m_typ->setText(getItemTypeName(m_item));
+
+}
+
+void ItemPropertyEditor::xChanged(int value)
+{
+    m_item->setX(value);
+}
+
+void ItemPropertyEditor::yChanged(int value)
+{
+    m_item->setY(value);
+}
+
+void ItemPropertyEditor::widthChanged(int value)
+{
+    m_item->setWidth(value);
+}
+
+void ItemPropertyEditor::heightChanged(int value)
+{
+    m_item->setHeight(value);
 }

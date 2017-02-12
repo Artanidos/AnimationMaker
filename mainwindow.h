@@ -8,6 +8,7 @@
 #include "timeline.h"
 #include "animationpropertyeditor.h"
 #include "itempropertyeditor.h"
+#include "scenepropertyeditor.h"
 
 namespace Ui
 {
@@ -46,6 +47,7 @@ private:
     Timeline *timeline;
     AnimationPropertyEditor *m_animationPropertyEditor;
     ItemPropertyEditor *m_itemPropertyEditor;
+    ScenePropertyEditor *m_scenePropertyEditor;
     QDockWidget *propertiesdock;
 
     QAction *openAct;
@@ -77,7 +79,7 @@ public slots:
     void setTextMode();
     void setBitmapMode();
     void setSvgMode();
-    void selectionChanged(const QItemSelection&,const QItemSelection&);
+    void elementtreeSelectionChanged(const QItemSelection&,const QItemSelection&);
     void sceneItemAdded(QGraphicsItem *);
     void showPropertyPanel();
     void changePropertyEditor(QPropertyAnimation *);

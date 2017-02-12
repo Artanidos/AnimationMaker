@@ -23,6 +23,9 @@ public:
     QDataStream& read(QDataStream &dataStream);
     QDataStream& write(QDataStream &dataStream) const;
 
+    inline int fps() const {return m_fps;}
+    inline void setFps(int value) {m_fps = value;}
+
 signals:
     void itemAdded(QGraphicsItem *item);
     void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value);
@@ -37,6 +40,7 @@ protected:
 
 private:
     EditMode m_editMode;
+    int m_fps;
 };
 
 QDataStream &operator<<(QDataStream &, const AnimationScene *);

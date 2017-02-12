@@ -38,6 +38,9 @@ public:
     inline void setLeft(qreal val) {setX(val);}
     inline void setTop(qreal val) {setY(val);}
 
+    void setWidth(qreal value);
+    void setHeight(qreal value);
+
 private:
     ItemHandle*  m_handles[8];
     bool m_hasHandles;

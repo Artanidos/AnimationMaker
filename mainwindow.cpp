@@ -120,7 +120,7 @@ void MainWindow::open()
     file.close();
 
     model->setScene(scene);
-
+    m_scenePropertyEditor->setScene(scene);
     tree->expandAll();
     loadedFile.setFile(fileName);
     saveAct->setEnabled(true);
@@ -180,10 +180,11 @@ void MainWindow::createGui()
 
     m_animationPropertyEditor = new AnimationPropertyEditor();
     m_itemPropertyEditor = new ItemPropertyEditor();
+    m_scenePropertyEditor = new ScenePropertyEditor();
 
     propertiesdock = new QDockWidget(tr("Properties"), this);
     propertiesdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    propertiesdock->setWidget(m_itemPropertyEditor);
+    propertiesdock->setWidget(m_scenePropertyEditor);
     propertiesdock->setObjectName("Properties");
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
 
@@ -204,7 +205,7 @@ void MainWindow::createGui()
     tree->setMinimumWidth(320);
     tree->setCurrentIndex(model->index(0, 0));
     QItemSelectionModel *selectionModel = tree->selectionModel();
-    connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
+    connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(elementtreeSelectionChanged(const QItemSelection&,const QItemSelection&)));
 
     QDockWidget *elementsdock = new QDockWidget(tr("Elements"), this);
     elementsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -383,7 +384,7 @@ void MainWindow::setSvgMode()
     scene->setEditMode(AnimationScene::EditMode::ModeSvg);
 }
 
-void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelection&)
+void MainWindow::elementtreeSelectionChanged(const QItemSelection& current,const QItemSelection&)
 {
     scene->clearSelection();
 
@@ -391,11 +392,20 @@ void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelec
     {
         const QModelIndex index = current.at(0).indexes().at(0);
         QVariant v = index.data(Qt::UserRole);
-        QGraphicsItem *item = (QGraphicsItem *) v.value<void *>();
-        if(item)
+        QGraphicsItem *gi = (QGraphicsItem *) v.value<void *>();
+        if(gi)
         {
-            item->setSelected(true);
-            propertiesdock->setWidget(m_itemPropertyEditor);
+            ResizeableItem *item = dynamic_cast<ResizeableItem*>(gi);
+            if(item)
+            {
+                item->setSelected(true);
+                m_itemPropertyEditor->setItem(item);
+                propertiesdock->setWidget(m_itemPropertyEditor);
+            }
+        }
+        else
+        {
+            propertiesdock->setWidget(m_scenePropertyEditor);
         }
     }
 
@@ -404,7 +414,16 @@ void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelec
 
 void MainWindow::sceneSelectionChanged()
 {
-    propertiesdock->setWidget(m_itemPropertyEditor);
+    ResizeableItem *item = NULL;
+    if(scene->selectedItems().count())
+        item = dynamic_cast<ResizeableItem*>(scene->selectedItems().first());
+    if(item)
+    {
+        m_itemPropertyEditor->setItem(item);
+        propertiesdock->setWidget(m_itemPropertyEditor);
+    }
+    else
+        propertiesdock->setWidget(m_scenePropertyEditor);
 }
 
 void MainWindow::timelineSelectionChanged(ResizeableItem* item)
@@ -412,6 +431,7 @@ void MainWindow::timelineSelectionChanged(ResizeableItem* item)
     scene->clearSelection();
     item->setSelected(true);
 
+    m_itemPropertyEditor->setItem(item);
     propertiesdock->setWidget(m_itemPropertyEditor);
 }
 

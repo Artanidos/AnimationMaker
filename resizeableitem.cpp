@@ -101,6 +101,22 @@ void ResizeableItem::setRect(qreal x, qreal y, qreal w, qreal h)
     update();
 }
 
+void ResizeableItem::setWidth(qreal value)
+{
+    prepareGeometryChange();
+    m_rect.setWidth(value);
+    update();
+    setHandlePositions();
+}
+
+void ResizeableItem::setHeight(qreal value)
+{
+    prepareGeometryChange();
+    m_rect.setHeight(value);
+    update();
+    setHandlePositions();
+}
+
 QPen ResizeableItem::pen() const
 {
     return m_pen;
