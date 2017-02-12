@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
+
 Expander::Expander(QString header)
 {
     m_isExpanded = true;
@@ -27,7 +28,7 @@ Expander::Expander(QString header)
     hbox->addWidget(m_button);
     hbox->addStretch();
     vbox->addLayout(hbox);
-    m_content = new QLabel("Content\nmore\nmore");
+    m_content = new QWidget();
     m_content->setStyleSheet("background-color: #4c4e50");
     vbox->addWidget(m_content);
     this->setLayout(vbox);
@@ -44,3 +45,8 @@ void Expander::buttonClicked(bool)
     m_content->setHidden(!m_isExpanded);
     m_button->setArrowType(m_isExpanded ? Qt::ArrowType::DownArrow : Qt::ArrowType::RightArrow);
 }
+
+ void Expander::addLayout(QLayout *l)
+ {
+    m_content->setLayout(l);
+ }

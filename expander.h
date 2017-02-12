@@ -1,8 +1,10 @@
 #ifndef EXPANDER_H
 #define EXPANDER_H
 
-#include <QWidget>
+#include <QLayout>
+#include <QVBoxLayout>
 #include <QToolButton>
+#include <QScrollArea>
 
 class Expander : public QWidget
 {
@@ -10,13 +12,14 @@ class Expander : public QWidget
 public:
     Expander(QString header);
 
+    void addLayout(QLayout *l);
+
 public slots:
     void buttonClicked(bool);
 
 private :
     QWidget *m_content;
     QToolButton *m_button;
-    qreal m_contentHeight;
     bool m_isExpanded;
 };
 

@@ -7,10 +7,11 @@
 AnimationPropertyEditor::AnimationPropertyEditor()
 {
     QVBoxLayout *vbox = new QVBoxLayout();
-    QLabel *label = new QLabel("Animation");
-    QFont font = label->font();
-    font.setBold(true);
-    label->setFont(font);
+    Expander *exp = new Expander("Animation");
+    //QLabel *label = new QLabel("Animation");
+    //QFont font = label->font();
+    //font.setBold(true);
+    //label->setFont(font);
 
     m_property = new QLineEdit();
     m_begin = new QSpinBox();
@@ -47,9 +48,10 @@ AnimationPropertyEditor::AnimationPropertyEditor()
     layout->addWidget(m_to, 2, 4);
     layout->addWidget(new QLabel("Easing"), 3, 0);
     layout->addWidget(m_easing, 3, 1, 1, 4);
-    vbox->addWidget(label);
-    vbox->addLayout(layout);
-    vbox->addWidget(new Expander("Test"));
+    exp->addLayout(layout);
+    vbox->addWidget(exp);
+    //vbox->addLayout(layout);
+    //vbox->addWidget(new Expander("Test"));
     vbox->addStretch();
     this->setLayout(vbox);
 
