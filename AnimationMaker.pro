@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     timeline.cpp \
     timelinemodel.cpp \
     animationpropertyeditor.cpp \
-    expander.cpp
+    expander.cpp \
+    itempropertyeditor.cpp
 
 HEADERS  += mainwindow.h \
     treemodel.h \
@@ -44,7 +45,8 @@ HEADERS  += mainwindow.h \
     timeline.h \
     timelinemodel.h \
     animationpropertyeditor.h \
-    expander.h
+    expander.h \
+    itempropertyeditor.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 
@@ -65,4 +67,6 @@ RESOURCES += \
 
 DISTFILES += \
     todo.txt
+
+FORMS +=
 

@@ -8,11 +8,6 @@ AnimationPropertyEditor::AnimationPropertyEditor()
 {
     QVBoxLayout *vbox = new QVBoxLayout();
     Expander *exp = new Expander("Animation");
-    //QLabel *label = new QLabel("Animation");
-    //QFont font = label->font();
-    //font.setBold(true);
-    //label->setFont(font);
-
     m_property = new QLineEdit();
     m_begin = new QSpinBox();
     m_duration = new QSpinBox();
@@ -20,13 +15,13 @@ AnimationPropertyEditor::AnimationPropertyEditor()
     m_to = new QSpinBox();
     m_easing = new QComboBox();
     m_begin->setMinimum(0);
-    m_begin->setMaximum(std::numeric_limits<int>::max());
+    //m_begin->setMaximum(std::numeric_limits<int>::max());
     m_duration->setMinimum(0);
-    m_duration->setMaximum(std::numeric_limits<int>::max());
+    //m_duration->setMaximum(std::numeric_limits<int>::max());
     m_from->setMinimum(0);
-    m_from->setMaximum(std::numeric_limits<int>::max());
+    //m_from->setMaximum(std::numeric_limits<int>::max());
     m_to->setMinimum(0);
-    m_to->setMaximum(std::numeric_limits<int>::max());
+    //m_to->setMaximum(std::numeric_limits<int>::max());
     m_property->setEnabled(false);
     m_easing->addItem("Linear");
     m_easing->addItem("InQuad");
@@ -50,8 +45,6 @@ AnimationPropertyEditor::AnimationPropertyEditor()
     layout->addWidget(m_easing, 3, 1, 1, 4);
     exp->addLayout(layout);
     vbox->addWidget(exp);
-    //vbox->addLayout(layout);
-    //vbox->addWidget(new Expander("Test"));
     vbox->addStretch();
     this->setLayout(vbox);
 

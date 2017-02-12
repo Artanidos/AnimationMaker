@@ -179,17 +179,11 @@ void MainWindow::createGui()
     addDockWidget(Qt::LeftDockWidgetArea, tooldock);
 
     m_animationPropertyEditor = new AnimationPropertyEditor();
-
-    propertiespanel = new QLabel();
-    propertiespanel->setMinimumWidth(320);
-    QImage propertiesimage;
-    propertiesimage.load("/home/olaf/SourceCode/AnimationMaker/properties.png");
-    propertiespanel->setPixmap(QPixmap::fromImage(propertiesimage));
-    propertiespanel->setAlignment(Qt::AlignTop);
+    m_itemPropertyEditor = new ItemPropertyEditor();
 
     propertiesdock = new QDockWidget(tr("Properties"), this);
     propertiesdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    propertiesdock->setWidget(propertiespanel);
+    propertiesdock->setWidget(m_itemPropertyEditor);
     propertiesdock->setObjectName("Properties");
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
 
@@ -401,7 +395,7 @@ void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelec
         if(item)
         {
             item->setSelected(true);
-            propertiesdock->setWidget(propertiespanel);
+            propertiesdock->setWidget(m_itemPropertyEditor);
         }
     }
 
@@ -410,7 +404,7 @@ void MainWindow::selectionChanged(const QItemSelection& current,const QItemSelec
 
 void MainWindow::sceneSelectionChanged()
 {
-    propertiesdock->setWidget(propertiespanel);
+    propertiesdock->setWidget(m_itemPropertyEditor);
 }
 
 void MainWindow::timelineSelectionChanged(ResizeableItem* item)
@@ -418,7 +412,7 @@ void MainWindow::timelineSelectionChanged(ResizeableItem* item)
     scene->clearSelection();
     item->setSelected(true);
 
-    propertiesdock->setWidget(propertiespanel);
+    propertiesdock->setWidget(m_itemPropertyEditor);
 }
 
 void MainWindow::sceneItemAdded(QGraphicsItem *item)

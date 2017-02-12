@@ -7,6 +7,7 @@
 #include "animationscene.h"
 #include "timeline.h"
 #include "animationpropertyeditor.h"
+#include "itempropertyeditor.h"
 
 namespace Ui
 {
@@ -44,8 +45,8 @@ private:
     QFileInfo loadedFile;
     Timeline *timeline;
     AnimationPropertyEditor *m_animationPropertyEditor;
+    ItemPropertyEditor *m_itemPropertyEditor;
     QDockWidget *propertiesdock;
-    QLabel *propertiespanel;
 
     QAction *openAct;
     QAction *saveAct;
