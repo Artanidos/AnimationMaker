@@ -178,18 +178,20 @@ void MainWindow::createGui()
     tooldock->setObjectName("Tools");
     addDockWidget(Qt::LeftDockWidgetArea, tooldock);
 
+    scene = new AnimationScene();
+    scene->setSceneRect(QRect(0,0,1200,720));
+
     m_animationPropertyEditor = new AnimationPropertyEditor();
     m_itemPropertyEditor = new ItemPropertyEditor();
     m_scenePropertyEditor = new ScenePropertyEditor();
+
+    m_scenePropertyEditor->setScene(scene);
 
     propertiesdock = new QDockWidget(tr("Properties"), this);
     propertiesdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     propertiesdock->setWidget(m_scenePropertyEditor);
     propertiesdock->setObjectName("Properties");
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
-
-    scene = new AnimationScene();
-    scene->setSceneRect(QRect(0,0,1200,720));
 
     view = new QGraphicsView(scene);
     view->setRenderHint(QPainter::RenderHint::Antialiasing);
