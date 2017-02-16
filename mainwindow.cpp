@@ -222,14 +222,10 @@ void MainWindow::createGui()
     connect(timeline, SIGNAL(animationSelectionChanged(QPropertyAnimation *)), this, SLOT(changePropertyEditor(QPropertyAnimation *)));
     connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(timelineSelectionChanged(ResizeableItem*)));
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(view);
-    layout->addWidget(timeline);
-
-    QWidget *w = new QWidget();
-    w->setLayout(layout);
-
-    setCentralWidget(w);
+    QSplitter *splitter = new QSplitter(Qt::Vertical);
+    splitter->addWidget(view);
+    splitter->addWidget(timeline);
+    setCentralWidget(splitter);
 }
 
 void MainWindow::createStatusBar()

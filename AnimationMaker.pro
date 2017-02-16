@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     animationpropertyeditor.cpp \
     expander.cpp \
     itempropertyeditor.cpp \
-    scenepropertyeditor.cpp
+    scenepropertyeditor.cpp \
+    transitionpanel.cpp
 
 HEADERS  += mainwindow.h \
     treemodel.h \
@@ -48,7 +49,8 @@ HEADERS  += mainwindow.h \
     animationpropertyeditor.h \
     expander.h \
     itempropertyeditor.h \
-    scenepropertyeditor.h
+    scenepropertyeditor.h \
+    transitionpanel.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

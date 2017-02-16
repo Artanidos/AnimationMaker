@@ -14,6 +14,7 @@ public:
     TimelineModel();
 
     void addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value);
+    void addAnimation(ResizeableItem *item, QPropertyAnimation *anim);
 
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
     Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;

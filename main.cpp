@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     p.setColor(QPalette::Window, QColor(53,53,53));
     p.setColor(QPalette::WindowText, Qt::white);
-    p.setColor(QPalette::Base, QColor(64, 66, 68)); //QColor(15,15,15));
+    p.setColor(QPalette::Base, QColor(64, 66, 68));
     p.setColor(QPalette::AlternateBase, QColor(53,53,53));
     p.setColor(QPalette::ToolTipBase, Qt::white);
     p.setColor(QPalette::ToolTipText, Qt::black);

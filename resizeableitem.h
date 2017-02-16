@@ -2,7 +2,9 @@
 #define RESIZEABLEITEM_H
 
 #include <QGraphicsItem>
+#include <QPropertyAnimation>
 #include <QAction>
+#include <QList>
 #include "itemhandle.h"
 
 class ResizeableItem : public QObject, public QGraphicsItem
@@ -41,6 +43,10 @@ public:
     void setWidth(qreal value);
     void setHeight(qreal value);
 
+    void addAnimation(QPropertyAnimation *anim);
+    int getAnimationCount() const;
+    QPropertyAnimation *getAnimation(int row);
+
 private:
     ItemHandle*  m_handles[8];
     bool m_hasHandles;
@@ -57,6 +63,7 @@ private:
     QAction *m_opacityAct;
     QAction *m_leftAct;
     QAction *m_topAct;
+    QList<QPropertyAnimation*> *m_animations;
 
 private slots:
     void deleteItem();

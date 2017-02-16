@@ -11,7 +11,7 @@ public:
     ~TreeItem();
 
     void appendChild(TreeItem *child);
-
+    inline QList<TreeItem*> children() {return m_childItems;}
     TreeItem *child(int row);
     int childCount() const;
     int columnCount() const;

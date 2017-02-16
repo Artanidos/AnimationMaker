@@ -113,11 +113,11 @@ void AnimationScene::setEditMode(EditMode mode)
 
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
-    int type, fps;
-    qreal x, y, z, width, height, xscale, yscale;
+    int type, fps, animations, begin, duration;
+    qreal x, y, z, width, height, xscale, yscale, start, end;
     QPen pen;
     QBrush brush;
-    QString text;
+    QString text, propertyName;
 
     clear();
     dataStream >> width;
@@ -147,6 +147,27 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
             r->setFlag(QGraphicsItem::ItemIsSelectable, true);
             r->setZValue(z);
+
+            dataStream >> animations;
+            for(int i=0; i < animations; i++)
+            {
+                dataStream >> begin;
+                dataStream >> duration;
+                dataStream >> propertyName;
+                dataStream >> start;
+                dataStream >> end;
+                QVariant b(begin);
+                QPropertyAnimation *anim = new QPropertyAnimation();
+                anim->setProperty("begin", b);
+                anim->setTargetObject(r);
+                anim->setPropertyName(propertyName.toLatin1());
+                anim->setDuration(duration);
+                anim->setStartValue(start);
+                anim->setEndValue(end);
+                r->addAnimation(anim);
+                emit animationAdded(r, anim);
+            }
+
             connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
             addItem(r);
         }
@@ -249,6 +270,16 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << r->rect().height();
                 dataStream << r->pen();
                 dataStream << r->brush();
+                dataStream << r->getAnimationCount();
+                for(int i=0; i< r->getAnimationCount(); i++)
+                {
+                    QPropertyAnimation *anim = r->getAnimation(i);
+                    dataStream << anim->property("begin").toInt();
+                    dataStream << anim->duration();
+                    dataStream << QString(anim->propertyName());
+                    dataStream << anim->startValue().toReal();
+                    dataStream << anim->endValue().toReal();
+                }
                 break;
             }
             case Ellipse::Type:

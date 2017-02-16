@@ -29,6 +29,7 @@ public:
 signals:
     void itemAdded(QGraphicsItem *item);
     void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value);
+    void animationAdded(ResizeableItem *item, QPropertyAnimation *anim);
 
 public slots:
     void addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName, qreal value);

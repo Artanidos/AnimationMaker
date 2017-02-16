@@ -13,19 +13,61 @@ TimelineModel::TimelineModel()
     m_animations = new QParallelAnimationGroup();
 }
 
+TreeItem *searchChild(TreeItem *parent, ResizeableItem *item)
+{
+    TreeItem *treeItem = NULL;
+    for(int i = 0; i < parent->childCount(); i++)
+    {
+        TreeItem *ti = parent->child(i);
+        if(ti->data(1).value<void *>() == item)
+        {
+            treeItem = ti;
+            break;
+        }
+    }
+    return treeItem;
+}
+
+void TimelineModel::addAnimation(ResizeableItem *item, QPropertyAnimation *anim)
+{
+    bool found = false;
+    beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
+    TreeItem *treeItem = searchChild(m_rootItem, item);
+    if(treeItem)
+        found = true;
+    else
+        treeItem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), m_rootItem, 1);
+    TreeItem *treeChildItem = new TreeItem(anim->propertyName(), qVariantFromValue((void *) anim), treeItem, 2);
+    treeItem->appendChild(treeChildItem);
+    if(!found)
+        m_rootItem->appendChild(treeItem);
+    endInsertRows();
+    m_animations->addAnimation(anim);
+}
+
 void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value)
 {
+    // TODO: check if animation for this property already exists
+    bool found = false;
     beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
-    TreeItem *treeItem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), m_rootItem, 1);
+    TreeItem *treeItem = searchChild(m_rootItem, item);
+    if(treeItem)
+        found = true;
+    else
+        treeItem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), m_rootItem, 1);
     const QByteArray propName(propertyName.toLatin1());
     QPropertyAnimation *anim = new QPropertyAnimation();
     anim->setTargetObject(item);
+    anim->setProperty("begin", QVariant(0));
+    anim->setDuration(1000);
     anim->setPropertyName(propName);
     anim->setStartValue(value);
     anim->setEndValue(value);
+    item->addAnimation(anim);
     TreeItem *treeChildItem = new TreeItem(propertyName, qVariantFromValue((void *) anim), treeItem, 2);
     treeItem->appendChild(treeChildItem);
-    m_rootItem->appendChild(treeItem);
+    if(!found)
+        m_rootItem->appendChild(treeItem);
     endInsertRows();
     m_animations->addAnimation(anim);
 }
@@ -80,8 +122,7 @@ Qt::ItemFlags TimelineModel::flags(const QModelIndex &index) const
     return QAbstractItemModel::flags(index);
 }
 
-QVariant TimelineModel::headerData(int section, Qt::Orientation orientation,
-                               int role) const
+QVariant TimelineModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
         return m_rootItem->data(section);

@@ -7,6 +7,7 @@
 #include <QToolButton>
 #include <QPropertyAnimation>
 #include <QTest>
+#include <QScrollBar>
 
 Timeline::Timeline(AnimationScene *scene)
     : QWidget(0)
@@ -44,15 +45,25 @@ Timeline::Timeline(AnimationScene *scene)
     m_treeview = new QTreeView(this);
     m_treeview->setModel(m_timelineModel);
     m_treeview->header()->close();
-    m_treeview->setFixedWidth(300);
 
-    QWidget *time = new QWidget();
-    time->setStyleSheet("background-color: #4c4e50");
-    time->setMinimumWidth(300);
-    time->setMinimumHeight(50);
+    m_transitionPanel = new TransitionPanel();
+    m_transitionPanel->setModel(m_timelineModel);
+    m_transitionPanel->setTreeview(m_treeview);
+    m_slider = new QSlider(Qt::Horizontal);
+    m_slider->setMinimum(0);
+    m_slider->setMaximum(100);
+    m_slider->setValue(0);
+    m_slider->setTickPosition(QSlider::TicksAbove);
+    m_slider->setTickInterval(10);
+    m_slider->setSingleStep(1);
+    m_slider->setStyleSheet("");
+
     layout->addItem(hbox, 0, 0);
+    layout->addWidget(m_slider, 0, 1);
     layout->addWidget(m_treeview, 1, 0);
-    layout->addWidget(time, 1, 1);
+    layout->addWidget(m_transitionPanel, 1, 1);
+    layout->setColumnStretch(0,0);
+    layout->setColumnStretch(1,1);
 
     this->setLayout(layout);
 
@@ -62,16 +73,29 @@ Timeline::Timeline(AnimationScene *scene)
 
     m_treeview->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
+    connect(m_treeview, SIGNAL(expanded(QModelIndex)), m_transitionPanel, SLOT(treeExpanded(QModelIndex)));
+    connect(m_treeview, SIGNAL(collapsed(QModelIndex)), m_transitionPanel, SLOT(treeCollapsed(QModelIndex)));
+    connect(this, SIGNAL(itemAdded()), m_transitionPanel, SLOT(treeItemAdded()));
+    connect(m_treeview->verticalScrollBar(), SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(treeScrollValueChanged(int)));
+
 
     QItemSelectionModel *selectionModel = m_treeview->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
 
     connect(scene, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimation(ResizeableItem *, const QString, qreal)));
+    connect(scene, SIGNAL(animationAdded(ResizeableItem *, QPropertyAnimation *)), this, SLOT(animationAdded(ResizeableItem *, QPropertyAnimation *)));
+}
+
+void Timeline::animationAdded(ResizeableItem *item, QPropertyAnimation *anim)
+{
+    m_timelineModel->addAnimation(item, anim);
+    emit itemAdded();
 }
 
 void Timeline::addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value)
 {
     m_timelineModel->addPropertyAnimation(item, propertyName, value);
+    emit itemAdded();
     //m_treeview->setExpanded(index, true);
 }
 

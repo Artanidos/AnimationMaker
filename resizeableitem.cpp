@@ -14,6 +14,7 @@ ResizeableItem::ResizeableItem()
     m_hasHandles = false;
     m_xscale = 1;
     m_yscale = 1;
+    m_animations = new QList<QPropertyAnimation *>();
 
     delAct = new QAction(tr("Delete"), this);
     delAct->setShortcut(tr("Delete"));
@@ -53,6 +54,21 @@ ResizeableItem::ResizeableItem()
     m_contextMenu->addAction(sendToBackAct);
     m_contextMenu->addSeparator();
     m_contextMenu->addMenu(m_animateMenu);
+}
+
+void ResizeableItem::addAnimation(QPropertyAnimation *anim)
+{
+    m_animations->append(anim);
+}
+
+int ResizeableItem::getAnimationCount() const
+{
+    return m_animations->count();
+}
+
+QPropertyAnimation *ResizeableItem::getAnimation(int row)
+{
+    return m_animations->at(row);
 }
 
 void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option)

@@ -7,6 +7,7 @@
 #include "timelinemodel.h"
 #include "resizeableitem.h"
 #include "animationscene.h"
+#include "transitionpanel.h"
 
 class Timeline : public QWidget
 {
@@ -21,11 +22,13 @@ public slots:
     void forwardAnimation();
     void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value);
     void selectionChanged(const QItemSelection& current,const QItemSelection&);
+    void animationAdded(ResizeableItem *item, QPropertyAnimation *anim);
 
 signals:
     void playAnimationPressed();
     void animationSelectionChanged(QPropertyAnimation *anim);
     void itemSelectionChanged(ResizeableItem *item);
+    void itemAdded();
 
 private:
     QTreeView *m_treeview;
@@ -36,6 +39,8 @@ private:
     QAction *m_yAct;
     QAction *m_opacityAct;
     AnimationScene *m_scene;
+    TransitionPanel *m_transitionPanel;
+    QSlider *m_slider;
 
     void addProperty(const QString name);
 };
