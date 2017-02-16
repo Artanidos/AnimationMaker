@@ -23,6 +23,9 @@ public slots:
     void fromChanged(int);
     void toChanged(int);
 
+signals:
+    void dataChanged();
+
 private:
     QPropertyAnimation *m_animation;
     QLineEdit *m_property;

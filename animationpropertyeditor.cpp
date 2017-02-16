@@ -15,11 +15,13 @@ AnimationPropertyEditor::AnimationPropertyEditor()
     m_to = new QSpinBox();
     m_easing = new QComboBox();
     m_begin->setMinimum(0);
+    m_begin->setMaximum(10000);
     //m_begin->setMaximum(std::numeric_limits<int>::max());
     m_duration->setMinimum(0);
     m_duration->setMaximum(10000);
     //m_duration->setMaximum(std::numeric_limits<int>::max());
     m_from->setMinimum(0);
+    m_from->setMaximum(10000);
     //m_from->setMaximum(std::numeric_limits<int>::max());
     m_to->setMinimum(0);
     //m_to->setMaximum(std::numeric_limits<int>::max());
@@ -69,19 +71,23 @@ void AnimationPropertyEditor::setAnimation(QPropertyAnimation *anim)
 void AnimationPropertyEditor::beginChanged(int newValue)
 {
     m_animation->setProperty("begin", newValue);
+    emit dataChanged();
 }
 
 void AnimationPropertyEditor::durationChanged(int newValue)
 {
     m_animation->setDuration(newValue);
+    emit dataChanged();
 }
 
 void AnimationPropertyEditor::fromChanged(int newValue)
 {
     m_animation->setStartValue(newValue);
+    emit dataChanged();
 }
 
 void AnimationPropertyEditor::toChanged(int newValue)
 {
     m_animation->setEndValue(newValue);
+    emit dataChanged();
 }

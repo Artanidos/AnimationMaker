@@ -86,6 +86,11 @@ Timeline::Timeline(AnimationScene *scene)
     connect(scene, SIGNAL(animationAdded(ResizeableItem *, QPropertyAnimation *)), this, SLOT(animationAdded(ResizeableItem *, QPropertyAnimation *)));
 }
 
+void Timeline::animationChanged()
+{
+    m_transitionPanel->update();
+}
+
 void Timeline::animationAdded(ResizeableItem *item, QPropertyAnimation *anim)
 {
     m_timelineModel->addAnimation(item, anim);

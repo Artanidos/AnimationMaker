@@ -23,6 +23,7 @@ public slots:
     void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value);
     void selectionChanged(const QItemSelection& current,const QItemSelection&);
     void animationAdded(ResizeableItem *item, QPropertyAnimation *anim);
+    void animationChanged();
 
 signals:
     void playAnimationPressed();
