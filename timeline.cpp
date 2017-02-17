@@ -45,7 +45,7 @@ Timeline::Timeline(AnimationScene *scene)
     m_treeview = new QTreeView(this);
     m_treeview->setModel(m_timelineModel);
     m_treeview->header()->close();
-
+    m_treeview->setStyleSheet("QTreeView::item:has-children:!selected {background-color: #4c4e50;} QTreeView::item:!selected { border-bottom: 1px solid #292929;} QTreeView::branch:!selected {border-bottom: 1px solid #292929;} QTreeView::branch:has-children:!selected {background-color: #4c4e50;} QTreeView::branch:has-children:!has-siblings:closed, QTreeView::branch:closed:has-children:has-siblings {border-image: none; image: url(:/images/branch-closed.png);} QTreeView::branch:open:has-children:!has-siblings, QTreeView::branch:open:has-children:has-siblings {border-image: none;image: url(:/images/branch-open.png);}");
     m_transitionPanel = new TransitionPanel();
     m_transitionPanel->setModel(m_timelineModel);
     m_transitionPanel->setTreeview(m_treeview);
@@ -56,7 +56,9 @@ Timeline::Timeline(AnimationScene *scene)
     m_slider->setTickPosition(QSlider::TicksAbove);
     m_slider->setTickInterval(10);
     m_slider->setSingleStep(1);
-    m_slider->setStyleSheet("");
+    //m_slider->setStyleSheet("QSlider::handle:horizontal {background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);border: 1px solid #5c5c5c;width: 18px;margin: -2px 0;border-radius: 3px;}");
+
+
 
     layout->addItem(hbox, 0, 0);
     layout->addWidget(m_slider, 0, 1);
@@ -119,9 +121,9 @@ void Timeline::onCustomContextMenu(const QPoint &point)
 
 void Timeline::playAnimation()
 {
-    //emit playAnimationPressed();
     m_scene->clearSelection();
-    m_timelineModel->getAnimations()->start();
+    QParallelAnimationGroup *pag =  m_timelineModel->getAnimations();
+    pag->start();
 }
 
 void Timeline::revertAnimation()

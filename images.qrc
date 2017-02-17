@@ -11,5 +11,7 @@
         <file>images/forward.png</file>
         <file>images/reverse.png</file>
         <file>images/expanderButton.png</file>
+        <file>images/branch-closed.png</file>
+        <file>images/branch-open.png</file>
     </qresource>
 </RCC>

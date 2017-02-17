@@ -41,7 +41,7 @@ void TransitionPanel::paintEvent(QPaintEvent *)
     {
         painter.drawLine(k, 0, k, height);
     }
-    for(int l = 14; l < height; l+=14)
+    for(int l = 15; l < height; l+=15)
     {
         painter.drawLine(0, l, width, l);
     }
@@ -67,15 +67,15 @@ void TransitionPanel::paintEvent(QPaintEvent *)
                 if(m_treeview->isExpanded(m_timelineModel->index(i, 0)))
                 {
                     painter.setPen(QPen(orange));
-                    painter.drawRect(begin / 5 + 1, 1 + -14 * m_scrollPos + row * 14, duration / 5 - 2, 12);
-                    painter.fillRect(begin / 5 + 2, 2 + -14 * m_scrollPos + row * 14, duration / 5 - 3, 11, orange2);
+                    painter.drawRect(begin / 5 + 1, 1 + -15 * m_scrollPos + row * 15, duration / 5 - 2, 13);
+                    painter.fillRect(begin / 5 + 2, 2 + -15 * m_scrollPos + row * 15, duration / 5 - 3, 12, orange2);
                     row++;
                     childsPainted++;
                 }
             }
         }
         painter.setPen(QPen(gray));
-        painter.fillRect(minBegin / 5 + 1, 1 + -14 * m_scrollPos + (row - childsPainted - 1) * 14 + 5, (maxTime - minBegin) / 5 - 1, 8, orange);
+        painter.fillRect(minBegin / 5 + 1, 1 + -15 * m_scrollPos + (row - childsPainted - 1) * 15 + 5, (maxTime - minBegin) / 5 - 1, 8, orange);
     }
 }
 

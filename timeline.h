@@ -26,7 +26,6 @@ public slots:
     void animationChanged();
 
 signals:
-    void playAnimationPressed();
     void animationSelectionChanged(QPropertyAnimation *anim);
     void itemSelectionChanged(ResizeableItem *item);
     void itemAdded();
