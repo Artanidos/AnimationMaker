@@ -13,5 +13,6 @@
         <file>images/expanderButton.png</file>
         <file>images/branch-closed.png</file>
         <file>images/branch-open.png</file>
+        <file>images/playhead.png</file>
     </qresource>
 </RCC>

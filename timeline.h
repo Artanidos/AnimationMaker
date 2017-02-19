@@ -8,6 +8,7 @@
 #include "resizeableitem.h"
 #include "animationscene.h"
 #include "transitionpanel.h"
+#include "playhead.h"
 
 class Timeline : public QWidget
 {
@@ -24,6 +25,7 @@ public slots:
     void selectionChanged(const QItemSelection& current,const QItemSelection&);
     void animationAdded(ResizeableItem *item, QPropertyAnimation *anim);
     void animationChanged();
+    void playheadValueChanged(int val);
 
 signals:
     void animationSelectionChanged(QPropertyAnimation *anim);
@@ -40,9 +42,10 @@ private:
     QAction *m_opacityAct;
     AnimationScene *m_scene;
     TransitionPanel *m_transitionPanel;
-    QSlider *m_slider;
+    PlayHead *m_playhead;
 
     void addProperty(const QString name);
+    bool eventFilter(QObject *object, QEvent *event);
 };
 
 #endif // TIMELINE_H

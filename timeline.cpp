@@ -1,5 +1,6 @@
 #include "timeline.h"
 #include "resizeableitem.h"
+
 #include <QHeaderView>
 #include <QLabel>
 #include <QGridLayout>
@@ -8,6 +9,7 @@
 #include <QPropertyAnimation>
 #include <QTest>
 #include <QScrollBar>
+#include <QTimeLine>
 
 Timeline::Timeline(AnimationScene *scene)
     : QWidget(0)
@@ -49,19 +51,15 @@ Timeline::Timeline(AnimationScene *scene)
     m_transitionPanel = new TransitionPanel();
     m_transitionPanel->setModel(m_timelineModel);
     m_transitionPanel->setTreeview(m_treeview);
-    m_slider = new QSlider(Qt::Horizontal);
-    m_slider->setMinimum(0);
-    m_slider->setMaximum(100);
-    m_slider->setValue(0);
-    m_slider->setTickPosition(QSlider::TicksAbove);
-    m_slider->setTickInterval(10);
-    m_slider->setSingleStep(1);
-    //m_slider->setStyleSheet("QSlider::handle:horizontal {background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);border: 1px solid #5c5c5c;width: 18px;margin: -2px 0;border-radius: 3px;}");
-
-
+    m_playhead = new PlayHead(Qt::Horizontal);
+    m_playhead->setMinimum(0);
+    qreal max = (qreal)m_playhead->width() / m_scene->fps() * 5;
+    m_playhead->setMaximum(max * 100);
+    m_playhead->setValue(0);
+    m_playhead->installEventFilter(this);
 
     layout->addItem(hbox, 0, 0);
-    layout->addWidget(m_slider, 0, 1);
+    layout->addWidget(m_playhead, 0, 1);
     layout->addWidget(m_treeview, 1, 0);
     layout->addWidget(m_transitionPanel, 1, 1);
     layout->setColumnStretch(0,0);
@@ -80,12 +78,31 @@ Timeline::Timeline(AnimationScene *scene)
     connect(this, SIGNAL(itemAdded()), m_transitionPanel, SLOT(treeItemAdded()));
     connect(m_treeview->verticalScrollBar(), SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(treeScrollValueChanged(int)));
 
+    connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 
     QItemSelectionModel *selectionModel = m_treeview->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
 
     connect(scene, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimation(ResizeableItem *, const QString, qreal)));
     connect(scene, SIGNAL(animationAdded(ResizeableItem *, QPropertyAnimation *)), this, SLOT(animationAdded(ResizeableItem *, QPropertyAnimation *)));
+}
+
+bool Timeline::eventFilter(QObject *watched, QEvent *event)
+{
+    PlayHead * ph = dynamic_cast<PlayHead *>(watched);
+    if ( ph == NULL)
+    {
+        return false;
+    }
+
+    QResizeEvent * revent = dynamic_cast<QResizeEvent*>(event);
+    if ( revent == NULL)
+    {
+        qreal max = (qreal)m_playhead->width() / m_scene->fps() * 5;
+        m_playhead->setMaximum(max * 100);
+        return false;
+    }
+    return false;
 }
 
 void Timeline::animationChanged()
@@ -122,24 +139,63 @@ void Timeline::onCustomContextMenu(const QPoint &point)
 void Timeline::playAnimation()
 {
     m_scene->clearSelection();
+
     QParallelAnimationGroup *pag =  m_timelineModel->getAnimations();
+
+    qreal frames = (qreal)pag->totalDuration() / m_scene->fps();
+    if(frames == 0)
+        return;
+
+    int delay = 1000 / frames;
+
+    qreal max = (qreal)m_playhead->width() / m_scene->fps() * 5;
+    m_playhead->setMaximum(max * 100);
+
     pag->start();
+    pag->pause();
+    for(int i=0; i < frames; i++)
+    {
+        pag->setCurrentTime(i * delay);
+        m_playhead->setValue(i * 100);
+
+        QTest::qSleep(delay);
+        QCoreApplication::processEvents(QEventLoop::AllEvents, delay);
+    }
+    pag->setCurrentTime(pag->totalDuration());
+    m_playhead->setValue(frames * 100);
 }
 
 void Timeline::revertAnimation()
 {
     m_scene->clearSelection();
-    m_timelineModel->getAnimations()->start();
-    m_timelineModel->getAnimations()->pause();
-    m_timelineModel->getAnimations()->setCurrentTime(0);
+    QParallelAnimationGroup *pag =  m_timelineModel->getAnimations();
+    pag->start();
+    pag->pause();
+    pag->setCurrentTime(0);
+    m_playhead->setValue(0);
 }
 
 void Timeline::forwardAnimation()
 {
     m_scene->clearSelection();
-    m_timelineModel->getAnimations()->start();
-    m_timelineModel->getAnimations()->pause();
-    m_timelineModel->getAnimations()->setCurrentTime(m_timelineModel->getAnimations()->totalDuration());
+    QParallelAnimationGroup *pag =  m_timelineModel->getAnimations();
+    pag->start();
+    pag->pause();
+    pag->setCurrentTime(m_timelineModel->getAnimations()->totalDuration());
+
+    qreal frames = (qreal)pag->totalDuration() / m_scene->fps();
+    qreal max = (qreal)m_playhead->width() / m_scene->fps() * 5;
+    m_playhead->setMaximum(max * 100);
+    m_playhead->setValue(frames * 100);
+}
+
+void Timeline::playheadValueChanged(int val)
+{
+    m_scene->clearSelection();
+    QParallelAnimationGroup *pag =  m_timelineModel->getAnimations();
+    pag->start();
+    pag->pause();
+    pag->setCurrentTime(val / 100 * m_scene->fps());
 }
 
 void Timeline::selectionChanged(const QItemSelection& current,const QItemSelection&)

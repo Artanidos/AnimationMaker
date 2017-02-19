@@ -6,7 +6,7 @@
 #include <QTreeView>
 #include "timelinemodel.h"
 
-class TransitionPanel :public QWidget
+class TransitionPanel : public QWidget
 {
     Q_OBJECT
 public:
