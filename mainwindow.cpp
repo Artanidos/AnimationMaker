@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete timeline;
     delete tree;
     delete scene;
     delete view;
