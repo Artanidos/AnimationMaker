@@ -34,6 +34,15 @@ QString Text::text()
     return m_text;
 }
 
+void Text::setText(QString text)
+{
+    m_text = text;
+    m_textitem->setText(text);
+    QFontMetrics m(m_font);
+    setRect(0, 0, m.width(m_text) * m_xscale, m.height() * m_yscale);
+    setHandlePositions();
+}
+
 void Text::setScale(qreal x, qreal y)
 {
     m_xscale = x;
@@ -43,7 +52,7 @@ void Text::setScale(qreal x, qreal y)
     m_textitem->setTransform(trans);
 
     QFontMetrics m(m_font);
-    setRect(0, 0, m.width(m_text) * x, m.height() * y);
+    setRect(0, 0, m.width(m_text) * m_xscale, m.height() * m_yscale);
 }
 
 void Text::scaleObjects()

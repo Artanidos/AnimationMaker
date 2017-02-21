@@ -15,6 +15,7 @@ public:
     void scaleObjects();
     void setScale(qreal x, qreal y);
     QString text();
+    void setText(QString text);
 
     enum { Type = UserType + 3 };
     int type() const Q_DECL_OVERRIDE;

@@ -1,5 +1,4 @@
 #include "itempropertyeditor.h"
-#include "expander.h"
 #include "animationscene.h"
 
 ItemPropertyEditor::ItemPropertyEditor()
@@ -51,6 +50,16 @@ ItemPropertyEditor::ItemPropertyEditor()
     layoutGeo->addWidget(m_height, 1, 4);
     expGeo->addLayout(layoutGeo);
     vbox->addWidget(expGeo);
+
+    expText = new Expander("Text");
+    expText->setVisible(false);
+    QGridLayout *layoutText = new QGridLayout();
+    QLabel *labelText = new QLabel("Text");
+    m_text = new QLineEdit();
+    layoutText->addWidget(labelText, 0, 0);
+    layoutText->addWidget(m_text, 0, 1);
+    expText->addLayout(layoutText);
+    vbox->addWidget(expText);
     vbox->addStretch();
     this->setLayout(vbox);
 
@@ -58,6 +67,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(m_y, SIGNAL(valueChanged(int)), this, SLOT(yChanged(int)));
     connect(m_width, SIGNAL(valueChanged(int)), this, SLOT(widthChanged(int)));
     connect(m_height, SIGNAL(valueChanged(int)), this, SLOT(heightChanged(int)));
+    connect(m_text, SIGNAL(textChanged(QString)), this, SLOT(textChanged(QString)));
 }
 
 void ItemPropertyEditor::setItem(ResizeableItem *item)
@@ -69,6 +79,12 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     m_height->setValue(m_item->rect().height());
     m_typ->setText(getItemTypeName(m_item));
 
+    m_textitem = dynamic_cast<Text*>(item);
+    if(m_textitem)
+    {
+        m_text->setText(m_textitem->text());
+    }
+    expText->setVisible(m_textitem);
 }
 
 void ItemPropertyEditor::xChanged(int value)
@@ -89,4 +105,9 @@ void ItemPropertyEditor::widthChanged(int value)
 void ItemPropertyEditor::heightChanged(int value)
 {
     m_item->setHeight(value);
+}
+
+void ItemPropertyEditor::textChanged(QString value)
+{
+    m_textitem->setText(value);
 }
