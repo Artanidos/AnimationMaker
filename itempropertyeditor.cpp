@@ -60,6 +60,17 @@ ItemPropertyEditor::ItemPropertyEditor()
     layoutText->addWidget(m_text, 0, 1);
     expText->addLayout(layoutText);
     vbox->addWidget(expText);
+
+    expTextcolor = new Expander("Textcolor");
+    expTextcolor->setVisible(false);
+    QGridLayout *layoutTextcolor = new QGridLayout();
+    QLabel *labelColor = new QLabel("Color");
+    m_textcolor = new QLineEdit();
+    layoutTextcolor->addWidget(labelColor, 0, 0);
+    layoutTextcolor->addWidget(m_textcolor, 0, 1);
+    expTextcolor->addLayout(layoutTextcolor);
+    vbox->addWidget(expTextcolor);
+
     vbox->addStretch();
     this->setLayout(vbox);
 
@@ -68,6 +79,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(m_width, SIGNAL(valueChanged(int)), this, SLOT(widthChanged(int)));
     connect(m_height, SIGNAL(valueChanged(int)), this, SLOT(heightChanged(int)));
     connect(m_text, SIGNAL(textChanged(QString)), this, SLOT(textChanged(QString)));
+    connect(m_textcolor, SIGNAL(textChanged(QString)), this, SLOT(textcolorChanged(QString)));
 }
 
 void ItemPropertyEditor::setItem(ResizeableItem *item)
@@ -83,8 +95,10 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     if(m_textitem)
     {
         m_text->setText(m_textitem->text());
+        m_textcolor->setText(m_textitem->textcolor().name());
     }
     expText->setVisible(m_textitem);
+    expTextcolor->setVisible(m_textitem);
 }
 
 void ItemPropertyEditor::xChanged(int value)
@@ -110,4 +124,9 @@ void ItemPropertyEditor::heightChanged(int value)
 void ItemPropertyEditor::textChanged(QString value)
 {
     m_textitem->setText(value);
+}
+
+void ItemPropertyEditor::textcolorChanged(QString value)
+{
+    m_textitem->setTextcolor(QColor(value));
 }

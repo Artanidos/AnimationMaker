@@ -25,8 +25,10 @@ private:
     QLabel *m_typ;
     QLineEdit *m_text;
     Expander *expText;
+    Expander *expTextcolor;
     ResizeableItem *m_item;
     Text *m_textitem;
+    QLineEdit *m_textcolor;
 
 private slots:
     void xChanged(int value);
@@ -34,6 +36,7 @@ private slots:
     void widthChanged(int value);
     void heightChanged(int value);
     void textChanged(QString value);
+    void textcolorChanged(QString value);
 };
 
 #endif // ITEMPROPERTYEDITOR_H

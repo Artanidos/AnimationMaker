@@ -9,11 +9,12 @@ Text::Text(QString text)
 {
    m_font = QFont("Arial", 13);
    m_text = text;
+   m_textcolor = QColor(Qt::black);
    QFontMetrics m(m_font);
    setRect(0, 0, m.width(m_text), m.height());
    m_textitem = new QGraphicsSimpleTextItem(m_text, this);
    m_textitem->setFont(m_font);
-   setPen(QPen(QBrush(), 0));
+   m_textitem->setBrush(QBrush(m_textcolor));
 }
 
 int Text::type() const
@@ -41,6 +42,17 @@ void Text::setText(QString text)
     QFontMetrics m(m_font);
     setRect(0, 0, m.width(m_text) * m_xscale, m.height() * m_yscale);
     setHandlePositions();
+}
+
+QColor Text::textcolor()
+{
+    return m_textcolor;
+}
+
+void Text::setTextcolor(QColor color)
+{
+   m_textcolor = color;
+   m_textitem->setBrush(QBrush(m_textcolor));
 }
 
 void Text::setScale(qreal x, qreal y)

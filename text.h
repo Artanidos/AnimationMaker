@@ -3,6 +3,7 @@
 
 #include <QGraphicsItem>
 #include <QGraphicsRectItem>
+#include <QColor>
 #include "itemhandle.h"
 #include "resizeableitem.h"
 
@@ -17,6 +18,9 @@ public:
     QString text();
     void setText(QString text);
 
+    QColor textcolor();
+    void setTextcolor(QColor textcolor);
+
     enum { Type = UserType + 3 };
     int type() const Q_DECL_OVERRIDE;
 
@@ -24,6 +28,7 @@ private:
     QFont m_font;
     QString m_text;
     QGraphicsSimpleTextItem *m_textitem;
+    QColor m_textcolor;
 };
 
 #endif // TEXT_H
