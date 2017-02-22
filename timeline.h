@@ -21,7 +21,7 @@ public slots:
     void playAnimation();
     void revertAnimation();
     void forwardAnimation();
-    void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value);
+    void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value, int min, int max);
     void selectionChanged(const QItemSelection& current,const QItemSelection&);
     void animationAdded(ResizeableItem *item, QPropertyAnimation *anim);
     void animationChanged();

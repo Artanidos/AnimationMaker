@@ -86,7 +86,7 @@ Timeline::Timeline(AnimationScene *scene)
     QItemSelectionModel *selectionModel = m_treeview->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
 
-    connect(scene, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimation(ResizeableItem *, const QString, qreal)));
+    connect(scene, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)));
     connect(scene, SIGNAL(animationAdded(ResizeableItem *, QPropertyAnimation *)), this, SLOT(animationAdded(ResizeableItem *, QPropertyAnimation *)));
 }
 
@@ -119,9 +119,9 @@ void Timeline::animationAdded(ResizeableItem *item, QPropertyAnimation *anim)
     emit itemAdded();
 }
 
-void Timeline::addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value)
+void Timeline::addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value, int min, int max)
 {
-    m_timelineModel->addPropertyAnimation(item, propertyName, value);
+    m_timelineModel->addPropertyAnimation(item, propertyName, value, min, max);
     emit itemAdded();
     //m_treeview->setExpanded(index, true);
 }

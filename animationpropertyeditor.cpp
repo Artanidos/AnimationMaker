@@ -15,17 +15,9 @@ AnimationPropertyEditor::AnimationPropertyEditor()
     m_to = new QSpinBox();
     m_easing = new QComboBox();
     m_begin->setMinimum(0);
-    m_begin->setMaximum(10000);
-    //m_begin->setMaximum(std::numeric_limits<int>::max());
+    m_begin->setMaximum(900000);
     m_duration->setMinimum(0);
-    m_duration->setMaximum(10000);
-    //m_duration->setMaximum(std::numeric_limits<int>::max());
-    m_from->setMinimum(0);
-    m_from->setMaximum(10000);
-    //m_from->setMaximum(std::numeric_limits<int>::max());
-    m_to->setMinimum(0);
-    //m_to->setMaximum(std::numeric_limits<int>::max());
-    m_to->setMaximum(10000);
+    m_duration->setMaximum(900000);
     m_property->setEnabled(false);
     m_easing->addItem("Linear");
     m_easing->addItem("InQuad");
@@ -64,6 +56,10 @@ void AnimationPropertyEditor::setAnimation(QPropertyAnimation *anim)
     m_property->setText(anim->propertyName());
     m_begin->setValue(anim->property("begin").toInt());
     m_duration->setValue(anim->duration());
+    m_from->setMinimum(anim->property("min").toInt());
+    m_from->setMaximum(anim->property("max").toInt());
+    m_to->setMinimum(anim->property("min").toInt());
+    m_to->setMaximum(anim->property("max").toInt());
     m_from->setValue(anim->startValue().toInt());
     m_to->setValue(anim->endValue().toInt());
 }

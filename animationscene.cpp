@@ -33,7 +33,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         r->setFlag(QGraphicsItem::ItemIsMovable, true);
         r->setFlag(QGraphicsItem::ItemIsSelectable, true);
         r->setPos(mouseEvent->scenePos());
-        connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
+        connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
         addItem(r);
         emit itemAdded(r);
     }
@@ -47,7 +47,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         e->setFlag(QGraphicsItem::ItemIsMovable, true);
         e->setFlag(QGraphicsItem::ItemIsSelectable, true);
         e->setPos(mouseEvent->scenePos());
-        connect(e, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
+        connect(e, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
         addItem(e);
         emit itemAdded(e);
     }
@@ -59,7 +59,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         t->setFlag(QGraphicsItem::ItemIsMovable, true);
         t->setFlag(QGraphicsItem::ItemIsSelectable, true);
         t->setPos(mouseEvent->scenePos());
-        connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
+        connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
         addItem(t);
         emit itemAdded(t);
     }
@@ -75,7 +75,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         b->setFlag(QGraphicsItem::ItemIsMovable, true);
         b->setFlag(QGraphicsItem::ItemIsSelectable, true);
         b->setPos(mouseEvent->scenePos());
-        connect(b, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
+        connect(b, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
         addItem(b);
         emit itemAdded(b);
     }
@@ -91,7 +91,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         v->setFlag(QGraphicsItem::ItemIsMovable, true);
         v->setFlag(QGraphicsItem::ItemIsSelectable, true);
         v->setPos(mouseEvent->scenePos());
-        connect(v, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
+        connect(v, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
         addItem(v);
         emit itemAdded(v);
     }
@@ -482,9 +482,9 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
     return dataStream;
 }
 
-void AnimationScene::addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName, qreal value)
+void AnimationScene::addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName, qreal value, int min, int max)
 {
-    emit addPropertyAnimation(item, propertyName, value);
+    emit addPropertyAnimation(item, propertyName, value, min, max);
 }
 
 QDataStream& operator <<(QDataStream &out, const AnimationScene *s)

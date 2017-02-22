@@ -80,7 +80,7 @@ private slots:
     void addTopAnimation();
 
 signals:
-    void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value);
+    void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value, int min, int max);
     void idChanged(ResizeableItem *item, QString value);
 
 protected:

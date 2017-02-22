@@ -504,15 +504,15 @@ void ResizeableItem::deleteItem()
 
 void ResizeableItem::addOpacityAnimation()
 {
-    emit addPropertyAnimation(this, "opacity", opacity());
+    emit addPropertyAnimation(this, "opacity", opacity(), 0, 1);
 }
 
 void ResizeableItem::addLeftAnimation()
 {
-    emit addPropertyAnimation(this, "left", x());
+    emit addPropertyAnimation(this, "left", x(), -10000, 10000);
 }
 
 void ResizeableItem::addTopAnimation()
 {
-    emit addPropertyAnimation(this, "top", y());
+    emit addPropertyAnimation(this, "top", y(), -10000, 10000);
 }

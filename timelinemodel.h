@@ -14,7 +14,7 @@ class TimelineModel : public QAbstractItemModel
 public:
     TimelineModel();
 
-    void addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value);
+    void addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value, int min, int max);
     void addAnimation(ResizeableItem *item, QPropertyAnimation *anim);
 
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;

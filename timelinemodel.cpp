@@ -32,7 +32,7 @@ void TimelineModel::addAnimation(ResizeableItem *item, QPropertyAnimation *anim)
     m_animations->append(anim);
 }
 
-void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value)
+void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value, int min, int max)
 {
     // TODO: check if animation for this property already exists
     bool found = false;
@@ -49,6 +49,8 @@ void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyN
     QPropertyAnimation *anim = new QPropertyAnimation();
     anim->setTargetObject(item);
     anim->setProperty("begin", QVariant(0));
+    anim->setProperty("min", QVariant(min));
+    anim->setProperty("max", QVariant(max));
     anim->setDuration(1000);
     anim->setPropertyName(propName);
     anim->setStartValue(value);
