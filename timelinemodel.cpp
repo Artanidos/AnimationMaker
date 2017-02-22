@@ -3,14 +3,13 @@
 #include "rectangle.h"
 #include <QPixmap>
 
-
 TimelineModel::TimelineModel()
 {
     QVariant rootData = "Root";
     QVariant data;
 
     m_rootItem = new TreeItem(rootData, data);
-    m_animations = new QParallelAnimationGroup();
+    m_animations = new QList<QPropertyAnimation*>();
 }
 
 TreeItem *searchChild(TreeItem *parent, ResizeableItem *item)
@@ -42,7 +41,7 @@ void TimelineModel::addAnimation(ResizeableItem *item, QPropertyAnimation *anim)
     if(!found)
         m_rootItem->appendChild(treeItem);
     endInsertRows();
-    m_animations->addAnimation(anim);
+    m_animations->append(anim);
 }
 
 void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value)
@@ -69,10 +68,10 @@ void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyN
     if(!found)
         m_rootItem->appendChild(treeItem);
     endInsertRows();
-    m_animations->addAnimation(anim);
+    m_animations->append(anim);
 }
 
-QParallelAnimationGroup *TimelineModel::getAnimations()
+QList<QPropertyAnimation*> *TimelineModel::getAnimations()
 {
     return m_animations;
 }

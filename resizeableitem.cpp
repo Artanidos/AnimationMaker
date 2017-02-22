@@ -141,6 +141,7 @@ QPen ResizeableItem::pen() const
 void ResizeableItem::setPen(const QPen &pen)
 {
     m_pen = pen;
+    update();
 }
 
 QBrush ResizeableItem::brush() const
@@ -150,6 +151,7 @@ QBrush ResizeableItem::brush() const
 void ResizeableItem::setBrush(const QBrush &brush)
 {
     m_brush = brush;
+    update();
 }
 
 void ResizeableItem::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)

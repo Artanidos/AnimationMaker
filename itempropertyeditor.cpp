@@ -71,6 +71,20 @@ ItemPropertyEditor::ItemPropertyEditor()
     expTextcolor->addLayout(layoutTextcolor);
     vbox->addWidget(expTextcolor);
 
+    expColor = new Expander("Color");
+    expColor->setVisible(false);
+    QGridLayout *layoutColor = new QGridLayout();
+    QLabel *labelBrush = new QLabel("Brush");
+    QLabel *labelBorder = new QLabel("Border");
+    m_brushcolor = new QLineEdit();
+    m_pencolor = new QLineEdit();
+    layoutColor->addWidget(labelBrush, 0, 0);
+    layoutColor->addWidget(m_brushcolor, 0, 1);
+    layoutColor->addWidget(labelBorder, 1, 0);
+    layoutColor->addWidget(m_pencolor, 1, 1);
+    expColor->addLayout(layoutColor);
+    vbox->addWidget(expColor);
+
     vbox->addStretch();
     this->setLayout(vbox);
 
@@ -80,11 +94,14 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(m_height, SIGNAL(valueChanged(int)), this, SLOT(heightChanged(int)));
     connect(m_text, SIGNAL(textChanged(QString)), this, SLOT(textChanged(QString)));
     connect(m_textcolor, SIGNAL(textChanged(QString)), this, SLOT(textcolorChanged(QString)));
+    connect(m_brushcolor, SIGNAL(textChanged(QString)), this, SLOT(colorChanged(QString)));
+    connect(m_pencolor, SIGNAL(textChanged(QString)), this, SLOT(borderColorChanged(QString)));
 }
 
 void ItemPropertyEditor::setItem(ResizeableItem *item)
 {
     m_item = item;
+    expColor->setVisible(false);
     m_x->setValue(m_item->x());
     m_y->setValue(m_item->y());
     m_width->setValue(m_item->rect().width());
@@ -96,6 +113,22 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     {
         m_text->setText(m_textitem->text());
         m_textcolor->setText(m_textitem->textcolor().name());
+    }
+
+    m_rectangle = dynamic_cast<Rectangle*>(item);
+    if(m_rectangle)
+    {
+        m_brushcolor->setText(m_rectangle->brush().color().name());
+        m_pencolor->setText(m_rectangle->pen().color().name());
+        expColor->setVisible(true);
+    }
+
+    m_ellipse = dynamic_cast<Ellipse*>(item);
+    if(m_ellipse)
+    {
+        m_brushcolor->setText(m_ellipse->brush().color().name());
+        m_pencolor->setText(m_ellipse->pen().color().name());
+        expColor->setVisible(true);
     }
     expText->setVisible(m_textitem);
     expTextcolor->setVisible(m_textitem);
@@ -129,4 +162,22 @@ void ItemPropertyEditor::textChanged(QString value)
 void ItemPropertyEditor::textcolorChanged(QString value)
 {
     m_textitem->setTextcolor(QColor(value));
+}
+
+void ItemPropertyEditor::colorChanged(QString value)
+{
+    if(m_rectangle)
+        m_rectangle->setBrush(QBrush(QColor(value)));
+
+    if(m_ellipse)
+        m_ellipse->setBrush(QBrush(QColor(value)));
+}
+
+void ItemPropertyEditor::borderColorChanged(QString value)
+{
+    if(m_rectangle)
+        m_rectangle->setPen(QPen(QColor(value)));
+
+    if(m_ellipse)
+        m_ellipse->setPen(QPen(QColor(value)));
 }

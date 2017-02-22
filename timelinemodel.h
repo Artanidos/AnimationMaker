@@ -24,11 +24,11 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
-    QParallelAnimationGroup *getAnimations();
+    QList<QPropertyAnimation*> *getAnimations();
 
 private:
     TreeItem *m_rootItem = NULL;
-    QParallelAnimationGroup *m_animations;
+    QList<QPropertyAnimation*> *m_animations;
 };
 
 #endif // TIMELINEMODEL_H

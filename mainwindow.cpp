@@ -440,6 +440,10 @@ void MainWindow::sceneItemAdded(QGraphicsItem *item)
     model->addItem(item);
     tree->reset();
     tree->expandAll();
+
+    item->setSelected(true);
+    selectAct->setChecked(true);
+    scene->setEditMode(AnimationScene::EditMode::ModeSelect);
 }
 
 void MainWindow::showPropertyPanel()

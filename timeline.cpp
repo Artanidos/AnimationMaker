@@ -7,6 +7,8 @@
 #include <QMenu>
 #include <QToolButton>
 #include <QPropertyAnimation>
+#include <QSequentialAnimationGroup>
+#include <QPauseAnimation>
 #include <QTest>
 #include <QScrollBar>
 #include <QTimeLine>
@@ -15,6 +17,7 @@ Timeline::Timeline(AnimationScene *scene)
     : QWidget(0)
 {
     m_scene = scene;
+
     QHBoxLayout *hbox = new QHBoxLayout();
     QToolButton *playButton = new QToolButton();
     QToolButton *revertButton = new QToolButton();
@@ -136,11 +139,32 @@ void Timeline::onCustomContextMenu(const QPoint &point)
     }
 }
 
+QParallelAnimationGroup *getAnimationGroup(QList<QPropertyAnimation*> *anims)
+{
+    QParallelAnimationGroup *pag = new QParallelAnimationGroup();
+    for(int i=0; i < anims->count() ; i++)
+    {
+        QPropertyAnimation *anim = anims->at(i);
+        int begin = anim->property("begin").toInt();
+        if(begin > 0)
+        {
+            QSequentialAnimationGroup *sag = new QSequentialAnimationGroup();
+            QPauseAnimation *pa = new QPauseAnimation(begin);
+            sag->addAnimation(pa);
+            sag->addAnimation(anim);
+            pag->addAnimation(sag);
+        }
+        else
+            pag->addAnimation(anim);
+    }
+    return pag;
+}
+
 void Timeline::playAnimation()
 {
     m_scene->clearSelection();
 
-    QParallelAnimationGroup *pag =  m_timelineModel->getAnimations();
+    QParallelAnimationGroup *pag = getAnimationGroup(m_timelineModel->getAnimations());
 
     qreal frames = (qreal)pag->totalDuration() / m_scene->fps();
     if(frames == 0)
@@ -168,7 +192,7 @@ void Timeline::playAnimation()
 void Timeline::revertAnimation()
 {
     m_scene->clearSelection();
-    QParallelAnimationGroup *pag =  m_timelineModel->getAnimations();
+    QParallelAnimationGroup *pag = getAnimationGroup(m_timelineModel->getAnimations());
     pag->start();
     pag->pause();
     pag->setCurrentTime(0);
@@ -178,10 +202,10 @@ void Timeline::revertAnimation()
 void Timeline::forwardAnimation()
 {
     m_scene->clearSelection();
-    QParallelAnimationGroup *pag =  m_timelineModel->getAnimations();
+    QParallelAnimationGroup *pag = getAnimationGroup(m_timelineModel->getAnimations());
     pag->start();
     pag->pause();
-    pag->setCurrentTime(m_timelineModel->getAnimations()->totalDuration());
+    pag->setCurrentTime(pag->totalDuration());
 
     qreal frames = (qreal)pag->totalDuration() / m_scene->fps();
     qreal max = (qreal)m_playhead->width() / m_scene->fps() * 5;
@@ -192,7 +216,7 @@ void Timeline::forwardAnimation()
 void Timeline::playheadValueChanged(int val)
 {
     m_scene->clearSelection();
-    QParallelAnimationGroup *pag =  m_timelineModel->getAnimations();
+    QParallelAnimationGroup *pag = getAnimationGroup(m_timelineModel->getAnimations());
     pag->start();
     pag->pause();
     pag->setCurrentTime(val / 100 * m_scene->fps());

@@ -118,6 +118,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
     QPen pen;
     QBrush brush;
     QString text, propertyName;
+    QColor color;
 
     clear();
     dataStream >> width;
@@ -187,6 +188,26 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             e->setFlag(QGraphicsItem::ItemIsMovable, true);
             e->setFlag(QGraphicsItem::ItemIsSelectable, true);
             e->setZValue(z);
+
+            dataStream >> animations;
+            for(int i=0; i < animations; i++)
+            {
+                dataStream >> begin;
+                dataStream >> duration;
+                dataStream >> propertyName;
+                dataStream >> start;
+                dataStream >> end;
+                QVariant b(begin);
+                QPropertyAnimation *anim = new QPropertyAnimation();
+                anim->setProperty("begin", b);
+                anim->setTargetObject(e);
+                anim->setPropertyName(propertyName.toLatin1());
+                anim->setDuration(duration);
+                anim->setStartValue(start);
+                anim->setEndValue(end);
+                e->addAnimation(anim);
+                emit animationAdded(e, anim);
+            }
             connect(e, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
             addItem(e);
         }
@@ -198,12 +219,34 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> xscale;
             dataStream >> yscale;
             dataStream >> text;
+            dataStream >> color;
             Text *t = new Text(text);
             t->setPos(x, y);
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
             t->setZValue(z);
             t->setScale(xscale, yscale);
+            t->setTextcolor(color);
+
+            dataStream >> animations;
+            for(int i=0; i < animations; i++)
+            {
+                dataStream >> begin;
+                dataStream >> duration;
+                dataStream >> propertyName;
+                dataStream >> start;
+                dataStream >> end;
+                QVariant b(begin);
+                QPropertyAnimation *anim = new QPropertyAnimation();
+                anim->setProperty("begin", b);
+                anim->setTargetObject(t);
+                anim->setPropertyName(propertyName.toLatin1());
+                anim->setDuration(duration);
+                anim->setStartValue(start);
+                anim->setEndValue(end);
+                t->addAnimation(anim);
+                emit animationAdded(t, anim);
+            }
             connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
             addItem(t);
         }
@@ -222,6 +265,26 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
             b->setZValue(z);
             b->setScale(xscale, yscale);
+
+            dataStream >> animations;
+            for(int i=0; i < animations; i++)
+            {
+                dataStream >> begin;
+                dataStream >> duration;
+                dataStream >> propertyName;
+                dataStream >> start;
+                dataStream >> end;
+                QVariant beg(begin);
+                QPropertyAnimation *anim = new QPropertyAnimation();
+                anim->setProperty("begin", beg);
+                anim->setTargetObject(b);
+                anim->setPropertyName(propertyName.toLatin1());
+                anim->setDuration(duration);
+                anim->setStartValue(start);
+                anim->setEndValue(end);
+                b->addAnimation(anim);
+                emit animationAdded(b, anim);
+            }
             connect(b, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
             addItem(b);
         }
@@ -240,6 +303,26 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
             v->setZValue(z);
             v->setScale(xscale, yscale);
+
+            dataStream >> animations;
+            for(int i=0; i < animations; i++)
+            {
+                dataStream >> begin;
+                dataStream >> duration;
+                dataStream >> propertyName;
+                dataStream >> start;
+                dataStream >> end;
+                QVariant b(begin);
+                QPropertyAnimation *anim = new QPropertyAnimation();
+                anim->setProperty("begin", b);
+                anim->setTargetObject(v);
+                anim->setPropertyName(propertyName.toLatin1());
+                anim->setDuration(duration);
+                anim->setStartValue(start);
+                anim->setEndValue(end);
+                v->addAnimation(anim);
+                emit animationAdded(v, anim);
+            }
             connect(v, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
             addItem(v);
         }
@@ -293,6 +376,16 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << e->rect().height();
                 dataStream << e->pen();
                 dataStream << e->brush();
+                dataStream << e->getAnimationCount();
+                for(int i=0; i< e->getAnimationCount(); i++)
+                {
+                    QPropertyAnimation *anim = e->getAnimation(i);
+                    dataStream << anim->property("begin").toInt();
+                    dataStream << anim->duration();
+                    dataStream << QString(anim->propertyName());
+                    dataStream << anim->startValue().toReal();
+                    dataStream << anim->endValue().toReal();
+                }
                 break;
             }
             case Text::Type:
@@ -305,6 +398,17 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << t->xscale();
                 dataStream << t->yscale();
                 dataStream << t->text();
+                dataStream << t->textcolor();
+                dataStream << t->getAnimationCount();
+                for(int i=0; i< t->getAnimationCount(); i++)
+                {
+                    QPropertyAnimation *anim = t->getAnimation(i);
+                    dataStream << anim->property("begin").toInt();
+                    dataStream << anim->duration();
+                    dataStream << QString(anim->propertyName());
+                    dataStream << anim->startValue().toReal();
+                    dataStream << anim->endValue().toReal();
+                }
                 break;
             }
             case Bitmap::Type:
@@ -317,6 +421,16 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << b->rect().width();
                 dataStream << b->rect().height();
                 dataStream << b->getImage();
+                dataStream << b->getAnimationCount();
+                for(int i=0; i< b->getAnimationCount(); i++)
+                {
+                    QPropertyAnimation *anim = b->getAnimation(i);
+                    dataStream << anim->property("begin").toInt();
+                    dataStream << anim->duration();
+                    dataStream << QString(anim->propertyName());
+                    dataStream << anim->startValue().toReal();
+                    dataStream << anim->endValue().toReal();
+                }
                 break;
             }
             case Vectorgraphic::Type:
@@ -329,6 +443,16 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << v->xscale();
                 dataStream << v->yscale();
                 dataStream << v->getData();
+                dataStream << v->getAnimationCount();
+                for(int i=0; i< v->getAnimationCount(); i++)
+                {
+                    QPropertyAnimation *anim = v->getAnimation(i);
+                    dataStream << anim->property("begin").toInt();
+                    dataStream << anim->duration();
+                    dataStream << QString(anim->propertyName());
+                    dataStream << anim->startValue().toReal();
+                    dataStream << anim->endValue().toReal();
+                }
                 break;
             }
             default:
