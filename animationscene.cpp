@@ -27,6 +27,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         clearSelection();
 
         Rectangle *r = new Rectangle(50, 50);
+        r->setId("");
         r->setPen(QPen(Qt::black));
         r->setBrush(QBrush(Qt::blue));
         r->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -117,7 +118,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
     qreal x, y, z, width, height, xscale, yscale, start, end;
     QPen pen;
     QBrush brush;
-    QString text, propertyName;
+    QString text, propertyName, id;
     QColor color;
 
     clear();
@@ -133,6 +134,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
         dataStream >> type;
         if(type == Rectangle::Type)
         {
+            dataStream >> id;
             dataStream >> x;
             dataStream >> y;
             dataStream >> z;
@@ -142,6 +144,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> brush;
 
             Rectangle *r = new Rectangle(width, height);
+            r->setId(id);
             r->setPos(x, y);
             r->setPen(pen);
             r->setBrush(brush);
@@ -174,6 +177,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
         }
         else if(type == Ellipse::Type)
         {
+            dataStream >> id;
             dataStream >> x;
             dataStream >> y;
             dataStream >> z;
@@ -181,7 +185,9 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> height;
             dataStream >> pen;
             dataStream >> brush;
+
             Ellipse *e = new Ellipse(width, height);
+            e->setId(id);
             e->setPos(x, y);
             e->setPen(pen);
             e->setBrush(brush);
@@ -213,6 +219,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
         }
         else if(type == Text::Type)
         {
+            dataStream >> id;
             dataStream >> x;
             dataStream >> y;
             dataStream >> z;
@@ -220,7 +227,9 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> yscale;
             dataStream >> text;
             dataStream >> color;
+
             Text *t = new Text(text);
+            t->setId(id);
             t->setPos(x, y);
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -253,13 +262,16 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
         else if(type == Bitmap::Type)
         {
             QImage img;
+            dataStream >> id;
             dataStream >> x;
             dataStream >> y;
             dataStream >> z;
             dataStream >> width;
             dataStream >> height;
             dataStream >> img;
+
             Bitmap *b = new Bitmap(img, width, height);
+            b->setId(id);
             b->setPos(x, y);
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -291,6 +303,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
         else if(type == Vectorgraphic::Type)
         {
             QByteArray arr;
+            dataStream >> id;
             dataStream >> x;
             dataStream >> y;
             dataStream >> z;
@@ -298,6 +311,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> yscale;
             dataStream >> arr;
             Vectorgraphic *v = new Vectorgraphic(arr);
+            v->setId(id);
             v->setPos(x, y);
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -346,6 +360,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
             {
                 Rectangle *r = dynamic_cast<Rectangle *>(item);
                 dataStream << Rectangle::Type;
+                dataStream << r->id();
                 dataStream << r->pos().x();
                 dataStream << r->pos().y();
                 dataStream << r->zValue();
@@ -369,6 +384,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
             {
                 Ellipse *e = dynamic_cast<Ellipse *>(item);
                 dataStream << Ellipse::Type;
+                dataStream << e->id();
                 dataStream << e->pos().x();
                 dataStream << e->pos().y();
                 dataStream << e->zValue();
@@ -392,6 +408,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
             {
                 Text *t = dynamic_cast<Text *>(item);
                 dataStream << Text::Type;
+                dataStream << t->id();
                 dataStream << t->pos().x();
                 dataStream << t->pos().y();
                 dataStream << t->zValue();
@@ -415,6 +432,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
             {
                 Bitmap *b = dynamic_cast<Bitmap *>(item);
                 dataStream << Bitmap::Type;
+                dataStream << b->id();
                 dataStream << b->pos().x();
                 dataStream << b->pos().y();
                 dataStream << b->zValue();
@@ -437,6 +455,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
             {
                 Vectorgraphic *v = dynamic_cast<Vectorgraphic *>(item);
                 dataStream << Vectorgraphic::Type;
+                dataStream << v->id();
                 dataStream << v->pos().x();
                 dataStream << v->pos().y();
                 dataStream << v->zValue();
@@ -478,7 +497,15 @@ QDataStream& operator >>(QDataStream &in, AnimationScene *s)
     return s->read(in);
 }
 
-QString getItemTypeName(QGraphicsItem *item)
+QString getItemName(ResizeableItem *item)
+{
+    QString name = getItemTypeName(item);
+    if(!item->id().isEmpty())
+        name = item->id();
+    return name;
+}
+
+QString getItemTypeName(ResizeableItem *item)
 {
     switch(item->type())
     {

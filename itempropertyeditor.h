@@ -38,6 +38,7 @@ private:
     QLineEdit *m_pencolor;
 
 private slots:
+    void idChanged(QString value);
     void xChanged(int value);
     void yChanged(int value);
     void widthChanged(int value);

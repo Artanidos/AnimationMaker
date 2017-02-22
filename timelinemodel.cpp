@@ -12,21 +12,6 @@ TimelineModel::TimelineModel()
     m_animations = new QList<QPropertyAnimation*>();
 }
 
-TreeItem *searchChild(TreeItem *parent, ResizeableItem *item)
-{
-    TreeItem *treeItem = NULL;
-    for(int i = 0; i < parent->childCount(); i++)
-    {
-        TreeItem *ti = parent->child(i);
-        if(ti->data(1).value<void *>() == item)
-        {
-            treeItem = ti;
-            break;
-        }
-    }
-    return treeItem;
-}
-
 void TimelineModel::addAnimation(ResizeableItem *item, QPropertyAnimation *anim)
 {
     bool found = false;
@@ -35,7 +20,10 @@ void TimelineModel::addAnimation(ResizeableItem *item, QPropertyAnimation *anim)
     if(treeItem)
         found = true;
     else
-        treeItem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), m_rootItem, 1);
+    {
+        treeItem = new TreeItem(getItemName(item), qVariantFromValue((void *) item), m_rootItem, 1);
+        connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+    }
     TreeItem *treeChildItem = new TreeItem(anim->propertyName(), qVariantFromValue((void *) anim), treeItem, 2);
     treeItem->appendChild(treeChildItem);
     if(!found)
@@ -53,7 +41,10 @@ void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyN
     if(treeItem)
         found = true;
     else
-        treeItem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), m_rootItem, 1);
+    {
+        treeItem = new TreeItem(getItemName(item), qVariantFromValue((void *) item), m_rootItem, 1);
+        connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+    }
     const QByteArray propName(propertyName.toLatin1());
     QPropertyAnimation *anim = new QPropertyAnimation();
     anim->setTargetObject(item);
@@ -175,4 +166,16 @@ int TimelineModel::rowCount(const QModelIndex &parent) const
         parentItem = static_cast<TreeItem*>(parent.internalPointer());
 
     return parentItem->childCount();
+}
+
+void TimelineModel::idChanged(ResizeableItem *item, QString value)
+{
+    TreeItem *treeItem = searchChild(m_rootItem, item);
+    if(treeItem)
+    {
+        if(value.isEmpty())
+            value = getItemTypeName(item);
+        treeItem->setData(0, value);
+        this->dataChanged(index(0,0), index(1,0));
+    }
 }

@@ -10,7 +10,6 @@
 
 ResizeableItem::ResizeableItem()
 {
-
     m_hasHandles = false;
     m_xscale = 1;
     m_yscale = 1;
@@ -115,6 +114,17 @@ void ResizeableItem::setRect(qreal x, qreal y, qreal w, qreal h)
     prepareGeometryChange();
     m_rect = QRectF(x, y, w, h);
     update();
+}
+
+QString ResizeableItem::id() const
+{
+    return m_id;
+}
+
+void ResizeableItem::setId(const QString value)
+{
+    m_id = value;
+    emit idChanged(this, value);
 }
 
 void ResizeableItem::setWidth(qreal value)

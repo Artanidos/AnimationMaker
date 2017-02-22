@@ -11,6 +11,7 @@
 #include <QPixmap>
 #include <QGraphicsItem>
 #include <QtTest/QTest>
+#include <QModelIndex>
 
 TreeModel::TreeModel(AnimationScene *scene, QObject *parent)
     : QAbstractItemModel(parent)
@@ -48,19 +49,21 @@ void TreeModel::readChildren(AnimationScene *scene, TreeItem *parent)
     QList<QGraphicsItem*> itemList = scene->items(Qt::AscendingOrder);
     foreach (QGraphicsItem *item, itemList)
     {
-        QString typeName = getItemTypeName(item);
-        if(!typeName.isEmpty())
+        ResizeableItem *ri = dynamic_cast<ResizeableItem*>(item);
+        if(ri)
         {
-            TreeItem *treeitem = new TreeItem(typeName, qVariantFromValue((void *) item), parent);
+            TreeItem *treeitem = new TreeItem(getItemName(ri), qVariantFromValue((void *) ri), parent);
             parent->appendChild(treeitem);
+            connect(ri, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
         }
     }
 }
 
-void TreeModel::addItem(QGraphicsItem *item)
+void TreeModel::addItem(ResizeableItem *item)
 {
-    TreeItem *treeItem = new TreeItem(getItemTypeName(item), qVariantFromValue((void *) item), m_rootItem->child(0));
+    TreeItem *treeItem = new TreeItem(getItemName(item), qVariantFromValue((void *) item), m_rootItem->child(0));
     m_rootItem->child(0)->appendChild(treeItem);
+    connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
 }
 
 int TreeModel::columnCount(const QModelIndex &parent) const
@@ -157,4 +160,16 @@ int TreeModel::rowCount(const QModelIndex &parent) const
         parentItem = static_cast<TreeItem*>(parent.internalPointer());
 
     return parentItem->childCount();
+}
+
+void TreeModel::idChanged(ResizeableItem *item, QString value)
+{
+    TreeItem *treeItem = searchChild(m_rootItem->child(0), item);
+    if(treeItem)
+    {
+        if(value.isEmpty())
+            value = getItemTypeName(item);
+        treeItem->setData(0, value);
+        this->dataChanged(index(0,0), index(1,0));
+    }
 }

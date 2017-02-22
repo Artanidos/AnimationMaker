@@ -46,7 +46,8 @@ private:
 
 QDataStream &operator<<(QDataStream &, const AnimationScene *);
 QDataStream &operator>>(QDataStream &, AnimationScene *);
-QString getItemTypeName(QGraphicsItem *item);
+QString getItemName(ResizeableItem *item);
+QString getItemTypeName(ResizeableItem *item);
 bool isAnimationMakerItem(QGraphicsItem *item);
 
 #endif // ANIMATIONSCENE_H

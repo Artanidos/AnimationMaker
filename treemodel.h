@@ -25,7 +25,10 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     void setScene(AnimationScene *scene);
-    void addItem(QGraphicsItem *item);
+    void addItem(ResizeableItem *item);
+
+public slots:
+    void idChanged(ResizeableItem *item, QString);
 
 private:
     TreeItem *m_rootItem = NULL;

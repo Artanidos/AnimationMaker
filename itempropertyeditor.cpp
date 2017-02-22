@@ -88,6 +88,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     vbox->addStretch();
     this->setLayout(vbox);
 
+    connect(m_id, SIGNAL(textChanged(QString)), this, SLOT(idChanged(QString)));
     connect(m_x, SIGNAL(valueChanged(int)), this, SLOT(xChanged(int)));
     connect(m_y, SIGNAL(valueChanged(int)), this, SLOT(yChanged(int)));
     connect(m_width, SIGNAL(valueChanged(int)), this, SLOT(widthChanged(int)));
@@ -107,6 +108,7 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     m_width->setValue(m_item->rect().width());
     m_height->setValue(m_item->rect().height());
     m_typ->setText(getItemTypeName(m_item));
+    m_id->setText(item->id());
 
     m_textitem = dynamic_cast<Text*>(item);
     if(m_textitem)
@@ -132,6 +134,11 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     }
     expText->setVisible(m_textitem);
     expTextcolor->setVisible(m_textitem);
+}
+
+void ItemPropertyEditor::idChanged(QString value)
+{
+    m_item->setId(value);
 }
 
 void ItemPropertyEditor::xChanged(int value)

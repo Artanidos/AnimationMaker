@@ -392,24 +392,18 @@ void MainWindow::elementtreeSelectionChanged(const QItemSelection& current,const
     {
         const QModelIndex index = current.at(0).indexes().at(0);
         QVariant v = index.data(Qt::UserRole);
-        QGraphicsItem *gi = (QGraphicsItem *) v.value<void *>();
-        if(gi)
+        ResizeableItem *item = (ResizeableItem *) v.value<void *>();
+        if(item)
         {
-            ResizeableItem *item = dynamic_cast<ResizeableItem*>(gi);
-            if(item)
-            {
-                item->setSelected(true);
-                m_itemPropertyEditor->setItem(item);
-                propertiesdock->setWidget(m_itemPropertyEditor);
-            }
+            item->setSelected(true);
+            m_itemPropertyEditor->setItem(item);
+            propertiesdock->setWidget(m_itemPropertyEditor);
         }
         else
         {
             propertiesdock->setWidget(m_scenePropertyEditor);
         }
     }
-
-    // todo: set property page
 }
 
 void MainWindow::sceneSelectionChanged()
@@ -437,7 +431,7 @@ void MainWindow::timelineSelectionChanged(ResizeableItem* item)
 
 void MainWindow::sceneItemAdded(QGraphicsItem *item)
 {
-    model->addItem(item);
+    model->addItem(dynamic_cast<ResizeableItem*>(item));
     tree->reset();
     tree->expandAll();
 

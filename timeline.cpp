@@ -149,7 +149,12 @@ QParallelAnimationGroup *getAnimationGroup(QList<QPropertyAnimation*> *anims)
         if(begin > 0)
         {
             QSequentialAnimationGroup *sag = new QSequentialAnimationGroup();
-            QPauseAnimation *pa = new QPauseAnimation(begin);
+            QPropertyAnimation *pa = new QPropertyAnimation();
+            pa->setDuration(begin);
+            pa->setTargetObject(anim->targetObject());
+            pa->setPropertyName(anim->propertyName());
+            pa->setStartValue(anim->startValue());
+            pa->setEndValue(anim->startValue());
             sag->addAnimation(pa);
             sag->addAnimation(anim);
             pag->addAnimation(sag);

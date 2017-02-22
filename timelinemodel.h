@@ -10,6 +10,7 @@
 
 class TimelineModel : public QAbstractItemModel
 {
+    Q_OBJECT
 public:
     TimelineModel();
 
@@ -25,6 +26,9 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
     QList<QPropertyAnimation*> *getAnimations();
+
+public slots:
+    void idChanged(ResizeableItem *item, QString value);
 
 private:
     TreeItem *m_rootItem = NULL;

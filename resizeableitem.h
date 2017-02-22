@@ -26,6 +26,9 @@ public:
     qreal xscale();
     qreal yscale();
 
+    QString id() const;
+    void setId(const QString value);
+
     QRectF rect() const;
     void setRect(qreal x, qreal y, qreal w, qreal h);
 
@@ -50,6 +53,7 @@ public:
 private:
     ItemHandle*  m_handles[8];
     bool m_hasHandles;
+    QString m_id;
     QRectF m_rect;
     QPen m_pen;
     QBrush m_brush;
@@ -77,6 +81,7 @@ private slots:
 
 signals:
     void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value);
+    void idChanged(ResizeableItem *item, QString value);
 
 protected:
     void setHandlePositions();
