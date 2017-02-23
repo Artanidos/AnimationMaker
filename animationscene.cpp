@@ -116,7 +116,7 @@ void AnimationScene::setEditMode(EditMode mode)
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
     int type, fps, animations, begin, duration, min, max;
-    qreal x, y, z, width, height, xscale, yscale, start, end;
+    qreal x, y, width, height, xscale, yscale, start, end;
     QPen pen;
     QBrush brush;
     QString text, propertyName, id;
@@ -138,7 +138,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> id;
             dataStream >> x;
             dataStream >> y;
-            dataStream >> z;
             dataStream >> width;
             dataStream >> height;
             dataStream >> pen;
@@ -151,7 +150,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             r->setBrush(brush);
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
             r->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            r->setZValue(z);
 
             dataStream >> animations;
             for(int i=0; i < animations; i++)
@@ -187,7 +185,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> id;
             dataStream >> x;
             dataStream >> y;
-            dataStream >> z;
             dataStream >> width;
             dataStream >> height;
             dataStream >> pen;
@@ -200,7 +197,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             e->setBrush(brush);
             e->setFlag(QGraphicsItem::ItemIsMovable, true);
             e->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            e->setZValue(z);
 
             dataStream >> animations;
             for(int i=0; i < animations; i++)
@@ -235,7 +231,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> id;
             dataStream >> x;
             dataStream >> y;
-            dataStream >> z;
             dataStream >> xscale;
             dataStream >> yscale;
             dataStream >> text;
@@ -246,7 +241,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             t->setPos(x, y);
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            t->setZValue(z);
             t->setScale(xscale, yscale);
             t->setTextcolor(color);
 
@@ -284,7 +278,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> id;
             dataStream >> x;
             dataStream >> y;
-            dataStream >> z;
             dataStream >> width;
             dataStream >> height;
             dataStream >> img;
@@ -294,7 +287,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             b->setPos(x, y);
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            b->setZValue(z);
             b->setScale(xscale, yscale);
 
             dataStream >> animations;
@@ -331,7 +323,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> id;
             dataStream >> x;
             dataStream >> y;
-            dataStream >> z;
             dataStream >> xscale;
             dataStream >> yscale;
             dataStream >> arr;
@@ -340,7 +331,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             v->setPos(x, y);
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            v->setZValue(z);
             v->setScale(xscale, yscale);
 
             dataStream >> animations;
@@ -394,7 +384,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << r->id();
                 dataStream << r->pos().x();
                 dataStream << r->pos().y();
-                dataStream << r->zValue();
                 dataStream << r->rect().width();
                 dataStream << r->rect().height();
                 dataStream << r->pen();
@@ -420,7 +409,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << e->id();
                 dataStream << e->pos().x();
                 dataStream << e->pos().y();
-                dataStream << e->zValue();
                 dataStream << e->rect().width();
                 dataStream << e->rect().height();
                 dataStream << e->pen();
@@ -446,7 +434,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << t->id();
                 dataStream << t->pos().x();
                 dataStream << t->pos().y();
-                dataStream << t->zValue();
                 dataStream << t->xscale();
                 dataStream << t->yscale();
                 dataStream << t->text();
@@ -472,7 +459,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << b->id();
                 dataStream << b->pos().x();
                 dataStream << b->pos().y();
-                dataStream << b->zValue();
                 dataStream << b->rect().width();
                 dataStream << b->rect().height();
                 dataStream << b->getImage();
@@ -497,7 +483,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << v->id();
                 dataStream << v->pos().x();
                 dataStream << v->pos().y();
-                dataStream << v->zValue();
                 dataStream << v->xscale();
                 dataStream << v->yscale();
                 dataStream << v->getData();
@@ -586,6 +571,34 @@ void AnimationScene::pasteItem()
             connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(t);
             emit itemAdded(t);
+            break;
+        }
+        case Bitmap::Type:
+        {
+            Bitmap *bm = dynamic_cast<Bitmap*>(m_copy);
+            Bitmap *b = new Bitmap(bm->getImage(), bm->rect().width(), bm->rect().height());
+            b->setId("");
+            b->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
+            b->setFlag(QGraphicsItem::ItemIsMovable, true);
+            b->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            b->setScale(bm->xscale(), bm->yscale());
+            connect(b, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
+            addItem(b);
+            emit itemAdded(b);
+            break;
+        }
+        case Vectorgraphic::Type:
+        {
+            Vectorgraphic *vg = dynamic_cast<Vectorgraphic*>(m_copy);
+            Vectorgraphic *v = new Vectorgraphic(vg->getData());
+            v->setId("");
+            v->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
+            v->setFlag(QGraphicsItem::ItemIsMovable, true);
+            v->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            v->setScale(vg->xscale(), vg->yscale());
+            connect(v, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
+            addItem(v);
+            emit itemAdded(v);
             break;
         }
     }
