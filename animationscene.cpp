@@ -546,6 +546,7 @@ void AnimationScene::pasteItem()
     switch(m_copy->type())
     {
         case Rectangle::Type:
+        {
             Rectangle *r = new Rectangle(m_copy->rect().width(), m_copy->rect().height());
             r->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
             r->setId("");
@@ -557,6 +558,36 @@ void AnimationScene::pasteItem()
             addItem(r);
             emit itemAdded(r);
             break;
+        }
+        case Ellipse::Type:
+        {
+            Ellipse *e = new Ellipse(m_copy->rect().width(), m_copy->rect().height());
+            e->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
+            e->setId("");
+            e->setPen(m_copy->pen());
+            e->setBrush(m_copy->brush());
+            e->setFlag(QGraphicsItem::ItemIsMovable, true);
+            e->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            connect(e, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
+            addItem(e);
+            emit itemAdded(e);
+            break;
+        }
+        case Text::Type:
+        {
+            Text *cpy = dynamic_cast<Text*>(m_copy);
+            Text *t = new Text(cpy->text());
+            t->setId("");
+            t->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
+            t->setFlag(QGraphicsItem::ItemIsMovable, true);
+            t->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            t->setScale(cpy->xscale(), cpy->yscale());
+            t->setTextcolor(cpy->textcolor());
+            connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
+            addItem(t);
+            emit itemAdded(t);
+            break;
+        }
     }
 }
 
