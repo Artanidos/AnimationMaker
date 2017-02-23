@@ -172,7 +172,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 emit animationAdded(r, anim);
             }
 
-            connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
+            connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(r);
         }
         else if(type == Ellipse::Type)
@@ -214,7 +214,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 e->addAnimation(anim);
                 emit animationAdded(e, anim);
             }
-            connect(e, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
+            connect(e, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(e);
         }
         else if(type == Text::Type)
@@ -256,7 +256,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 t->addAnimation(anim);
                 emit animationAdded(t, anim);
             }
-            connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
+            connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(t);
         }
         else if(type == Bitmap::Type)
@@ -297,7 +297,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 b->addAnimation(anim);
                 emit animationAdded(b, anim);
             }
-            connect(b, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
+            connect(b, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(b);
         }
         else if(type == Vectorgraphic::Type)
@@ -337,7 +337,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 v->addAnimation(anim);
                 emit animationAdded(v, anim);
             }
-            connect(v, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal)));
+            connect(v, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(v);
         }
     }
