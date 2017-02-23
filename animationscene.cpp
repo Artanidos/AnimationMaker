@@ -11,6 +11,7 @@ AnimationScene::AnimationScene()
 {
     m_editMode = EditMode::ModeSelect;
     m_fps = 24;
+    m_copy = NULL;
 }
 
 void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -114,7 +115,7 @@ void AnimationScene::setEditMode(EditMode mode)
 
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
-    int type, fps, animations, begin, duration;
+    int type, fps, animations, begin, duration, min, max;
     qreal x, y, z, width, height, xscale, yscale, start, end;
     QPen pen;
     QBrush brush;
@@ -156,13 +157,19 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             for(int i=0; i < animations; i++)
             {
                 dataStream >> begin;
+                dataStream >> min;
+                dataStream >> max;
                 dataStream >> duration;
                 dataStream >> propertyName;
                 dataStream >> start;
                 dataStream >> end;
                 QVariant b(begin);
+                QVariant mn(min);
+                QVariant mx(max);
                 QPropertyAnimation *anim = new QPropertyAnimation();
                 anim->setProperty("begin", b);
+                anim->setProperty("min", mn);
+                anim->setProperty("max", mx);
                 anim->setTargetObject(r);
                 anim->setPropertyName(propertyName.toLatin1());
                 anim->setDuration(duration);
@@ -199,13 +206,19 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             for(int i=0; i < animations; i++)
             {
                 dataStream >> begin;
+                dataStream >> min;
+                dataStream >> max;
                 dataStream >> duration;
                 dataStream >> propertyName;
                 dataStream >> start;
                 dataStream >> end;
                 QVariant b(begin);
+                QVariant mn(min);
+                QVariant mx(max);
                 QPropertyAnimation *anim = new QPropertyAnimation();
                 anim->setProperty("begin", b);
+                anim->setProperty("min", mn);
+                anim->setProperty("max", mx);
                 anim->setTargetObject(e);
                 anim->setPropertyName(propertyName.toLatin1());
                 anim->setDuration(duration);
@@ -241,13 +254,19 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             for(int i=0; i < animations; i++)
             {
                 dataStream >> begin;
+                dataStream >> min;
+                dataStream >> max;
                 dataStream >> duration;
                 dataStream >> propertyName;
                 dataStream >> start;
                 dataStream >> end;
                 QVariant b(begin);
+                QVariant mn(min);
+                QVariant mx(max);
                 QPropertyAnimation *anim = new QPropertyAnimation();
                 anim->setProperty("begin", b);
+                anim->setProperty("min", mn);
+                anim->setProperty("max", mx);
                 anim->setTargetObject(t);
                 anim->setPropertyName(propertyName.toLatin1());
                 anim->setDuration(duration);
@@ -282,13 +301,19 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             for(int i=0; i < animations; i++)
             {
                 dataStream >> begin;
+                dataStream >> min;
+                dataStream >> max;
                 dataStream >> duration;
                 dataStream >> propertyName;
                 dataStream >> start;
                 dataStream >> end;
                 QVariant beg(begin);
+                QVariant mn(min);
+                QVariant mx(max);
                 QPropertyAnimation *anim = new QPropertyAnimation();
                 anim->setProperty("begin", beg);
+                anim->setProperty("min", mn);
+                anim->setProperty("max", mx);
                 anim->setTargetObject(b);
                 anim->setPropertyName(propertyName.toLatin1());
                 anim->setDuration(duration);
@@ -322,13 +347,19 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             for(int i=0; i < animations; i++)
             {
                 dataStream >> begin;
+                dataStream >> min;
+                dataStream >> max;
                 dataStream >> duration;
                 dataStream >> propertyName;
                 dataStream >> start;
                 dataStream >> end;
                 QVariant b(begin);
+                QVariant mn(min);
+                QVariant mx(max);
                 QPropertyAnimation *anim = new QPropertyAnimation();
                 anim->setProperty("begin", b);
+                anim->setProperty("min", mn);
+                anim->setProperty("max", mx);
                 anim->setTargetObject(v);
                 anim->setPropertyName(propertyName.toLatin1());
                 anim->setDuration(duration);
@@ -373,6 +404,8 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 {
                     QPropertyAnimation *anim = r->getAnimation(i);
                     dataStream << anim->property("begin").toInt();
+                    dataStream << anim->property("min").toInt();
+                    dataStream << anim->property("max").toInt();
                     dataStream << anim->duration();
                     dataStream << QString(anim->propertyName());
                     dataStream << anim->startValue().toReal();
@@ -397,6 +430,8 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 {
                     QPropertyAnimation *anim = e->getAnimation(i);
                     dataStream << anim->property("begin").toInt();
+                    dataStream << anim->property("min").toInt();
+                    dataStream << anim->property("max").toInt();
                     dataStream << anim->duration();
                     dataStream << QString(anim->propertyName());
                     dataStream << anim->startValue().toReal();
@@ -421,6 +456,8 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 {
                     QPropertyAnimation *anim = t->getAnimation(i);
                     dataStream << anim->property("begin").toInt();
+                    dataStream << anim->property("min").toInt();
+                    dataStream << anim->property("max").toInt();
                     dataStream << anim->duration();
                     dataStream << QString(anim->propertyName());
                     dataStream << anim->startValue().toReal();
@@ -444,6 +481,8 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 {
                     QPropertyAnimation *anim = b->getAnimation(i);
                     dataStream << anim->property("begin").toInt();
+                    dataStream << anim->property("min").toInt();
+                    dataStream << anim->property("max").toInt();
                     dataStream << anim->duration();
                     dataStream << QString(anim->propertyName());
                     dataStream << anim->startValue().toReal();
@@ -467,6 +506,8 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 {
                     QPropertyAnimation *anim = v->getAnimation(i);
                     dataStream << anim->property("begin").toInt();
+                    dataStream << anim->property("min").toInt();
+                    dataStream << anim->property("max").toInt();
                     dataStream << anim->duration();
                     dataStream << QString(anim->propertyName());
                     dataStream << anim->startValue().toReal();
@@ -485,6 +526,38 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
 void AnimationScene::addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName, qreal value, int min, int max)
 {
     emit addPropertyAnimation(item, propertyName, value, min, max);
+}
+
+void AnimationScene::copyItem()
+{
+    if(selectedItems().count() == 0)
+        return;
+
+    QGraphicsItem *gi = selectedItems().first();
+    m_copy = dynamic_cast<ResizeableItem*>(gi);
+}
+
+void AnimationScene::pasteItem()
+{
+    if(m_copy == NULL)
+        return;
+
+    m_copy->setSelected(false);
+    switch(m_copy->type())
+    {
+        case Rectangle::Type:
+            Rectangle *r = new Rectangle(m_copy->rect().width(), m_copy->rect().height());
+            r->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
+            r->setId("");
+            r->setPen(m_copy->pen());
+            r->setBrush(m_copy->brush());
+            r->setFlag(QGraphicsItem::ItemIsMovable, true);
+            r->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
+            addItem(r);
+            emit itemAdded(r);
+            break;
+    }
 }
 
 QDataStream& operator <<(QDataStream &out, const AnimationScene *s)

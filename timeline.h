@@ -43,9 +43,11 @@ private:
     AnimationScene *m_scene;
     TransitionPanel *m_transitionPanel;
     PlayHead *m_playhead;
+    QParallelAnimationGroup *m_parallelAnimations;
 
     void addProperty(const QString name);
     bool eventFilter(QObject *object, QEvent *event);
+    void createAnimationGroup();
 };
 
 #endif // TIMELINE_H

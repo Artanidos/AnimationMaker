@@ -2,6 +2,7 @@
 #include "expander.h"
 
 #include <QGridLayout>
+#include <QTest>
 #include <limits.h>
 
 AnimationPropertyEditor::AnimationPropertyEditor()

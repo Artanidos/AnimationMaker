@@ -6,16 +6,15 @@
 PlayHead::PlayHead(Qt::Orientation orientation)
     : QSlider(orientation)
 {
-
+    m_image = QImage(":/images/playhead.png");
 }
 
 void PlayHead::paintEvent(QPaintEvent *)
 {
-    QImage img(":/images/playhead.png");
     QColor gray = QColor(64, 66, 68);
     int width = size().width();
     int height = size().height();
-    int position = QStyle::sliderPositionFromValue(minimum(), maximum(),value(), width);
+    int position = QStyle::sliderPositionFromValue(minimum(), maximum(), value(), width);
 
     QPainter painter(this);
 
@@ -23,5 +22,5 @@ void PlayHead::paintEvent(QPaintEvent *)
     painter.fillRect(0, 0, width, height, gray);
     painter.drawRect(0, 0, width - 1, height - 1);
 
-    painter.drawImage(position - 4, 1, img);
+    painter.drawImage(position - 4, 1, m_image);
 }

@@ -63,7 +63,10 @@ private:
     QAction *svgAct;
     QAction *bitmapAct;
     QAction *showPropertyPanelAct;
+    QAction *copyAct;
+    QAction *pasteAct;
     QMenu *fileMenu;
+    QMenu *editMenu;
     QMenu *helpMenu;
     QMenu *viewMenu;
 
@@ -85,6 +88,8 @@ public slots:
     void changePropertyEditor(QPropertyAnimation *);
     void sceneSelectionChanged();
     void timelineSelectionChanged(ResizeableItem*);
+    void copy();
+    void paste();
 };
 
 #endif // MAINWINDOW_H

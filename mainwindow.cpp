@@ -319,6 +319,14 @@ void MainWindow::createActions()
     exportAct = new QAction(tr("&Export"), this);
     connect(exportAct, SIGNAL(triggered()), this, SLOT(exportAnimation()));
 
+    copyAct = new QAction(tr("&Copy"), this);
+    copyAct->setShortcuts(QKeySequence::Copy);
+    connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
+
+    pasteAct = new QAction(tr("&Paste"), this);
+    pasteAct->setShortcuts(QKeySequence::Paste);
+    connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
+
     showPropertyPanelAct = new QAction("Properties");
     connect(showPropertyPanelAct, SIGNAL(triggered()), this, SLOT(showPropertyPanel()));
 
@@ -338,6 +346,10 @@ void MainWindow::createMenus()
     QAction *exitAct = fileMenu->addAction(exitIcon, tr("E&xit"), this, &QWidget::close);
     exitAct->setShortcuts(QKeySequence::Quit);
     exitAct->setStatusTip(tr("Exit the application"));
+
+    editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu->addAction(copyAct);
+    editMenu->addAction(pasteAct);
 
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(showPropertyPanelAct);
@@ -449,4 +461,14 @@ void MainWindow::changePropertyEditor(QPropertyAnimation *anim)
 {
     m_animationPropertyEditor->setAnimation(anim);
     propertiesdock->setWidget(m_animationPropertyEditor);
+}
+
+void MainWindow::copy()
+{
+   scene->copyItem();
+}
+
+void MainWindow::paste()
+{
+    scene->pasteItem();
 }
