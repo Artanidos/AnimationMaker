@@ -1,5 +1,5 @@
 #include <math.h>
-
+#include "mainwindow.h"
 #include <QtWidgets>
 #include <QImage>
 #include <QPainter>
@@ -38,7 +38,7 @@ int encode(AVCodecContext *avctx, AVPacket *pkt, AVFrame *frame, int *got_packet
     return ret;
 }
 
-void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group)
+void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group, int fps, MainWindow *win)
 {
     int width = view->width();
     int height = view->height();
@@ -46,7 +46,6 @@ void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationG
     AVCodec *codec;
     AVCodecContext *c= NULL;
     int i, ret, got_output;
-    int fps = 25;
     FILE *f;
     AVFrame *frame;
     AVPacket pkt;
@@ -120,18 +119,20 @@ void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationG
 
     struct SwsContext * ctx = sws_getContext(c->width, c->height, AV_PIX_FMT_BGRA, c->width, c->height, AV_PIX_FMT_YUV420P, 0, 0, 0, 0);
 
-    int frames = group->duration() / fps;
-    //char buf[1024];
+    int delay = 1000 / fps;
+    int frames = group->totalDuration() / delay + 2;
+
+    group->start();
+    group->pause();
 
     for (i = 0; i < frames; i++)
     {
-        group->setCurrentTime(i * 40);
+        group->setCurrentTime(i * delay);
         QTest::qSleep(40);
-        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 40);
 
         QImage img = view->grab().toImage();
-        //snprintf(buf, sizeof(buf), "out%d.png", i);
-        //img.save(buf);
+
         av_init_packet(&pkt);
         pkt.data = NULL;
         pkt.size = 0;
@@ -158,7 +159,7 @@ void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationG
 
         if (got_output)
         {
-            printf("Write frame %3d (size=%5d)\n", i, pkt.size);
+            win->statusBar()->showMessage(QString("Writing frame %1 of %2 frames").arg(i).arg(frames));
             fwrite(pkt.data, 1, pkt.size, f);
             av_packet_unref(&pkt);
         }
@@ -183,7 +184,7 @@ void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationG
 
         if (got_output)
         {
-            printf("Write frame %3d (size=%5d)\n", i, pkt.size);
+            win->statusBar()->showMessage(QString("Writing frame %1 of %2 frames").arg(i).arg(frames));
             fwrite(pkt.data, 1, pkt.size, f);
             av_packet_unref(&pkt);
         }
@@ -197,4 +198,8 @@ void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationG
     av_freep(&frame->data[0]);
     av_frame_free(&frame);
     fflush(stdout);
+
+    group->stop();
+
+    win->statusBar()->showMessage("Ready");
 }

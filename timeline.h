@@ -16,6 +16,8 @@ class Timeline : public QWidget
 public:
     Timeline(AnimationScene *scene);
 
+    QParallelAnimationGroup *getAnimations();
+
 public slots:
     void onCustomContextMenu(const QPoint &point);
     void playAnimation();

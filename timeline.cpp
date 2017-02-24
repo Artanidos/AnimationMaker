@@ -56,8 +56,7 @@ Timeline::Timeline(AnimationScene *scene)
     m_transitionPanel->setTreeview(m_treeview);
     m_playhead = new PlayHead(Qt::Horizontal);
     m_playhead->setMinimum(0);
-    qreal max = (qreal)m_playhead->width() / m_scene->fps() * 5;
-    m_playhead->setMaximum(max * 100);
+    m_playhead->setMaximum(m_playhead->width() * 5);
     m_playhead->setValue(0);
     m_playhead->installEventFilter(this);
 
@@ -93,18 +92,14 @@ Timeline::Timeline(AnimationScene *scene)
 bool Timeline::eventFilter(QObject *watched, QEvent *event)
 {
     PlayHead * ph = dynamic_cast<PlayHead *>(watched);
-    if ( ph == NULL)
-    {
+    if (ph == NULL)
         return false;
-    }
 
     QResizeEvent * revent = dynamic_cast<QResizeEvent*>(event);
-    if ( revent == NULL)
-    {
-        qreal max = (qreal)m_playhead->width() / m_scene->fps() * 5;
-        m_playhead->setMaximum(max * 100);
+    if (revent == NULL)
         return false;
-    }
+
+    m_playhead->setMaximum(m_playhead->width() * 5);
     return false;
 }
 
@@ -117,12 +112,14 @@ void Timeline::animationChanged()
 void Timeline::animationAdded(ResizeableItem *item, QPropertyAnimation *anim)
 {
     m_timelineModel->addAnimation(item, anim);
+    m_parallelAnimations = NULL;
     emit itemAdded();
 }
 
 void Timeline::addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value, int min, int max)
 {
     m_timelineModel->addPropertyAnimation(item, propertyName, value, min, max);
+    m_parallelAnimations = NULL;
     emit itemAdded();
     //m_treeview->setExpanded(index, true);
 }
@@ -138,6 +135,12 @@ void Timeline::onCustomContextMenu(const QPoint &point)
         m_propertiesMenu->addAction(m_opacityAct);
         m_contextMenu->exec(m_treeview->mapToGlobal(point));
     }
+}
+
+QParallelAnimationGroup *Timeline::getAnimations()
+{
+   createAnimationGroup();
+   return m_parallelAnimations;
 }
 
 void Timeline::createAnimationGroup()
@@ -176,28 +179,23 @@ void Timeline::playAnimation()
 
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 
-    qreal frames = (qreal)m_parallelAnimations->totalDuration() / m_scene->fps();
+    int delay = 1000 / m_scene->fps();
+    int frames = m_parallelAnimations->totalDuration() / delay;
     if(frames == 0)
         return;
-
-    int delay = 1000 / frames;
-
-    qreal max = (qreal)m_playhead->width() / m_scene->fps() * 5;
-    m_playhead->setMaximum(max * 100);
-
 
     m_parallelAnimations->start();
     m_parallelAnimations->pause();
     for(int i=0; i < frames; i++)
     {
         m_parallelAnimations->setCurrentTime(i * delay);
-        m_playhead->setValue(i * 100);
+        m_playhead->setValue(i * delay);
 
-        QTest::qSleep(delay);
-        QCoreApplication::processEvents(QEventLoop::AllEvents, delay);
+        QTest::qSleep(delay / 2);
+        QCoreApplication::processEvents(QEventLoop::AllEvents, delay / 2);
     }
     m_parallelAnimations->setCurrentTime(m_parallelAnimations->totalDuration());
-    m_playhead->setValue(frames * 100);
+    m_playhead->setValue(m_parallelAnimations->totalDuration());
     m_parallelAnimations->stop();
 
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
@@ -227,11 +225,7 @@ void Timeline::forwardAnimation()
     m_parallelAnimations->start();
     m_parallelAnimations->pause();
     m_parallelAnimations->setCurrentTime(m_parallelAnimations->totalDuration());
-
-    qreal frames = (qreal)m_parallelAnimations->totalDuration() / m_scene->fps();
-    qreal max = (qreal)m_playhead->width() / m_scene->fps() * 5;
-    m_playhead->setMaximum(max * 100);
-    m_playhead->setValue(frames * 100);
+    m_playhead->setValue(m_parallelAnimations->totalDuration());
     m_parallelAnimations->stop();
 
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
@@ -245,7 +239,7 @@ void Timeline::playheadValueChanged(int val)
 
     m_parallelAnimations->start();
     m_parallelAnimations->pause();
-    m_parallelAnimations->setCurrentTime(val / 100 * m_scene->fps());
+    m_parallelAnimations->setCurrentTime(val);
     m_parallelAnimations->stop();
 }
 

@@ -11,7 +11,7 @@
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
 
-void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group);
+void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group, int fps, MainWindow *win);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -267,41 +267,14 @@ void MainWindow::readSettings()
 
 void MainWindow::exportAnimation()
 {
-    Rectangle *rect = new Rectangle(100, 100);
-    rect->setPen(QPen(Qt::black));
-    rect->setBrush(QBrush(Qt::blue));
-    rect->setPos(0, 0);
-    rect->setOpacity(0);
-    scene->addItem(rect);
-
-    QPropertyAnimation *animation = new QPropertyAnimation(rect, "opacity");
-    animation->setDuration(1000);
-    animation->setStartValue(0);
-    animation->setEndValue(1);
-
-    QPropertyAnimation *animationx = new QPropertyAnimation(rect, "x");
-    animationx->setDuration(1000);
-    animationx->setStartValue(0);
-    animationx->setEndValue(400);
-    animationx->setEasingCurve(QEasingCurve::InCubic);
-
-    QPropertyAnimation *animationy = new QPropertyAnimation(rect, "y");
-    animationy->setDuration(1000);
-    animationy->setStartValue(0);
-    animationy->setEndValue(50);
-
-    QParallelAnimationGroup *group = new QParallelAnimationGroup;
-    group->addAnimation(animation);
-    group->addAnimation(animationx);
-    group->addAnimation(animationy);
-    group->start();
-    group->pause();
-
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export Animation"), "", tr("AnimationMaker (*.mpg);;All Files (*)"));
+    if (fileName.isEmpty())
+        return;
     QGraphicsView *view = new QGraphicsView(scene);
     view->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setGeometry(0,0,scene->width(), scene->height());
-    video_encode("test.mpg", view, group);
+    video_encode(fileName.toLatin1(), view, timeline->getAnimations(), scene->fps(), this);
 }
 
 void MainWindow::createActions()
@@ -319,6 +292,12 @@ void MainWindow::createActions()
     exportAct = new QAction(tr("&Export"), this);
     connect(exportAct, SIGNAL(triggered()), this, SLOT(exportAnimation()));
 
+    //const QIcon exitIcon = QIcon::fromTheme("application-exit");
+    exitAct = new QAction(tr("E&xit"), this);
+    exitAct->setShortcuts(QKeySequence::Quit);
+    exitAct->setStatusTip(tr("Exit the application"));
+    connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
+
     copyAct = new QAction(tr("&Copy"), this);
     copyAct->setShortcuts(QKeySequence::Copy);
     connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
@@ -332,6 +311,10 @@ void MainWindow::createActions()
 
     aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+
+    addAction(copyAct);
+    addAction(pasteAct);
+    addAction(exitAct);
 }
 
 void MainWindow::createMenus()
@@ -342,10 +325,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAsAct);
     fileMenu->addAction(exportAct);
     fileMenu->addSeparator();
-    const QIcon exitIcon = QIcon::fromTheme("application-exit");
-    QAction *exitAct = fileMenu->addAction(exitIcon, tr("E&xit"), this, &QWidget::close);
-    exitAct->setShortcuts(QKeySequence::Quit);
-    exitAct->setStatusTip(tr("Exit the application"));
+    fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(copyAct);
