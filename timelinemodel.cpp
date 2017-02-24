@@ -12,6 +12,14 @@ TimelineModel::TimelineModel()
     m_animations = new QList<QPropertyAnimation*>();
 }
 
+void TimelineModel::reset()
+{
+    beginResetModel();
+    m_rootItem->children()->clear();
+    endResetModel();
+    m_animations->clear();
+}
+
 void TimelineModel::addAnimation(ResizeableItem *item, QPropertyAnimation *anim)
 {
     bool found = false;

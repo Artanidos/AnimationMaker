@@ -73,7 +73,25 @@ void MainWindow::writeFile(QString fileName)
 
 void MainWindow::setTitle()
 {
-    setWindowTitle(QCoreApplication::applicationName() + " - " + loadedFile.completeBaseName() + "." + loadedFile.suffix());
+    if(loadedFile.completeBaseName().isEmpty())
+        setWindowTitle(QCoreApplication::applicationName());
+    else
+        setWindowTitle(QCoreApplication::applicationName() + " - " + loadedFile.completeBaseName() + "." + loadedFile.suffix());
+}
+
+void MainWindow::reset()
+{
+    scene->reset();
+    model->reset();
+    timeline->reset();
+}
+
+void MainWindow::newfile()
+{
+    reset();
+    saveAct->setEnabled(false);
+    loadedFile.setFile("");
+    setTitle();
 }
 
 void MainWindow::open()
@@ -81,6 +99,8 @@ void MainWindow::open()
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Animation"), "", tr("AnimationMaker (*.amb);;All Files (*)"));
     if (fileName.isEmpty())
         return;
+
+    reset();
     QFile file(fileName);
     file.open(QIODevice::ReadOnly);
     QDataStream in(&file);
@@ -282,6 +302,9 @@ void MainWindow::createActions()
     openAct = new QAction(tr("&Open..."), this);
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
 
+    newAct = new QAction(tr("&New"), this);
+    connect(newAct, SIGNAL(triggered()), this, SLOT(newfile()));
+
     saveAct = new QAction(tr("&Save"), this);
     saveAct->setEnabled(false);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
@@ -320,6 +343,7 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);

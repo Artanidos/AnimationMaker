@@ -16,6 +16,8 @@ class AnimationScene : public QGraphicsScene
 public:
     AnimationScene();
 
+    void reset();
+
     enum ItemType { TypeItem, TypeRectangle, TypeEllipse, TypeText, TypeBitmap, TypeSvg };
     enum EditMode { ModeSelect, ModeRectangle, ModeEllipse, ModeText, ModeBitmap, ModeSvg };
 

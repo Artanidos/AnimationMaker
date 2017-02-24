@@ -89,6 +89,13 @@ Timeline::Timeline(AnimationScene *scene)
     connect(scene, SIGNAL(animationAdded(ResizeableItem *, QPropertyAnimation *)), this, SLOT(animationAdded(ResizeableItem *, QPropertyAnimation *)));
 }
 
+void Timeline::reset()
+{
+    m_parallelAnimations = NULL;
+    m_timelineModel->reset();
+    m_transitionPanel->update();
+}
+
 bool Timeline::eventFilter(QObject *watched, QEvent *event)
 {
     PlayHead * ph = dynamic_cast<PlayHead *>(watched);
@@ -176,13 +183,13 @@ void Timeline::playAnimation()
     m_scene->clearSelection();
 
     createAnimationGroup();
+    if(m_parallelAnimations->totalDuration() == 0)
+        return;
 
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 
     int delay = 1000 / m_scene->fps();
     int frames = m_parallelAnimations->totalDuration() / delay;
-    if(frames == 0)
-        return;
 
     m_parallelAnimations->start();
     m_parallelAnimations->pause();
@@ -206,6 +213,9 @@ void Timeline::revertAnimation()
     m_scene->clearSelection();
 
     createAnimationGroup();
+    if(m_parallelAnimations->totalDuration() == 0)
+        return;
+
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
     m_parallelAnimations->start();
     m_parallelAnimations->pause();
@@ -221,6 +231,9 @@ void Timeline::forwardAnimation()
     m_scene->clearSelection();
 
     createAnimationGroup();
+    if(m_parallelAnimations->totalDuration() == 0)
+        return;
+
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
     m_parallelAnimations->start();
     m_parallelAnimations->pause();
@@ -233,9 +246,11 @@ void Timeline::forwardAnimation()
 
 void Timeline::playheadValueChanged(int val)
 {
-    createAnimationGroup();
-
     m_scene->clearSelection();
+
+    createAnimationGroup();
+    if(m_parallelAnimations->totalDuration() == 0)
+        return;
 
     m_parallelAnimations->start();
     m_parallelAnimations->pause();

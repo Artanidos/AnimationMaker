@@ -24,6 +24,13 @@ TreeModel::~TreeModel()
     delete m_rootItem;
 }
 
+void TreeModel::reset()
+{
+    beginResetModel();
+    m_rootItem->child(0)->children()->clear();
+    endResetModel();
+}
+
 void TreeModel::setScene(AnimationScene *scene)
 {
     beginResetModel();

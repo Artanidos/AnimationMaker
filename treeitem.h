@@ -12,7 +12,7 @@ public:
     ~TreeItem();
 
     void appendChild(TreeItem *child);
-    inline QList<TreeItem*> children() {return m_childItems;}
+    inline QList<TreeItem*> *children() {return m_childItems;}
     TreeItem *child(int row);
     int childCount() const;
     int columnCount() const;
@@ -22,7 +22,7 @@ public:
     void setData(int column, QVariant value);
 
 private:
-    QList<TreeItem*> m_childItems;
+    QList<TreeItem*> *m_childItems;
     QVariant m_itemData;
     QVariant m_item;
     QVariant m_level;

@@ -36,6 +36,7 @@ private:
     void writeSettings();
     void readSettings();
     void writeFile(QString fileName);
+    void reset();
 
     QSplitter *splitter;
     QToolBar *toolbar;
@@ -51,6 +52,7 @@ private:
     QDockWidget *propertiesdock;
 
     QAction *openAct;
+    QAction *newAct;
     QAction *saveAct;
     QAction *saveAsAct;
     QAction *exportAct;
@@ -76,6 +78,7 @@ public slots:
     void save();
     void saveAs();
     void open();
+    void newfile();
     void setSelectMode();
     void setRectangleMode();
     void setEllipseMode();

@@ -17,6 +17,7 @@ public:
     explicit TreeModel(AnimationScene *scene = 0, QObject *parent = 0);
     ~TreeModel();
 
+    void reset();
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
     Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;

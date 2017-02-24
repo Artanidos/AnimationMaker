@@ -14,6 +14,7 @@ class TimelineModel : public QAbstractItemModel
 public:
     TimelineModel();
 
+    void reset();
     void addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value, int min, int max);
     void addAnimation(ResizeableItem *item, QPropertyAnimation *anim);
 

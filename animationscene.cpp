@@ -14,6 +14,14 @@ AnimationScene::AnimationScene()
     m_copy = NULL;
 }
 
+void AnimationScene::reset()
+{
+    clear();
+    m_editMode = EditMode::ModeSelect;
+    m_fps = 24;
+    m_copy = NULL;
+}
+
 void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() != Qt::LeftButton)

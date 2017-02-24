@@ -4,6 +4,7 @@
 
 TreeItem::TreeItem(const QVariant &data, const QVariant &item, TreeItem *parent, const QVariant &level)
 {
+    m_childItems = new QList<TreeItem*>();
     m_parentItem = parent;
     m_itemData = data;
     m_item = item;
@@ -12,22 +13,22 @@ TreeItem::TreeItem(const QVariant &data, const QVariant &item, TreeItem *parent,
 
 TreeItem::~TreeItem()
 {
-    qDeleteAll(m_childItems);
+
 }
 
 void TreeItem::appendChild(TreeItem *item)
 {
-    m_childItems.append(item);
+    m_childItems->append(item);
 }
 
 TreeItem *TreeItem::child(int row)
 {
-    return m_childItems.value(row);
+    return m_childItems->value(row);
 }
 
 int TreeItem::childCount() const
 {
-    return m_childItems.count();
+    return m_childItems->count();
 }
 
 int TreeItem::columnCount() const
@@ -64,7 +65,7 @@ TreeItem *TreeItem::parentItem()
 int TreeItem::row() const
 {
     if (m_parentItem)
-        return m_parentItem->m_childItems.indexOf(const_cast<TreeItem*>(this));
+        return m_parentItem->m_childItems->indexOf(const_cast<TreeItem*>(this));
 
     return 0;
 }

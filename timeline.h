@@ -17,6 +17,7 @@ public:
     Timeline(AnimationScene *scene);
 
     QParallelAnimationGroup *getAnimations();
+    void reset();
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
