@@ -29,6 +29,7 @@ public slots:
     void animationAdded(ResizeableItem *item, QPropertyAnimation *anim);
     void animationChanged();
     void playheadValueChanged(int val);
+    void deleteAnimation();
 
 signals:
     void animationSelectionChanged(QPropertyAnimation *anim);
@@ -39,10 +40,7 @@ private:
     QTreeView *m_treeview;
     TimelineModel *m_timelineModel;
     QMenu *m_contextMenu;
-    QMenu *m_propertiesMenu;
-    QAction *m_xAct;
-    QAction *m_yAct;
-    QAction *m_opacityAct;
+    QAction *m_delAct;
     AnimationScene *m_scene;
     TransitionPanel *m_transitionPanel;
     PlayHead *m_playhead;

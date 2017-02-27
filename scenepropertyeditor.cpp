@@ -17,6 +17,7 @@ ScenePropertyEditor::ScenePropertyEditor()
     m_fps->setMaximum(60);
     m_length->setMinimum(0);
     m_length->setMaximum(10000);
+    m_color = new QLineEdit();
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(new QLabel("FPS"), 0, 0);
     layout->addWidget(m_fps, 0, 1);
@@ -28,6 +29,8 @@ ScenePropertyEditor::ScenePropertyEditor()
     layout->addWidget(m_width, 2, 2);
     layout->addWidget(new QLabel("H"), 2, 3);
     layout->addWidget(m_height, 2, 4);
+    layout->addWidget(new QLabel("BackgroundColor"), 3, 0);
+    layout->addWidget(m_color, 3, 1, 1, 2);
     exp->addLayout(layout);
     vbox->addWidget(exp);
     vbox->addStretch();
@@ -37,6 +40,7 @@ ScenePropertyEditor::ScenePropertyEditor()
     connect(m_height, SIGNAL(valueChanged(int)), this, SLOT(heightChanged(int)));
     connect(m_fps, SIGNAL(valueChanged(int)), this, SLOT(fpsChanged(int)));
     connect(m_length, SIGNAL(valueChanged(int)), this, SLOT(lengthChanged(int)));
+    connect(m_color, SIGNAL(textChanged(QString)), this, SLOT(colorChanged(QString)));
 }
 
 void ScenePropertyEditor::setScene(AnimationScene *scene)
@@ -46,6 +50,7 @@ void ScenePropertyEditor::setScene(AnimationScene *scene)
     m_height->setValue(m_scene->height());
     m_fps->setValue(m_scene->fps());
     m_length->setValue(m_scene->length());
+    m_color->setText(m_scene->backgroundColor().name());
 }
 
 void ScenePropertyEditor::widthChanged(int value)
@@ -66,4 +71,9 @@ void ScenePropertyEditor::fpsChanged(int value)
 void ScenePropertyEditor::lengthChanged(int value)
 {
     m_scene->setLength(value);
+}
+
+void ScenePropertyEditor::colorChanged(QString value)
+{
+    m_scene->setBackgroundColor(QColor(value));
 }

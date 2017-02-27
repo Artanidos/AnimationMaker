@@ -31,6 +31,9 @@ public:
     inline int length() const {return m_length;}
     inline void setLength(int value) {m_length = value;}
 
+    inline QColor backgroundColor() const {return m_backgroundColor;}
+    inline void setBackgroundColor(QColor value) {m_backgroundColor = value; setBackgroundBrush(QBrush(QColor(m_backgroundColor)));}
+
     void copyItem();
     void pasteItem();
 
@@ -52,6 +55,8 @@ private:
     int m_fps;
     int m_length;
     ResizeableItem *m_copy;
+    QColor m_backgroundColor;
+
     void initialize();
 };
 

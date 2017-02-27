@@ -194,7 +194,7 @@ void MainWindow::createGui()
 
     selectAct->toggle();
 
-    QDockWidget *tooldock = new QDockWidget(tr("Tools"), this);
+    tooldock = new QDockWidget(tr("Tools"), this);
     tooldock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     tooldock->setWidget(toolpanel);
     tooldock->setObjectName("Tools");
@@ -335,6 +335,9 @@ void MainWindow::createActions()
     showPropertyPanelAct = new QAction("Properties");
     connect(showPropertyPanelAct, SIGNAL(triggered()), this, SLOT(showPropertyPanel()));
 
+    showToolPanelAct = new QAction("Tools");
+    connect(showToolPanelAct, SIGNAL(triggered()), this, SLOT(showToolPanel()));
+
     aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
@@ -359,6 +362,7 @@ void MainWindow::createMenus()
     editMenu->addAction(pasteAct);
 
     viewMenu = menuBar()->addMenu(tr("&View"));
+    viewMenu->addAction(showToolPanelAct);
     viewMenu->addAction(showPropertyPanelAct);
 
     menuBar()->addSeparator();
@@ -462,6 +466,11 @@ void MainWindow::sceneItemAdded(QGraphicsItem *item)
 void MainWindow::showPropertyPanel()
 {
     propertiesdock->setVisible(true);
+}
+
+void MainWindow::showToolPanel()
+{
+     tooldock->setVisible(true);
 }
 
 void MainWindow::changePropertyEditor(QPropertyAnimation *anim)

@@ -18,6 +18,8 @@ void AnimationScene::initialize()
     m_fps = 24;
     m_copy = NULL;
     m_length = 0;
+    m_backgroundColor = QColor("#404244");
+    setBackgroundBrush(QBrush(QColor(m_backgroundColor)));
 }
 
 void AnimationScene::reset()
@@ -132,17 +134,19 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
     QPen pen;
     QBrush brush;
     QString text, propertyName, id;
-    QColor color;
+    QColor color, bgColor;
 
     clear();
     dataStream >> width;
     dataStream >> height;
     dataStream >> fps;
     dataStream >> length;
+    dataStream >> bgColor;
 
     this->setSceneRect(0, 0, width, height);
     this->setFps(fps);
     this->setLength(length);
+    this->setBackgroundColor(bgColor);
 
     while (!dataStream.atEnd())
     {
@@ -386,6 +390,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
     dataStream << height();
     dataStream << fps();
     dataStream << length();
+    dataStream << backgroundColor();
 
     QList<QGraphicsItem*> itemList = items(Qt::AscendingOrder);
     foreach (QGraphicsItem *item, itemList)

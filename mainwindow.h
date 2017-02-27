@@ -50,6 +50,7 @@ private:
     ItemPropertyEditor *m_itemPropertyEditor;
     ScenePropertyEditor *m_scenePropertyEditor;
     QDockWidget *propertiesdock;
+    QDockWidget *tooldock;
 
 
     QAction *openAct;
@@ -66,6 +67,7 @@ private:
     QAction *svgAct;
     QAction *bitmapAct;
     QAction *showPropertyPanelAct;
+    QAction *showToolPanelAct;
     QAction *copyAct;
     QAction *pasteAct;
     QMenu *fileMenu;
@@ -89,6 +91,7 @@ public slots:
     void elementtreeSelectionChanged(const QItemSelection&,const QItemSelection&);
     void sceneItemAdded(QGraphicsItem *);
     void showPropertyPanel();
+    void showToolPanel();
     void changePropertyEditor(QPropertyAnimation *);
     void sceneSelectionChanged();
     void timelineSelectionChanged(ResizeableItem*);

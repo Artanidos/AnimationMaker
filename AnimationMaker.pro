@@ -32,7 +32,6 @@ SOURCES += main.cpp\
     itempropertyeditor.cpp \
     scenepropertyeditor.cpp \
     transitionpanel.cpp \
-    timelinetreeview.cpp \
     playhead.cpp
 
 HEADERS  += mainwindow.h \
@@ -53,7 +52,6 @@ HEADERS  += mainwindow.h \
     itempropertyeditor.h \
     scenepropertyeditor.h \
     transitionpanel.h \
-    timelinetreeview.h \
     playhead.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2

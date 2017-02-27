@@ -2,6 +2,7 @@
 #define SCENEPROPERTYEDITOR_H
 
 #include <QSpinBox>
+#include <QLineEdit>
 
 #include "animationscene.h"
 
@@ -17,6 +18,7 @@ private:
     QSpinBox *m_height;
     QSpinBox *m_fps;
     QSpinBox *m_length;
+    QLineEdit *m_color;
     AnimationScene *m_scene;
 
 private slots:
@@ -24,6 +26,7 @@ private slots:
     void heightChanged(int value);
     void fpsChanged(int value);
     void lengthChanged(int value);
+    void colorChanged(QString value);
 };
 
 #endif // SCENEPROPERTYEDITOR_H

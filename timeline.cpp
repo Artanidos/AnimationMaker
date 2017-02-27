@@ -70,8 +70,10 @@ Timeline::Timeline(AnimationScene *scene)
     this->setLayout(layout);
 
     m_contextMenu = new QMenu();
-    m_propertiesMenu = new QMenu("Add Property");
-    m_contextMenu->addMenu(m_propertiesMenu);
+    m_delAct = new QAction("Delete");
+    connect(m_delAct, SIGNAL(triggered(bool)), this, SLOT(deleteAnimation()));
+
+    //m_contextMenu->addMenu(m_propertiesMenu);
 
     m_treeview->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
@@ -136,10 +138,8 @@ void Timeline::onCustomContextMenu(const QPoint &point)
     QModelIndex index = m_treeview->indexAt(point);
     if (index.isValid())
     {
-        m_propertiesMenu->clear();
-        m_propertiesMenu->addAction(m_xAct);
-        m_propertiesMenu->addAction(m_yAct);
-        m_propertiesMenu->addAction(m_opacityAct);
+        m_contextMenu->clear();
+        m_contextMenu->addAction(m_delAct);
         m_contextMenu->exec(m_treeview->mapToGlobal(point));
     }
 }
@@ -279,4 +279,9 @@ void Timeline::selectionChanged(const QItemSelection& current,const QItemSelecti
                 emit animationSelectionChanged(anim);
         }
     }
+}
+
+void Timeline::deleteAnimation()
+{
+    qDebug() << "todo delete animation";
 }
