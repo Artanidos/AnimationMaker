@@ -88,6 +88,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     vbox->addStretch();
     this->setLayout(vbox);
 
+
     connect(m_id, SIGNAL(textChanged(QString)), this, SLOT(idChanged(QString)));
     connect(m_x, SIGNAL(valueChanged(int)), this, SLOT(xChanged(int)));
     connect(m_y, SIGNAL(valueChanged(int)), this, SLOT(yChanged(int)));

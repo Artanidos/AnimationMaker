@@ -9,17 +9,21 @@
 
 AnimationScene::AnimationScene()
 {
+    initialize();
+}
+
+void AnimationScene::initialize()
+{
     m_editMode = EditMode::ModeSelect;
     m_fps = 24;
     m_copy = NULL;
+    m_length = 0;
 }
 
 void AnimationScene::reset()
 {
     clear();
-    m_editMode = EditMode::ModeSelect;
-    m_fps = 24;
-    m_copy = NULL;
+    initialize();
 }
 
 void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -123,7 +127,7 @@ void AnimationScene::setEditMode(EditMode mode)
 
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
-    int type, fps, animations, begin, duration, min, max;
+    int type, fps, animations, begin, duration, min, max, length;
     qreal x, y, width, height, xscale, yscale, start, end;
     QPen pen;
     QBrush brush;
@@ -134,9 +138,11 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
     dataStream >> width;
     dataStream >> height;
     dataStream >> fps;
+    dataStream >> length;
 
     this->setSceneRect(0, 0, width, height);
     this->setFps(fps);
+    this->setLength(length);
 
     while (!dataStream.atEnd())
     {
@@ -379,6 +385,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
     dataStream << width();
     dataStream << height();
     dataStream << fps();
+    dataStream << length();
 
     QList<QGraphicsItem*> itemList = items(Qt::AscendingOrder);
     foreach (QGraphicsItem *item, itemList)

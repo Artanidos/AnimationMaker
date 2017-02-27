@@ -38,7 +38,7 @@ int encode(AVCodecContext *avctx, AVPacket *pkt, AVFrame *frame, int *got_packet
     return ret;
 }
 
-void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group, int fps, MainWindow *win)
+void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group, int fps, int length, MainWindow *win)
 {
     int width = view->width();
     int height = view->height();
@@ -119,8 +119,9 @@ void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationG
 
     struct SwsContext * ctx = sws_getContext(c->width, c->height, AV_PIX_FMT_BGRA, c->width, c->height, AV_PIX_FMT_YUV420P, 0, 0, 0, 0);
 
+    int total = group->totalDuration() > length * 1000 ? group->totalDuration() : length * 1000;
     int delay = 1000 / fps;
-    int frames = group->totalDuration() / delay + 2;
+    int frames = total / delay + 2;
 
     group->start();
     group->pause();

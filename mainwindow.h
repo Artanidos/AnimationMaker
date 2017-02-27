@@ -51,6 +51,7 @@ private:
     ScenePropertyEditor *m_scenePropertyEditor;
     QDockWidget *propertiesdock;
 
+
     QAction *openAct;
     QAction *newAct;
     QAction *saveAct;

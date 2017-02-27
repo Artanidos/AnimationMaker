@@ -11,7 +11,7 @@
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
 
-void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group, int fps, MainWindow *win);
+void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group, int fps, int length, MainWindow *win);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -92,6 +92,7 @@ void MainWindow::newfile()
     saveAct->setEnabled(false);
     loadedFile.setFile("");
     setTitle();
+    m_scenePropertyEditor->setScene(scene);
 }
 
 void MainWindow::open()
@@ -212,6 +213,7 @@ void MainWindow::createGui()
     propertiesdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     propertiesdock->setWidget(m_scenePropertyEditor);
     propertiesdock->setObjectName("Properties");
+
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
 
     view = new QGraphicsView(scene);
@@ -290,11 +292,12 @@ void MainWindow::exportAnimation()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export Animation"), "", tr("AnimationMaker (*.mpg);;All Files (*)"));
     if (fileName.isEmpty())
         return;
+
     QGraphicsView *view = new QGraphicsView(scene);
     view->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setGeometry(0,0,scene->width(), scene->height());
-    video_encode(fileName.toLatin1(), view, timeline->getAnimations(), scene->fps(), this);
+    video_encode(fileName.toLatin1(), view, timeline->getAnimations(), scene->fps(), scene->length(), this);
 }
 
 void MainWindow::createActions()

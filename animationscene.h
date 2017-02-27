@@ -28,6 +28,9 @@ public:
     inline int fps() const {return m_fps;}
     inline void setFps(int value) {m_fps = value;}
 
+    inline int length() const {return m_length;}
+    inline void setLength(int value) {m_length = value;}
+
     void copyItem();
     void pasteItem();
 
@@ -47,7 +50,9 @@ protected:
 private:
     EditMode m_editMode;
     int m_fps;
+    int m_length;
     ResizeableItem *m_copy;
+    void initialize();
 };
 
 QDataStream &operator<<(QDataStream &, const AnimationScene *);

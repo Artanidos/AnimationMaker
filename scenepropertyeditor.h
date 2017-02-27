@@ -16,12 +16,14 @@ private:
     QSpinBox *m_width;
     QSpinBox *m_height;
     QSpinBox *m_fps;
+    QSpinBox *m_length;
     AnimationScene *m_scene;
 
 private slots:
     void widthChanged(int value);
     void heightChanged(int value);
     void fpsChanged(int value);
+    void lengthChanged(int value);
 };
 
 #endif // SCENEPROPERTYEDITOR_H
