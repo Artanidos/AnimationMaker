@@ -69,7 +69,7 @@ void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationG
         return;
     }
 
-    c->bit_rate = 400000;
+    c->bit_rate = 1600000;
     c->width = width;
     c->height = height;
     c->time_base = (AVRational){1,fps};
