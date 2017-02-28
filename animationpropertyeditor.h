@@ -22,6 +22,7 @@ public slots:
     void durationChanged(int);
     void fromChanged(int);
     void toChanged(int);
+    void easingChanged(int);
 
 signals:
     void dataChanged();

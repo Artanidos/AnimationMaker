@@ -8,10 +8,6 @@ Item delete muss auch im Tree passieren
 
 Toolbar für Dateien (Save, Open)
 
-TimeLine Widget
-
-Property Editoren
-
 Items Translation wie Rotate
 
 Scene Zoom
@@ -22,12 +18,4 @@ Treeview
     - Object unsichtbar machen
     - Object sperren
 
-* Textobject
-
-* Toolbar für Objekte
-
-* Animationen
-
-* Export
-
-* Bei gedrückter CONTROL-Taste werden width und height analog aufgezogen
+Icon

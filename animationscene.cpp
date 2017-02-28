@@ -129,7 +129,7 @@ void AnimationScene::setEditMode(EditMode mode)
 
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
-    int type, fps, animations, begin, duration, min, max, length;
+    int type, fps, animations, begin, duration, min, max, length, easing;
     qreal x, y, width, height, xscale, yscale, start, end;
     QPen pen;
     QBrush brush;
@@ -179,6 +179,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 dataStream >> propertyName;
                 dataStream >> start;
                 dataStream >> end;
+                dataStream >> easing;
                 QVariant b(begin);
                 QVariant mn(min);
                 QVariant mx(max);
@@ -191,6 +192,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 anim->setDuration(duration);
                 anim->setStartValue(start);
                 anim->setEndValue(end);
+                anim->setEasingCurve((QEasingCurve::Type)easing);
                 r->addAnimation(anim);
                 emit animationAdded(r, anim);
             }
@@ -226,6 +228,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 dataStream >> propertyName;
                 dataStream >> start;
                 dataStream >> end;
+                dataStream >> easing;
                 QVariant b(begin);
                 QVariant mn(min);
                 QVariant mx(max);
@@ -238,6 +241,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 anim->setDuration(duration);
                 anim->setStartValue(start);
                 anim->setEndValue(end);
+                anim->setEasingCurve((QEasingCurve::Type)easing);
                 e->addAnimation(anim);
                 emit animationAdded(e, anim);
             }
@@ -272,6 +276,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 dataStream >> propertyName;
                 dataStream >> start;
                 dataStream >> end;
+                dataStream >> easing;
                 QVariant b(begin);
                 QVariant mn(min);
                 QVariant mx(max);
@@ -284,6 +289,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 anim->setDuration(duration);
                 anim->setStartValue(start);
                 anim->setEndValue(end);
+                anim->setEasingCurve((QEasingCurve::Type)easing);
                 t->addAnimation(anim);
                 emit animationAdded(t, anim);
             }
@@ -317,6 +323,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 dataStream >> propertyName;
                 dataStream >> start;
                 dataStream >> end;
+                dataStream >> easing;
                 QVariant beg(begin);
                 QVariant mn(min);
                 QVariant mx(max);
@@ -329,6 +336,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 anim->setDuration(duration);
                 anim->setStartValue(start);
                 anim->setEndValue(end);
+                anim->setEasingCurve((QEasingCurve::Type)easing);
                 b->addAnimation(anim);
                 emit animationAdded(b, anim);
             }
@@ -361,6 +369,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 dataStream >> propertyName;
                 dataStream >> start;
                 dataStream >> end;
+                dataStream >> easing;
                 QVariant b(begin);
                 QVariant mn(min);
                 QVariant mx(max);
@@ -373,6 +382,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
                 anim->setDuration(duration);
                 anim->setStartValue(start);
                 anim->setEndValue(end);
+                anim->setEasingCurve((QEasingCurve::Type)easing);
                 v->addAnimation(anim);
                 emit animationAdded(v, anim);
             }
@@ -419,6 +429,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                     dataStream << QString(anim->propertyName());
                     dataStream << anim->startValue().toReal();
                     dataStream << anim->endValue().toReal();
+                    dataStream << (int)anim->easingCurve().type();
                 }
                 break;
             }
@@ -444,6 +455,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                     dataStream << QString(anim->propertyName());
                     dataStream << anim->startValue().toReal();
                     dataStream << anim->endValue().toReal();
+                    dataStream << (int)anim->easingCurve().type();
                 }
                 break;
             }
@@ -469,6 +481,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                     dataStream << QString(anim->propertyName());
                     dataStream << anim->startValue().toReal();
                     dataStream << anim->endValue().toReal();
+                    dataStream << (int)anim->easingCurve().type();
                 }
                 break;
             }
@@ -493,6 +506,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                     dataStream << QString(anim->propertyName());
                     dataStream << anim->startValue().toReal();
                     dataStream << anim->endValue().toReal();
+                    dataStream << (int)anim->easingCurve().type();
                 }
                 break;
             }
@@ -517,11 +531,11 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                     dataStream << QString(anim->propertyName());
                     dataStream << anim->startValue().toReal();
                     dataStream << anim->endValue().toReal();
+                    dataStream << (int)anim->easingCurve().type();
                 }
                 break;
             }
             default:
-                qWarning() << "undefined item type " << item->type();
                 break;
         }
     }
