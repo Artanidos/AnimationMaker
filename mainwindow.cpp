@@ -289,7 +289,7 @@ void MainWindow::readSettings()
 
 void MainWindow::exportAnimation()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export Animation"), "", tr("AnimationMaker (*.mpg);;All Files (*)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export Animation"), "", tr("Video format (*.mpg *.mp4 *.avi);;All Files (*)"));
     if (fileName.isEmpty())
         return;
 

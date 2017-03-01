@@ -19,3 +19,19 @@ Treeview
     - Object sperren
 
 Icon
+
+Scrolling for TransitionPanel
+
+Ticks over playhead
+
+Animation recording
+
+Transition resize handles
+
+Export should not show animation on screen (freeze view)
+
+ScrollArea for PropertyPanel
+
+Colorpicker, Color editor
+
+encode aufräumen - exit(1)
