@@ -71,6 +71,12 @@ ItemPropertyEditor::ItemPropertyEditor()
     expTextcolor->addLayout(layoutTextcolor);
     vbox->addWidget(expTextcolor);
 
+    m_colorpicker = new ColorPicker();
+    QSlider *hueSlider = new QSlider();
+    hueSlider->setMinimum(0);
+    hueSlider->setMaximum(100);
+    hueSlider->setOrientation(Qt::Vertical);
+
     expColor = new Expander("Color");
     expColor->setVisible(false);
     QGridLayout *layoutColor = new QGridLayout();
@@ -80,8 +86,10 @@ ItemPropertyEditor::ItemPropertyEditor()
     m_pencolor = new QLineEdit();
     layoutColor->addWidget(labelBrush, 0, 0);
     layoutColor->addWidget(m_brushcolor, 0, 1);
-    layoutColor->addWidget(labelBorder, 1, 0);
-    layoutColor->addWidget(m_pencolor, 1, 1);
+    layoutColor->addWidget(m_colorpicker, 1, 0);
+    layoutColor->addWidget(hueSlider, 1, 1);
+    layoutColor->addWidget(labelBorder, 2, 0);
+    layoutColor->addWidget(m_pencolor, 2, 1);
     expColor->addLayout(layoutColor);
     vbox->addWidget(expColor);
 
@@ -98,6 +106,8 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(m_textcolor, SIGNAL(textChanged(QString)), this, SLOT(textcolorChanged(QString)));
     connect(m_brushcolor, SIGNAL(textChanged(QString)), this, SLOT(colorChanged(QString)));
     connect(m_pencolor, SIGNAL(textChanged(QString)), this, SLOT(borderColorChanged(QString)));
+    connect(hueSlider, SIGNAL(valueChanged(int)), this, SLOT(hueChanged(int)));
+    connect(m_colorpicker, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
 }
 
 void ItemPropertyEditor::setItem(ResizeableItem *item)
@@ -181,6 +191,16 @@ void ItemPropertyEditor::colorChanged(QString value)
         m_ellipse->setBrush(QBrush(QColor(value)));
 }
 
+void ItemPropertyEditor::colorChanged(QColor value)
+{
+    if(m_rectangle)
+        m_rectangle->setBrush(QBrush(value));
+
+    if(m_ellipse)
+        m_ellipse->setBrush(QBrush(value));
+    m_brushcolor->setText(value.name());
+}
+
 void ItemPropertyEditor::borderColorChanged(QString value)
 {
     if(m_rectangle)
@@ -188,4 +208,9 @@ void ItemPropertyEditor::borderColorChanged(QString value)
 
     if(m_ellipse)
         m_ellipse->setPen(QPen(QColor(value)));
+}
+
+void ItemPropertyEditor::hueChanged(int value)
+{
+    m_colorpicker->setHue((qreal)value / 100.0);
 }

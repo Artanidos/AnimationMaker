@@ -9,6 +9,7 @@
 #include "text.h"
 #include "rectangle.h"
 #include "ellipse.h"
+#include "colorpicker.h"
 
 class ItemPropertyEditor : public QWidget
 {
@@ -36,6 +37,7 @@ private:
     QLineEdit *m_textcolor;
     QLineEdit *m_brushcolor;
     QLineEdit *m_pencolor;
+    ColorPicker *m_colorpicker;
 
 private slots:
     void idChanged(QString value);
@@ -46,7 +48,9 @@ private slots:
     void textChanged(QString value);
     void textcolorChanged(QString value);
     void colorChanged(QString value);
+    void colorChanged(QColor value);
     void borderColorChanged(QString);
+    void hueChanged(int);
 };
 
 #endif // ITEMPROPERTYEDITOR_H
