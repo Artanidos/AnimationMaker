@@ -394,7 +394,7 @@ void MainWindow::createMenus()
 void MainWindow::about()
 {
    QMessageBox::about(this, tr("AnimationMaker"),
-            tr("The AnimationMaker is a tool to create presentation videos."));
+            tr("The AnimationMaker is a tool to create presentation videos.\nVersion: ") + QCoreApplication::applicationVersion());
 }
 
 void MainWindow::setSelectMode()
