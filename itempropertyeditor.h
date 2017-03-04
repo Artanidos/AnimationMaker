@@ -38,6 +38,7 @@ private:
     QLineEdit *m_brushcolor;
     QLineEdit *m_pencolor;
     ColorPicker *m_colorpicker;
+    ColorPicker *m_textcolorpicker;
 
 private slots:
     void idChanged(QString value);
@@ -47,10 +48,12 @@ private slots:
     void heightChanged(int value);
     void textChanged(QString value);
     void textcolorChanged(QString value);
+    void textcolorChanged(QColor value);
     void colorChanged(QString value);
     void colorChanged(QColor value);
     void borderColorChanged(QString);
     void hueChanged(int);
+    void hueTextcolorChanged(int);
 };
 
 #endif // ITEMPROPERTYEDITOR_H

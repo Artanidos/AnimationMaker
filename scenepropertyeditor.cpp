@@ -18,6 +18,12 @@ ScenePropertyEditor::ScenePropertyEditor()
     m_length->setMinimum(0);
     m_length->setMaximum(10000);
     m_color = new QLineEdit();
+    m_colorpicker = new ColorPicker();
+    QSlider *hueSlider = new QSlider();
+    hueSlider->setMinimum(0);
+    hueSlider->setMaximum(100);
+    hueSlider->setOrientation(Qt::Vertical);
+    hueSlider->setMaximumHeight(100);
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(new QLabel("FPS"), 0, 0);
     layout->addWidget(m_fps, 0, 1);
@@ -31,6 +37,8 @@ ScenePropertyEditor::ScenePropertyEditor()
     layout->addWidget(m_height, 2, 4);
     layout->addWidget(new QLabel("BackgroundColor"), 3, 0);
     layout->addWidget(m_color, 3, 1, 1, 2);
+    layout->addWidget(m_colorpicker, 4, 0);
+    layout->addWidget(hueSlider, 4, 1);
     exp->addLayout(layout);
     vbox->addWidget(exp);
     vbox->addStretch();
@@ -41,6 +49,8 @@ ScenePropertyEditor::ScenePropertyEditor()
     connect(m_fps, SIGNAL(valueChanged(int)), this, SLOT(fpsChanged(int)));
     connect(m_length, SIGNAL(valueChanged(int)), this, SLOT(lengthChanged(int)));
     connect(m_color, SIGNAL(textChanged(QString)), this, SLOT(colorChanged(QString)));
+    connect(hueSlider, SIGNAL(valueChanged(int)), this, SLOT(hueChanged(int)));
+    connect(m_colorpicker, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
 }
 
 void ScenePropertyEditor::setScene(AnimationScene *scene)
@@ -76,4 +86,15 @@ void ScenePropertyEditor::lengthChanged(int value)
 void ScenePropertyEditor::colorChanged(QString value)
 {
     m_scene->setBackgroundColor(QColor(value));
+}
+
+void ScenePropertyEditor::hueChanged(int value)
+{
+    m_colorpicker->setHue((qreal)value / 100.0);
+}
+
+void ScenePropertyEditor::colorChanged(QColor value)
+{
+    m_scene->setBackgroundColor(value);
+    m_color->setText(value.name());
 }

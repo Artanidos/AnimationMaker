@@ -5,6 +5,7 @@
 #include <QLineEdit>
 
 #include "animationscene.h"
+#include "colorpicker.h"
 
 class ScenePropertyEditor : public QWidget
 {
@@ -20,6 +21,7 @@ private:
     QSpinBox *m_length;
     QLineEdit *m_color;
     AnimationScene *m_scene;
+    ColorPicker *m_colorpicker;
 
 private slots:
     void widthChanged(int value);
@@ -27,6 +29,8 @@ private slots:
     void fpsChanged(int value);
     void lengthChanged(int value);
     void colorChanged(QString value);
+    void colorChanged(QColor value);
+    void hueChanged(int value);
 };
 
 #endif // SCENEPROPERTYEDITOR_H

@@ -62,20 +62,29 @@ ItemPropertyEditor::ItemPropertyEditor()
     vbox->addWidget(expText);
 
     expTextcolor = new Expander("Textcolor");
+    m_textcolorpicker = new ColorPicker();
     expTextcolor->setVisible(false);
+    QSlider *hueTextColorSlider = new QSlider();
+    hueTextColorSlider->setMinimum(0);
+    hueTextColorSlider->setMaximum(100);
+    hueTextColorSlider->setOrientation(Qt::Vertical);
+    hueTextColorSlider->setMaximumHeight(100);
     QGridLayout *layoutTextcolor = new QGridLayout();
     QLabel *labelColor = new QLabel("Color");
     m_textcolor = new QLineEdit();
     layoutTextcolor->addWidget(labelColor, 0, 0);
     layoutTextcolor->addWidget(m_textcolor, 0, 1);
+    layoutTextcolor->addWidget(m_textcolorpicker, 1, 0);
+    layoutTextcolor->addWidget(hueTextColorSlider, 1, 1);
     expTextcolor->addLayout(layoutTextcolor);
     vbox->addWidget(expTextcolor);
 
     m_colorpicker = new ColorPicker();
-    QSlider *hueSlider = new QSlider();
-    hueSlider->setMinimum(0);
-    hueSlider->setMaximum(100);
-    hueSlider->setOrientation(Qt::Vertical);
+    QSlider *hueColorSlider = new QSlider();
+    hueColorSlider->setMinimum(0);
+    hueColorSlider->setMaximum(100);
+    hueColorSlider->setOrientation(Qt::Vertical);
+    hueColorSlider->setMaximumHeight(100);
 
     expColor = new Expander("Color");
     expColor->setVisible(false);
@@ -87,7 +96,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     layoutColor->addWidget(labelBrush, 0, 0);
     layoutColor->addWidget(m_brushcolor, 0, 1);
     layoutColor->addWidget(m_colorpicker, 1, 0);
-    layoutColor->addWidget(hueSlider, 1, 1);
+    layoutColor->addWidget(hueColorSlider, 1, 1);
     layoutColor->addWidget(labelBorder, 2, 0);
     layoutColor->addWidget(m_pencolor, 2, 1);
     expColor->addLayout(layoutColor);
@@ -106,8 +115,10 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(m_textcolor, SIGNAL(textChanged(QString)), this, SLOT(textcolorChanged(QString)));
     connect(m_brushcolor, SIGNAL(textChanged(QString)), this, SLOT(colorChanged(QString)));
     connect(m_pencolor, SIGNAL(textChanged(QString)), this, SLOT(borderColorChanged(QString)));
-    connect(hueSlider, SIGNAL(valueChanged(int)), this, SLOT(hueChanged(int)));
+    connect(hueColorSlider, SIGNAL(valueChanged(int)), this, SLOT(hueChanged(int)));
     connect(m_colorpicker, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
+    connect(hueTextColorSlider, SIGNAL(valueChanged(int)), this, SLOT(hueTextcolorChanged(int)));
+    connect(m_textcolorpicker, SIGNAL(colorChanged(QColor)), this, SLOT(textcolorChanged(QColor)));
 }
 
 void ItemPropertyEditor::setItem(ResizeableItem *item)
@@ -182,6 +193,12 @@ void ItemPropertyEditor::textcolorChanged(QString value)
     m_textitem->setTextcolor(QColor(value));
 }
 
+void ItemPropertyEditor::textcolorChanged(QColor value)
+{
+    m_textitem->setTextcolor(value);
+    m_textcolor->setText(value.name());
+}
+
 void ItemPropertyEditor::colorChanged(QString value)
 {
     if(m_rectangle)
@@ -213,4 +230,9 @@ void ItemPropertyEditor::borderColorChanged(QString value)
 void ItemPropertyEditor::hueChanged(int value)
 {
     m_colorpicker->setHue((qreal)value / 100.0);
+}
+
+void ItemPropertyEditor::hueTextcolorChanged(int value)
+{
+    m_textcolorpicker->setHue((qreal)value / 100.0);
 }
