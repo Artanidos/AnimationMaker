@@ -79,7 +79,7 @@ void TreeModel::readChildren(AnimationScene *scene, TreeItem *parent)
         ResizeableItem *ri = dynamic_cast<ResizeableItem*>(item);
         if(ri)
         {
-            TreeItem *treeitem = new TreeItem(getItemName(ri), qVariantFromValue((void *) ri), parent);
+            TreeItem *treeitem = new TreeItem(ri->id(), qVariantFromValue((void *) ri), parent);
             parent->appendChild(treeitem);
             connect(ri, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
         }
@@ -88,7 +88,7 @@ void TreeModel::readChildren(AnimationScene *scene, TreeItem *parent)
 
 void TreeModel::addItem(ResizeableItem *item)
 {
-    TreeItem *treeItem = new TreeItem(getItemName(item), qVariantFromValue((void *) item), m_rootItem->child(0));
+    TreeItem *treeItem = new TreeItem(item->id(), qVariantFromValue((void *) item), m_rootItem->child(0));
     m_rootItem->child(0)->appendChild(treeItem);
     connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
 }

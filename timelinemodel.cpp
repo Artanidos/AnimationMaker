@@ -49,7 +49,7 @@ void TimelineModel::addAnimation(ResizeableItem *item, QPropertyAnimation *anim)
         found = true;
     else
     {
-        treeItem = new TreeItem(getItemName(item), qVariantFromValue((void *) item), m_rootItem, 1);
+        treeItem = new TreeItem(item->id(), qVariantFromValue((void *) item), m_rootItem, 1);
         connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
     }
     TreeItem *treeChildItem = new TreeItem(anim->propertyName(), qVariantFromValue((void *) anim), treeItem, 2);
@@ -70,7 +70,7 @@ void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyN
         found = true;
     else
     {
-        treeItem = new TreeItem(getItemName(item), qVariantFromValue((void *) item), m_rootItem, 1);
+        treeItem = new TreeItem(item->id(), qVariantFromValue((void *) item), m_rootItem, 1);
         connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
     }
     const QByteArray propName(propertyName.toLatin1());

@@ -62,7 +62,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         clearSelection();
 
         Rectangle *r = new Rectangle(50, 50);
-        r->setId("");
+        r->setId("Rectangle");
         r->setPen(QPen(Qt::black));
         r->setBrush(QBrush(Qt::blue));
         r->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -77,6 +77,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         clearSelection();
 
         Ellipse *e = new Ellipse(50, 50);
+        e->setId("Ellipse");
         e->setPen(QPen(Qt::black));
         e->setBrush(QBrush(Qt::blue));
         e->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -91,6 +92,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         clearSelection();
 
         Text *t = new Text("Lorem ipsum dolor");
+        t->setId("Text");
         t->setFlag(QGraphicsItem::ItemIsMovable, true);
         t->setFlag(QGraphicsItem::ItemIsSelectable, true);
         t->setPos(mouseEvent->scenePos());
@@ -107,6 +109,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             return;
 
         Bitmap *b = new Bitmap(fileName);
+        b->setId("Bitmap");
         b->setFlag(QGraphicsItem::ItemIsMovable, true);
         b->setFlag(QGraphicsItem::ItemIsSelectable, true);
         b->setPos(mouseEvent->scenePos());
@@ -123,6 +126,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             return;
 
         Vectorgraphic *v = new Vectorgraphic(fileName);
+        v->setId("Vectorgraphic");
         v->setFlag(QGraphicsItem::ItemIsMovable, true);
         v->setFlag(QGraphicsItem::ItemIsSelectable, true);
         v->setPos(mouseEvent->scenePos());
@@ -666,14 +670,6 @@ QDataStream& operator <<(QDataStream &out, const AnimationScene *s)
 QDataStream& operator >>(QDataStream &in, AnimationScene *s)
 {
     return s->read(in);
-}
-
-QString getItemName(ResizeableItem *item)
-{
-    QString name = getItemTypeName(item);
-    if(!item->id().isEmpty())
-        name = item->id();
-    return name;
 }
 
 QString getItemTypeName(ResizeableItem *item)

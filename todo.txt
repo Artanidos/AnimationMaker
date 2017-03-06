@@ -35,3 +35,5 @@ ScrollArea for PropertyPanel
 Colorpicker, Color editor
 
 encode aufräumen - exit(1)
+
+Keyframes aufzeichnen, editieren, speichern
