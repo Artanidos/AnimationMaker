@@ -85,12 +85,12 @@ void ScenePropertyEditor::setScene(AnimationScene *scene)
 
 void ScenePropertyEditor::widthChanged(int value)
 {
-    m_scene->setSceneRect(0, 0, value, m_scene->height());
+    m_scene->setWidth(value);
 }
 
 void ScenePropertyEditor::heightChanged(int value)
 {
-    m_scene->setSceneRect(0, 0, m_scene->width(), value);
+    m_scene->setHeight(value);
 }
 
 void ScenePropertyEditor::fpsChanged(int value)

@@ -221,7 +221,6 @@ void MainWindow::createGui()
     addDockWidget(Qt::LeftDockWidgetArea, tooldock);
 
     scene = new AnimationScene();
-    scene->setSceneRect(QRect(0,0,1200,720));
 
     m_animationPropertyEditor = new AnimationPropertyEditor();
     m_itemPropertyEditor = new ItemPropertyEditor();
@@ -237,9 +236,11 @@ void MainWindow::createGui()
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
 
     view = new QGraphicsView(scene);
+    view->setSceneRect(-100, -100, scene->width() + 200, scene->height() + 200);
     view->setRenderHint(QPainter::RenderHint::Antialiasing);
     connect(scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
     connect(scene, SIGNAL(itemAdded(QGraphicsItem*)), this, SLOT(sceneItemAdded(QGraphicsItem*)));
+    connect(scene, SIGNAL(sizeChanged(int,int)), this, SLOT(sceneSizeChanged(int, int)));
 
     model = new TreeModel();
     model->setScene(scene);
@@ -270,6 +271,11 @@ void MainWindow::createGui()
     splitter->addWidget(view);
     splitter->addWidget(timeline);
     setCentralWidget(splitter);
+}
+
+void MainWindow::sceneSizeChanged(int width, int height)
+{
+    view->setSceneRect(-100, -100, width + 200, height + 200);
 }
 
 void MainWindow::createStatusBar()

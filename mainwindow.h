@@ -117,6 +117,7 @@ public slots:
     void timelineSelectionChanged(ResizeableItem*);
     void copy();
     void paste();
+    void sceneSizeChanged(int width, int height);
 };
 
 #endif // MAINWINDOW_H

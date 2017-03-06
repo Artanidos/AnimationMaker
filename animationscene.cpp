@@ -34,12 +34,13 @@ AnimationScene::AnimationScene()
 
 void AnimationScene::initialize()
 {
+    setSceneRect(0, 0, 1200, 720);
     m_editMode = EditMode::ModeSelect;
     m_fps = 24;
     m_copy = NULL;
     m_length = 0;
-    m_backgroundColor = QColor("#404244");
-    setBackgroundBrush(QBrush(QColor(m_backgroundColor)));
+
+    addBackgroundRect();
 }
 
 void AnimationScene::reset()
@@ -151,6 +152,15 @@ void AnimationScene::setEditMode(EditMode mode)
     m_editMode = mode;
 }
 
+void AnimationScene::addBackgroundRect()
+{
+    m_rect = new QGraphicsRectItem(0, 0, width(), height());
+    m_backgroundColor = QColor("#404244");
+    m_rect->setBrush(QBrush(QColor(m_backgroundColor)));
+    m_rect->setPos(0,0);
+    addItem(m_rect);
+}
+
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
     int type, fps, animations, begin, duration, min, max, length, easing;
@@ -161,13 +171,17 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
     QColor color, bgColor;
 
     clear();
+
+    addBackgroundRect();
+
     dataStream >> width;
     dataStream >> height;
     dataStream >> fps;
     dataStream >> length;
     dataStream >> bgColor;
 
-    this->setSceneRect(0, 0, width, height);
+    this->setWidth(width);
+    this->setHeight(height);
     this->setFps(fps);
     this->setLength(length);
     this->setBackgroundColor(bgColor);

@@ -53,7 +53,9 @@ ItemPropertyEditor::ItemPropertyEditor()
     m_y = new QSpinBox();
     m_width = new QSpinBox();
     m_height = new QSpinBox();
+    m_x->setMinimum(-10000);
     m_x->setMaximum(10000);
+    m_y->setMinimum(-10000);
     m_y->setMaximum(10000);
     m_width->setMaximum(10000);
     m_height->setMaximum(10000);

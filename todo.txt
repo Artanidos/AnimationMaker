@@ -1,22 +1,20 @@
-Rectangle neu
-    - Aufziehen mit der Maus
-    - Bei gedrückter ALT-Taste wird die Mausposition als Center genommen
+Rectangle new
+    - create via mouse drag
+    - pressing ALT-key mouse position will be used as center
 
-Selection eines Objektes triggert TreeSelection und PropertyPanel Selection
+Selection of an object triggers TreeSelection and PropertyPanel Selection
 
-Item delete muss auch im Tree passieren
+Item delete also in TreeView
 
-Toolbar für Dateien (Save, Open)
+Toolbar for files (Save, Open)
 
-Items Translation wie Rotate
+Items Translation like Rotate
 
 Scene Zoom
 
-Gruppieren / Gruppe auflösen
-
 Treeview
-    - Object unsichtbar machen
-    - Object sperren
+    - Object make invisible
+    - Object lock
 
 Icon
 
@@ -26,14 +24,16 @@ Ticks over playhead
 
 Animation recording
 
-Transition resize handles
+Transition resize handles, scrolling
 
 Export should not show animation on screen (freeze view)
 
 ScrollArea for PropertyPanel
 
-Colorpicker, Color editor
+Colorpicker, Color editor complete
 
-encode aufräumen - exit(1)
+encode clean up - exit(1)
 
-Keyframes aufzeichnen, editieren, speichern
+Keyframes create, record, delete
+
+Undo / Redo

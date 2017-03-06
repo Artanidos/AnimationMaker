@@ -22,6 +22,7 @@
 #define ANIMATIONSCENE_H
 
 #include <QGraphicsScene>
+#include <QGraphicsRectItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QDataStream>
 #include <QGraphicsItem>
@@ -48,11 +49,14 @@ public:
     inline int fps() const {return m_fps;}
     inline void setFps(int value) {m_fps = value;}
 
+    inline void setWidth(int value) {setSceneRect(0, 0, value, height()); m_rect->setRect(0,0,value, height()); emit sizeChanged(value, height());}
+    inline void setHeight(int value) {setSceneRect(0, 0, width(), value); m_rect->setRect(0,0,width(), value); emit sizeChanged(width(), value);}
+
     inline int length() const {return m_length;}
     inline void setLength(int value) {m_length = value;}
 
     inline QColor backgroundColor() const {return m_backgroundColor;}
-    inline void setBackgroundColor(QColor value) {m_backgroundColor = value; setBackgroundBrush(QBrush(QColor(m_backgroundColor)));}
+    inline void setBackgroundColor(QColor value) {m_backgroundColor = value; m_rect->setBrush(QBrush(QColor(m_backgroundColor)));}
 
     void copyItem();
     void pasteItem();
@@ -61,6 +65,7 @@ signals:
     void itemAdded(QGraphicsItem *item);
     void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value, int min, int max);
     void animationAdded(ResizeableItem *item, QPropertyAnimation *anim);
+    void sizeChanged(int width, int height);
 
 public slots:
     void addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName, qreal value, int min, int max);
@@ -76,8 +81,10 @@ private:
     int m_length;
     ResizeableItem *m_copy;
     QColor m_backgroundColor;
+    QGraphicsRectItem *m_rect;
 
     void initialize();
+    void addBackgroundRect();
 };
 
 QDataStream &operator<<(QDataStream &, const AnimationScene *);
