@@ -60,10 +60,10 @@ ResizeableItem::ResizeableItem()
     m_topAct = new QAction("Top");
     connect(m_topAct, SIGNAL(triggered()), this, SLOT(addTopAnimation()));
 
-    m_animateMenu = new QMenu("Animate");
-    m_animateMenu->addAction(m_opacityAct);
-    m_animateMenu->addAction(m_leftAct);
-    m_animateMenu->addAction(m_topAct);
+    m_animationMenu = new QMenu("Animate");
+    m_animationMenu->addAction(m_opacityAct);
+    m_animationMenu->addAction(m_leftAct);
+    m_animationMenu->addAction(m_topAct);
     m_contextMenu = new QMenu();
     m_contextMenu->addAction(delAct);
     m_contextMenu->addSeparator();
@@ -72,7 +72,7 @@ ResizeableItem::ResizeableItem()
     m_contextMenu->addAction(lowerAct);
     m_contextMenu->addAction(sendToBackAct);
     m_contextMenu->addSeparator();
-    m_contextMenu->addMenu(m_animateMenu);
+    m_contextMenu->addMenu(m_animationMenu);
 }
 
 void ResizeableItem::addAnimation(QPropertyAnimation *anim)

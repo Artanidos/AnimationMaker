@@ -14,5 +14,7 @@
         <file>images/branch-closed.png</file>
         <file>images/branch-open.png</file>
         <file>images/playhead.png</file>
+        <file>images/raute.png</file>
+        <file>images/raute-hover.png</file>
     </qresource>
 </RCC>

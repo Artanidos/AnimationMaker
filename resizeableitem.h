@@ -83,7 +83,7 @@ private:
     QAction *sendToBackAct;
     QAction *lowerAct;
     QAction *raiseAct;
-    QMenu *m_animateMenu;
+    QMenu *m_animationMenu;
     QAction *m_opacityAct;
     QAction *m_leftAct;
     QAction *m_topAct;

@@ -20,9 +20,11 @@
 
 #include "itempropertyeditor.h"
 #include "animationscene.h"
+#include <QPushButton>
 
 ItemPropertyEditor::ItemPropertyEditor()
 {
+    QString buttonStyle = "QPushButton{border: none;image:url(:/images/raute.png)} QPushButton:hover{border: none;image:url(:/images/raute-hover.png)} QToolTip{background:#f5f0eb;}";
     QVBoxLayout *vbox = new QVBoxLayout();
     Expander *expTyp = new Expander("Typ");
     QGridLayout *layoutTyp = new QGridLayout();
@@ -59,17 +61,37 @@ ItemPropertyEditor::ItemPropertyEditor()
     m_y->setMaximum(10000);
     m_width->setMaximum(10000);
     m_height->setMaximum(10000);
+    QPushButton *addXKeyframe = new QPushButton();
+    addXKeyframe->setStyleSheet(buttonStyle);
+    addXKeyframe->setMaximumWidth(9);
+    addXKeyframe->setToolTip("Add keyframe Left");
+    QPushButton *addYKeyframe = new QPushButton();
+    addYKeyframe->setStyleSheet(buttonStyle);
+    addYKeyframe->setMaximumWidth(9);
+    addYKeyframe->setToolTip("Add keyframe Top");
+    QPushButton *addWidthKeyframe = new QPushButton();
+    addWidthKeyframe->setStyleSheet(buttonStyle);
+    addWidthKeyframe->setMaximumWidth(9);
+    addWidthKeyframe->setToolTip("Add keyframe Width");
+    QPushButton *addHeightKeyframe = new QPushButton();
+    addHeightKeyframe->setStyleSheet(buttonStyle);
+    addHeightKeyframe->setMaximumWidth(9);
+    addHeightKeyframe->setToolTip("Add keyframe Height");
     layoutGeo->addWidget(labelPosition, 0, 0);
     layoutGeo->addWidget(labelX, 0, 1);
-    layoutGeo->addWidget(m_x, 0, 2);
-    layoutGeo->addWidget(labelY, 0, 3);
-    layoutGeo->addWidget(m_y, 0, 4);
+    layoutGeo->addWidget(addXKeyframe, 0, 2);
+    layoutGeo->addWidget(m_x, 0, 3);
+    layoutGeo->addWidget(labelY, 0, 4);
+    layoutGeo->addWidget(addYKeyframe, 0, 5);
+    layoutGeo->addWidget(m_y, 0, 6);
 
     layoutGeo->addWidget(labelSize, 1, 0);
     layoutGeo->addWidget(labelWidth, 1, 1);
-    layoutGeo->addWidget(m_width, 1, 2);
-    layoutGeo->addWidget(labelHeight, 1, 3);
-    layoutGeo->addWidget(m_height, 1, 4);
+    layoutGeo->addWidget(addWidthKeyframe, 1, 2);
+    layoutGeo->addWidget(m_width, 1, 3);
+    layoutGeo->addWidget(labelHeight, 1, 4);
+    layoutGeo->addWidget(addHeightKeyframe, 1, 5);
+    layoutGeo->addWidget(m_height, 1, 6);
     expGeo->addLayout(layoutGeo);
     vbox->addWidget(expGeo);
 
@@ -141,6 +163,12 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(m_colorpicker, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
     connect(hueTextColorSlider, SIGNAL(valueChanged(int)), this, SLOT(hueTextcolorChanged(int)));
     connect(m_textcolorpicker, SIGNAL(colorChanged(QColor)), this, SLOT(textcolorChanged(QColor)));
+    connect(addXKeyframe, SIGNAL(clicked(bool)), this, SLOT(addLeftKeyFrame()));
+}
+
+void ItemPropertyEditor::addLeftKeyFrame()
+{
+
 }
 
 void ItemPropertyEditor::setItem(ResizeableItem *item)
