@@ -49,7 +49,9 @@ public slots:
     void animationAdded(ResizeableItem *item, QPropertyAnimation *anim);
     void animationChanged();
     void playheadValueChanged(int val);
+    void playheadMoved(int val);
     void deleteAnimation();
+    void addKeyFrame(ResizeableItem *item,QString property, qreal value);
 
 signals:
     void animationSelectionChanged(QPropertyAnimation *anim);

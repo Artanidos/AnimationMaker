@@ -44,3 +44,9 @@ void PlayHead::paintEvent(QPaintEvent *)
 
     painter.drawImage(position - 4, 1, m_image);
 }
+
+void PlayHead::mouseReleaseEvent(QMouseEvent *event)
+{
+    int pos = QStyle::sliderValueFromPosition(minimum(), maximum(), event->x(), width(), 0);
+    setValue(qRound((qreal)pos / 100) * 100);
+}

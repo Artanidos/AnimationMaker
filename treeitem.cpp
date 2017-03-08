@@ -104,3 +104,19 @@ TreeItem *searchChild(TreeItem *parent, ResizeableItem *item)
     }
     return treeItem;
 }
+
+TreeItem *searchChild(TreeItem *parent, QString value)
+{
+    TreeItem *treeItem = NULL;
+
+    for(int i = 0; i < parent->childCount(); i++)
+    {
+        TreeItem *ti = parent->child(i);
+        if(ti->data(0) == value)
+        {
+            treeItem = ti;
+            break;
+        }
+    }
+    return treeItem;
+}

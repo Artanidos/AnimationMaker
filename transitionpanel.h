@@ -46,6 +46,8 @@ private:
     int m_scrollPos;
     TimelineModel *m_timelineModel;
     QTreeView *m_treeview;
+    QImage m_imageRaute;
+    QImage m_imageRauteHohl;
 };
 
 #endif // TRANSITIONPANEL_H

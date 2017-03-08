@@ -18,22 +18,9 @@
 **
 ****************************************************************************/
 
-#ifndef PLAYHEAD_H
-#define PLAYHEAD_H
+#include "keyframe.h"
 
-#include <QSlider>
-
-class PlayHead : public QSlider
+KeyFrame::KeyFrame()
 {
-    Q_OBJECT
-public:
-    PlayHead(Qt::Orientation orientation);
 
-    void paintEvent(QPaintEvent *ev);
-    void mouseReleaseEvent(QMouseEvent *ev);
-
-private:
-    QImage m_image;
-};
-
-#endif // PLAYHEAD_H
+}

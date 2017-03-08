@@ -58,6 +58,8 @@ public:
     inline QColor backgroundColor() const {return m_backgroundColor;}
     inline void setBackgroundColor(QColor value) {m_backgroundColor = value; m_rect->setBrush(QBrush(QColor(m_backgroundColor)));}
 
+    inline int playheadPosition() {return m_playheadPosition;}
+
     void copyItem();
     void pasteItem();
 
@@ -69,6 +71,7 @@ signals:
 
 public slots:
     void addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName, qreal value, int min, int max);
+    void setPlayheadPosition(int value);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
@@ -82,6 +85,7 @@ private:
     ResizeableItem *m_copy;
     QColor m_backgroundColor;
     QGraphicsRectItem *m_rect;
+    int m_playheadPosition;
 
     void initialize();
     void addBackgroundRect();

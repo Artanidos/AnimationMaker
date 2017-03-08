@@ -39,6 +39,7 @@ void AnimationScene::initialize()
     m_fps = 24;
     m_copy = NULL;
     m_length = 0;
+    m_playheadPosition = 0;
 
     addBackgroundRect();
 }
@@ -674,6 +675,11 @@ void AnimationScene::pasteItem()
             break;
         }
     }
+}
+
+void AnimationScene::setPlayheadPosition(int value)
+{
+    m_playheadPosition = value;
 }
 
 QDataStream& operator <<(QDataStream &out, const AnimationScene *s)

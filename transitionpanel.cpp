@@ -19,6 +19,7 @@
 ****************************************************************************/
 
 #include "transitionpanel.h"
+#include "keyframe.h"
 
 #include <QPainter>
 #include <QTest>
@@ -30,6 +31,9 @@ TransitionPanel::TransitionPanel()
     setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
     setMinimumWidth(100);
     setMinimumHeight(50);
+
+    m_imageRaute = QImage(":/images/raute-weiss.png");
+    m_imageRauteHohl = QImage(":/images/raute-hohl.png");
 }
 
 void TransitionPanel::setModel(TimelineModel *model)
@@ -70,6 +74,30 @@ void TransitionPanel::paintEvent(QPaintEvent *)
         row++;
         QModelIndex childIndex = m_timelineModel->index(i, 0);
         int children = m_timelineModel->rowCount(childIndex);
+        for(int j = 0; j < children; j++)
+        {
+            QModelIndex keyframeIndex = m_timelineModel->index(j, 0, childIndex);
+            QVariant var = m_timelineModel->data(keyframeIndex, Qt::UserRole);
+
+            QList<KeyFrame*> *list = (QList<KeyFrame*> *) var.value<void *>();
+            if(list)
+            {
+                for(int k=0; k < list->count(); k++)
+                {
+                    KeyFrame *frame = list->at(k);
+                    if(m_treeview->isExpanded(m_timelineModel->index(i, 0)))
+                    {
+                        painter.drawImage(frame->time() / 5 - 3, 1 + -15 * m_scrollPos + row * 15, m_imageRaute);
+                    }
+                }
+            }
+            if(m_treeview->isExpanded(m_timelineModel->index(i, 0)))
+                row++;
+        }
+        /*
+        row++;
+        QModelIndex childIndex = m_timelineModel->index(i, 0);
+        int children = m_timelineModel->rowCount(childIndex);
         int minBegin = std::numeric_limits<int>::max();
         int maxTime = 0;
         int childsPainted = 0;
@@ -77,6 +105,7 @@ void TransitionPanel::paintEvent(QPaintEvent *)
         {
             QModelIndex animationIndex = m_timelineModel->index(j, 0, childIndex);
             QVariant var = m_timelineModel->data(animationIndex, Qt::UserRole);
+
             QPropertyAnimation *anim = (QPropertyAnimation *) var.value<void *>();
             if(anim)
             {
@@ -93,9 +122,11 @@ void TransitionPanel::paintEvent(QPaintEvent *)
                     childsPainted++;
                 }
             }
+
         }
         painter.setPen(QPen(gray));
         painter.fillRect(minBegin / 5 + 1, 1 + -15 * m_scrollPos + (row - childsPainted - 1) * 15 + 5, (maxTime - minBegin) / 5 - 1, 8, orange);
+        */
     }
 }
 

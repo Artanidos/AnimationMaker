@@ -164,11 +164,29 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(hueTextColorSlider, SIGNAL(valueChanged(int)), this, SLOT(hueTextcolorChanged(int)));
     connect(m_textcolorpicker, SIGNAL(colorChanged(QColor)), this, SLOT(textcolorChanged(QColor)));
     connect(addXKeyframe, SIGNAL(clicked(bool)), this, SLOT(addLeftKeyFrame()));
+    connect(addYKeyframe, SIGNAL(clicked(bool)), this, SLOT(addTopKeyFrame()));
+    connect(addWidthKeyframe, SIGNAL(clicked(bool)), this, SLOT(addWidthKeyFrame()));
+    connect(addHeightKeyframe, SIGNAL(clicked(bool)), this, SLOT(addHeightKeyFrame()));
 }
 
 void ItemPropertyEditor::addLeftKeyFrame()
 {
+    emit addKeyFrame(m_item, "left", m_x->value());
+}
 
+void ItemPropertyEditor::addTopKeyFrame()
+{
+    emit addKeyFrame(m_item, "top", m_y->value());
+}
+
+void ItemPropertyEditor::addWidthKeyFrame()
+{
+    emit addKeyFrame(m_item, "width", m_width->value());
+}
+
+void ItemPropertyEditor::addHeightKeyFrame()
+{
+    emit addKeyFrame(m_item, "height", m_height->value());
 }
 
 void ItemPropertyEditor::setItem(ResizeableItem *item)
@@ -206,6 +224,21 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     }
     expText->setVisible(m_textitem);
     expTextcolor->setVisible(m_textitem);
+
+    connect(item, SIGNAL(sizeChanged(qreal,qreal)), this, SLOT(itemSizeChanged(qreal, qreal)));
+    connect(item, SIGNAL(positionChanged(qreal,qreal)), this, SLOT(itemPositionChanged(qreal, qreal)));
+}
+
+void ItemPropertyEditor::itemSizeChanged(qreal width, qreal height)
+{
+    m_width->setValue(width);
+    m_height->setValue(height);
+}
+
+void ItemPropertyEditor::itemPositionChanged(qreal x, qreal y)
+{
+    m_x->setValue(x);
+    m_y->setValue(y);
 }
 
 void ItemPropertyEditor::idChanged(QString value)

@@ -266,6 +266,7 @@ void MainWindow::createGui()
     connect(timeline, SIGNAL(animationSelectionChanged(QPropertyAnimation *)), this, SLOT(changePropertyEditor(QPropertyAnimation *)));
     connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(timelineSelectionChanged(ResizeableItem*)));
     connect(m_animationPropertyEditor, SIGNAL(dataChanged()), timeline, SLOT(animationChanged()));
+    connect(m_itemPropertyEditor, SIGNAL(addKeyFrame(ResizeableItem*,QString,qreal)), timeline, SLOT(addKeyFrame(ResizeableItem*,QString,qreal)));
 
     QSplitter *splitter = new QSplitter(Qt::Vertical);
     splitter->addWidget(view);

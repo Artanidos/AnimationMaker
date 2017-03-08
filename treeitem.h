@@ -49,5 +49,6 @@ private:
     TreeItem *m_parentItem;
 };
 TreeItem *searchChild(TreeItem *parent, ResizeableItem *item);
+TreeItem *searchChild(TreeItem *parent, QString value);
 
 #endif // TREEITEM_H

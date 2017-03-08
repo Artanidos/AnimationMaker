@@ -20,6 +20,7 @@
 
 #include "timeline.h"
 #include "resizeableitem.h"
+#include "keyframe.h"
 
 #include <QHeaderView>
 #include <QLabel>
@@ -78,6 +79,7 @@ Timeline::Timeline(AnimationScene *scene)
     m_playhead->setMinimum(0);
     m_playhead->setMaximum(m_playhead->width() * 5);
     m_playhead->setValue(0);
+    m_playhead->setSingleStep(100);
     m_playhead->installEventFilter(this);
 
     layout->addItem(hbox, 0, 0);
@@ -109,6 +111,8 @@ Timeline::Timeline(AnimationScene *scene)
 
     connect(scene, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)));
     connect(scene, SIGNAL(animationAdded(ResizeableItem *, QPropertyAnimation *)), this, SLOT(animationAdded(ResizeableItem *, QPropertyAnimation *)));
+    connect(m_playhead, SIGNAL(valueChanged(int)), scene, SLOT(setPlayheadPosition(int)));
+    connect(m_playhead, SIGNAL(sliderMoved(int)), this, SLOT(playheadMoved(int)));
 }
 
 void Timeline::reset()
@@ -264,8 +268,43 @@ void Timeline::forwardAnimation()
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
 
+bool compareKeyframes (KeyFrame *a, KeyFrame *b)
+{
+    return a->propertyName() < b->propertyName() || a->time() < b->time();
+}
+
+void Timeline::playheadMoved(int val)
+{
+    m_scene->clearSelection();
+
+    for(int i=0; i < m_scene->items().count(); i++)
+    {
+        ResizeableItem *item = dynamic_cast<ResizeableItem *>(m_scene->items().at(i));
+        if(item)
+        {
+            std::sort(item->keyframes()->begin(), item->keyframes()->end(), compareKeyframes);
+            for(int j=0; j < item->keyframes()->count(); j++)
+            {
+                KeyFrame *key = item->keyframes()->at(j);
+                if(key->time() <= val)
+                {
+                    if(key->propertyName() == "left")
+                    {
+                        item->setX(key->value().toReal());
+                    }
+                    else if(key->propertyName() == "top")
+                    {
+                        item->setY(key->value().toReal());
+                    }
+                } 
+            }
+        }
+    }
+}
+
 void Timeline::playheadValueChanged(int val)
 {
+    /*
     m_scene->clearSelection();
 
     createAnimationGroup();
@@ -276,6 +315,7 @@ void Timeline::playheadValueChanged(int val)
     m_parallelAnimations->pause();
     m_parallelAnimations->setCurrentTime(val);
     m_parallelAnimations->stop();
+    */
 }
 
 void Timeline::selectionChanged(const QItemSelection& current,const QItemSelection&)
@@ -294,9 +334,9 @@ void Timeline::selectionChanged(const QItemSelection& current,const QItemSelecti
         }
         if(level == 2)
         {
-            QPropertyAnimation *anim = (QPropertyAnimation *) v.value<void *>();
-            if(anim)
-                emit animationSelectionChanged(anim);
+//            QPropertyAnimation *anim = (QPropertyAnimation *) v.value<void *>();
+//            if(anim)
+//                emit animationSelectionChanged(anim);
         }
     }
 }
@@ -304,4 +344,10 @@ void Timeline::selectionChanged(const QItemSelection& current,const QItemSelecti
 void Timeline::deleteAnimation()
 {
     qDebug() << "todo delete animation";
+}
+
+void Timeline::addKeyFrame(ResizeableItem *item, QString property, qreal value)
+{
+    m_timelineModel->addKeyFrame(item, property, value, m_playhead->value());
+    emit itemAdded();
 }

@@ -18,22 +18,30 @@
 **
 ****************************************************************************/
 
-#ifndef PLAYHEAD_H
-#define PLAYHEAD_H
+#ifndef KEYFRAME_H
+#define KEYFRAME_H
 
-#include <QSlider>
+#include "resizeableitem.h"
 
-class PlayHead : public QSlider
+class KeyFrame
 {
-    Q_OBJECT
 public:
-    PlayHead(Qt::Orientation orientation);
+    KeyFrame();
 
-    void paintEvent(QPaintEvent *ev);
-    void mouseReleaseEvent(QMouseEvent *ev);
+    inline void setItem(ResizeableItem *value) {m_item = value;}
+    inline QString propertyName() {return m_propertyName;}
+    inline void setPropertyName(QString value) {m_propertyName = value;}
+    inline QVariant value() {return m_value;}
+    inline void setValue(QVariant value) {m_value = value;}
+    inline int time() {return m_time;}
+    inline void setTime(int value) {m_time = value;}
 
 private:
-    QImage m_image;
+    ResizeableItem *m_item;
+    QString m_propertyName;
+    QVariant m_value;
+    int m_time;
+    QEasingCurve m_easing;
 };
 
-#endif // PLAYHEAD_H
+#endif // KEYFRAME_H

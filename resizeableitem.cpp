@@ -20,6 +20,7 @@
 
 #include "resizeableitem.h"
 #include "animationscene.h"
+#include "keyframe.h"
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 #include <QGuiApplication>
@@ -34,6 +35,9 @@ ResizeableItem::ResizeableItem()
     m_xscale = 1;
     m_yscale = 1;
     m_animations = new QList<QPropertyAnimation *>();
+    m_keyframes = new QList<KeyFrame *>();
+
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 
     delAct = new QAction(tr("Delete"), this);
     delAct->setShortcut(tr("Delete"));
@@ -73,6 +77,11 @@ ResizeableItem::ResizeableItem()
     m_contextMenu->addAction(sendToBackAct);
     m_contextMenu->addSeparator();
     m_contextMenu->addMenu(m_animationMenu);
+}
+
+void ResizeableItem::addKeyframe(KeyFrame *frame)
+{
+    m_keyframes->append(frame);
 }
 
 void ResizeableItem::addAnimation(QPropertyAnimation *anim)
@@ -134,6 +143,7 @@ void ResizeableItem::setRect(qreal x, qreal y, qreal w, qreal h)
     prepareGeometryChange();
     m_rect = QRectF(x, y, w, h);
     update();
+    emit sizeChanged(w, h);
 }
 
 QString ResizeableItem::id() const
@@ -331,18 +341,21 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
                 int newXpos = this->pos().x() + deltaWidth;
                 int newYpos = this->pos().y() + deltaHeight;
                 this->setPos(newXpos, newYpos);
+                posChanged(newXpos, newYpos);
                 break;
             }
             case 1:
             {
                 int newYpos = this->pos().y() + deltaHeight;
                 this->setPos(this->pos().x(), newYpos);
+                posChanged(this->pos().x(), newYpos);
                 break;
             }
             case 3:
             {
                 int newXpos = this->pos().x() + deltaWidth;
                 this->setPos(newXpos, this->pos().y());
+                posChanged(newXpos, this->pos().y());
                 break;
             }
             case 4: // top
@@ -352,11 +365,13 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
                     int newYpos = this->pos().y() + deltaHeight;
                     qreal newXpos = this->pos().x() + deltaWidth / 2;
                     this->setPos(newXpos, newYpos);
+                    posChanged(newXpos, newYpos);
                 }
                 else
                 {
                     int newYpos = this->pos().y() + deltaHeight;
                     this->setPos(this->pos().x(), newYpos);
+                    posChanged(this->pos().x(), newYpos);
                 }
                 break;
             }
@@ -366,6 +381,7 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
                 {
                     qreal newYpos = this->pos().y() + deltaHeight / 2;
                     this->setPos(this->pos().x(), newYpos);
+                    posChanged(this->pos().x(), newYpos);
                 }
                 break;
             }
@@ -375,6 +391,7 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
                 {
                     qreal newXpos = this->pos().x() + deltaWidth / 2;
                     this->setPos(newXpos, this->pos().y());
+                    posChanged(newXpos, this->pos().y());
                 }
                 break;
             }
@@ -385,11 +402,13 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
                     int newXpos = this->pos().x() + deltaWidth;
                     qreal newYpos = this->pos().y() + deltaHeight / 2;
                     this->setPos(newXpos, newYpos);
+                    posChanged(newXpos, newYpos);
                 }
                 else
                 {
                     int newXpos = this->pos().x() + deltaWidth;
                     this->setPos(newXpos, this->pos().y());
+                    posChanged(newXpos, this->pos().y());
                 }
                 break;
             }
@@ -441,7 +460,39 @@ QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &v
             m_hasHandles = false;
         }
     }
+    else if(change == QGraphicsItem::ItemPositionHasChanged)
+    {
+        if(isSelected())
+        {
+            QPointF newPos = value.toPointF();
+            posChanged(newPos.x(), newPos.y());
+        }
+    }
     return QGraphicsItem::itemChange(change, value);
+}
+
+void ResizeableItem::posChanged(qreal x, qreal y)
+{
+    adjustKeyframes("left", QVariant(x));
+    adjustKeyframes("top", QVariant(y));
+    emit positionChanged(x, y);
+}
+
+void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
+{
+    AnimationScene *as = dynamic_cast<AnimationScene *>(scene());
+    if(as)
+    {
+        int time = as->playheadPosition();
+        for(int i=0; i < m_keyframes->count(); i++)
+        {
+            KeyFrame *key = m_keyframes->at(i);
+            if(key->propertyName() == propertyName && key->time() == time)
+            {
+                key->setValue(value);
+            }
+        }
+    }
 }
 
 void ResizeableItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)

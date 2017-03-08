@@ -20,6 +20,7 @@
 
 #include "timelinemodel.h"
 #include "animationscene.h"
+#include "keyframe.h"
 #include "rectangle.h"
 #include <QPixmap>
 
@@ -58,6 +59,52 @@ void TimelineModel::addAnimation(ResizeableItem *item, QPropertyAnimation *anim)
         m_rootItem->appendChild(treeItem);
     endInsertRows();
     m_animations->append(anim);
+}
+
+void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qreal value, int time)
+{
+    bool found = false;
+    TreeItem *treeChildItem = NULL;
+
+    TreeItem *treeItem = searchChild(m_rootItem, item);
+    if(treeItem)
+    {
+        found = true;
+        treeChildItem = searchChild(treeItem, propertyName);
+    }
+    else
+    {
+        treeItem = new TreeItem(item->id(), qVariantFromValue((void *) item), m_rootItem, 1);
+        connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+    }
+
+    KeyFrame *keyframe = new KeyFrame();
+    keyframe->setItem(item);
+    keyframe->setPropertyName(propertyName);
+    keyframe->setValue(QVariant(value));
+    keyframe->setTime(time);
+    item->addKeyframe(keyframe);
+    if(treeChildItem)
+    {
+        QVariant var = treeChildItem->data(1);
+        QList<KeyFrame*> *list = (QList<KeyFrame*>*) var.value<void *>();
+        list->append(keyframe);
+    }
+    else
+    {
+        QList<KeyFrame*> *list = new QList<KeyFrame*>();
+        list->append(keyframe);
+        treeChildItem = new TreeItem(propertyName, qVariantFromValue((void *) list), treeItem, 2);
+        beginInsertRows(createIndex(treeItem->row(), 0, treeItem), treeItem->childCount() - 1, treeItem->childCount() - 1);
+        treeItem->appendChild(treeChildItem);
+        endInsertRows();
+    }
+    if(!found)
+    {
+        beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
+        m_rootItem->appendChild(treeItem);
+        endInsertRows();
+    }
 }
 
 void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value, int min, int max)

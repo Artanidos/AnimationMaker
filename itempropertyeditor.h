@@ -39,6 +39,9 @@ public:
 
     void setItem(ResizeableItem *item);
 
+signals:
+    void addKeyFrame(ResizeableItem*, QString, qreal);
+
 private:
     QLineEdit *m_id;
     QSpinBox *m_x;
@@ -74,6 +77,12 @@ private slots:
     void borderColorChanged(QString);
     void hueChanged(int);
     void hueTextcolorChanged(int);
+    void addLeftKeyFrame();
+    void addTopKeyFrame();
+    void addWidthKeyFrame();
+    void addHeightKeyFrame();
+    void itemSizeChanged(qreal width, qreal height);
+    void itemPositionChanged(qreal x, qreal y);
 };
 
 #endif // ITEMPROPERTYEDITOR_H

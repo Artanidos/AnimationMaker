@@ -35,6 +35,7 @@ public:
     TimelineModel();
 
     void reset();
+    void addKeyFrame(ResizeableItem *item, QString propertyName, qreal value, int time);
     void addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value, int min, int max);
     void addAnimation(ResizeableItem *item, QPropertyAnimation *anim);
 

@@ -27,6 +27,8 @@
 #include <QList>
 #include "itemhandle.h"
 
+class KeyFrame;
+
 class ResizeableItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
@@ -70,6 +72,9 @@ public:
     int getAnimationCount() const;
     QPropertyAnimation *getAnimation(int row);
 
+    void addKeyframe(KeyFrame *frame);
+    inline QList<KeyFrame *> *keyframes() {return m_keyframes;}
+
 private:
     ItemHandle*  m_handles[8];
     bool m_hasHandles;
@@ -88,6 +93,7 @@ private:
     QAction *m_leftAct;
     QAction *m_topAct;
     QList<QPropertyAnimation*> *m_animations;
+    QList<KeyFrame*> *m_keyframes;
 
 private slots:
     void deleteItem();
@@ -102,12 +108,18 @@ private slots:
 signals:
     void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value, int min, int max);
     void idChanged(ResizeableItem *item, QString value);
+    void sizeChanged(qreal width, qreal height);
+    void positionChanged(qreal x, qreal y);
 
 protected:
     void setHandlePositions();
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) Q_DECL_OVERRIDE;
     qreal m_xscale;
     qreal m_yscale;
+
+private:
+    void posChanged(qreal x, qreal y);
+    void adjustKeyframes(QString propertyName, QVariant value);
 };
 
 #endif // RESIZEABLEITEM_H

@@ -16,5 +16,7 @@
         <file>images/playhead.png</file>
         <file>images/raute.png</file>
         <file>images/raute-hover.png</file>
+        <file>images/raute-weiss.png</file>
+        <file>images/raute-hohl.png</file>
     </qresource>
 </RCC>
