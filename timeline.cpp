@@ -268,11 +268,10 @@ void Timeline::forwardAnimation()
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
 
-bool compareKeyframes (KeyFrame *a, KeyFrame *b)
-{
-    return a->propertyName() < b->propertyName() || a->time() < b->time();
-}
-
+/*
+ * looking for the keyframe which occures in front on the playhead
+ * and adjust the item value according to the keyframe
+ */
 void Timeline::playheadMoved(int val)
 {
     m_scene->clearSelection();
@@ -283,26 +282,25 @@ void Timeline::playheadMoved(int val)
         if(item)
         {
             std::sort(item->keyframes()->begin(), item->keyframes()->end(), compareKeyframes);
+            KeyFrame *found = NULL;
             for(int j=0; j < item->keyframes()->count(); j++)
             {
                 KeyFrame *key = item->keyframes()->at(j);
                 if(key->time() <= val)
-                {
-                    if(key->propertyName() == "left")
-                    {
-                        item->setX(key->value().toReal());
-                    }
-                    else if(key->propertyName() == "top")
-                    {
-                        item->setY(key->value().toReal());
-                    }
-                } 
+                    found = key;
+            }
+            if(found)
+            {
+                if(found->propertyName() == "left")
+                    item->setX(found->value().toReal());
+                else if(found->propertyName() == "top")
+                    item->setY(found->value().toReal());
             }
         }
     }
 }
 
-void Timeline::playheadValueChanged(int val)
+void Timeline::playheadValueChanged(int)
 {
     /*
     m_scene->clearSelection();

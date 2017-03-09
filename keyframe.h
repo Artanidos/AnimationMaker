@@ -43,5 +43,6 @@ private:
     int m_time;
     QEasingCurve m_easing;
 };
+bool compareKeyframes (KeyFrame *a, KeyFrame *b);
 
 #endif // KEYFRAME_H

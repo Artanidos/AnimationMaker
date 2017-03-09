@@ -24,3 +24,8 @@ KeyFrame::KeyFrame()
 {
 
 }
+
+bool compareKeyframes (KeyFrame *a, KeyFrame *b)
+{
+    return a->propertyName() < b->propertyName() || a->time() < b->time();
+}

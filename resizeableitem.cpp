@@ -478,20 +478,28 @@ void ResizeableItem::posChanged(qreal x, qreal y)
     emit positionChanged(x, y);
 }
 
+/*
+ * Looking for the keyframe which occures in front of the playhead position
+ * and adjust its value
+ */
 void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
 {
     AnimationScene *as = dynamic_cast<AnimationScene *>(scene());
     if(as)
     {
         int time = as->playheadPosition();
+        std::sort(m_keyframes->begin(), m_keyframes->end(), compareKeyframes);
+        KeyFrame *found = NULL;
         for(int i=0; i < m_keyframes->count(); i++)
         {
             KeyFrame *key = m_keyframes->at(i);
-            if(key->propertyName() == propertyName && key->time() == time)
+            if(key->propertyName() == propertyName && key->time() <= time)
             {
-                key->setValue(value);
+                found = key;
             }
         }
+        if(found)
+            found->setValue(value);
     }
 }
 
