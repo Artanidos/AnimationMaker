@@ -30,6 +30,7 @@
 #include <QFileDialog>
 
 #include "resizeableitem.h"
+#include "keyframe.h"
 
 class AnimationScene : public QGraphicsScene
 {
@@ -62,10 +63,11 @@ public:
 
     void copyItem();
     void pasteItem();
-
+        
 signals:
     void itemAdded(QGraphicsItem *item);
     void sizeChanged(int width, int height);
+    void keyframeAdded(ResizeableItem *item, QString propertyName, KeyFrame *key);
 
 public slots:
     void setPlayheadPosition(int value);
@@ -86,6 +88,9 @@ private:
 
     void initialize();
     void addBackgroundRect();
+    void writeKeyframes(QDataStream &dataStream, ResizeableItem *item) const;
+    void readKeyframes(QDataStream &dataStream, ResizeableItem *item);
+
 };
 
 QDataStream &operator<<(QDataStream &, const AnimationScene *);

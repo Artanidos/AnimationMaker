@@ -21,21 +21,21 @@
 #ifndef KEYFRAME_H
 #define KEYFRAME_H
 
-#include "resizeableitem.h"
+#include <QVariant>
 
 class KeyFrame
 {
 public:
     KeyFrame();
 
-    inline void setItem(ResizeableItem *value) {m_item = value;}
     inline QVariant value() {return m_value;}
     inline void setValue(QVariant value) {m_value = value;}
     inline int time() {return m_time;}
     inline void setTime(int value) {m_time = value;}
+    inline int easing() {return m_easing;}
+    inline void setEasing(int value) {m_easing = value;}
 
 private:
-    ResizeableItem *m_item;
     QVariant m_value;
     int m_time;
     int m_easing;

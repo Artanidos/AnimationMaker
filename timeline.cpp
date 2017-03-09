@@ -109,6 +109,8 @@ Timeline::Timeline(AnimationScene *scene)
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
     connect(m_playhead, SIGNAL(valueChanged(int)), scene, SLOT(setPlayheadPosition(int)));
     connect(m_playhead, SIGNAL(sliderMoved(int)), this, SLOT(playheadMoved(int)));
+
+    connect(m_scene, SIGNAL(keyframeAdded(ResizeableItem*, QString, KeyFrame*)), m_timelineModel, SLOT(keyframeAdded(ResizeableItem*, QString, KeyFrame*)));
 }
 
 void Timeline::reset()

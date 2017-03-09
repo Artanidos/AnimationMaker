@@ -26,8 +26,7 @@
 #include <QAction>
 #include <QList>
 #include "itemhandle.h"
-
-class KeyFrame;
+#include "keyframe.h"
 
 class ResizeableItem : public QObject, public QGraphicsItem
 {
@@ -67,10 +66,6 @@ public:
 
     void setWidth(qreal value);
     void setHeight(qreal value);
-
-    void addAnimation(QPropertyAnimation *anim);
-    int getAnimationCount() const;
-    QPropertyAnimation *getAnimation(int row);
 
     void addKeyframe(QString propertyName, KeyFrame *frame);
     inline QHash<QString, QList<KeyFrame*>*> *keyframes() {return m_keyframes;}

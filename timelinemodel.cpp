@@ -57,7 +57,6 @@ void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qrea
     }
 
     KeyFrame *keyframe = new KeyFrame();
-    keyframe->setItem(item);
     keyframe->setValue(QVariant(value));
     keyframe->setTime(time);
     item->addKeyframe(propertyName, keyframe);
@@ -71,6 +70,46 @@ void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qrea
     {
         QList<KeyFrame*> *list = new QList<KeyFrame*>();
         list->append(keyframe);
+        treeChildItem = new TreeItem(propertyName, qVariantFromValue((void *) list), treeItem, 2);
+        beginInsertRows(createIndex(treeItem->row(), 0, treeItem), treeItem->childCount() - 1, treeItem->childCount() - 1);
+        treeItem->appendChild(treeChildItem);
+        endInsertRows();
+    }
+    if(!found)
+    {
+        beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
+        m_rootItem->appendChild(treeItem);
+        endInsertRows();
+    }
+}
+
+void TimelineModel::keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key)
+{
+    bool found = false;
+    TreeItem *treeChildItem = NULL;
+
+    TreeItem *treeItem = searchChild(m_rootItem, item);
+    if(treeItem)
+    {
+        found = true;
+        treeChildItem = searchChild(treeItem, propertyName);
+    }
+    else
+    {
+        treeItem = new TreeItem(item->id(), qVariantFromValue((void *) item), m_rootItem, 1);
+        connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+    }
+
+    if(treeChildItem)
+    {
+        QVariant var = treeChildItem->data(1);
+        QList<KeyFrame*> *list = (QList<KeyFrame*>*) var.value<void *>();
+        list->append(key);
+    }
+    else
+    {
+        QList<KeyFrame*> *list = new QList<KeyFrame*>();
+        list->append(key);
         treeChildItem = new TreeItem(propertyName, qVariantFromValue((void *) list), treeItem, 2);
         beginInsertRows(createIndex(treeItem->row(), 0, treeItem), treeItem->childCount() - 1, treeItem->childCount() - 1);
         treeItem->appendChild(treeChildItem);

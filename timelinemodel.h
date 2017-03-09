@@ -27,6 +27,7 @@
 #include <QParallelAnimationGroup>
 #include "treeitem.h"
 #include "resizeableitem.h"
+#include "keyframe.h"
 
 class TimelineModel : public QAbstractItemModel
 {
@@ -47,6 +48,7 @@ public:
 
 public slots:
     void idChanged(ResizeableItem *item, QString value);
+    void keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key);
 
 private:
     TreeItem *m_rootItem = NULL;

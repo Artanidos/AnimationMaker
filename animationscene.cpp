@@ -26,6 +26,7 @@
 #include "text.h"
 #include "bitmap.h"
 #include "vectorgraphic.h"
+#include "keyframe.h"
 
 AnimationScene::AnimationScene()
 {
@@ -157,6 +158,32 @@ void AnimationScene::addBackgroundRect()
     addItem(m_rect);
 }
 
+void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item)
+{
+    int vars, easing, time, keyframes;
+    QVariant value;
+    QString propertyName;
+
+    dataStream >> vars;
+    for(int i=0; i < vars; i++)
+    {
+        dataStream >> propertyName;
+        dataStream >> keyframes;
+        for(int j=0; j < keyframes; j++)
+        {
+            dataStream >> time;
+            dataStream >> value;
+            dataStream >> easing;
+            KeyFrame *key = new KeyFrame();
+            key->setTime(time);
+            key->setValue(value);
+            key->setEasing(easing);
+            item->addKeyframe(propertyName, key);
+            emit keyframeAdded(item, propertyName, key);
+        }
+    }
+}
+
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
     int type, fps, length;
@@ -202,6 +229,9 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             r->setBrush(brush);
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
             r->setFlag(QGraphicsItem::ItemIsSelectable, true);
+
+            readKeyframes(dataStream, r);
+
             addItem(r);
         }
         else if(type == Ellipse::Type)
@@ -221,6 +251,9 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             e->setBrush(brush);
             e->setFlag(QGraphicsItem::ItemIsMovable, true);
             e->setFlag(QGraphicsItem::ItemIsSelectable, true);
+
+            readKeyframes(dataStream, e);
+
             addItem(e);
         }
         else if(type == Text::Type)
@@ -240,6 +273,9 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
             t->setScale(xscale, yscale);
             t->setTextcolor(color);
+
+            readKeyframes(dataStream, t);
+
             addItem(t);
         }
         else if(type == Bitmap::Type)
@@ -258,6 +294,9 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
             b->setScale(xscale, yscale);
+
+            readKeyframes(dataStream, b);
+
             addItem(b);
         }
         else if(type == Vectorgraphic::Type)
@@ -275,11 +314,34 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
             v->setScale(xscale, yscale);
+
+            readKeyframes(dataStream, v);
+
             addItem(v);
         }
     }
 
     return dataStream;
+}
+
+void AnimationScene::writeKeyframes(QDataStream &dataStream, ResizeableItem *item) const
+{
+    dataStream << item->keyframes()->count();
+    QHash<QString, QList<KeyFrame*>*>::iterator it;
+    for(it = item->keyframes()->begin(); it != item->keyframes()->end(); it++)
+    {
+        dataStream << it.key();
+        QList<KeyFrame*> *list = it.value();
+        QList<KeyFrame*>::iterator fr;
+        dataStream << list->count();
+        for(fr = list->begin(); fr != list->end(); fr++)
+        {
+            KeyFrame *key = *fr;
+            dataStream << key->time();
+            dataStream << key->value();
+            dataStream << key->easing();
+        }
+    }
 }
 
 QDataStream& AnimationScene::write(QDataStream &dataStream) const
@@ -306,6 +368,8 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << r->rect().height();
                 dataStream << r->pen();
                 dataStream << r->brush();
+
+                writeKeyframes(dataStream, r);
                 break;
             }
             case Ellipse::Type:
@@ -319,6 +383,8 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << e->rect().height();
                 dataStream << e->pen();
                 dataStream << e->brush();
+
+                writeKeyframes(dataStream, e);
                 break;
             }
             case Text::Type:
@@ -332,6 +398,8 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << t->yscale();
                 dataStream << t->text();
                 dataStream << t->textcolor();
+
+                writeKeyframes(dataStream, t);
                 break;
             }
             case Bitmap::Type:
@@ -344,6 +412,8 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << b->rect().width();
                 dataStream << b->rect().height();
                 dataStream << b->getImage();
+
+                writeKeyframes(dataStream, b);
                 break;
             }
             case Vectorgraphic::Type:
@@ -356,6 +426,8 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << v->xscale();
                 dataStream << v->yscale();
                 dataStream << v->getData();
+
+                writeKeyframes(dataStream, v);
                 break;
             }
             default:

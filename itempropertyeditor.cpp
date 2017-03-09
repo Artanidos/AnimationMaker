@@ -24,6 +24,8 @@
 
 ItemPropertyEditor::ItemPropertyEditor()
 {
+    m_rectangle = NULL;
+    m_ellipse = NULL;
     QString buttonStyle = "QPushButton{border: none;image:url(:/images/raute.png)} QPushButton:hover{border: none;image:url(:/images/raute-hover.png)} QToolTip{background:#f5f0eb;}";
     QVBoxLayout *vbox = new QVBoxLayout();
     Expander *expTyp = new Expander("Typ");
