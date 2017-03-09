@@ -26,7 +26,6 @@
 #include "treemodel.h"
 #include "animationscene.h"
 #include "timeline.h"
-#include "animationpropertyeditor.h"
 #include "itempropertyeditor.h"
 #include "scenepropertyeditor.h"
 
@@ -66,7 +65,6 @@ private:
     QGraphicsView *view;
     QFileInfo loadedFile;
     Timeline *timeline;
-    AnimationPropertyEditor *m_animationPropertyEditor;
     ItemPropertyEditor *m_itemPropertyEditor;
     ScenePropertyEditor *m_scenePropertyEditor;
     QDockWidget *propertiesdock;
@@ -112,7 +110,6 @@ public slots:
     void sceneItemAdded(QGraphicsItem *);
     void showPropertyPanel();
     void showToolPanel();
-    void changePropertyEditor(QPropertyAnimation *);
     void sceneSelectionChanged();
     void timelineSelectionChanged(ResizeableItem*);
     void copy();

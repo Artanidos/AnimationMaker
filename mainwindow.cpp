@@ -31,7 +31,7 @@
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
 
-void video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group, int fps, int length, MainWindow *win);
+void video_encode(const char *filename, QGraphicsView *view, int fps, int length, MainWindow *win);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -222,7 +222,6 @@ void MainWindow::createGui()
 
     scene = new AnimationScene();
 
-    m_animationPropertyEditor = new AnimationPropertyEditor();
     m_itemPropertyEditor = new ItemPropertyEditor();
     m_scenePropertyEditor = new ScenePropertyEditor();
 
@@ -263,9 +262,7 @@ void MainWindow::createGui()
     timeline = new Timeline(scene);
     timeline->setMinimumHeight(110);
 
-    connect(timeline, SIGNAL(animationSelectionChanged(QPropertyAnimation *)), this, SLOT(changePropertyEditor(QPropertyAnimation *)));
     connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(timelineSelectionChanged(ResizeableItem*)));
-    connect(m_animationPropertyEditor, SIGNAL(dataChanged()), timeline, SLOT(animationChanged()));
     connect(m_itemPropertyEditor, SIGNAL(addKeyFrame(ResizeableItem*,QString,qreal)), timeline, SLOT(addKeyFrame(ResizeableItem*,QString,qreal)));
 
     QSplitter *splitter = new QSplitter(Qt::Vertical);
@@ -324,7 +321,7 @@ void MainWindow::exportAnimation()
     view->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setGeometry(0,0,scene->width(), scene->height());
-    video_encode(fileName.toLatin1(), view, timeline->getAnimations(), scene->fps(), scene->length(), this);
+    video_encode(fileName.toLatin1(), view, scene->fps(), scene->length(), this);
 }
 
 void MainWindow::createActions()
@@ -498,12 +495,6 @@ void MainWindow::showPropertyPanel()
 void MainWindow::showToolPanel()
 {
      tooldock->setVisible(true);
-}
-
-void MainWindow::changePropertyEditor(QPropertyAnimation *anim)
-{
-    m_animationPropertyEditor->setAnimation(anim);
-    propertiesdock->setWidget(m_animationPropertyEditor);
 }
 
 void MainWindow::copy()

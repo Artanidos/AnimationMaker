@@ -34,7 +34,6 @@ ResizeableItem::ResizeableItem()
     m_hasHandles = false;
     m_xscale = 1;
     m_yscale = 1;
-    m_animations = new QList<QPropertyAnimation *>();
     m_keyframes = new QHash<QString, QList<KeyFrame*>*>();
 
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
@@ -55,19 +54,6 @@ ResizeableItem::ResizeableItem()
     lowerAct = new QAction("Lower");
     connect(lowerAct, SIGNAL(triggered()), this, SLOT(lower()));
 
-    m_opacityAct = new QAction("Opacity");
-    connect(m_opacityAct, SIGNAL(triggered()), this, SLOT(addOpacityAnimation()));
-
-    m_leftAct = new QAction("Left");
-    connect(m_leftAct, SIGNAL(triggered()), this, SLOT(addLeftAnimation()));
-
-    m_topAct = new QAction("Top");
-    connect(m_topAct, SIGNAL(triggered()), this, SLOT(addTopAnimation()));
-
-    m_animationMenu = new QMenu("Animate");
-    m_animationMenu->addAction(m_opacityAct);
-    m_animationMenu->addAction(m_leftAct);
-    m_animationMenu->addAction(m_topAct);
     m_contextMenu = new QMenu();
     m_contextMenu->addAction(delAct);
     m_contextMenu->addSeparator();
@@ -76,7 +62,6 @@ ResizeableItem::ResizeableItem()
     m_contextMenu->addAction(lowerAct);
     m_contextMenu->addAction(sendToBackAct);
     m_contextMenu->addSeparator();
-    m_contextMenu->addMenu(m_animationMenu);
 }
 
 void ResizeableItem::addKeyframe(QString propertyName, KeyFrame *frame)
@@ -92,21 +77,6 @@ void ResizeableItem::addKeyframe(QString propertyName, KeyFrame *frame)
         list->append(frame);
         m_keyframes->insert(propertyName, list);
     }
-}
-
-void ResizeableItem::addAnimation(QPropertyAnimation *anim)
-{
-    m_animations->append(anim);
-}
-
-int ResizeableItem::getAnimationCount() const
-{
-    return m_animations->count();
-}
-
-QPropertyAnimation *ResizeableItem::getAnimation(int row)
-{
-    return m_animations->at(row);
 }
 
 void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option)
@@ -592,19 +562,4 @@ void ResizeableItem::sendToBack()
 void ResizeableItem::deleteItem()
 {
     scene()->removeItem(this);
-}
-
-void ResizeableItem::addOpacityAnimation()
-{
-    emit addPropertyAnimation(this, "opacity", opacity(), 0, 1);
-}
-
-void ResizeableItem::addLeftAnimation()
-{
-    emit addPropertyAnimation(this, "left", x(), -10000, 10000);
-}
-
-void ResizeableItem::addTopAnimation()
-{
-    emit addPropertyAnimation(this, "top", y(), -10000, 10000);
 }

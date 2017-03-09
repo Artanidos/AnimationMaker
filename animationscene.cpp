@@ -70,7 +70,6 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         r->setFlag(QGraphicsItem::ItemIsMovable, true);
         r->setFlag(QGraphicsItem::ItemIsSelectable, true);
         r->setPos(mouseEvent->scenePos());
-        connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
         addItem(r);
         emit itemAdded(r);
     }
@@ -85,7 +84,6 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         e->setFlag(QGraphicsItem::ItemIsMovable, true);
         e->setFlag(QGraphicsItem::ItemIsSelectable, true);
         e->setPos(mouseEvent->scenePos());
-        connect(e, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
         addItem(e);
         emit itemAdded(e);
     }
@@ -98,7 +96,6 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         t->setFlag(QGraphicsItem::ItemIsMovable, true);
         t->setFlag(QGraphicsItem::ItemIsSelectable, true);
         t->setPos(mouseEvent->scenePos());
-        connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
         addItem(t);
         emit itemAdded(t);
     }
@@ -115,7 +112,6 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         b->setFlag(QGraphicsItem::ItemIsMovable, true);
         b->setFlag(QGraphicsItem::ItemIsSelectable, true);
         b->setPos(mouseEvent->scenePos());
-        connect(b, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
         addItem(b);
         emit itemAdded(b);
     }
@@ -132,7 +128,6 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         v->setFlag(QGraphicsItem::ItemIsMovable, true);
         v->setFlag(QGraphicsItem::ItemIsSelectable, true);
         v->setPos(mouseEvent->scenePos());
-        connect(v, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
         addItem(v);
         emit itemAdded(v);
     }
@@ -164,11 +159,11 @@ void AnimationScene::addBackgroundRect()
 
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
-    int type, fps, animations, begin, duration, min, max, length, easing;
-    qreal x, y, width, height, xscale, yscale, start, end;
+    int type, fps, length;
+    qreal x, y, width, height, xscale, yscale;
     QPen pen;
     QBrush brush;
-    QString text, propertyName, id;
+    QString text, id;
     QColor color, bgColor;
 
     clear();
@@ -207,36 +202,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             r->setBrush(brush);
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
             r->setFlag(QGraphicsItem::ItemIsSelectable, true);
-
-            dataStream >> animations;
-            for(int i=0; i < animations; i++)
-            {
-                dataStream >> begin;
-                dataStream >> min;
-                dataStream >> max;
-                dataStream >> duration;
-                dataStream >> propertyName;
-                dataStream >> start;
-                dataStream >> end;
-                dataStream >> easing;
-                QVariant b(begin);
-                QVariant mn(min);
-                QVariant mx(max);
-                QPropertyAnimation *anim = new QPropertyAnimation();
-                anim->setProperty("begin", b);
-                anim->setProperty("min", mn);
-                anim->setProperty("max", mx);
-                anim->setTargetObject(r);
-                anim->setPropertyName(propertyName.toLatin1());
-                anim->setDuration(duration);
-                anim->setStartValue(start);
-                anim->setEndValue(end);
-                anim->setEasingCurve((QEasingCurve::Type)easing);
-                r->addAnimation(anim);
-                emit animationAdded(r, anim);
-            }
-
-            connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(r);
         }
         else if(type == Ellipse::Type)
@@ -256,35 +221,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             e->setBrush(brush);
             e->setFlag(QGraphicsItem::ItemIsMovable, true);
             e->setFlag(QGraphicsItem::ItemIsSelectable, true);
-
-            dataStream >> animations;
-            for(int i=0; i < animations; i++)
-            {
-                dataStream >> begin;
-                dataStream >> min;
-                dataStream >> max;
-                dataStream >> duration;
-                dataStream >> propertyName;
-                dataStream >> start;
-                dataStream >> end;
-                dataStream >> easing;
-                QVariant b(begin);
-                QVariant mn(min);
-                QVariant mx(max);
-                QPropertyAnimation *anim = new QPropertyAnimation();
-                anim->setProperty("begin", b);
-                anim->setProperty("min", mn);
-                anim->setProperty("max", mx);
-                anim->setTargetObject(e);
-                anim->setPropertyName(propertyName.toLatin1());
-                anim->setDuration(duration);
-                anim->setStartValue(start);
-                anim->setEndValue(end);
-                anim->setEasingCurve((QEasingCurve::Type)easing);
-                e->addAnimation(anim);
-                emit animationAdded(e, anim);
-            }
-            connect(e, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(e);
         }
         else if(type == Text::Type)
@@ -304,35 +240,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
             t->setScale(xscale, yscale);
             t->setTextcolor(color);
-
-            dataStream >> animations;
-            for(int i=0; i < animations; i++)
-            {
-                dataStream >> begin;
-                dataStream >> min;
-                dataStream >> max;
-                dataStream >> duration;
-                dataStream >> propertyName;
-                dataStream >> start;
-                dataStream >> end;
-                dataStream >> easing;
-                QVariant b(begin);
-                QVariant mn(min);
-                QVariant mx(max);
-                QPropertyAnimation *anim = new QPropertyAnimation();
-                anim->setProperty("begin", b);
-                anim->setProperty("min", mn);
-                anim->setProperty("max", mx);
-                anim->setTargetObject(t);
-                anim->setPropertyName(propertyName.toLatin1());
-                anim->setDuration(duration);
-                anim->setStartValue(start);
-                anim->setEndValue(end);
-                anim->setEasingCurve((QEasingCurve::Type)easing);
-                t->addAnimation(anim);
-                emit animationAdded(t, anim);
-            }
-            connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(t);
         }
         else if(type == Bitmap::Type)
@@ -351,35 +258,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
             b->setScale(xscale, yscale);
-
-            dataStream >> animations;
-            for(int i=0; i < animations; i++)
-            {
-                dataStream >> begin;
-                dataStream >> min;
-                dataStream >> max;
-                dataStream >> duration;
-                dataStream >> propertyName;
-                dataStream >> start;
-                dataStream >> end;
-                dataStream >> easing;
-                QVariant beg(begin);
-                QVariant mn(min);
-                QVariant mx(max);
-                QPropertyAnimation *anim = new QPropertyAnimation();
-                anim->setProperty("begin", beg);
-                anim->setProperty("min", mn);
-                anim->setProperty("max", mx);
-                anim->setTargetObject(b);
-                anim->setPropertyName(propertyName.toLatin1());
-                anim->setDuration(duration);
-                anim->setStartValue(start);
-                anim->setEndValue(end);
-                anim->setEasingCurve((QEasingCurve::Type)easing);
-                b->addAnimation(anim);
-                emit animationAdded(b, anim);
-            }
-            connect(b, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(b);
         }
         else if(type == Vectorgraphic::Type)
@@ -397,35 +275,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
             v->setScale(xscale, yscale);
-
-            dataStream >> animations;
-            for(int i=0; i < animations; i++)
-            {
-                dataStream >> begin;
-                dataStream >> min;
-                dataStream >> max;
-                dataStream >> duration;
-                dataStream >> propertyName;
-                dataStream >> start;
-                dataStream >> end;
-                dataStream >> easing;
-                QVariant b(begin);
-                QVariant mn(min);
-                QVariant mx(max);
-                QPropertyAnimation *anim = new QPropertyAnimation();
-                anim->setProperty("begin", b);
-                anim->setProperty("min", mn);
-                anim->setProperty("max", mx);
-                anim->setTargetObject(v);
-                anim->setPropertyName(propertyName.toLatin1());
-                anim->setDuration(duration);
-                anim->setStartValue(start);
-                anim->setEndValue(end);
-                anim->setEasingCurve((QEasingCurve::Type)easing);
-                v->addAnimation(anim);
-                emit animationAdded(v, anim);
-            }
-            connect(v, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(v);
         }
     }
@@ -457,19 +306,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << r->rect().height();
                 dataStream << r->pen();
                 dataStream << r->brush();
-                dataStream << r->getAnimationCount();
-                for(int i=0; i< r->getAnimationCount(); i++)
-                {
-                    QPropertyAnimation *anim = r->getAnimation(i);
-                    dataStream << anim->property("begin").toInt();
-                    dataStream << anim->property("min").toInt();
-                    dataStream << anim->property("max").toInt();
-                    dataStream << anim->duration();
-                    dataStream << QString(anim->propertyName());
-                    dataStream << anim->startValue().toReal();
-                    dataStream << anim->endValue().toReal();
-                    dataStream << (int)anim->easingCurve().type();
-                }
                 break;
             }
             case Ellipse::Type:
@@ -483,19 +319,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << e->rect().height();
                 dataStream << e->pen();
                 dataStream << e->brush();
-                dataStream << e->getAnimationCount();
-                for(int i=0; i< e->getAnimationCount(); i++)
-                {
-                    QPropertyAnimation *anim = e->getAnimation(i);
-                    dataStream << anim->property("begin").toInt();
-                    dataStream << anim->property("min").toInt();
-                    dataStream << anim->property("max").toInt();
-                    dataStream << anim->duration();
-                    dataStream << QString(anim->propertyName());
-                    dataStream << anim->startValue().toReal();
-                    dataStream << anim->endValue().toReal();
-                    dataStream << (int)anim->easingCurve().type();
-                }
                 break;
             }
             case Text::Type:
@@ -509,19 +332,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << t->yscale();
                 dataStream << t->text();
                 dataStream << t->textcolor();
-                dataStream << t->getAnimationCount();
-                for(int i=0; i< t->getAnimationCount(); i++)
-                {
-                    QPropertyAnimation *anim = t->getAnimation(i);
-                    dataStream << anim->property("begin").toInt();
-                    dataStream << anim->property("min").toInt();
-                    dataStream << anim->property("max").toInt();
-                    dataStream << anim->duration();
-                    dataStream << QString(anim->propertyName());
-                    dataStream << anim->startValue().toReal();
-                    dataStream << anim->endValue().toReal();
-                    dataStream << (int)anim->easingCurve().type();
-                }
                 break;
             }
             case Bitmap::Type:
@@ -534,19 +344,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << b->rect().width();
                 dataStream << b->rect().height();
                 dataStream << b->getImage();
-                dataStream << b->getAnimationCount();
-                for(int i=0; i< b->getAnimationCount(); i++)
-                {
-                    QPropertyAnimation *anim = b->getAnimation(i);
-                    dataStream << anim->property("begin").toInt();
-                    dataStream << anim->property("min").toInt();
-                    dataStream << anim->property("max").toInt();
-                    dataStream << anim->duration();
-                    dataStream << QString(anim->propertyName());
-                    dataStream << anim->startValue().toReal();
-                    dataStream << anim->endValue().toReal();
-                    dataStream << (int)anim->easingCurve().type();
-                }
                 break;
             }
             case Vectorgraphic::Type:
@@ -559,19 +356,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << v->xscale();
                 dataStream << v->yscale();
                 dataStream << v->getData();
-                dataStream << v->getAnimationCount();
-                for(int i=0; i< v->getAnimationCount(); i++)
-                {
-                    QPropertyAnimation *anim = v->getAnimation(i);
-                    dataStream << anim->property("begin").toInt();
-                    dataStream << anim->property("min").toInt();
-                    dataStream << anim->property("max").toInt();
-                    dataStream << anim->duration();
-                    dataStream << QString(anim->propertyName());
-                    dataStream << anim->startValue().toReal();
-                    dataStream << anim->endValue().toReal();
-                    dataStream << (int)anim->easingCurve().type();
-                }
                 break;
             }
             default:
@@ -579,11 +363,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
         }
     }
     return dataStream;
-}
-
-void AnimationScene::addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName, qreal value, int min, int max)
-{
-    emit addPropertyAnimation(item, propertyName, value, min, max);
 }
 
 void AnimationScene::copyItem()
@@ -612,7 +391,6 @@ void AnimationScene::pasteItem()
             r->setBrush(m_copy->brush());
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
             r->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            connect(r, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(r);
             emit itemAdded(r);
             break;
@@ -626,7 +404,6 @@ void AnimationScene::pasteItem()
             e->setBrush(m_copy->brush());
             e->setFlag(QGraphicsItem::ItemIsMovable, true);
             e->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            connect(e, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(e);
             emit itemAdded(e);
             break;
@@ -641,7 +418,6 @@ void AnimationScene::pasteItem()
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
             t->setScale(cpy->xscale(), cpy->yscale());
             t->setTextcolor(cpy->textcolor());
-            connect(t, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(t);
             emit itemAdded(t);
             break;
@@ -655,7 +431,6 @@ void AnimationScene::pasteItem()
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
             b->setScale(bm->xscale(), bm->yscale());
-            connect(b, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(b);
             emit itemAdded(b);
             break;
@@ -669,7 +444,6 @@ void AnimationScene::pasteItem()
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
             v->setScale(vg->xscale(), vg->yscale());
-            connect(v, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimationRequested(ResizeableItem *, const QString, qreal, int, int)));
             addItem(v);
             emit itemAdded(v);
             break;

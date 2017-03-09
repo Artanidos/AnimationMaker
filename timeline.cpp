@@ -93,7 +93,6 @@ Timeline::Timeline(AnimationScene *scene)
 
     m_contextMenu = new QMenu();
     m_delAct = new QAction("Delete");
-    connect(m_delAct, SIGNAL(triggered(bool)), this, SLOT(deleteAnimation()));
 
     //m_contextMenu->addMenu(m_propertiesMenu);
 
@@ -108,16 +107,12 @@ Timeline::Timeline(AnimationScene *scene)
 
     QItemSelectionModel *selectionModel = m_treeview->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
-
-    connect(scene, SIGNAL(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)), this, SLOT(addPropertyAnimation(ResizeableItem *, const QString, qreal, int, int)));
-    connect(scene, SIGNAL(animationAdded(ResizeableItem *, QPropertyAnimation *)), this, SLOT(animationAdded(ResizeableItem *, QPropertyAnimation *)));
     connect(m_playhead, SIGNAL(valueChanged(int)), scene, SLOT(setPlayheadPosition(int)));
     connect(m_playhead, SIGNAL(sliderMoved(int)), this, SLOT(playheadMoved(int)));
 }
 
 void Timeline::reset()
 {
-    m_parallelAnimations = NULL;
     m_timelineModel->reset();
     m_transitionPanel->update();
 }
@@ -136,27 +131,6 @@ bool Timeline::eventFilter(QObject *watched, QEvent *event)
     return false;
 }
 
-void Timeline::animationChanged()
-{
-    m_transitionPanel->update();
-    m_parallelAnimations = NULL;
-}
-
-void Timeline::animationAdded(ResizeableItem *item, QPropertyAnimation *anim)
-{
-    m_timelineModel->addAnimation(item, anim);
-    m_parallelAnimations = NULL;
-    emit itemAdded();
-}
-
-void Timeline::addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value, int min, int max)
-{
-    m_timelineModel->addPropertyAnimation(item, propertyName, value, min, max);
-    m_parallelAnimations = NULL;
-    emit itemAdded();
-    //m_treeview->setExpanded(index, true);
-}
-
 void Timeline::onCustomContextMenu(const QPoint &point)
 {
     QModelIndex index = m_treeview->indexAt(point);
@@ -168,66 +142,15 @@ void Timeline::onCustomContextMenu(const QPoint &point)
     }
 }
 
-QParallelAnimationGroup *Timeline::getAnimations()
-{
-   createAnimationGroup();
-   return m_parallelAnimations;
-}
-
-void Timeline::createAnimationGroup()
-{
-    if(m_parallelAnimations != NULL)
-        return;
-    m_parallelAnimations = new QParallelAnimationGroup();
-    QList<QPropertyAnimation*> *anims = m_timelineModel->getAnimations();
-    for(int i=0; i < anims->count() ; i++)
-    {
-        QPropertyAnimation *anim = anims->at(i);
-        int begin = anim->property("begin").toInt();
-        if(begin > 0)
-        {
-            QSequentialAnimationGroup *sag = new QSequentialAnimationGroup();
-            QPropertyAnimation *pa = new QPropertyAnimation();
-            pa->setDuration(begin);
-            pa->setTargetObject(anim->targetObject());
-            pa->setPropertyName(anim->propertyName());
-            pa->setStartValue(anim->startValue());
-            pa->setEndValue(anim->startValue());
-            sag->addAnimation(pa);
-            sag->addAnimation(anim);
-            m_parallelAnimations->addAnimation(sag);
-        }
-        else
-            m_parallelAnimations->addAnimation(anim);
-    }
-}
-
 void Timeline::playAnimation()
 {
     m_scene->clearSelection();
 
-    createAnimationGroup();
-    if(m_parallelAnimations->totalDuration() == 0)
-        return;
-
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 
-    int delay = 1000 / m_scene->fps();
-    int frames = m_parallelAnimations->totalDuration() / delay;
+    //int delay = 1000 / m_scene->fps();
+    //int frames = m_parallelAnimations->totalDuration() / delay;
 
-    m_parallelAnimations->start();
-    m_parallelAnimations->pause();
-    for(int i=0; i < frames; i++)
-    {
-        m_parallelAnimations->setCurrentTime(i * delay);
-        m_playhead->setValue(i * delay);
-
-        QTest::qSleep(delay / 2);
-        QCoreApplication::processEvents(QEventLoop::AllEvents, delay / 2);
-    }
-    m_parallelAnimations->setCurrentTime(m_parallelAnimations->totalDuration());
-    m_playhead->setValue(m_parallelAnimations->totalDuration());
-    m_parallelAnimations->stop();
 
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
@@ -236,16 +159,7 @@ void Timeline::revertAnimation()
 {
     m_scene->clearSelection();
 
-    createAnimationGroup();
-    if(m_parallelAnimations->totalDuration() == 0)
-        return;
-
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
-    m_parallelAnimations->start();
-    m_parallelAnimations->pause();
-    m_parallelAnimations->setCurrentTime(0);
-    m_playhead->setValue(0);
-    m_parallelAnimations->stop();
 
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
@@ -254,16 +168,7 @@ void Timeline::forwardAnimation()
 {
     m_scene->clearSelection();
 
-    createAnimationGroup();
-    if(m_parallelAnimations->totalDuration() == 0)
-        return;
-
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
-    m_parallelAnimations->start();
-    m_parallelAnimations->pause();
-    m_parallelAnimations->setCurrentTime(m_parallelAnimations->totalDuration());
-    m_playhead->setValue(m_parallelAnimations->totalDuration());
-    m_parallelAnimations->stop();
 
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
@@ -303,41 +208,13 @@ void Timeline::playheadMoved(int val)
                         item->setY(found->value().toReal());
                 }
             }
-            /*
-            std::sort(item->keyframes()->begin(), item->keyframes()->end(), compareKeyframes);
-            KeyFrame *found = NULL;
-            for(int j=0; j < item->keyframes()->count(); j++)
-            {
-                KeyFrame *key = item->keyframes()->at(j);
-                if(key->time() <= val)
-                    found = key;
-            }
-            if(found)
-            {
-                if(found->propertyName() == "left")
-                    item->setX(found->value().toReal());
-                else if(found->propertyName() == "top")
-                    item->setY(found->value().toReal());
-            }
-            */
         }
     }
 }
 
 void Timeline::playheadValueChanged(int)
 {
-    /*
-    m_scene->clearSelection();
 
-    createAnimationGroup();
-    if(m_parallelAnimations->totalDuration() == 0)
-        return;
-
-    m_parallelAnimations->start();
-    m_parallelAnimations->pause();
-    m_parallelAnimations->setCurrentTime(val);
-    m_parallelAnimations->stop();
-    */
 }
 
 void Timeline::selectionChanged(const QItemSelection& current,const QItemSelection&)
@@ -361,11 +238,6 @@ void Timeline::selectionChanged(const QItemSelection& current,const QItemSelecti
 //                emit animationSelectionChanged(anim);
         }
     }
-}
-
-void Timeline::deleteAnimation()
-{
-    qDebug() << "todo delete animation";
 }
 
 void Timeline::addKeyFrame(ResizeableItem *item, QString property, qreal value)

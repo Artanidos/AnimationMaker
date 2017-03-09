@@ -88,11 +88,6 @@ private:
     QAction *sendToBackAct;
     QAction *lowerAct;
     QAction *raiseAct;
-    QMenu *m_animationMenu;
-    QAction *m_opacityAct;
-    QAction *m_leftAct;
-    QAction *m_topAct;
-    QList<QPropertyAnimation*> *m_animations;
     QHash<QString, QList<KeyFrame*>*> *m_keyframes;
 
 private slots:
@@ -101,9 +96,6 @@ private slots:
     void sendToBack();
     void lower();
     void raise();
-    void addOpacityAnimation();
-    void addLeftAnimation();
-    void addTopAnimation();
 
 signals:
     void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value, int min, int max);

@@ -36,8 +36,6 @@ public:
 
     void reset();
     void addKeyFrame(ResizeableItem *item, QString propertyName, qreal value, int time);
-    void addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value, int min, int max);
-    void addAnimation(ResizeableItem *item, QPropertyAnimation *anim);
 
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
     Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
@@ -47,14 +45,11 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
-    QList<QPropertyAnimation*> *getAnimations();
-
 public slots:
     void idChanged(ResizeableItem *item, QString value);
 
 private:
     TreeItem *m_rootItem = NULL;
-    QList<QPropertyAnimation*> *m_animations;
 };
 
 #endif // TIMELINEMODEL_H

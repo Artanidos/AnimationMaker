@@ -65,12 +65,9 @@ public:
 
 signals:
     void itemAdded(QGraphicsItem *item);
-    void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value, int min, int max);
-    void animationAdded(ResizeableItem *item, QPropertyAnimation *anim);
     void sizeChanged(int width, int height);
 
 public slots:
-    void addPropertyAnimationRequested(ResizeableItem *item, const QString propertyName, qreal value, int min, int max);
     void setPlayheadPosition(int value);
 
 protected:

@@ -230,7 +230,7 @@ static int write_video_frame(AVFormatContext *oc, OutputStream *ost, QImage img)
     return (frame || got_packet) ? 0 : 1;
 }
 
-int video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGroup *group, int fps, int length, MainWindow *win)
+int video_encode(const char *filename, QGraphicsView *view, int fps, int length, MainWindow *win)
 {
     AVFormatContext *oc;
     AVOutputFormat *fmt;
@@ -272,18 +272,18 @@ int video_encode(const char *filename, QGraphicsView *view, QParallelAnimationGr
         return 1;
     }
 
-    int total = group->totalDuration() > length * 1000 ? group->totalDuration() : length * 1000;
+    int total = 0; //group->totalDuration() > length * 1000 ? group->totalDuration() : length * 1000;
     int delay = 1000 / fps;
     int frames = total / delay + 2;
 
-    group->start();
-    group->pause();
+    //group->start();
+    //group->pause();
 
     for (int i = 0; i < frames; i++)
     {
         win->statusBar()->showMessage(QString("Writing frame %1 of %2 frames").arg(i).arg(frames));
 
-        group->setCurrentTime(i * delay);
+        //group->setCurrentTime(i * delay);
         QTest::qSleep(40);
         QCoreApplication::processEvents(QEventLoop::AllEvents, 40);
 

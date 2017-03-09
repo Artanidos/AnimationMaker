@@ -30,7 +30,6 @@ TimelineModel::TimelineModel()
     QVariant data;
 
     m_rootItem = new TreeItem(rootData, data);
-    m_animations = new QList<QPropertyAnimation*>();
 }
 
 void TimelineModel::reset()
@@ -38,27 +37,6 @@ void TimelineModel::reset()
     beginResetModel();
     m_rootItem->children()->clear();
     endResetModel();
-    m_animations->clear();
-}
-
-void TimelineModel::addAnimation(ResizeableItem *item, QPropertyAnimation *anim)
-{
-    bool found = false;
-    beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
-    TreeItem *treeItem = searchChild(m_rootItem, item);
-    if(treeItem)
-        found = true;
-    else
-    {
-        treeItem = new TreeItem(item->id(), qVariantFromValue((void *) item), m_rootItem, 1);
-        connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
-    }
-    TreeItem *treeChildItem = new TreeItem(anim->propertyName(), qVariantFromValue((void *) anim), treeItem, 2);
-    treeItem->appendChild(treeChildItem);
-    if(!found)
-        m_rootItem->appendChild(treeItem);
-    endInsertRows();
-    m_animations->append(anim);
 }
 
 void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qreal value, int time)
@@ -104,43 +82,6 @@ void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qrea
         m_rootItem->appendChild(treeItem);
         endInsertRows();
     }
-}
-
-void TimelineModel::addPropertyAnimation(ResizeableItem *item, QString propertyName, qreal value, int min, int max)
-{
-    // TODO: check if animation for this property already exists
-    bool found = false;
-    beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
-    TreeItem *treeItem = searchChild(m_rootItem, item);
-    if(treeItem)
-        found = true;
-    else
-    {
-        treeItem = new TreeItem(item->id(), qVariantFromValue((void *) item), m_rootItem, 1);
-        connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
-    }
-    const QByteArray propName(propertyName.toLatin1());
-    QPropertyAnimation *anim = new QPropertyAnimation();
-    anim->setTargetObject(item);
-    anim->setProperty("begin", QVariant(0));
-    anim->setProperty("min", QVariant(min));
-    anim->setProperty("max", QVariant(max));
-    anim->setDuration(1000);
-    anim->setPropertyName(propName);
-    anim->setStartValue(value);
-    anim->setEndValue(value);
-    item->addAnimation(anim);
-    TreeItem *treeChildItem = new TreeItem(propertyName, qVariantFromValue((void *) anim), treeItem, 2);
-    treeItem->appendChild(treeChildItem);
-    if(!found)
-        m_rootItem->appendChild(treeItem);
-    endInsertRows();
-    m_animations->append(anim);
-}
-
-QList<QPropertyAnimation*> *TimelineModel::getAnimations()
-{
-    return m_animations;
 }
 
 int TimelineModel::columnCount(const QModelIndex &parent) const

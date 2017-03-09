@@ -44,7 +44,6 @@ SOURCES += main.cpp\
     vectorgraphic.cpp \
     timeline.cpp \
     timelinemodel.cpp \
-    animationpropertyeditor.cpp \
     expander.cpp \
     itempropertyeditor.cpp \
     scenepropertyeditor.cpp \
@@ -66,7 +65,6 @@ HEADERS  += mainwindow.h \
     vectorgraphic.h \
     timeline.h \
     timelinemodel.h \
-    animationpropertyeditor.h \
     expander.h \
     itempropertyeditor.h \
     scenepropertyeditor.h \
