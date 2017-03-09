@@ -29,8 +29,6 @@ public:
     KeyFrame();
 
     inline void setItem(ResizeableItem *value) {m_item = value;}
-    inline QString propertyName() {return m_propertyName;}
-    inline void setPropertyName(QString value) {m_propertyName = value;}
     inline QVariant value() {return m_value;}
     inline void setValue(QVariant value) {m_value = value;}
     inline int time() {return m_time;}
@@ -38,10 +36,9 @@ public:
 
 private:
     ResizeableItem *m_item;
-    QString m_propertyName;
     QVariant m_value;
     int m_time;
-    QEasingCurve m_easing;
+    int m_easing;
 };
 bool compareKeyframes (KeyFrame *a, KeyFrame *b);
 

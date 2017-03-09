@@ -281,6 +281,29 @@ void Timeline::playheadMoved(int val)
         ResizeableItem *item = dynamic_cast<ResizeableItem *>(m_scene->items().at(i));
         if(item)
         {
+            QHash<QString, QList<KeyFrame*>*>::iterator it;
+            for (it = item->keyframes()->begin(); it != item->keyframes()->end(); ++it)
+            {
+                KeyFrame *found = NULL;
+                QList<KeyFrame*> *list = it.value();
+                std::sort(list->begin(), list->end(), compareKeyframes);
+                QList<KeyFrame*>::iterator fr;
+                for(fr = list->begin(); fr != list->end(); ++fr)
+                {
+                    KeyFrame *key = *fr;
+                    if(key->time() <= val)
+                        found = key;
+                }
+                if(found)
+                {
+                    QString propertyName = it.key();
+                    if(propertyName == "left")
+                        item->setX(found->value().toReal());
+                    else if(propertyName == "top")
+                        item->setY(found->value().toReal());
+                }
+            }
+            /*
             std::sort(item->keyframes()->begin(), item->keyframes()->end(), compareKeyframes);
             KeyFrame *found = NULL;
             for(int j=0; j < item->keyframes()->count(); j++)
@@ -296,6 +319,7 @@ void Timeline::playheadMoved(int val)
                 else if(found->propertyName() == "top")
                     item->setY(found->value().toReal());
             }
+            */
         }
     }
 }

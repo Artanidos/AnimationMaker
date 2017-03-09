@@ -80,10 +80,9 @@ void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qrea
 
     KeyFrame *keyframe = new KeyFrame();
     keyframe->setItem(item);
-    keyframe->setPropertyName(propertyName);
     keyframe->setValue(QVariant(value));
     keyframe->setTime(time);
-    item->addKeyframe(keyframe);
+    item->addKeyframe(propertyName, keyframe);
     if(treeChildItem)
     {
         QVariant var = treeChildItem->data(1);

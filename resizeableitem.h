@@ -72,8 +72,8 @@ public:
     int getAnimationCount() const;
     QPropertyAnimation *getAnimation(int row);
 
-    void addKeyframe(KeyFrame *frame);
-    inline QList<KeyFrame *> *keyframes() {return m_keyframes;}
+    void addKeyframe(QString propertyName, KeyFrame *frame);
+    inline QHash<QString, QList<KeyFrame*>*> *keyframes() {return m_keyframes;}
 
 private:
     ItemHandle*  m_handles[8];
@@ -93,7 +93,7 @@ private:
     QAction *m_leftAct;
     QAction *m_topAct;
     QList<QPropertyAnimation*> *m_animations;
-    QList<KeyFrame*> *m_keyframes;
+    QHash<QString, QList<KeyFrame*>*> *m_keyframes;
 
 private slots:
     void deleteItem();

@@ -35,7 +35,7 @@ ResizeableItem::ResizeableItem()
     m_xscale = 1;
     m_yscale = 1;
     m_animations = new QList<QPropertyAnimation *>();
-    m_keyframes = new QList<KeyFrame *>();
+    m_keyframes = new QHash<QString, QList<KeyFrame*>*>();
 
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 
@@ -79,9 +79,19 @@ ResizeableItem::ResizeableItem()
     m_contextMenu->addMenu(m_animationMenu);
 }
 
-void ResizeableItem::addKeyframe(KeyFrame *frame)
+void ResizeableItem::addKeyframe(QString propertyName, KeyFrame *frame)
 {
-    m_keyframes->append(frame);
+    if(m_keyframes->contains(propertyName))
+    {
+        QList<KeyFrame*> *list = m_keyframes->value(propertyName);
+        list->append(frame);
+    }
+    else
+    {
+        QList<KeyFrame*> *list = new QList<KeyFrame*>();
+        list->append(frame);
+        m_keyframes->insert(propertyName, list);
+    }
 }
 
 void ResizeableItem::addAnimation(QPropertyAnimation *anim)
@@ -488,18 +498,21 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
     if(as)
     {
         int time = as->playheadPosition();
-        std::sort(m_keyframes->begin(), m_keyframes->end(), compareKeyframes);
-        KeyFrame *found = NULL;
-        for(int i=0; i < m_keyframes->count(); i++)
+        if(m_keyframes->contains(propertyName))
         {
-            KeyFrame *key = m_keyframes->at(i);
-            if(key->propertyName() == propertyName && key->time() <= time)
+            QList<KeyFrame*> *list = m_keyframes->value(propertyName);
+            std::sort(list->begin(), list->end(), compareKeyframes);
+            KeyFrame *found = NULL;
+            QList<KeyFrame*>::iterator fr;
+            for(fr =list->begin(); fr != list->end(); ++fr)
             {
-                found = key;
+                KeyFrame *key = *fr;
+                if(key->time() <= time)
+                    found = key;
             }
+            if(found)
+                found->setValue(value);
         }
-        if(found)
-            found->setValue(value);
     }
 }
 
