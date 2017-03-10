@@ -117,6 +117,7 @@ void Timeline::reset()
 {
     m_timelineModel->reset();
     m_transitionPanel->update();
+    m_playhead->setValue(0);
 }
 
 bool Timeline::eventFilter(QObject *watched, QEvent *event)

@@ -72,6 +72,7 @@ void MainWindow::saveAs()
 void MainWindow::writeFile(QString fileName)
 {
     scene->clearSelection();
+    timeline->setPlayheadPosition(0);
 
     QFile file(fileName);
     if(!file.open(QIODevice::WriteOnly))

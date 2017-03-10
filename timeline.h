@@ -38,6 +38,7 @@ public:
 
     QParallelAnimationGroup *getAnimations();
     void reset();
+    inline void setPlayheadPosition(int value) {m_playhead->setValue(value);}
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
