@@ -410,14 +410,14 @@ void ResizeableItem::setHandlePositions()
 {
     if(!m_hasHandles)
         return;
-    m_handles[0]->setPos(-4, -4);
-    m_handles[1]->setPos(rect().width() - 4,  -4);
-    m_handles[2]->setPos(rect().width() - 4, rect().height() - 4);
-    m_handles[3]->setPos(-4,  rect().height() - 4);
-    m_handles[4]->setPos(rect().width() / 2 - 4, -4);
-    m_handles[5]->setPos(rect().width() - 4,  rect().height() / 2 - 4);
-    m_handles[6]->setPos(rect().width() /2 - 4, rect().height() - 4);
-    m_handles[7]->setPos(-4,  rect().height() / 2 - 4);
+    m_handles[0]->setPos(x() - 4, y() - 4);
+    m_handles[1]->setPos(x() + rect().width() - 4, y() - 4);
+    m_handles[2]->setPos(x() + rect().width() - 4, y() + rect().height() - 4);
+    m_handles[3]->setPos(x() - 4, y() + rect().height() - 4);
+    m_handles[4]->setPos(x() + rect().width() / 2 - 4, y() - 4);
+    m_handles[5]->setPos(x() + rect().width() - 4, y() + rect().height() / 2 - 4);
+    m_handles[6]->setPos(x() + rect().width() /2 - 4, y() + rect().height() - 4);
+    m_handles[7]->setPos(x() - 4, y() + rect().height() / 2 - 4);
 }
 
 QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &value)
@@ -430,7 +430,8 @@ QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &v
             {
                 for(int i = 0; i < 8; i++)
                 {
-                    m_handles[i] = new ItemHandle(this,i);
+                    m_handles[i] = new ItemHandle(i);
+                    this->scene()->addItem(m_handles[i]);
                     m_handles[i]->installSceneEventFilter(this);
                 }
                 m_hasHandles = true;
@@ -441,7 +442,6 @@ QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &v
         {
             for(int i = 0; i < 8; i++)
             {
-                m_handles[i]->setParentItem(NULL);
                 delete m_handles[i];
             }
             m_hasHandles = false;
@@ -453,6 +453,7 @@ QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &v
         {
             QPointF newPos = value.toPointF();
             posChanged(newPos.x(), newPos.y());
+            setHandlePositions();
         }
     }
 
@@ -491,6 +492,7 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
             if(found)
             {
                 found->setValue(value);
+                qDebug() << "adjust" << propertyName;
             }
         }
     }

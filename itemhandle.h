@@ -36,7 +36,7 @@
 class ItemHandle : public QGraphicsItem
 {
 public:
-    explicit ItemHandle(QGraphicsItem *parent = 0,  int corner = 0);
+    explicit ItemHandle(int corner = 0);
 
     int  getCorner();
     void setMouseState(int);

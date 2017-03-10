@@ -75,6 +75,7 @@ Timeline::Timeline(AnimationScene *scene)
     m_transitionPanel = new TransitionPanel();
     m_transitionPanel->setModel(m_timelineModel);
     m_transitionPanel->setTreeview(m_treeview);
+    m_transitionPanel->setContextMenuPolicy(Qt::CustomContextMenu);
     m_playhead = new PlayHead(Qt::Horizontal);
     m_playhead->setMinimum(0);
     m_playhead->setMaximum(m_playhead->width() * 5);
@@ -94,6 +95,8 @@ Timeline::Timeline(AnimationScene *scene)
     m_contextMenu = new QMenu();
     m_delAct = new QAction("Delete");
 
+    m_transitionAct = new QAction("Add transition");
+
     //m_contextMenu->addMenu(m_propertiesMenu);
 
     m_treeview->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -104,6 +107,9 @@ Timeline::Timeline(AnimationScene *scene)
     connect(m_treeview->verticalScrollBar(), SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(treeScrollValueChanged(int)));
 
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
+
+    connect(m_transitionPanel, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onTransitionPanelContextMenu(const QPoint &)));
+    connect(m_transitionAct, SIGNAL(triggered(bool)) ,this, SLOT(addTransition()));
 
     QItemSelectionModel *selectionModel = m_treeview->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
@@ -143,6 +149,13 @@ void Timeline::onCustomContextMenu(const QPoint &point)
         m_contextMenu->addAction(m_delAct);
         m_contextMenu->exec(m_treeview->mapToGlobal(point));
     }
+}
+
+void Timeline::onTransitionPanelContextMenu(const QPoint &point)
+{
+    m_contextMenu->clear();
+    m_contextMenu->addAction(m_transitionAct);
+    m_contextMenu->exec(m_transitionPanel->mapToGlobal(point));
 }
 
 void Timeline::playAnimation()
@@ -215,14 +228,25 @@ void Timeline::playheadMoved(int val)
                 if(found)
                 {
                     QString propertyName = it.key();
+                    qreal value;
+                    if(found->easing() >= 0)
+                    {
+                        QEasingCurve easing((QEasingCurve::Type)found->easing());
+                        KeyFrame *to = found->transitionTo();
+                        qreal progress = 1.0 / (to->time() - found->time()) * (val - found->time());
+                        qreal progressValue = easing.valueForProgress(progress);
+                        value = found->value().toReal() + (to->value().toReal() - found->value().toReal()) / 1.0 * progressValue;
+                    }
+                    else
+                        value = found->value().toReal();
                     if(propertyName == "left")
-                        item->setX(found->value().toReal());
+                        item->setX(value);
                     else if(propertyName == "top")
-                        item->setY(found->value().toReal());
+                        item->setY(value);
                     else if(propertyName == "width")
-                        item->setWidth(found->value().toReal());
+                        item->setWidth(value);
                     else if(propertyName == "height")
-                        item->setHeight(found->value().toReal());
+                        item->setHeight(value);
                 }
             }
         }
@@ -255,4 +279,18 @@ void Timeline::addKeyFrame(ResizeableItem *item, QString property, qreal value)
 {
     m_timelineModel->addKeyFrame(item, property, value, m_playhead->value());
     emit itemAdded();
+}
+
+void Timeline::addTransition()
+{
+    ResizeableItem *item = dynamic_cast<ResizeableItem *>(m_scene->items().at(0));
+    if(item)
+    {
+        QList<KeyFrame*> *list = item->keyframes()->value("left");
+        KeyFrame *first = list->first();
+        KeyFrame *last = list->last();
+        first->setEasing((int)QEasingCurve::OutBounce);
+        first->setTransitionTo(last);
+        qDebug() << "added transition";
+    }
 }

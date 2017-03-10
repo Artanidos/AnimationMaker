@@ -42,6 +42,7 @@ public:
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
+    void onTransitionPanelContextMenu(const QPoint &point);
     void playAnimation();
     void revertAnimation();
     void forwardAnimation();
@@ -49,6 +50,7 @@ public slots:
     void playheadValueChanged(int val);
     void playheadMoved(int val);
     void addKeyFrame(ResizeableItem *item,QString property, qreal value);
+    void addTransition();
 
 signals:
     void itemSelectionChanged(ResizeableItem *item);
@@ -59,6 +61,7 @@ private:
     TimelineModel *m_timelineModel;
     QMenu *m_contextMenu;
     QAction *m_delAct;
+    QAction *m_transitionAct;
     AnimationScene *m_scene;
     TransitionPanel *m_transitionPanel;
     PlayHead *m_playhead;

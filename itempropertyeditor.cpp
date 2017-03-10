@@ -251,6 +251,7 @@ void ItemPropertyEditor::idChanged(QString value)
 void ItemPropertyEditor::xChanged(int value)
 {
     m_item->setX(value);
+    qDebug() << "xChanged";
 }
 
 void ItemPropertyEditor::yChanged(int value)

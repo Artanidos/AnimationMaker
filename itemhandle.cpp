@@ -22,8 +22,7 @@
 
 #include <QTest>
 
-ItemHandle::ItemHandle(QGraphicsItem *parent,  int corner) :
-    QGraphicsItem(parent),
+ItemHandle::ItemHandle(int corner) :
     mouseDownX(0),
     mouseDownY(0),
     m_color(Qt::black),
@@ -33,9 +32,9 @@ ItemHandle::ItemHandle(QGraphicsItem *parent,  int corner) :
     m_corner(corner),
     m_mouseButtonState(kMouseReleased)
 {
-    setParentItem(parent);
     m_pen.setWidth(1);
     this->setAcceptHoverEvents(true);
+    setZValue(100);
 }
 
 void ItemHandle::setMouseState(int s)

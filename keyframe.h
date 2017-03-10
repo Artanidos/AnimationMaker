@@ -34,11 +34,14 @@ public:
     inline void setTime(int value) {m_time = value;}
     inline int easing() {return m_easing;}
     inline void setEasing(int value) {m_easing = value;}
+    inline KeyFrame *transitionTo() {return m_transitionTo;}
+    inline void setTransitionTo(KeyFrame *value) {m_transitionTo = value;}
 
 private:
     QVariant m_value;
     int m_time;
     int m_easing;
+    KeyFrame *m_transitionTo;
 };
 bool compareKeyframes (KeyFrame *a, KeyFrame *b);
 
