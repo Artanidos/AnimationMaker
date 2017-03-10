@@ -261,11 +261,13 @@ void ItemPropertyEditor::yChanged(int value)
 void ItemPropertyEditor::widthChanged(int value)
 {
     m_item->setWidth(value);
+    m_item->adjustKeyframes("width", QVariant(value));
 }
 
 void ItemPropertyEditor::heightChanged(int value)
 {
     m_item->setHeight(value);
+    m_item->adjustKeyframes("height", QVariant(value));
 }
 
 void ItemPropertyEditor::textChanged(QString value)

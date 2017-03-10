@@ -123,6 +123,8 @@ void ResizeableItem::setRect(qreal x, qreal y, qreal w, qreal h)
     prepareGeometryChange();
     m_rect = QRectF(x, y, w, h);
     update();
+    adjustKeyframes("width", QVariant(w));
+    adjustKeyframes("height", QVariant(h));
     emit sizeChanged(w, h);
 }
 
@@ -143,6 +145,7 @@ void ResizeableItem::setWidth(qreal value)
     m_rect.setWidth(value);
     update();
     setHandlePositions();
+
 }
 
 void ResizeableItem::setHeight(qreal value)
@@ -151,6 +154,7 @@ void ResizeableItem::setHeight(qreal value)
     m_rect.setHeight(value);
     update();
     setHandlePositions();
+
 }
 
 QPen ResizeableItem::pen() const
@@ -308,7 +312,8 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
         }
 
         setRect(0,0,rect().width() + deltaWidth, rect().height() + deltaHeight);
-
+        adjustKeyframes("width", QVariant(rect().width() + deltaWidth));
+        adjustKeyframes("height", QVariant(rect().height() + deltaHeight));
         scaleObjects();
 
         deltaWidth *= (-1);
@@ -403,6 +408,8 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 
 void ResizeableItem::setHandlePositions()
 {
+    if(!m_hasHandles)
+        return;
     m_handles[0]->setPos(-4, -4);
     m_handles[1]->setPos(rect().width() - 4,  -4);
     m_handles[2]->setPos(rect().width() - 4, rect().height() - 4);
@@ -426,8 +433,8 @@ QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &v
                     m_handles[i] = new ItemHandle(this,i);
                     m_handles[i]->installSceneEventFilter(this);
                 }
-                setHandlePositions();
                 m_hasHandles = true;
+                setHandlePositions();            
             }
         }
         else
@@ -448,6 +455,7 @@ QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &v
             posChanged(newPos.x(), newPos.y());
         }
     }
+
     return QGraphicsItem::itemChange(change, value);
 }
 
@@ -481,7 +489,9 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
                     found = key;
             }
             if(found)
+            {
                 found->setValue(value);
+            }
         }
     }
 }

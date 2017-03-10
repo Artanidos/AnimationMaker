@@ -151,10 +151,18 @@ void Timeline::playAnimation()
 
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 
-    //int delay = 1000 / m_scene->fps();
-    //int frames = m_parallelAnimations->totalDuration() / delay;
+    int delay = 1000 / m_scene->fps();
+    int frames = m_timelineModel->lastKeyframe() / delay;
 
-
+    for(int i=0; i < frames; i++)
+    {
+        playheadMoved(i * delay);
+        m_playhead->setValue(i * delay);
+        QTest::qSleep(delay / 2);
+        QCoreApplication::processEvents(QEventLoop::AllEvents, delay / 2);
+    }
+    playheadMoved(m_timelineModel->lastKeyframe());
+    m_playhead->setValue(m_timelineModel->lastKeyframe());
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
 
@@ -163,7 +171,8 @@ void Timeline::revertAnimation()
     m_scene->clearSelection();
 
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
-
+    playheadMoved(0);
+    m_playhead->setValue(0);
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
 
@@ -172,7 +181,8 @@ void Timeline::forwardAnimation()
     m_scene->clearSelection();
 
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
-
+    playheadMoved(m_timelineModel->lastKeyframe());
+    m_playhead->setValue(m_timelineModel->lastKeyframe());
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
 
@@ -209,6 +219,10 @@ void Timeline::playheadMoved(int val)
                         item->setX(found->value().toReal());
                     else if(propertyName == "top")
                         item->setY(found->value().toReal());
+                    else if(propertyName == "width")
+                        item->setWidth(found->value().toReal());
+                    else if(propertyName == "height")
+                        item->setHeight(found->value().toReal());
                 }
             }
         }
@@ -233,12 +247,6 @@ void Timeline::selectionChanged(const QItemSelection& current,const QItemSelecti
             ResizeableItem *item = (ResizeableItem *) v.value<void *>();
             if(item)
                 emit itemSelectionChanged(item);
-        }
-        if(level == 2)
-        {
-//            QPropertyAnimation *anim = (QPropertyAnimation *) v.value<void *>();
-//            if(anim)
-//                emit animationSelectionChanged(anim);
         }
     }
 }

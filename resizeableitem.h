@@ -66,9 +66,13 @@ public:
 
     void setWidth(qreal value);
     void setHeight(qreal value);
+    //void setWidthAndAdjustKeyframes(qreal value);
+    //void setHeightAndAjustKeyframes(qreal value);
 
     void addKeyframe(QString propertyName, KeyFrame *frame);
     inline QHash<QString, QList<KeyFrame*>*> *keyframes() {return m_keyframes;}
+
+    void adjustKeyframes(QString propertyName, QVariant value);
 
 private:
     ItemHandle*  m_handles[8];
@@ -106,7 +110,6 @@ protected:
 
 private:
     void posChanged(qreal x, qreal y);
-    void adjustKeyframes(QString propertyName, QVariant value);
 };
 
 #endif // RESIZEABLEITEM_H

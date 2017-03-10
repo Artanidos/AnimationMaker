@@ -30,12 +30,14 @@ TimelineModel::TimelineModel()
     QVariant data;
 
     m_rootItem = new TreeItem(rootData, data);
+    m_lastkeyframe = 0;
 }
 
 void TimelineModel::reset()
 {
     beginResetModel();
     m_rootItem->children()->clear();
+    m_lastkeyframe = 0;
     endResetModel();
 }
 
@@ -81,6 +83,7 @@ void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qrea
         m_rootItem->appendChild(treeItem);
         endInsertRows();
     }
+    m_lastkeyframe = m_lastkeyframe < time ? time : m_lastkeyframe;
 }
 
 void TimelineModel::keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key)
@@ -121,6 +124,7 @@ void TimelineModel::keyframeAdded(ResizeableItem * item, QString propertyName, K
         m_rootItem->appendChild(treeItem);
         endInsertRows();
     }
+    m_lastkeyframe = m_lastkeyframe < key->time() ? key->time() : m_lastkeyframe;
 }
 
 int TimelineModel::columnCount(const QModelIndex &parent) const
