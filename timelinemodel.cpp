@@ -30,14 +30,12 @@ TimelineModel::TimelineModel()
     QVariant data;
 
     m_rootItem = new TreeItem(rootData, data);
-    m_lastkeyframe = 0;
 }
 
 void TimelineModel::reset()
 {
     beginResetModel();
     m_rootItem->children()->clear();
-    m_lastkeyframe = 0;
     endResetModel();
 }
 
@@ -84,8 +82,6 @@ void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qrea
         endInsertRows();
         emit keyframeAdded(item, propertyName);
     }
-
-    m_lastkeyframe = m_lastkeyframe < time ? time : m_lastkeyframe;
 }
 
 void TimelineModel::keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key)
@@ -103,6 +99,11 @@ void TimelineModel::keyframeAdded(ResizeableItem * item, QString propertyName, K
     {
         treeItem = new TreeItem(item->id(), qVariantFromValue((void *) item), m_rootItem, 1);
         connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+
+        beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
+        m_rootItem->appendChild(treeItem);
+        endInsertRows();
+        emit keyframeAdded(item, NULL);
     }
 
     if(treeChildItem)
@@ -110,6 +111,7 @@ void TimelineModel::keyframeAdded(ResizeableItem * item, QString propertyName, K
         QVariant var = treeChildItem->data(1);
         QList<KeyFrame*> *list = (QList<KeyFrame*>*) var.value<void *>();
         list->append(key);
+        emit keyframeAdded(NULL, NULL);
     }
     else
     {
@@ -119,14 +121,8 @@ void TimelineModel::keyframeAdded(ResizeableItem * item, QString propertyName, K
         beginInsertRows(createIndex(treeItem->row(), 0, treeItem), treeItem->childCount() - 1, treeItem->childCount() - 1);
         treeItem->appendChild(treeChildItem);
         endInsertRows();
+        emit keyframeAdded(item, propertyName);
     }
-    if(!found)
-    {
-        beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
-        m_rootItem->appendChild(treeItem);
-        endInsertRows();
-    }
-    m_lastkeyframe = m_lastkeyframe < key->time() ? key->time() : m_lastkeyframe;
 }
 
 int TimelineModel::columnCount(const QModelIndex &parent) const
@@ -240,4 +236,28 @@ void TimelineModel::idChanged(ResizeableItem *item, QString value)
         treeItem->setData(0, value);
         this->dataChanged(index(0,0), index(1,0));
     }
+}
+
+int TimelineModel::lastKeyframe()
+{
+    int last = 0;
+    for(int i = 0; i < m_rootItem->childCount(); i++)
+    {
+        QModelIndex childIndex = index(i, 0);
+        QVariant v = data(childIndex, Qt::UserRole);
+        ResizeableItem *item = (ResizeableItem *) v.value<void *>();
+
+        QHash<QString, QList<KeyFrame*>*>::iterator it;
+        for (it = item->keyframes()->begin(); it != item->keyframes()->end(); it++)
+        {
+            QList<KeyFrame *> *list = it.value();
+            QList<KeyFrame *>::iterator l;
+            for(l = list->begin(); l != list->end(); l++)
+            {
+                KeyFrame *frame = *l;
+                last = frame->time() > last ? frame->time() : last;
+            }
+        }
+    }
+    return last;
 }

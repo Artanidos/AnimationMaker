@@ -166,7 +166,8 @@ void Timeline::playAnimation()
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 
     int delay = 1000 / m_scene->fps();
-    int frames = m_timelineModel->lastKeyframe() / delay;
+    int last = m_timelineModel->lastKeyframe();
+    int frames = last / delay;
 
     for(int i=0; i < frames; i++)
     {
@@ -195,8 +196,9 @@ void Timeline::forwardAnimation()
     m_scene->clearSelection();
 
     disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
-    playheadMoved(m_timelineModel->lastKeyframe());
-    m_playhead->setValue(m_timelineModel->lastKeyframe());
+    int last = m_timelineModel->lastKeyframe();
+    playheadMoved(last);
+    m_playhead->setValue(last);
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
 

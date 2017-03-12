@@ -46,7 +46,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
-    inline int lastKeyframe() {return m_lastkeyframe;}
+    int lastKeyframe();
 
 public slots:
     void idChanged(ResizeableItem *item, QString value);
@@ -54,11 +54,9 @@ public slots:
 
 signals:
     void keyframeAdded(ResizeableItem *item, QString propertyName);
-    //void itemAdded();
 
 private:
     TreeItem *m_rootItem = NULL;
-    int m_lastkeyframe;
 };
 
 #endif // TIMELINEMODEL_H

@@ -73,7 +73,7 @@ void TransitionPanel::paintEvent(QPaintEvent *)
 void TransitionPanel::reset()
 {
     QLayoutItem *item;
-    while((item = m_layout->takeAt(1)))
+    while((item = m_layout->takeAt(0)))
     {
         if(item->widget())
             delete item->widget();
