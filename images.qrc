@@ -18,5 +18,7 @@
         <file>images/raute-hover.png</file>
         <file>images/raute-weiss.png</file>
         <file>images/raute-hohl.png</file>
+        <file>images/trans-left.png</file>
+        <file>images/trans-right.png</file>
     </qresource>
 </RCC>

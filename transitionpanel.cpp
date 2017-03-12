@@ -20,10 +20,13 @@
 
 #include "transitionpanel.h"
 #include "keyframe.h"
+#include "transitionline.h"
 
 #include <QPainter>
 #include <QTest>
 #include <limits.h>
+#include <QSplitter>
+#include <QLayout>
 
 TransitionPanel::TransitionPanel()
 {
@@ -32,8 +35,11 @@ TransitionPanel::TransitionPanel()
     setMinimumWidth(100);
     setMinimumHeight(50);
 
-    m_imageRaute = QImage(":/images/raute-weiss.png");
-    m_imageRauteHohl = QImage(":/images/raute-hohl.png");
+    m_layout = new QVBoxLayout();
+    m_layout->setMargin(1);
+    m_layout->setSpacing(1);
+    m_layout->addStretch();
+    setLayout(m_layout);
 }
 
 void TransitionPanel::setModel(TimelineModel *model)
@@ -50,12 +56,9 @@ void TransitionPanel::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     QColor gray = QColor(64, 66, 68);
-    QColor orange = QColor(255,127,42);
-    QColor orange2 = QColor(255,127,42, 150);
-    int row = 0;
+
     int width = size().width();
     int height = size().height();
-    int rows = m_timelineModel->rowCount();
 
     painter.setPen(QColor(41, 41, 41));
     painter.fillRect(0, 0, width, height, gray);
@@ -65,55 +68,104 @@ void TransitionPanel::paintEvent(QPaintEvent *)
     {
         painter.drawLine(k, 0, k, height);
     }
-    for(int l = 15; l < height; l+=15)
+}
+
+void TransitionPanel::reset()
+{
+    QLayoutItem *item;
+    while((item = m_layout->takeAt(1)))
     {
-        painter.drawLine(0, l, width, l);
+        if(item->widget())
+            delete item->widget();
+        delete item;
     }
+    m_layout->addStretch();
+}
+
+void TransitionPanel::enableDisableLines()
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line)
+            line->setVisible(false);
+    }
+
+    int row = 0;
+    int rows = m_timelineModel->rowCount();
     for(int i = 0; i < rows; i++)
     {
-        row++;
         QModelIndex childIndex = m_timelineModel->index(i, 0);
-        int children = m_timelineModel->rowCount(childIndex);
-        for(int j = 0; j < children; j++)
+        QVariant v = m_timelineModel->data(childIndex, Qt::UserRole);
+        ResizeableItem *item = (ResizeableItem *) v.value<void *>();
+        TransitionLine *line = getTransitionLine(item, "");
+        if(line)
         {
-            QModelIndex keyframeIndex = m_timelineModel->index(j, 0, childIndex);
-            QVariant var = m_timelineModel->data(keyframeIndex, Qt::UserRole);
-
-            QList<KeyFrame*> *list = (QList<KeyFrame*> *) var.value<void *>();
-            if(list)
+            if(m_scrollPos <= row)
+                line->setVisible(true);
+            row++;
+            if((row + 1 - m_scrollPos) * 15 > height())
+                return;
+        }
+        if(m_treeview->isExpanded(m_timelineModel->index(i, 0)))
+        {
+            for(int j = 0; j < m_timelineModel->rowCount(childIndex); j++)
             {
-                for(int k=0; k < list->count(); k++)
+                QModelIndex keyframeIndex = m_timelineModel->index(j, 0, childIndex);
+                TransitionLine *line = getTransitionLine(item, m_timelineModel->data(keyframeIndex, Qt::DisplayRole).toString());
+                if(line)
                 {
-                    KeyFrame *frame = list->at(k);
-                    if(m_treeview->isExpanded(m_timelineModel->index(i, 0)))
-                    {
-                        painter.drawImage(frame->time() / 5 - 3, 1 + -15 * m_scrollPos + row * 15, m_imageRaute);
-                    }
+                    if(m_scrollPos <= row)
+                        line->setVisible(true);
+                    row++;
+                    if((row + 1 - m_scrollPos) * 15 > height())
+                        return;
                 }
             }
-            if(m_treeview->isExpanded(m_timelineModel->index(i, 0)))
-                row++;
         }
     }
 }
 
+TransitionLine *TransitionPanel::getTransitionLine(ResizeableItem *item, QString propertyName)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line && line->propertyName() == propertyName && line->item() == item)
+            return line;
+    }
+    return NULL;
+}
+
 void TransitionPanel::treeExpanded(QModelIndex)
 {
-    update();
+    enableDisableLines();
 }
 
 void TransitionPanel::treeCollapsed(QModelIndex)
 {
-    update();
+    enableDisableLines();
 }
 
 void TransitionPanel::treeScrollValueChanged(int to)
 {
     m_scrollPos = to;
-    update();
+    enableDisableLines();
 }
 
-void TransitionPanel::treeItemAdded()
+void TransitionPanel::keyframeAdded(ResizeableItem *item, QString propertyName)
 {
-    update();
+    if(item)
+    {
+        TransitionLine *line = new TransitionLine(item, propertyName);
+        m_layout->insertWidget(m_layout->count() - 1, line);
+        enableDisableLines();
+    }
+    else
+        update();
+}
+
+void TransitionPanel::resizeEvent(QResizeEvent *)
+{
+    enableDisableLines();
 }

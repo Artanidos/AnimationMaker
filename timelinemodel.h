@@ -52,6 +52,10 @@ public slots:
     void idChanged(ResizeableItem *item, QString value);
     void keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key);
 
+signals:
+    void keyframeAdded(ResizeableItem *item, QString propertyName);
+    //void itemAdded();
+
 private:
     TreeItem *m_rootItem = NULL;
     int m_lastkeyframe;

@@ -50,7 +50,8 @@ SOURCES += main.cpp\
     transitionpanel.cpp \
     playhead.cpp \
     colorpicker.cpp \
-    keyframe.cpp
+    keyframe.cpp \
+    transitionline.cpp
 
 HEADERS  += mainwindow.h \
     treemodel.h \
@@ -71,7 +72,8 @@ HEADERS  += mainwindow.h \
     transitionpanel.h \
     playhead.h \
     colorpicker.h \
-    keyframe.h
+    keyframe.h \
+    transitionline.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

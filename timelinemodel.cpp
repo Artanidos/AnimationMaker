@@ -56,6 +56,11 @@ void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qrea
     {
         treeItem = new TreeItem(item->id(), qVariantFromValue((void *) item), m_rootItem, 1);
         connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+
+        beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
+        m_rootItem->appendChild(treeItem);
+        endInsertRows();
+        emit keyframeAdded(item, NULL);
     }
 
     KeyFrame *keyframe = new KeyFrame();
@@ -67,6 +72,7 @@ void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qrea
         QVariant var = treeChildItem->data(1);
         QList<KeyFrame*> *list = (QList<KeyFrame*>*) var.value<void *>();
         list->append(keyframe);
+        emit keyframeAdded(NULL, NULL);
     }
     else
     {
@@ -76,13 +82,9 @@ void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qrea
         beginInsertRows(createIndex(treeItem->row(), 0, treeItem), treeItem->childCount() - 1, treeItem->childCount() - 1);
         treeItem->appendChild(treeChildItem);
         endInsertRows();
+        emit keyframeAdded(item, propertyName);
     }
-    if(!found)
-    {
-        beginInsertRows(QModelIndex(), m_rootItem->childCount() - 1, m_rootItem->childCount() - 1);
-        m_rootItem->appendChild(treeItem);
-        endInsertRows();
-    }
+
     m_lastkeyframe = m_lastkeyframe < time ? time : m_lastkeyframe;
 }
 

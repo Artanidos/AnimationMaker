@@ -54,7 +54,6 @@ public slots:
 
 signals:
     void itemSelectionChanged(ResizeableItem *item);
-    void itemAdded();
 
 private:
     QTreeView *m_treeview;

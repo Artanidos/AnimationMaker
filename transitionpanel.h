@@ -24,7 +24,9 @@
 #include <QWidget>
 #include <QModelIndex>
 #include <QTreeView>
+#include <QVBoxLayout>
 #include "timelinemodel.h"
+#include "transitionline.h"
 
 class TransitionPanel : public QWidget
 {
@@ -33,21 +35,24 @@ public:
     TransitionPanel();
 
     void paintEvent(QPaintEvent*);
+    void resizeEvent(QResizeEvent *);
     void setModel(TimelineModel *model);
     void setTreeview(QTreeView *tv);
+    void reset();
 
 public slots:
     void treeExpanded(QModelIndex);
     void treeCollapsed(QModelIndex);
     void treeScrollValueChanged(int);
-    void treeItemAdded();
+    void keyframeAdded(ResizeableItem *item, QString propertyName);
 
 private:
     int m_scrollPos;
     TimelineModel *m_timelineModel;
     QTreeView *m_treeview;
-    QImage m_imageRaute;
-    QImage m_imageRauteHohl;
+    QVBoxLayout *m_layout;
+    void enableDisableLines();
+    TransitionLine *getTransitionLine(ResizeableItem *item, QString propertyName);
 };
 
 #endif // TRANSITIONPANEL_H

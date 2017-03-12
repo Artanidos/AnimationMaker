@@ -492,7 +492,6 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
             if(found)
             {
                 found->setValue(value);
-                qDebug() << "adjust" << propertyName;
             }
         }
     }

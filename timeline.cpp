@@ -103,7 +103,8 @@ Timeline::Timeline(AnimationScene *scene)
     connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
     connect(m_treeview, SIGNAL(expanded(QModelIndex)), m_transitionPanel, SLOT(treeExpanded(QModelIndex)));
     connect(m_treeview, SIGNAL(collapsed(QModelIndex)), m_transitionPanel, SLOT(treeCollapsed(QModelIndex)));
-    connect(this, SIGNAL(itemAdded()), m_transitionPanel, SLOT(treeItemAdded()));
+    connect(m_timelineModel, SIGNAL(keyframeAdded(ResizeableItem*,QString)), m_transitionPanel, SLOT(keyframeAdded(ResizeableItem *, QString)));
+
     connect(m_treeview->verticalScrollBar(), SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(treeScrollValueChanged(int)));
 
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
@@ -122,7 +123,7 @@ Timeline::Timeline(AnimationScene *scene)
 void Timeline::reset()
 {
     m_timelineModel->reset();
-    m_transitionPanel->update();
+    m_transitionPanel->reset();
     m_playhead->setValue(0);
 }
 
@@ -275,10 +276,9 @@ void Timeline::selectionChanged(const QItemSelection& current,const QItemSelecti
     }
 }
 
-void Timeline::addKeyFrame(ResizeableItem *item, QString property, qreal value)
+void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, qreal value)
 {
-    m_timelineModel->addKeyFrame(item, property, value, m_playhead->value());
-    emit itemAdded();
+    m_timelineModel->addKeyFrame(item, propertyName, value, m_playhead->value());
 }
 
 void Timeline::addTransition()
