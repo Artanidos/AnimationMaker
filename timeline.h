@@ -39,6 +39,7 @@ public:
     QParallelAnimationGroup *getAnimations();
     void reset();
     inline void setPlayheadPosition(int value) {m_playhead->setValue(value);}
+    inline void expandTree() {m_treeview->expandAll();}
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
@@ -48,7 +49,6 @@ public slots:
     void forwardAnimation();
     void selectionChanged(const QItemSelection& current,const QItemSelection&);
     void playheadValueChanged(int val);
-    void playheadMoved(int val);
     void addKeyFrame(ResizeableItem *item,QString property, qreal value);
     void addTransition();
 
@@ -66,7 +66,6 @@ private:
     PlayHead *m_playhead;
 
     void addProperty(const QString name);
-    bool eventFilter(QObject *object, QEvent *event);
     void createAnimationGroup();
 };
 

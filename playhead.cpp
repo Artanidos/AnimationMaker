@@ -23,10 +23,11 @@
 #include <QPainter>
 #include <QTest>
 
-PlayHead::PlayHead(Qt::Orientation orientation)
-    : QSlider(orientation)
+PlayHead::PlayHead()
 {
     m_image = QImage(":/images/playhead.png");
+    m_pressed = false;
+    m_value = 0;
 }
 
 void PlayHead::paintEvent(QPaintEvent *)
@@ -34,19 +35,39 @@ void PlayHead::paintEvent(QPaintEvent *)
     QColor gray = QColor(64, 66, 68);
     int width = size().width();
     int height = size().height();
-    int position = QStyle::sliderPositionFromValue(minimum(), maximum(), value(), width);
 
     QPainter painter(this);
 
     painter.setPen(QColor(41, 41, 41));
     painter.fillRect(0, 0, width, height, gray);
     painter.drawRect(0, 0, width - 1, height - 1);
+    painter.drawImage(m_value / 5 - 4, 1, m_image);
+}
 
-    painter.drawImage(position - 4, 1, m_image);
+void PlayHead::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton && event->x() > m_value / 5 - 4 && event->x() <= m_value / 5 + 5)
+        m_pressed = true;
+}
+
+void PlayHead::mouseMoveEvent(QMouseEvent *event)
+{
+    if(m_pressed)
+    {
+        int x = event->x();
+        if(x < 0)
+            x = 0;
+        if(x >= width())
+            x = width() - 1;
+        m_value = qRound((qreal)x * 5 / 100) * 100;
+        if(m_value / 5 > width())
+            m_value -= 100;
+        update();
+        emit valueChanged(m_value);
+    }
 }
 
 void PlayHead::mouseReleaseEvent(QMouseEvent *event)
 {
-    int pos = QStyle::sliderValueFromPosition(minimum(), maximum(), event->x(), width(), 0);
-    setValue(qRound((qreal)pos / 100) * 100);
+    m_pressed = false;
 }

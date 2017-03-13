@@ -75,14 +75,15 @@ void TransitionLine::mousePressEvent(QMouseEvent *ev)
 void TransitionLine::mouseMoveEvent(QMouseEvent *ev)
 {
     if(m_frame)
-    {
-        int time = ev->pos().x() * 5;
-        if(time < 0)
-            time = 0;
-        if(time > width() * 5)
-            time = width() * 5;
-
-        time = qRound((qreal)time / 100) * 100;
+    {   
+        int x = ev->x();
+        if(x < 0)
+            x = 0;
+        if(x >= width())
+            x = width() - 1;
+        int time = qRound((qreal)x * 5 / 100) * 100;
+        if(time / 5 > width())
+            time -= 100;
         m_frame->setTime(time);
         m_oldx = ev->pos().x();
         update();

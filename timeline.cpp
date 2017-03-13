@@ -76,12 +76,7 @@ Timeline::Timeline(AnimationScene *scene)
     m_transitionPanel->setModel(m_timelineModel);
     m_transitionPanel->setTreeview(m_treeview);
     m_transitionPanel->setContextMenuPolicy(Qt::CustomContextMenu);
-    m_playhead = new PlayHead(Qt::Horizontal);
-    m_playhead->setMinimum(0);
-    m_playhead->setMaximum(m_playhead->width() * 5);
-    m_playhead->setValue(0);
-    m_playhead->setSingleStep(100);
-    m_playhead->installEventFilter(this);
+    m_playhead = new PlayHead();
 
     layout->addItem(hbox, 0, 0);
     layout->addWidget(m_playhead, 0, 1);
@@ -115,8 +110,6 @@ Timeline::Timeline(AnimationScene *scene)
     QItemSelectionModel *selectionModel = m_treeview->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
     connect(m_playhead, SIGNAL(valueChanged(int)), scene, SLOT(setPlayheadPosition(int)));
-    connect(m_playhead, SIGNAL(sliderMoved(int)), this, SLOT(playheadMoved(int)));
-
     connect(m_scene, SIGNAL(keyframeAdded(ResizeableItem*, QString, KeyFrame*)), m_timelineModel, SLOT(keyframeAdded(ResizeableItem*, QString, KeyFrame*)));
 }
 
@@ -125,20 +118,6 @@ void Timeline::reset()
     m_timelineModel->reset();
     m_transitionPanel->reset();
     m_playhead->setValue(0);
-}
-
-bool Timeline::eventFilter(QObject *watched, QEvent *event)
-{
-    PlayHead * ph = dynamic_cast<PlayHead *>(watched);
-    if (ph == NULL)
-        return false;
-
-    QResizeEvent * revent = dynamic_cast<QResizeEvent*>(event);
-    if (revent == NULL)
-        return false;
-
-    m_playhead->setMaximum(m_playhead->width() * 5);
-    return false;
 }
 
 void Timeline::onCustomContextMenu(const QPoint &point)
@@ -163,50 +142,38 @@ void Timeline::playAnimation()
 {
     m_scene->clearSelection();
 
-    disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
-
     int delay = 1000 / m_scene->fps();
     int last = m_timelineModel->lastKeyframe();
     int frames = last / delay;
 
     for(int i=0; i < frames; i++)
     {
-        playheadMoved(i * delay);
         m_playhead->setValue(i * delay);
         QTest::qSleep(delay / 2);
         QCoreApplication::processEvents(QEventLoop::AllEvents, delay / 2);
     }
-    playheadMoved(m_timelineModel->lastKeyframe());
     m_playhead->setValue(m_timelineModel->lastKeyframe());
-    connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
 
 void Timeline::revertAnimation()
 {
     m_scene->clearSelection();
-
-    disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
-    playheadMoved(0);
     m_playhead->setValue(0);
-    connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
 
 void Timeline::forwardAnimation()
 {
     m_scene->clearSelection();
 
-    disconnect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
     int last = m_timelineModel->lastKeyframe();
-    playheadMoved(last);
     m_playhead->setValue(last);
-    connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
 }
 
 /*
  * looking for the keyframe which occures in front on the playhead
  * and adjust the item value according to the keyframe
  */
-void Timeline::playheadMoved(int val)
+void Timeline::playheadValueChanged(int val)
 {
     m_scene->clearSelection();
 
@@ -254,11 +221,6 @@ void Timeline::playheadMoved(int val)
             }
         }
     }
-}
-
-void Timeline::playheadValueChanged(int)
-{
-
 }
 
 void Timeline::selectionChanged(const QItemSelection& current,const QItemSelection&)

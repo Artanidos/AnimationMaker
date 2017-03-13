@@ -21,19 +21,29 @@
 #ifndef PLAYHEAD_H
 #define PLAYHEAD_H
 
-#include <QSlider>
+#include <QWidget>
 
-class PlayHead : public QSlider
+class PlayHead : public QWidget
 {
     Q_OBJECT
 public:
-    PlayHead(Qt::Orientation orientation);
+    PlayHead();
 
     void paintEvent(QPaintEvent *ev);
+    void mousePressEvent(QMouseEvent *ev);
+    void mouseMoveEvent(QMouseEvent *ev);
     void mouseReleaseEvent(QMouseEvent *ev);
+
+    inline void setValue(int value) {m_value = value; update(); emit valueChanged(value);}
+    inline int value() {return m_value;}
+
+signals:
+    void valueChanged(int val);
 
 private:
     QImage m_image;
+    bool m_pressed;
+    int m_value;
 };
 
 #endif // PLAYHEAD_H

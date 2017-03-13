@@ -182,6 +182,7 @@ void MainWindow::open()
     model->setScene(scene);
     m_scenePropertyEditor->setScene(scene);
     tree->expandAll();
+    timeline->expandTree();
     loadedFile.setFile(fileName);
     saveAct->setEnabled(true);
     setTitle();
