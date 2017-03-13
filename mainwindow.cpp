@@ -19,7 +19,6 @@
 ****************************************************************************/
 
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "treemodel.h"
 #include "animationscene.h"
 #include "rectangle.h"
@@ -60,9 +59,19 @@ void MainWindow::save()
 
 void MainWindow::saveAs()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Animation"), "", tr("AnimationMaker (*.amb);;All Files (*)"));
-    if (fileName.isEmpty())
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter(tr("AnimationMaker (*.amb);;All Files (*)"));
+    dialog->setWindowTitle(tr("Save Animation"));
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptSave);
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
+    if(fileName.isEmpty())
         return;
+
     writeFile(fileName);
     loadedFile.setFile(fileName);
     saveAct->setEnabled(true);
@@ -118,10 +127,18 @@ void MainWindow::newfile()
 
 void MainWindow::open()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Animation"), "", tr("AnimationMaker (*.amb);;All Files (*)"));
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter(tr("AnimationMaker (*.amb);;All Files (*)"));
+    dialog->setWindowTitle(tr("Open Animation"));
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptOpen);
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
     if (fileName.isEmpty())
         return;
-
     reset();
     QFile file(fileName);
     file.open(QIODevice::ReadOnly);
