@@ -23,6 +23,7 @@
 
 #include <QTreeView>
 #include <QGraphicsItem>
+#include <QLabel>
 #include <QPropertyAnimation>
 #include "timelinemodel.h"
 #include "resizeableitem.h"
@@ -65,6 +66,7 @@ private:
     AnimationScene *m_scene;
     TransitionPanel *m_transitionPanel;
     PlayHead *m_playhead;
+    QLabel *m_time;
 
     void addProperty(const QString name);
     void createAnimationGroup();

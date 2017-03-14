@@ -43,6 +43,8 @@ Timeline::Timeline(AnimationScene *scene)
     QToolButton *playButton = new QToolButton();
     QToolButton *revertButton = new QToolButton();
     QToolButton *forwardButton = new QToolButton();
+    m_time = new QLabel();
+    m_time->setText("0:00.000");
 
     QAction *playAct = new QAction("Play");
     playAct->setIcon(QIcon(":/images/play.png"));
@@ -66,6 +68,7 @@ Timeline::Timeline(AnimationScene *scene)
     hbox->addWidget(playButton);
     hbox->addWidget(forwardButton);
     hbox->addStretch();
+    hbox->addWidget(m_time);
     QGridLayout *layout = new QGridLayout;
     m_timelineModel = new TimelineModel();
     m_treeview = new QTreeView(this);
@@ -171,6 +174,12 @@ void Timeline::forwardAnimation()
 
 void Timeline::playheadValueChanged(int val)
 {
+    int seconds = val / 1000;
+    int minutes = seconds / 60;
+    int milliseconds = val - seconds * 1000;
+    QString txt;
+    txt.sprintf("%d:%02d.%03d", minutes, seconds, milliseconds);
+    m_time->setText(txt);
     m_scene->clearSelection();
     m_scene->setPlayheadPosition(val);
 }

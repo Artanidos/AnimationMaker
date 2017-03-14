@@ -43,14 +43,14 @@ ScenePropertyEditor::ScenePropertyEditor()
     hueSlider->setMaximumHeight(100);
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(new QLabel("FPS"), 0, 0);
-    layout->addWidget(m_fps, 0, 1);
+    layout->addWidget(m_fps, 0, 2);
     layout->addWidget(new QLabel("Size"), 1, 0);
     layout->addWidget(new QLabel("W"), 1, 1);
     layout->addWidget(m_width, 1, 2);
     layout->addWidget(new QLabel("H"), 1, 3);
     layout->addWidget(m_height, 1, 4);
     layout->addWidget(new QLabel("BackgroundColor"), 2, 0);
-    layout->addWidget(m_color, 2, 1, 1, 2);
+    layout->addWidget(m_color, 2, 1, 1, 4);
     layout->addWidget(m_colorpicker, 3, 0);
     layout->addWidget(hueSlider, 3, 1);
     exp->addLayout(layout);

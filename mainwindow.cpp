@@ -370,7 +370,6 @@ void MainWindow::createActions()
     exportAct = new QAction(tr("&Export"), this);
     connect(exportAct, SIGNAL(triggered()), this, SLOT(exportAnimation()));
 
-    //const QIcon exitIcon = QIcon::fromTheme("application-exit");
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
     exitAct->setStatusTip(tr("Exit the application"));
