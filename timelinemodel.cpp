@@ -41,13 +41,11 @@ void TimelineModel::reset()
 
 void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qreal value, int time)
 {
-    bool found = false;
     TreeItem *treeChildItem = NULL;
 
     TreeItem *treeItem = searchChild(m_rootItem, item);
     if(treeItem)
     {
-        found = true;
         treeChildItem = searchChild(treeItem, propertyName);
     }
     else
@@ -86,13 +84,11 @@ void TimelineModel::addKeyFrame(ResizeableItem *item, QString propertyName, qrea
 
 void TimelineModel::keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key)
 {
-    bool found = false;
     TreeItem *treeChildItem = NULL;
 
     TreeItem *treeItem = searchChild(m_rootItem, item);
     if(treeItem)
     {
-        found = true;
         treeChildItem = searchChild(treeItem, propertyName);
     }
     else

@@ -39,7 +39,6 @@ void AnimationScene::initialize()
     m_editMode = EditMode::ModeSelect;
     m_fps = 24;
     m_copy = NULL;
-    m_length = 0;
     m_playheadPosition = 0;
 
     addBackgroundRect();
@@ -186,7 +185,7 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
 
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
-    int type, fps, length;
+    int type, fps;
     qreal x, y, width, height, xscale, yscale;
     QPen pen;
     QBrush brush;
@@ -200,13 +199,11 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
     dataStream >> width;
     dataStream >> height;
     dataStream >> fps;
-    dataStream >> length;
     dataStream >> bgColor;
 
     this->setWidth(width);
     this->setHeight(height);
     this->setFps(fps);
-    this->setLength(length);
     this->setBackgroundColor(bgColor);
 
     while (!dataStream.atEnd())
@@ -349,7 +346,6 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
     dataStream << width();
     dataStream << height();
     dataStream << fps();
-    dataStream << length();
     dataStream << backgroundColor();
 
     QList<QGraphicsItem*> itemList = items(Qt::AscendingOrder);
@@ -526,6 +522,51 @@ void AnimationScene::pasteItem()
 void AnimationScene::setPlayheadPosition(int value)
 {
     m_playheadPosition = value;
+
+    for(int i=0; i < items().count(); i++)
+    {
+        ResizeableItem *item = dynamic_cast<ResizeableItem *>(items().at(i));
+        if(item)
+        {
+            QHash<QString, QList<KeyFrame*>*>::iterator it;
+            for (it = item->keyframes()->begin(); it != item->keyframes()->end(); ++it)
+            {
+                KeyFrame *found = NULL;
+                QList<KeyFrame*> *list = it.value();
+                std::sort(list->begin(), list->end(), compareKeyframes);
+                QList<KeyFrame*>::iterator fr;
+                for(fr = list->begin(); fr != list->end(); ++fr)
+                {
+                    KeyFrame *key = *fr;
+                    if(key->time() <= value)
+                        found = key;
+                }
+                if(found)
+                {
+                    QString propertyName = it.key();
+                    qreal value;
+                    if(found->easing() >= 0)
+                    {
+                        QEasingCurve easing((QEasingCurve::Type)found->easing());
+                        KeyFrame *to = found->transitionTo();
+                        qreal progress = 1.0 / (to->time() - found->time()) * (value - found->time());
+                        qreal progressValue = easing.valueForProgress(progress);
+                        value = found->value().toReal() + (to->value().toReal() - found->value().toReal()) / 1.0 * progressValue;
+                    }
+                    else
+                        value = found->value().toReal();
+                    if(propertyName == "left")
+                        item->setX(value);
+                    else if(propertyName == "top")
+                        item->setY(value);
+                    else if(propertyName == "width")
+                        item->setWidth(value);
+                    else if(propertyName == "height")
+                        item->setHeight(value);
+                }
+            }
+        }
+    }
 }
 
 QDataStream& operator <<(QDataStream &out, const AnimationScene *s)

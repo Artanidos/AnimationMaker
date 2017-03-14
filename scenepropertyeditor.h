@@ -38,7 +38,6 @@ private:
     QSpinBox *m_width;
     QSpinBox *m_height;
     QSpinBox *m_fps;
-    QSpinBox *m_length;
     QLineEdit *m_color;
     AnimationScene *m_scene;
     ColorPicker *m_colorpicker;
@@ -47,7 +46,6 @@ private slots:
     void widthChanged(int value);
     void heightChanged(int value);
     void fpsChanged(int value);
-    void lengthChanged(int value);
     void colorChanged(QString value);
     void colorChanged(QColor value);
     void hueChanged(int value);

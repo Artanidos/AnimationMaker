@@ -169,58 +169,10 @@ void Timeline::forwardAnimation()
     m_playhead->setValue(last);
 }
 
-/*
- * looking for the keyframe which occures in front on the playhead
- * and adjust the item value according to the keyframe
- */
 void Timeline::playheadValueChanged(int val)
 {
     m_scene->clearSelection();
-
-    for(int i=0; i < m_scene->items().count(); i++)
-    {
-        ResizeableItem *item = dynamic_cast<ResizeableItem *>(m_scene->items().at(i));
-        if(item)
-        {
-            QHash<QString, QList<KeyFrame*>*>::iterator it;
-            for (it = item->keyframes()->begin(); it != item->keyframes()->end(); ++it)
-            {
-                KeyFrame *found = NULL;
-                QList<KeyFrame*> *list = it.value();
-                std::sort(list->begin(), list->end(), compareKeyframes);
-                QList<KeyFrame*>::iterator fr;
-                for(fr = list->begin(); fr != list->end(); ++fr)
-                {
-                    KeyFrame *key = *fr;
-                    if(key->time() <= val)
-                        found = key;
-                }
-                if(found)
-                {
-                    QString propertyName = it.key();
-                    qreal value;
-                    if(found->easing() >= 0)
-                    {
-                        QEasingCurve easing((QEasingCurve::Type)found->easing());
-                        KeyFrame *to = found->transitionTo();
-                        qreal progress = 1.0 / (to->time() - found->time()) * (val - found->time());
-                        qreal progressValue = easing.valueForProgress(progress);
-                        value = found->value().toReal() + (to->value().toReal() - found->value().toReal()) / 1.0 * progressValue;
-                    }
-                    else
-                        value = found->value().toReal();
-                    if(propertyName == "left")
-                        item->setX(value);
-                    else if(propertyName == "top")
-                        item->setY(value);
-                    else if(propertyName == "width")
-                        item->setWidth(value);
-                    else if(propertyName == "height")
-                        item->setHeight(value);
-                }
-            }
-        }
-    }
+    m_scene->setPlayheadPosition(val);
 }
 
 void Timeline::selectionChanged(const QItemSelection& current,const QItemSelection&)

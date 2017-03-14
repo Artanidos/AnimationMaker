@@ -230,7 +230,7 @@ static int write_video_frame(AVFormatContext *oc, OutputStream *ost, QImage img)
     return (frame || got_packet) ? 0 : 1;
 }
 
-int video_encode(const char *filename, QGraphicsView *view, int fps, int length, MainWindow *win)
+int video_encode(const char *filename, QGraphicsView *view, int length, MainWindow *win, AnimationScene *scene)
 {
     AVFormatContext *oc;
     AVOutputFormat *fmt;
@@ -252,7 +252,7 @@ int video_encode(const char *filename, QGraphicsView *view, int fps, int length,
     fmt = oc->oformat;
     if (fmt->video_codec != AV_CODEC_ID_NONE)
     {
-        add_stream(&video_st, oc, &video_codec, fmt->video_codec, fps, view->width(), view->height());
+        add_stream(&video_st, oc, &video_codec, fmt->video_codec, scene->fps(), view->width(), view->height());
     }
 
     open_video(video_codec, &video_st, opt);
@@ -272,20 +272,16 @@ int video_encode(const char *filename, QGraphicsView *view, int fps, int length,
         return 1;
     }
 
-    int total = 0; //group->totalDuration() > length * 1000 ? group->totalDuration() : length * 1000;
-    int delay = 1000 / fps;
-    int frames = total / delay + 2;
-
-    //group->start();
-    //group->pause();
+    int delay = 1000 / scene->fps();
+    int frames = length / delay + 2;
 
     for (int i = 0; i < frames; i++)
     {
         win->statusBar()->showMessage(QString("Writing frame %1 of %2 frames").arg(i).arg(frames));
 
-        //group->setCurrentTime(i * delay);
-        QTest::qSleep(40);
-        QCoreApplication::processEvents(QEventLoop::AllEvents, 40);
+        scene->setPlayheadPosition(i * delay);
+        QTest::qSleep(delay);
+        QCoreApplication::processEvents(QEventLoop::AllEvents, delay);
 
         QImage img = view->grab().toImage();
 

@@ -30,7 +30,7 @@
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
 
-void video_encode(const char *filename, QGraphicsView *view, int fps, int length, MainWindow *win);
+void video_encode(const char *filename, QGraphicsView *view, int length, MainWindow *win, AnimationScene *scene);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -332,15 +332,24 @@ void MainWindow::readSettings()
 
 void MainWindow::exportAnimation()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export Animation"), "", tr("Video format (*.mpg *.mp4 *.avi);;All Files (*)"));
-    if (fileName.isEmpty())
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter(tr("Video format (*.mpg *.mp4 *.avi);;All Files (*)"));
+    dialog->setWindowTitle(tr("Export Animation"));
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptSave);
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
+    if(fileName.isEmpty())
         return;
 
     QGraphicsView *view = new QGraphicsView(scene);
     view->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setGeometry(0,0,scene->width(), scene->height());
-    video_encode(fileName.toLatin1(), view, scene->fps(), scene->length(), this);
+    video_encode(fileName.toLatin1(), view, timeline->lastKeyFrame(), this, scene);
 }
 
 void MainWindow::createActions()

@@ -53,9 +53,6 @@ public:
     inline void setWidth(int value) {setSceneRect(0, 0, value, height()); m_rect->setRect(0,0,value, height()); emit sizeChanged(value, height());}
     inline void setHeight(int value) {setSceneRect(0, 0, width(), value); m_rect->setRect(0,0,width(), value); emit sizeChanged(width(), value);}
 
-    inline int length() const {return m_length;}
-    inline void setLength(int value) {m_length = value;}
-
     inline QColor backgroundColor() const {return m_backgroundColor;}
     inline void setBackgroundColor(QColor value) {m_backgroundColor = value; m_rect->setBrush(QBrush(QColor(m_backgroundColor)));}
 
@@ -80,7 +77,6 @@ protected:
 private:
     EditMode m_editMode;
     int m_fps;
-    int m_length;
     ResizeableItem *m_copy;
     QColor m_backgroundColor;
     QGraphicsRectItem *m_rect;

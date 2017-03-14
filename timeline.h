@@ -40,6 +40,7 @@ public:
     void reset();
     inline void setPlayheadPosition(int value) {m_playhead->setValue(value);}
     inline void expandTree() {m_treeview->expandAll();}
+    inline int lastKeyFrame() {return m_timelineModel->lastKeyframe();}
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
