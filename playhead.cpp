@@ -38,10 +38,19 @@ void PlayHead::paintEvent(QPaintEvent *)
 
     QPainter painter(this);
 
+    painter.setPen(Qt::white);
+    for(int i = 0; i < width; i+=20)
+    {
+        painter.drawLine(i, 0, i, 3);
+    }
+    for(int i = 0; i < width; i+=100)
+    {
+        painter.drawLine(i, 0, i, 8);
+    }
     painter.setPen(QColor(41, 41, 41));
-    painter.fillRect(0, 0, width, height, gray);
-    painter.drawRect(0, 0, width - 1, height - 1);
-    painter.drawImage(m_value / 5 - 4, 1, m_image);
+    painter.fillRect(0, 10, width, height, gray);
+    painter.drawRect(0, 10, width - 1, height - 1);
+    painter.drawImage(m_value / 5 - 4, 4, m_image);
 }
 
 void PlayHead::mousePressEvent(QMouseEvent *event)

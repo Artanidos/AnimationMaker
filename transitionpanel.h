@@ -39,6 +39,7 @@ public:
     void setModel(TimelineModel *model);
     void setTreeview(QTreeView *tv);
     void reset();
+    void setPlayheadPosition(int value);
 
 public slots:
     void treeExpanded(QModelIndex);
@@ -51,6 +52,7 @@ private:
     TimelineModel *m_timelineModel;
     QTreeView *m_treeview;
     QVBoxLayout *m_layout;
+    int m_playheadPosition;
     void enableDisableLines();
     TransitionLine *getTransitionLine(ResizeableItem *item, QString propertyName);
 };

@@ -40,6 +40,7 @@ void AnimationScene::initialize()
     m_fps = 24;
     m_copy = NULL;
     m_playheadPosition = 0;
+    m_tempKeyFrame = NULL;
 
     addBackgroundRect();
 }
@@ -177,7 +178,14 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
             key->setTime(time);
             key->setValue(value);
             key->setEasing(easing);
+            key->setTransitionTo(NULL);
             item->addKeyframe(propertyName, key);
+            if(m_tempKeyFrame)
+                m_tempKeyFrame->setTransitionTo(key);
+            if(easing >= 0)
+                m_tempKeyFrame = key;
+            else
+                m_tempKeyFrame = NULL;
             emit keyframeAdded(item, propertyName, key);
         }
     }
@@ -519,9 +527,9 @@ void AnimationScene::pasteItem()
     }
 }
 
-void AnimationScene::setPlayheadPosition(int value)
+void AnimationScene::setPlayheadPosition(int val)
 {
-    m_playheadPosition = value;
+    m_playheadPosition = val;
 
     for(int i=0; i < items().count(); i++)
     {
@@ -538,7 +546,7 @@ void AnimationScene::setPlayheadPosition(int value)
                 for(fr = list->begin(); fr != list->end(); ++fr)
                 {
                     KeyFrame *key = *fr;
-                    if(key->time() <= value)
+                    if(key->time() <= val)
                         found = key;
                 }
                 if(found)
@@ -549,7 +557,7 @@ void AnimationScene::setPlayheadPosition(int value)
                     {
                         QEasingCurve easing((QEasingCurve::Type)found->easing());
                         KeyFrame *to = found->transitionTo();
-                        qreal progress = 1.0 / (to->time() - found->time()) * (value - found->time());
+                        qreal progress = 1.0 / (to->time() - found->time()) * (val - found->time());
                         qreal progressValue = easing.valueForProgress(progress);
                         value = found->value().toReal() + (to->value().toReal() - found->value().toReal()) / 1.0 * progressValue;
                     }

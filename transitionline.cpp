@@ -23,6 +23,7 @@
 
 #include <QPainter>
 #include <QMouseEvent>
+#include <QMenu>
 #include <QTest>
 
 TransitionLine::TransitionLine(ResizeableItem *item, QString propertyName)
@@ -30,16 +31,28 @@ TransitionLine::TransitionLine(ResizeableItem *item, QString propertyName)
     m_item = item;
     m_frame = NULL;
     m_propertyName = propertyName;
+    m_playheadPosition = 0;
+    m_pressed = false;
 
     setMaximumHeight(14);
     setMinimumHeight(14);
 
     m_imageRaute = QImage(":/images/raute-weiss.png");
     m_imageRauteHohl = QImage(":/images/raute-hohl.png");
+    m_imageLeft = QImage(":/images/trans-left.png");
+    m_imageRight = QImage(":/images/trans-right.png");
+
+    m_contextMenu = new QMenu();
+    m_transitionAct = new QAction("Create transition");
+    connect(m_transitionAct, SIGNAL(triggered(bool)), this, SLOT(addTransaction()));
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
 }
 
 void TransitionLine::paintEvent(QPaintEvent *)
 {
+    QColor orange(255, 102, 0, 150);
     QColor gray;
     if(m_propertyName.isEmpty())
         gray = QColor(76, 78, 80);
@@ -64,9 +77,19 @@ void TransitionLine::paintEvent(QPaintEvent *)
         for(it = list->begin(); it != list->end(); it++)
         {
             KeyFrame *frame = *it;
-            painter.drawImage(frame->time() / 5 - 6, 1, m_imageRaute);
+            if(frame->easing() >= 0)
+            {
+                painter.fillRect(frame->time() / 5, 1, (frame->transitionTo()->time() - frame->time()) / 5, height - 1, orange);
+                painter.drawImage(frame->time() / 5, 1, m_imageLeft);
+                painter.drawImage(frame->transitionTo()->time() / 5 - 5, 1, m_imageRight);
+            }
+            else
+                painter.drawImage(frame->time() / 5 - 6, 2, m_imageRaute);
         }
     }
+
+    painter.setPen(Qt::red);
+    painter.drawLine(m_playheadPosition / 5 - 1, 0, m_playheadPosition / 5 - 1, height);
 }
 
 void TransitionLine::mousePressEvent(QMouseEvent *ev)
@@ -85,6 +108,7 @@ void TransitionLine::mousePressEvent(QMouseEvent *ev)
                 {
                     m_oldx = ev->pos().x();
                     m_frame = frame;
+                    m_pressed = true;
                     break;
                 }
             }
@@ -94,7 +118,7 @@ void TransitionLine::mousePressEvent(QMouseEvent *ev)
 
 void TransitionLine::mouseMoveEvent(QMouseEvent *ev)
 {
-    if(m_frame)
+    if(m_pressed)
     {   
         int x = ev->x();
         if(x < 0)
@@ -112,5 +136,44 @@ void TransitionLine::mouseMoveEvent(QMouseEvent *ev)
 
 void TransitionLine::mouseReleaseEvent(QMouseEvent *)
 {
-    m_frame = NULL;
+    m_pressed = false;
+}
+
+void TransitionLine::onCustomContextMenu(const QPoint &point)
+{
+    QList<KeyFrame *> *list = m_item->keyframes()->value(m_propertyName);
+    QList<KeyFrame *>::iterator it;
+    for(it = list->begin(); it != list->end(); it++)
+    {
+        KeyFrame *frame = *it;
+        int pos = frame->time() / 5 - 6;
+        if(point.x() >= pos && point.x() <= pos + 11)
+        {
+            m_frame = frame;
+            m_contextMenu->clear();
+            m_contextMenu->addAction(m_transitionAct);
+            m_contextMenu->exec(this->mapToGlobal(point));
+
+            break;
+        }
+    }
+}
+
+void TransitionLine::addTransaction()
+{
+    KeyFrame *prev = NULL;
+    QList<KeyFrame*> *list = m_item->keyframes()->value(m_propertyName);
+    QList<KeyFrame*>::iterator it;
+    for(it = list->begin(); it != list->end(); it++)
+    {
+        if(*it == m_frame)
+            break;
+        prev = *it;
+    }
+    if(prev)
+    {
+        prev->setEasing((int)QEasingCurve::Linear);
+        prev->setTransitionTo(m_frame);
+        update();
+    }
 }

@@ -40,6 +40,8 @@ TransitionPanel::TransitionPanel()
     m_layout->setSpacing(1);
     m_layout->addStretch();
     setLayout(m_layout);
+
+    m_playheadPosition = 0;
 }
 
 void TransitionPanel::setModel(TimelineModel *model)
@@ -68,6 +70,9 @@ void TransitionPanel::paintEvent(QPaintEvent *)
     {
         painter.drawLine(k, 0, k, height);
     }
+
+    painter.setPen(Qt::red);
+    painter.drawLine(m_playheadPosition / 5, 1, m_playheadPosition / 5, height - 1);
 }
 
 void TransitionPanel::reset()
@@ -168,4 +173,16 @@ void TransitionPanel::keyframeAdded(ResizeableItem *item, QString propertyName)
 void TransitionPanel::resizeEvent(QResizeEvent *)
 {
     enableDisableLines();
+}
+
+void TransitionPanel::setPlayheadPosition(int value)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line)
+            line->setPlayheadPosition(value);
+    }
+    m_playheadPosition = value;
+    update();
 }

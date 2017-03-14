@@ -78,7 +78,6 @@ Timeline::Timeline(AnimationScene *scene)
     m_transitionPanel = new TransitionPanel();
     m_transitionPanel->setModel(m_timelineModel);
     m_transitionPanel->setTreeview(m_treeview);
-    m_transitionPanel->setContextMenuPolicy(Qt::CustomContextMenu);
     m_playhead = new PlayHead();
 
     layout->addItem(hbox, 0, 0);
@@ -93,10 +92,6 @@ Timeline::Timeline(AnimationScene *scene)
     m_contextMenu = new QMenu();
     m_delAct = new QAction("Delete");
 
-    m_transitionAct = new QAction("Add transition");
-
-    //m_contextMenu->addMenu(m_propertiesMenu);
-
     m_treeview->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(m_treeview, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
     connect(m_treeview, SIGNAL(expanded(QModelIndex)), m_transitionPanel, SLOT(treeExpanded(QModelIndex)));
@@ -106,9 +101,6 @@ Timeline::Timeline(AnimationScene *scene)
     connect(m_treeview->verticalScrollBar(), SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(treeScrollValueChanged(int)));
 
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
-
-    connect(m_transitionPanel, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onTransitionPanelContextMenu(const QPoint &)));
-    connect(m_transitionAct, SIGNAL(triggered(bool)) ,this, SLOT(addTransition()));
 
     QItemSelectionModel *selectionModel = m_treeview->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
@@ -132,13 +124,6 @@ void Timeline::onCustomContextMenu(const QPoint &point)
         m_contextMenu->addAction(m_delAct);
         m_contextMenu->exec(m_treeview->mapToGlobal(point));
     }
-}
-
-void Timeline::onTransitionPanelContextMenu(const QPoint &point)
-{
-    m_contextMenu->clear();
-    m_contextMenu->addAction(m_transitionAct);
-    m_contextMenu->exec(m_transitionPanel->mapToGlobal(point));
 }
 
 void Timeline::playAnimation()
@@ -182,6 +167,7 @@ void Timeline::playheadValueChanged(int val)
     m_time->setText(txt);
     m_scene->clearSelection();
     m_scene->setPlayheadPosition(val);
+    m_transitionPanel->setPlayheadPosition(val);
 }
 
 void Timeline::selectionChanged(const QItemSelection& current,const QItemSelection&)
@@ -204,18 +190,4 @@ void Timeline::selectionChanged(const QItemSelection& current,const QItemSelecti
 void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, qreal value)
 {
     m_timelineModel->addKeyFrame(item, propertyName, value, m_playhead->value());
-}
-
-void Timeline::addTransition()
-{
-    ResizeableItem *item = dynamic_cast<ResizeableItem *>(m_scene->items().at(0));
-    if(item)
-    {
-        QList<KeyFrame*> *list = item->keyframes()->value("left");
-        KeyFrame *first = list->first();
-        KeyFrame *last = list->last();
-        first->setEasing((int)QEasingCurve::OutBounce);
-        first->setTransitionTo(last);
-        qDebug() << "added transition";
-    }
 }

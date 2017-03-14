@@ -81,6 +81,7 @@ private:
     QColor m_backgroundColor;
     QGraphicsRectItem *m_rect;
     int m_playheadPosition;
+    KeyFrame *m_tempKeyFrame;
 
     void initialize();
     void addBackgroundRect();

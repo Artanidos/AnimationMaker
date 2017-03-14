@@ -37,14 +37,25 @@ public:
 
     inline QString propertyName() {return m_propertyName;}
     inline ResizeableItem *item() {return m_item;}
+    inline void setPlayheadPosition(int value) {m_playheadPosition = value; update();}
+
+private slots:
+    void onCustomContextMenu(const QPoint &point);
+    void addTransaction();
 
 private:
     QImage m_imageRaute;
     QImage m_imageRauteHohl;
+    QImage m_imageLeft;
+    QImage m_imageRight;
     ResizeableItem *m_item;
     QString m_propertyName;
     KeyFrame *m_frame;
     int m_oldx;
+    int m_playheadPosition;
+    QMenu *m_contextMenu;
+    QAction *m_transitionAct;
+    bool m_pressed;
 };
 
 #endif // TRANSITION_H
