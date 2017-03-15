@@ -104,8 +104,17 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         clearSelection();
 
-        QString fileName = QFileDialog::getOpenFileName(0, tr("Open Bitmap"), "", tr("Image Files (*.png *.jpeg *.jpg *.gif *.bmp);;All Files (*)"));
-        if (fileName.isEmpty())
+        QString fileName;
+        QFileDialog *dialog = new QFileDialog();
+        dialog->setFileMode(QFileDialog::AnyFile);
+        dialog->setNameFilter(tr("Image Files (*.png *.jpeg *.jpg *.gif *.bmp);;All Files (*)"));
+        dialog->setWindowTitle(tr("Open Bitmap"));
+        dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+        dialog->setAcceptMode(QFileDialog::AcceptOpen);
+        if(dialog->exec())
+            fileName = dialog->selectedFiles().first();
+        delete dialog;
+        if(fileName.isEmpty())
             return;
 
         Bitmap *b = new Bitmap(fileName);
@@ -120,8 +129,17 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         clearSelection();
 
-        QString fileName = QFileDialog::getOpenFileName(0, tr("Open SVG"), "", tr("SVG Files (*.svg);;All Files (*)"));
-        if (fileName.isEmpty())
+        QString fileName;
+        QFileDialog *dialog = new QFileDialog();
+        dialog->setFileMode(QFileDialog::AnyFile);
+        dialog->setNameFilter(tr("SVG Files (*.svg);;All Files (*)"));
+        dialog->setWindowTitle(tr("Open SVG"));
+        dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+        dialog->setAcceptMode(QFileDialog::AcceptOpen);
+        if(dialog->exec())
+            fileName = dialog->selectedFiles().first();
+        delete dialog;
+        if(fileName.isEmpty())
             return;
 
         Vectorgraphic *v = new Vectorgraphic(fileName);

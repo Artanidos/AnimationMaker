@@ -48,6 +48,8 @@ TransitionLine::TransitionLine(ResizeableItem *item, QString propertyName)
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
+    connect(item, SIGNAL(positionChanged(qreal,qreal)), this, SLOT(update()));
+    connect(item, SIGNAL(sizeChanged(qreal,qreal)), this, SLOT(update()));
 }
 
 void TransitionLine::paintEvent(QPaintEvent *)
