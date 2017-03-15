@@ -83,7 +83,7 @@ void TransitionLine::paintEvent(QPaintEvent *)
                 painter.drawImage(frame->time() / 5, 1, m_imageLeft);
                 painter.drawImage(frame->transitionTo()->time() / 5 - 5, 1, m_imageRight);
             }
-            else
+            else if(!frame->transitionFrom())
                 painter.drawImage(frame->time() / 5 - 6, 2, m_imageRaute);
         }
     }
@@ -174,6 +174,7 @@ void TransitionLine::addTransaction()
     {
         prev->setEasing((int)QEasingCurve::Linear);
         prev->setTransitionTo(m_frame);
+        m_frame->setTransitionFrom(prev);
         update();
     }
 }

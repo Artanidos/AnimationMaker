@@ -181,7 +181,10 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
             key->setTransitionTo(NULL);
             item->addKeyframe(propertyName, key);
             if(m_tempKeyFrame)
+            {
                 m_tempKeyFrame->setTransitionTo(key);
+                key->setTransitionFrom(m_tempKeyFrame);
+            }
             if(easing >= 0)
                 m_tempKeyFrame = key;
             else

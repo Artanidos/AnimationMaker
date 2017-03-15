@@ -23,6 +23,8 @@
 KeyFrame::KeyFrame()
 {
     m_easing = -1; // no transition
+    m_transitionFrom = NULL;
+    m_transitionTo = NULL;
 }
 
 bool compareKeyframes (KeyFrame *a, KeyFrame *b)
