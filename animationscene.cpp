@@ -164,6 +164,7 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
     QVariant value;
     QString propertyName;
 
+    m_tempKeyFrame = NULL;
     dataStream >> vars;
     for(int i=0; i < vars; i++)
     {
@@ -178,17 +179,14 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
             key->setTime(time);
             key->setValue(value);
             key->setEasing(easing);
-            key->setTransitionTo(NULL);
             item->addKeyframe(propertyName, key);
+            // set double linked list
             if(m_tempKeyFrame)
             {
-                m_tempKeyFrame->setTransitionTo(key);
-                key->setTransitionFrom(m_tempKeyFrame);
+                m_tempKeyFrame->setNext(key);
+                key->setPrev(m_tempKeyFrame);
             }
-            if(easing >= 0)
-                m_tempKeyFrame = key;
-            else
-                m_tempKeyFrame = NULL;
+            m_tempKeyFrame = key;
             emit keyframeAdded(item, propertyName, key);
         }
     }
@@ -335,19 +333,21 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
 void AnimationScene::writeKeyframes(QDataStream &dataStream, ResizeableItem *item) const
 {
     dataStream << item->keyframes()->count();
-    QHash<QString, QList<KeyFrame*>*>::iterator it;
+    QHash<QString, KeyFrame*>::iterator it;
     for(it = item->keyframes()->begin(); it != item->keyframes()->end(); it++)
     {
         dataStream << it.key();
-        QList<KeyFrame*> *list = it.value();
-        QList<KeyFrame*>::iterator fr;
-        dataStream << list->count();
-        for(fr = list->begin(); fr != list->end(); fr++)
+        KeyFrame *first = it.value();
+        int count = 0;
+        for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
+            count++;
+
+        dataStream << count;
+        for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
         {
-            KeyFrame *key = *fr;
-            dataStream << key->time();
-            dataStream << key->value();
-            dataStream << key->easing();
+            dataStream << frame->time();
+            dataStream << frame->value();
+            dataStream << frame->easing();
         }
     }
 }
@@ -539,18 +539,15 @@ void AnimationScene::setPlayheadPosition(int val)
         ResizeableItem *item = dynamic_cast<ResizeableItem *>(items().at(i));
         if(item)
         {
-            QHash<QString, QList<KeyFrame*>*>::iterator it;
+            QHash<QString, KeyFrame*>::iterator it;
             for (it = item->keyframes()->begin(); it != item->keyframes()->end(); ++it)
             {
                 KeyFrame *found = NULL;
-                QList<KeyFrame*> *list = it.value();
-                std::sort(list->begin(), list->end(), compareKeyframes);
-                QList<KeyFrame*>::iterator fr;
-                for(fr = list->begin(); fr != list->end(); ++fr)
+                KeyFrame *first = it.value();
+                for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
                 {
-                    KeyFrame *key = *fr;
-                    if(key->time() <= val)
-                        found = key;
+                    if(frame->time() <= val)
+                        found = frame;
                 }
                 if(found)
                 {
@@ -559,10 +556,9 @@ void AnimationScene::setPlayheadPosition(int val)
                     if(found->easing() >= 0)
                     {
                         QEasingCurve easing((QEasingCurve::Type)found->easing());
-                        KeyFrame *to = found->transitionTo();
-                        qreal progress = 1.0 / (to->time() - found->time()) * (val - found->time());
+                        qreal progress = 1.0 / (found->next()->time() - found->time()) * (val - found->time());
                         qreal progressValue = easing.valueForProgress(progress);
-                        value = found->value().toReal() + (to->value().toReal() - found->value().toReal()) / 1.0 * progressValue;
+                        value = found->value().toReal() + (found->next()->value().toReal() - found->value().toReal()) / 1.0 * progressValue;
                     }
                     else
                         value = found->value().toReal();

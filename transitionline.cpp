@@ -72,19 +72,22 @@ void TransitionLine::paintEvent(QPaintEvent *)
 
     if(!m_propertyName.isEmpty())
     {
-        QList<KeyFrame *> *list = m_item->keyframes()->value(m_propertyName);
-        QList<KeyFrame *>::iterator it;
-        for(it = list->begin(); it != list->end(); it++)
+        KeyFrame *first = m_item->keyframes()->value(m_propertyName);
+        for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
         {
-            KeyFrame *frame = *it;
             if(frame->easing() >= 0)
             {
-                painter.fillRect(frame->time() / 5, 1, (frame->transitionTo()->time() - frame->time()) / 5, height - 1, orange);
+                painter.fillRect(frame->time() / 5, 1, (frame->next()->time() - frame->time()) / 5, height - 1, orange);
                 painter.drawImage(frame->time() / 5, 1, m_imageLeft);
-                painter.drawImage(frame->transitionTo()->time() / 5 - 5, 1, m_imageRight);
+                painter.drawImage(frame->next()->time() / 5 - 5, 1, m_imageRight);
             }
-            else if(!frame->transitionFrom())
-                painter.drawImage(frame->time() / 5 - 6, 2, m_imageRaute);
+            else if(frame->prev() == NULL || frame->prev()->easing() < 0)
+            {
+                if(frame->prev() == NULL || frame->prev()->value() == frame->value())
+                    painter.drawImage(frame->time() / 5 - 6, 2, m_imageRaute);
+                else
+                    painter.drawImage(frame->time() / 5 - 6, 2, m_imageRauteHohl);
+            }
         }
     }
 
@@ -98,11 +101,9 @@ void TransitionLine::mousePressEvent(QMouseEvent *ev)
     {
         if(!m_propertyName.isEmpty())
         {
-            QList<KeyFrame *> *list = m_item->keyframes()->value(m_propertyName);
-            QList<KeyFrame *>::iterator it;
-            for(it = list->begin(); it != list->end(); it++)
+            KeyFrame *first = m_item->keyframes()->value(m_propertyName);
+            for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
             {
-                KeyFrame *frame = *it;
                 int pos = frame->time() / 5 - 6;
                 if(ev->pos().x() >= pos && ev->pos().x() <= pos + 11)
                 {
@@ -141,19 +142,16 @@ void TransitionLine::mouseReleaseEvent(QMouseEvent *)
 
 void TransitionLine::onCustomContextMenu(const QPoint &point)
 {
-    QList<KeyFrame *> *list = m_item->keyframes()->value(m_propertyName);
-    QList<KeyFrame *>::iterator it;
-    for(it = list->begin(); it != list->end(); it++)
+    KeyFrame *first = m_item->keyframes()->value(m_propertyName);
+    for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
     {
-        KeyFrame *frame = *it;
         int pos = frame->time() / 5 - 6;
-        if(point.x() >= pos && point.x() <= pos + 11)
+        if(point.x() >= pos && point.x() <= pos + 11 && frame->prev())
         {
             m_frame = frame;
             m_contextMenu->clear();
             m_contextMenu->addAction(m_transitionAct);
             m_contextMenu->exec(this->mapToGlobal(point));
-
             break;
         }
     }
@@ -161,20 +159,6 @@ void TransitionLine::onCustomContextMenu(const QPoint &point)
 
 void TransitionLine::addTransaction()
 {
-    KeyFrame *prev = NULL;
-    QList<KeyFrame*> *list = m_item->keyframes()->value(m_propertyName);
-    QList<KeyFrame*>::iterator it;
-    for(it = list->begin(); it != list->end(); it++)
-    {
-        if(*it == m_frame)
-            break;
-        prev = *it;
-    }
-    if(prev)
-    {
-        prev->setEasing((int)QEasingCurve::Linear);
-        prev->setTransitionTo(m_frame);
-        m_frame->setTransitionFrom(prev);
-        update();
-    }
+    m_frame->prev()->setEasing((int)QEasingCurve::Linear);
+    update();
 }

@@ -66,11 +66,9 @@ public:
 
     void setWidth(qreal value);
     void setHeight(qreal value);
-    //void setWidthAndAdjustKeyframes(qreal value);
-    //void setHeightAndAjustKeyframes(qreal value);
 
     void addKeyframe(QString propertyName, KeyFrame *frame);
-    inline QHash<QString, QList<KeyFrame*>*> *keyframes() {return m_keyframes;}
+    inline QHash<QString, KeyFrame*> *keyframes() {return m_keyframes;}
 
     void adjustKeyframes(QString propertyName, QVariant value);
 
@@ -87,7 +85,7 @@ private:
     QAction *sendToBackAct;
     QAction *lowerAct;
     QAction *raiseAct;
-    QHash<QString, QList<KeyFrame*>*> *m_keyframes;
+    QHash<QString, KeyFrame*> *m_keyframes;
 
 private slots:
     void deleteItem();

@@ -34,7 +34,7 @@ ResizeableItem::ResizeableItem()
     m_hasHandles = false;
     m_xscale = 1;
     m_yscale = 1;
-    m_keyframes = new QHash<QString, QList<KeyFrame*>*>();
+    m_keyframes = new QHash<QString, KeyFrame*>();
 
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 
@@ -68,15 +68,39 @@ void ResizeableItem::addKeyframe(QString propertyName, KeyFrame *frame)
 {
     if(m_keyframes->contains(propertyName))
     {
-        QList<KeyFrame*> *list = m_keyframes->value(propertyName);
-        list->append(frame);
+        KeyFrame * first = m_keyframes->value(propertyName);
+        if(frame->time() < first->time())
+        {
+            first->setPrev(frame);
+            frame->setNext(first);
+            // first has changed, so update hash
+            m_keyframes->remove(propertyName);
+            m_keyframes->insert(propertyName, frame);
+        }
+        else
+        {
+            for(KeyFrame *f = first; f!= NULL; f=f->next())
+            {
+                if(f->next() == NULL)
+                {
+                    // append
+                    f->setNext(frame);
+                    frame->setPrev(f);
+                    break;
+                }
+                else if(f->time() < frame->time() && f->next()->time() > frame->time())
+                {
+                    // insert
+                    f->next()->setPrev(frame);
+                    frame->setNext(f->next());
+                    f->setNext(frame);
+                    break;
+                }
+            }
+        }
     }
     else
-    {
-        QList<KeyFrame*> *list = new QList<KeyFrame*>();
-        list->append(frame);
-        m_keyframes->insert(propertyName, list);
-    }
+        m_keyframes->insert(propertyName, frame);
 }
 
 void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option)
@@ -479,15 +503,12 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
         int time = as->playheadPosition();
         if(m_keyframes->contains(propertyName))
         {
-            QList<KeyFrame*> *list = m_keyframes->value(propertyName);
-            std::sort(list->begin(), list->end(), compareKeyframes);
+            KeyFrame *first = m_keyframes->value(propertyName);
             KeyFrame *found = NULL;
-            QList<KeyFrame*>::iterator fr;
-            for(fr =list->begin(); fr != list->end(); ++fr)
+            for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
             {
-                KeyFrame *key = *fr;
-                if(key->time() <= time)
-                    found = key;
+                if(frame->time() <= time)
+                    found = frame;
             }
             if(found)
             {

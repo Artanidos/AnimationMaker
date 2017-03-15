@@ -243,14 +243,12 @@ int TimelineModel::lastKeyframe()
         QVariant v = data(childIndex, Qt::UserRole);
         ResizeableItem *item = (ResizeableItem *) v.value<void *>();
 
-        QHash<QString, QList<KeyFrame*>*>::iterator it;
+        QHash<QString, KeyFrame*>::iterator it;
         for (it = item->keyframes()->begin(); it != item->keyframes()->end(); it++)
         {
-            QList<KeyFrame *> *list = it.value();
-            QList<KeyFrame *>::iterator l;
-            for(l = list->begin(); l != list->end(); l++)
+            KeyFrame *first = it.value();
+            for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
             {
-                KeyFrame *frame = *l;
                 last = frame->time() > last ? frame->time() : last;
             }
         }
