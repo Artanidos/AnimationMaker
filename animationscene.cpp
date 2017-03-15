@@ -546,7 +546,7 @@ void AnimationScene::setPlayheadPosition(int val)
                 KeyFrame *first = it.value();
                 for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
                 {
-                    if(frame->time() <= val)
+                    if((frame == first && val < first->time()) || frame->time() <= val)
                         found = frame;
                 }
                 if(found)

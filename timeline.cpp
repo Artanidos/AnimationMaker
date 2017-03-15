@@ -26,7 +26,6 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QMenu>
-#include <QToolButton>
 #include <QPropertyAnimation>
 #include <QSequentialAnimationGroup>
 #include <QPauseAnimation>
@@ -40,9 +39,11 @@ Timeline::Timeline(AnimationScene *scene)
     m_scene = scene;
 
     QHBoxLayout *hbox = new QHBoxLayout();
-    QToolButton *playButton = new QToolButton();
     QToolButton *revertButton = new QToolButton();
     QToolButton *forwardButton = new QToolButton();
+    playButton = new QToolButton();
+    pauseButton = new QToolButton();
+    pauseButton->setVisible(false);
     m_time = new QLabel();
     m_time->setText("0:00.000");
 
@@ -50,6 +51,11 @@ Timeline::Timeline(AnimationScene *scene)
     playAct->setIcon(QIcon(":/images/play.png"));
     playAct->setToolTip("Start the animation");
     connect(playAct, SIGNAL(triggered()), this, SLOT(playAnimation()));
+
+    QAction *pauseAct = new QAction("Pause");
+    pauseAct->setIcon(QIcon(":/images/pause.png"));
+    pauseAct->setToolTip("Pause the animation");
+    connect(pauseAct, SIGNAL(triggered()), this, SLOT(pauseAnimation()));
 
     QAction *reverseAct = new QAction("Reverse");
     reverseAct->setIcon(QIcon(":/images/reverse.png"));
@@ -63,9 +69,11 @@ Timeline::Timeline(AnimationScene *scene)
 
     revertButton->setDefaultAction(reverseAct);
     playButton->setDefaultAction(playAct);
+    pauseButton->setDefaultAction(pauseAct);
     forwardButton->setDefaultAction(forwardAct);
     hbox->addWidget(revertButton);
     hbox->addWidget(playButton);
+    hbox->addWidget(pauseButton);
     hbox->addWidget(forwardButton);
     hbox->addStretch();
     hbox->addWidget(m_time);
@@ -133,14 +141,28 @@ void Timeline::playAnimation()
     int delay = 1000 / m_scene->fps();
     int last = m_timelineModel->lastKeyframe();
     int frames = last / delay;
+    m_playing = true;
+    playButton->setVisible(false);
+    pauseButton->setVisible(true);
 
     for(int i=0; i < frames; i++)
     {
         m_playhead->setValue(i * delay);
         QTest::qSleep(delay / 2);
         QCoreApplication::processEvents(QEventLoop::AllEvents, delay / 2);
+        if(!m_playing)
+            break;
     }
-    m_playhead->setValue(m_timelineModel->lastKeyframe());
+    if(m_playing)
+        m_playhead->setValue(m_timelineModel->lastKeyframe());
+    playButton->setVisible(true);
+    pauseButton->setVisible(false);
+    m_playing = false;
+}
+
+void Timeline::pauseAnimation()
+{
+    m_playing = false;
 }
 
 void Timeline::revertAnimation()

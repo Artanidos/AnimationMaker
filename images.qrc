@@ -20,5 +20,6 @@
         <file>images/raute-hohl.png</file>
         <file>images/trans-left.png</file>
         <file>images/trans-right.png</file>
+        <file>images/pause.png</file>
     </qresource>
 </RCC>

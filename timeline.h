@@ -24,6 +24,7 @@
 #include <QTreeView>
 #include <QGraphicsItem>
 #include <QLabel>
+#include <QToolButton>
 #include <QPropertyAnimation>
 #include "timelinemodel.h"
 #include "resizeableitem.h"
@@ -46,6 +47,7 @@ public:
 public slots:
     void onCustomContextMenu(const QPoint &point);
     void playAnimation();
+    void pauseAnimation();
     void revertAnimation();
     void forwardAnimation();
     void selectionChanged(const QItemSelection& current,const QItemSelection&);
@@ -64,6 +66,9 @@ private:
     TransitionPanel *m_transitionPanel;
     PlayHead *m_playhead;
     QLabel *m_time;
+    bool m_playing;
+    QToolButton *playButton;
+    QToolButton *pauseButton;
 
     void addProperty(const QString name);
     void createAnimationGroup();
