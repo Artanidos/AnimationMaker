@@ -111,6 +111,7 @@ void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOption
     const QColor fgcolor = option->palette.windowText().color();
     const QColor bgcolor( fgcolor.red()   > 127 ? 0 : 255, fgcolor.green() > 127 ? 0 : 255, fgcolor.blue()  > 127 ? 0 : 255);
 
+    painter->setOpacity(1.0);
     painter->setPen(QPen(bgcolor, penWidth, Qt::SolidLine));
     painter->setBrush(Qt::NoBrush);
     painter->drawRect(boundingRect().adjusted(pad, pad, -pad, -pad));
