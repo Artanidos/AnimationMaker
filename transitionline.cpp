@@ -104,11 +104,12 @@ void TransitionLine::mousePressEvent(QMouseEvent *ev)
     {
         if(!m_propertyName.isEmpty())
         {
+            int offset = m_horizontalScrollValue * 20;
             KeyFrame *first = m_item->keyframes()->value(m_propertyName);
             for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
             {
                 int pos = frame->time() / 5 - 6;
-                if(ev->pos().x() >= pos && ev->pos().x() <= pos + 11)
+                if(ev->pos().x() + offset >= pos && ev->pos().x() + offset <= pos + 11)
                 {
                     m_oldx = ev->pos().x();
                     m_frame = frame;
@@ -129,6 +130,7 @@ void TransitionLine::mouseMoveEvent(QMouseEvent *ev)
             x = 0;
         if(x >= width())
             x = width() - 1;
+        x += m_horizontalScrollValue * 20;
         int time = qRound((qreal)x * 5 / 100) * 100;
         if(time / 5 > width())
             time -= 100;

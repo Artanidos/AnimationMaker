@@ -511,9 +511,7 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
                     found = frame;
             }
             if(found)
-            {
                 found->setValue(value);
-            }
         }
     }
 }

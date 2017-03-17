@@ -48,6 +48,7 @@ private:
     QSpinBox *m_y;
     QSpinBox *m_width;
     QSpinBox *m_height;
+    QSpinBox *m_opacityText;
     QLabel *m_typ;
     QLineEdit *m_text;
     Expander *expText;
@@ -62,6 +63,7 @@ private:
     QLineEdit *m_pencolor;
     ColorPicker *m_colorpicker;
     ColorPicker *m_textcolorpicker;
+    QSlider *m_opacity;
 
 private slots:
     void idChanged(QString value);
@@ -81,8 +83,11 @@ private slots:
     void addTopKeyFrame();
     void addWidthKeyFrame();
     void addHeightKeyFrame();
+    void addOpacityKeyFrame();
     void itemSizeChanged(qreal width, qreal height);
     void itemPositionChanged(qreal x, qreal y);
+    void opacityChanged(int value);
+    void opacityTextChanged(int value);
 };
 
 #endif // ITEMPROPERTYEDITOR_H

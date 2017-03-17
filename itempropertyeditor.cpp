@@ -26,7 +26,9 @@ ItemPropertyEditor::ItemPropertyEditor()
 {
     m_rectangle = NULL;
     m_ellipse = NULL;
+
     QString buttonStyle = "QPushButton{border: none;image:url(:/images/raute.png)} QPushButton:hover{border: none;image:url(:/images/raute-hover.png)} QToolTip{background:#f5f0eb;}";
+
     QVBoxLayout *vbox = new QVBoxLayout();
     Expander *expTyp = new Expander("Typ");
     QGridLayout *layoutTyp = new QGridLayout();
@@ -66,19 +68,19 @@ ItemPropertyEditor::ItemPropertyEditor()
     QPushButton *addXKeyframe = new QPushButton();
     addXKeyframe->setStyleSheet(buttonStyle);
     addXKeyframe->setMaximumWidth(9);
-    addXKeyframe->setToolTip("Add keyframe Left");
+    addXKeyframe->setToolTip("Add keyframe for Left");
     QPushButton *addYKeyframe = new QPushButton();
     addYKeyframe->setStyleSheet(buttonStyle);
     addYKeyframe->setMaximumWidth(9);
-    addYKeyframe->setToolTip("Add keyframe Top");
+    addYKeyframe->setToolTip("Add keyframe for Top");
     QPushButton *addWidthKeyframe = new QPushButton();
     addWidthKeyframe->setStyleSheet(buttonStyle);
     addWidthKeyframe->setMaximumWidth(9);
-    addWidthKeyframe->setToolTip("Add keyframe Width");
+    addWidthKeyframe->setToolTip("Add keyframe for Width");
     QPushButton *addHeightKeyframe = new QPushButton();
     addHeightKeyframe->setStyleSheet(buttonStyle);
     addHeightKeyframe->setMaximumWidth(9);
-    addHeightKeyframe->setToolTip("Add keyframe Height");
+    addHeightKeyframe->setToolTip("Add keyframe  for Height");
     layoutGeo->addWidget(labelPosition, 0, 0);
     layoutGeo->addWidget(labelX, 0, 1);
     layoutGeo->addWidget(addXKeyframe, 0, 2);
@@ -148,6 +150,26 @@ ItemPropertyEditor::ItemPropertyEditor()
     expColor->addLayout(layoutColor);
     vbox->addWidget(expColor);
 
+    Expander *expOpacity = new Expander("Visibility");
+    QGridLayout *layoutOpacity = new QGridLayout();
+    QPushButton *addOpacityKeyframe = new QPushButton();
+    addOpacityKeyframe->setStyleSheet(buttonStyle);
+    addOpacityKeyframe->setMaximumWidth(9);
+    addOpacityKeyframe->setToolTip("Add keyframe for Opacity");
+    QLabel *labelOpacity = new QLabel("Opacity");
+    m_opacity = new QSlider(Qt::Horizontal);
+    m_opacity->setMinimum(0);
+    m_opacity->setMaximum(100);
+    m_opacityText = new QSpinBox();
+    m_opacityText->setMinimum(0);
+    m_opacityText->setMaximum(100);
+    layoutOpacity->addWidget(labelOpacity, 0, 0);
+    layoutOpacity->addWidget(m_opacity, 0, 1);
+    layoutOpacity->addWidget(addOpacityKeyframe, 0, 2);
+    layoutOpacity->addWidget(m_opacityText, 0, 3);
+    expOpacity->addLayout(layoutOpacity);
+    vbox->addWidget(expOpacity);
+
     vbox->addStretch();
     this->setLayout(vbox);
 
@@ -169,6 +191,9 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(addYKeyframe, SIGNAL(clicked(bool)), this, SLOT(addTopKeyFrame()));
     connect(addWidthKeyframe, SIGNAL(clicked(bool)), this, SLOT(addWidthKeyFrame()));
     connect(addHeightKeyframe, SIGNAL(clicked(bool)), this, SLOT(addHeightKeyFrame()));
+    connect(m_opacity, SIGNAL(valueChanged(int)), this, SLOT(opacityChanged(int)));
+    connect(m_opacityText, SIGNAL(valueChanged(int)), this, SLOT(opacityTextChanged(int)));
+    connect(addOpacityKeyframe, SIGNAL(clicked(bool)), this, SLOT(addOpacityKeyFrame()));
 }
 
 void ItemPropertyEditor::addLeftKeyFrame()
@@ -191,6 +216,11 @@ void ItemPropertyEditor::addHeightKeyFrame()
     emit addKeyFrame(m_item, "height", m_height->value());
 }
 
+void ItemPropertyEditor::addOpacityKeyFrame()
+{
+    emit addKeyFrame(m_item, "opacity", (qreal)m_opacity->value() / 100);
+}
+
 void ItemPropertyEditor::setItem(ResizeableItem *item)
 {
     m_item = item;
@@ -201,6 +231,8 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     m_height->setValue(m_item->rect().height());
     m_typ->setText(getItemTypeName(m_item));
     m_id->setText(item->id());
+    m_opacity->setValue(item->opacity() * 100);
+    m_opacityText->setValue(item->opacity() * 100);
 
     m_textitem = dynamic_cast<Text*>(item);
     if(m_textitem)
@@ -322,4 +354,18 @@ void ItemPropertyEditor::hueChanged(int value)
 void ItemPropertyEditor::hueTextcolorChanged(int value)
 {
     m_textcolorpicker->setHue((qreal)value / 100.0);
+}
+
+void ItemPropertyEditor::opacityChanged(int value)
+{
+    m_item->setOpacity((qreal)value / 100);
+    m_opacityText->setValue(value);
+    m_item->adjustKeyframes("opacity", QVariant((qreal)value / 100));
+}
+
+void ItemPropertyEditor::opacityTextChanged(int value)
+{
+    m_item->setOpacity((qreal)value / 100);
+    m_opacity->setValue(value);
+    m_item->adjustKeyframes("opacity", QVariant((qreal)value / 100));
 }

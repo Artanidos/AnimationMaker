@@ -213,7 +213,7 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
     int type, fps;
-    qreal x, y, width, height, xscale, yscale;
+    qreal x, y, width, height, xscale, yscale, opacity;
     QPen pen;
     QBrush brush;
     QString text, id;
@@ -245,6 +245,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> height;
             dataStream >> pen;
             dataStream >> brush;
+            dataStream >> opacity;
 
             Rectangle *r = new Rectangle(width, height);
             r->setId(id);
@@ -253,6 +254,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             r->setBrush(brush);
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
             r->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            r->setOpacity(opacity);
 
             readKeyframes(dataStream, r);
 
@@ -267,6 +269,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> height;
             dataStream >> pen;
             dataStream >> brush;
+            dataStream >> opacity;
 
             Ellipse *e = new Ellipse(width, height);
             e->setId(id);
@@ -275,6 +278,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             e->setBrush(brush);
             e->setFlag(QGraphicsItem::ItemIsMovable, true);
             e->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            e->setOpacity(opacity);
 
             readKeyframes(dataStream, e);
 
@@ -289,6 +293,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> yscale;
             dataStream >> text;
             dataStream >> color;
+            dataStream >> opacity;
 
             Text *t = new Text(text);
             t->setId(id);
@@ -297,6 +302,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
             t->setScale(xscale, yscale);
             t->setTextcolor(color);
+            t->setOpacity(opacity);
 
             readKeyframes(dataStream, t);
 
@@ -311,6 +317,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> width;
             dataStream >> height;
             dataStream >> img;
+            dataStream >> opacity;
 
             Bitmap *b = new Bitmap(img, width, height);
             b->setId(id);
@@ -318,6 +325,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
             b->setScale(xscale, yscale);
+            b->setOpacity(opacity);
 
             readKeyframes(dataStream, b);
 
@@ -331,6 +339,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> y;
             dataStream >> xscale;
             dataStream >> yscale;
+            dataStream >> opacity;
             dataStream >> arr;
             Vectorgraphic *v = new Vectorgraphic(arr);
             v->setId(id);
@@ -338,6 +347,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
             v->setScale(xscale, yscale);
+            v->setOpacity(opacity);
 
             readKeyframes(dataStream, v);
 
@@ -393,6 +403,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << r->rect().height();
                 dataStream << r->pen();
                 dataStream << r->brush();
+                dataStream << r->opacity();
 
                 writeKeyframes(dataStream, r);
                 break;
@@ -408,6 +419,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << e->rect().height();
                 dataStream << e->pen();
                 dataStream << e->brush();
+                dataStream << e->opacity();
 
                 writeKeyframes(dataStream, e);
                 break;
@@ -423,6 +435,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << t->yscale();
                 dataStream << t->text();
                 dataStream << t->textcolor();
+                dataStream << t->opacity();
 
                 writeKeyframes(dataStream, t);
                 break;
@@ -437,6 +450,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << b->rect().width();
                 dataStream << b->rect().height();
                 dataStream << b->getImage();
+                dataStream << b->opacity();
 
                 writeKeyframes(dataStream, b);
                 break;
@@ -450,6 +464,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << v->pos().y();
                 dataStream << v->xscale();
                 dataStream << v->yscale();
+                dataStream << v->opacity();
                 dataStream << v->getData();
 
                 writeKeyframes(dataStream, v);
@@ -588,6 +603,8 @@ void AnimationScene::setPlayheadPosition(int val)
                         item->setWidth(value);
                     else if(propertyName == "height")
                         item->setHeight(value);
+                    else if(propertyName == "opacity")
+                        item->setOpacity(value);
                 }
             }
         }
