@@ -46,9 +46,11 @@ public slots:
     void treeCollapsed(QModelIndex);
     void treeScrollValueChanged(int);
     void keyframeAdded(ResizeableItem *item, QString propertyName);
+    void scrollValueChanged(int pos);
 
 private:
-    int m_scrollPos;
+    int m_verticalScrollPos;
+    int m_horizontalScrollPos;
     TimelineModel *m_timelineModel;
     QTreeView *m_treeview;
     QVBoxLayout *m_layout;

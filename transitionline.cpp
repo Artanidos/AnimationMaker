@@ -62,12 +62,13 @@ void TransitionLine::paintEvent(QPaintEvent *)
         gray = QColor(64, 66, 68);
     int width = size().width();
     int height = size().height();
+    int offset = m_horizontalScrollValue * 20;
 
     QPainter painter(this);
     painter.fillRect(0, 0, width, height, gray);
 
     painter.setPen(QColor(41, 41, 41));
-    for(int k = 199; k < width; k+=200)
+    for(int k = 199 - offset; k < width; k+=200)
     {
         painter.drawLine(k, 0, k, height);
     }
@@ -79,22 +80,22 @@ void TransitionLine::paintEvent(QPaintEvent *)
         {
             if(frame->easing() >= 0)
             {
-                painter.fillRect(frame->time() / 5, 1, (frame->next()->time() - frame->time()) / 5, height - 1, orange);
-                painter.drawImage(frame->time() / 5, 1, m_imageLeft);
-                painter.drawImage(frame->next()->time() / 5 - 5, 1, m_imageRight);
+                painter.fillRect(frame->time() / 5 - offset, 1, (frame->next()->time() - frame->time()) / 5, height - 1, orange);
+                painter.drawImage(frame->time() / 5 - offset, 1, m_imageLeft);
+                painter.drawImage(frame->next()->time() / 5 - 5 - offset, 1, m_imageRight);
             }
             else if(frame->prev() == NULL || frame->prev()->easing() < 0)
             {
                 if(frame->prev() == NULL || frame->prev()->value() == frame->value())
-                    painter.drawImage(frame->time() / 5 - 6, 2, m_imageRaute);
+                    painter.drawImage(frame->time() / 5 - 6 - offset, 2, m_imageRaute);
                 else
-                    painter.drawImage(frame->time() / 5 - 6, 2, m_imageRauteHohl);
+                    painter.drawImage(frame->time() / 5 - 6 - offset, 2, m_imageRauteHohl);
             }
         }
     }
 
     painter.setPen(Qt::red);
-    painter.drawLine(m_playheadPosition / 5 - 1, 0, m_playheadPosition / 5 - 1, height);
+    painter.drawLine(m_playheadPosition / 5 - 1 - offset, 0, m_playheadPosition / 5 - 1 - offset, height);
 }
 
 void TransitionLine::mousePressEvent(QMouseEvent *ev)
@@ -148,7 +149,7 @@ void TransitionLine::onCustomContextMenu(const QPoint &point)
     for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
     {
         int pos = frame->time() / 5 - 6;
-        if(point.x() >= pos && point.x() <= pos + 11 && frame->prev())
+        if(point.x() + m_horizontalScrollValue * 20 >= pos && point.x() + m_horizontalScrollValue * 20 <= pos + 11 && frame->prev())
         {
             m_frame = frame;
             m_contextMenu->clear();

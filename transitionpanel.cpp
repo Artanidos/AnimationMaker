@@ -30,7 +30,8 @@
 
 TransitionPanel::TransitionPanel()
 {
-    m_scrollPos = 0;
+    m_verticalScrollPos = 0;
+    m_horizontalScrollPos = 0;
     setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
     setMinimumWidth(100);
     setMinimumHeight(50);
@@ -61,18 +62,19 @@ void TransitionPanel::paintEvent(QPaintEvent *)
 
     int width = size().width();
     int height = size().height();
+    int offset = m_horizontalScrollPos * 20;
 
     painter.setPen(QColor(41, 41, 41));
     painter.fillRect(0, 0, width, height, gray);
     painter.drawRect(0, 0, width-1, height-1);
     painter.setPen(QColor(41, 41, 41));
-    for(int k = 200; k < width; k+=200)
+    for(int k = 200 - offset; k < width; k+=200)
     {
         painter.drawLine(k, 0, k, height);
     }
 
     painter.setPen(Qt::red);
-    painter.drawLine(m_playheadPosition / 5, 1, m_playheadPosition / 5, height - 1);
+    painter.drawLine(m_playheadPosition / 5 - offset, 1, m_playheadPosition / 5 - offset, height - 1);
 }
 
 void TransitionPanel::reset()
@@ -106,10 +108,10 @@ void TransitionPanel::enableDisableLines()
         TransitionLine *line = getTransitionLine(item, "");
         if(line)
         {
-            if(m_scrollPos <= row)
+            if(m_verticalScrollPos <= row)
                 line->setVisible(true);
             row++;
-            if((row + 1 - m_scrollPos) * 15 > height())
+            if((row + 1 - m_verticalScrollPos) * 15 > height())
                 return;
         }
         if(m_treeview->isExpanded(m_timelineModel->index(i, 0)))
@@ -120,10 +122,10 @@ void TransitionPanel::enableDisableLines()
                 TransitionLine *line = getTransitionLine(item, m_timelineModel->data(keyframeIndex, Qt::DisplayRole).toString());
                 if(line)
                 {
-                    if(m_scrollPos <= row)
+                    if(m_verticalScrollPos <= row)
                         line->setVisible(true);
                     row++;
-                    if((row + 1 - m_scrollPos) * 15 > height())
+                    if((row + 1 - m_verticalScrollPos) * 15 > height())
                         return;
                 }
             }
@@ -154,8 +156,20 @@ void TransitionPanel::treeCollapsed(QModelIndex)
 
 void TransitionPanel::treeScrollValueChanged(int to)
 {
-    m_scrollPos = to;
+    m_verticalScrollPos = to;
     enableDisableLines();
+}
+
+void TransitionPanel::scrollValueChanged(int pos)
+{
+   m_horizontalScrollPos = pos;
+   for(int i = 0; i < m_layout->count(); i++)
+   {
+       TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+       if(line)
+           line->setScrollValue(pos);
+   }
+   update();
 }
 
 void TransitionPanel::keyframeAdded(ResizeableItem *item, QString propertyName)
@@ -163,6 +177,7 @@ void TransitionPanel::keyframeAdded(ResizeableItem *item, QString propertyName)
     if(item)
     {
         TransitionLine *line = new TransitionLine(item, propertyName);
+        line->setScrollValue(m_horizontalScrollPos);
         m_layout->insertWidget(m_layout->count() - 1, line);
         enableDisableLines();
     }

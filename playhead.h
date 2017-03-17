@@ -37,6 +37,9 @@ public:
     inline void setValue(int value) {m_value = value; update(); emit valueChanged(value);}
     inline int value() {return m_value;}
 
+public slots:
+    void scrollValueChanged(int pos);
+
 signals:
     void valueChanged(int val);
 
@@ -44,6 +47,7 @@ private:
     QImage m_image;
     bool m_pressed;
     int m_value;
+    int m_horizontalScrollPos;
 };
 
 #endif // PLAYHEAD_H

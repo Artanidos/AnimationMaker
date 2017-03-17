@@ -38,6 +38,7 @@ public:
     inline QString propertyName() {return m_propertyName;}
     inline ResizeableItem *item() {return m_item;}
     inline void setPlayheadPosition(int value) {m_playheadPosition = value; update();}
+    inline void setScrollValue(int value) {m_horizontalScrollValue = value; update();}
 
 private slots:
     void onCustomContextMenu(const QPoint &point);
@@ -56,6 +57,7 @@ private:
     QMenu *m_contextMenu;
     QAction *m_transitionAct;
     bool m_pressed;
+    int m_horizontalScrollValue;
 };
 
 #endif // TRANSITION_H

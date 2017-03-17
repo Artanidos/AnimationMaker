@@ -28,6 +28,7 @@ PlayHead::PlayHead()
     m_image = QImage(":/images/playhead.png");
     m_pressed = false;
     m_value = 0;
+    m_horizontalScrollPos = 0;
 }
 
 void PlayHead::paintEvent(QPaintEvent *)
@@ -35,27 +36,34 @@ void PlayHead::paintEvent(QPaintEvent *)
     QColor gray = QColor(64, 66, 68);
     int width = size().width();
     int height = size().height();
+    int offset = m_horizontalScrollPos * 20;
 
     QPainter painter(this);
 
     painter.setPen(Qt::white);
-    for(int i = 0; i < width; i+=20)
+    for(int i = 0 - offset; i < width; i+=20)
     {
         painter.drawLine(i, 0, i, 3);
     }
-    for(int i = 0; i < width; i+=100)
+    for(int i = 0 - offset; i < width; i+=100)
     {
         painter.drawLine(i, 0, i, 8);
     }
     painter.setPen(QColor(41, 41, 41));
     painter.fillRect(0, 10, width, height, gray);
     painter.drawRect(0, 10, width - 1, height - 1);
-    painter.drawImage(m_value / 5 - 4, 4, m_image);
+    painter.drawImage(m_value / 5 - 4 - offset, 4, m_image);
+}
+
+void PlayHead::scrollValueChanged(int pos)
+{
+    m_horizontalScrollPos = pos;
+    update();
 }
 
 void PlayHead::mousePressEvent(QMouseEvent *event)
 {
-    if(event->button() == Qt::LeftButton && event->x() > m_value / 5 - 4 && event->x() <= m_value / 5 + 5)
+    if(event->button() == Qt::LeftButton && event->x() + m_horizontalScrollPos * 20 > m_value / 5 - 4 && event->x() + m_horizontalScrollPos * 20 <= m_value / 5 + 5)
         m_pressed = true;
 }
 
@@ -68,6 +76,7 @@ void PlayHead::mouseMoveEvent(QMouseEvent *event)
             x = 0;
         if(x >= width())
             x = width() - 1;
+        x += m_horizontalScrollPos * 20;
         m_value = qRound((qreal)x * 5 / 100) * 100;
         if(m_value / 5 > width())
             m_value -= 100;
@@ -76,7 +85,7 @@ void PlayHead::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void PlayHead::mouseReleaseEvent(QMouseEvent *event)
+void PlayHead::mouseReleaseEvent(QMouseEvent *)
 {
     m_pressed = false;
 }

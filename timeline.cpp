@@ -87,11 +87,13 @@ Timeline::Timeline(AnimationScene *scene)
     m_transitionPanel->setModel(m_timelineModel);
     m_transitionPanel->setTreeview(m_treeview);
     m_playhead = new PlayHead();
+    QScrollBar *sb = new QScrollBar(Qt::Horizontal);
 
     layout->addItem(hbox, 0, 0);
     layout->addWidget(m_playhead, 0, 1);
     layout->addWidget(m_treeview, 1, 0);
     layout->addWidget(m_transitionPanel, 1, 1);
+    layout->addWidget(sb, 2, 1);
     layout->setColumnStretch(0,0);
     layout->setColumnStretch(1,1);
 
@@ -109,6 +111,8 @@ Timeline::Timeline(AnimationScene *scene)
     connect(m_treeview->verticalScrollBar(), SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(treeScrollValueChanged(int)));
 
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
+    connect(sb, SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(scrollValueChanged(int)));
+    connect(sb, SIGNAL(valueChanged(int)), m_playhead, SLOT(scrollValueChanged(int)));
 
     QItemSelectionModel *selectionModel = m_treeview->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(selectionChanged(const QItemSelection&,const QItemSelection&)));
