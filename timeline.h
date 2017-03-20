@@ -43,6 +43,7 @@ public:
     inline void setPlayheadPosition(int value) {m_playhead->setValue(value);}
     inline void expandTree() {m_treeview->expandAll();}
     inline int lastKeyFrame() {return m_timelineModel->lastKeyframe();}
+    void removeItem(ResizeableItem *item);
 
 public slots:
     void onCustomContextMenu(const QPoint &point);

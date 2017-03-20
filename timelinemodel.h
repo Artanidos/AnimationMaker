@@ -47,6 +47,7 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
     int lastKeyframe();
+    void removeItem(ResizeableItem *item);
 
 public slots:
     void idChanged(ResizeableItem *item, QString value);

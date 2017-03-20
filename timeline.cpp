@@ -230,3 +230,9 @@ void Timeline::autokeyframes(bool value)
 {
     m_autokeyframe = value;
 }
+
+void Timeline::removeItem(ResizeableItem *item)
+{
+    m_timelineModel->removeItem(item);
+    m_transitionPanel->removeItem(item);
+}

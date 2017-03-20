@@ -201,3 +201,17 @@ void TransitionPanel::setPlayheadPosition(int value)
     m_playheadPosition = value;
     update();
 }
+
+void TransitionPanel::removeItem(ResizeableItem *item)
+{
+    for(int i = m_layout->count() - 1; i >= 0; i--)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line && line->item() == item)
+        {
+            //m_layout->removeItem(m_layout->itemAt(i));
+            m_layout->removeWidget(line);
+            delete line;
+        }
+    }
+}

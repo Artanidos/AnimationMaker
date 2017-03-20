@@ -255,3 +255,15 @@ int TimelineModel::lastKeyframe()
     }
     return last;
 }
+
+void TimelineModel::removeItem(ResizeableItem *item)
+{
+    TreeItem *treeItem = searchChild(m_rootItem, item);
+    if(treeItem)
+    {
+        beginRemoveRows(QModelIndex(), treeItem->row(), treeItem->row());
+        m_rootItem->children()->removeAt(treeItem->row());
+        endRemoveRows();
+        delete treeItem;
+    }
+}

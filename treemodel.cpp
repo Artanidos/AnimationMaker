@@ -93,6 +93,19 @@ void TreeModel::addItem(ResizeableItem *item)
     connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
 }
 
+void TreeModel::removeItem(ResizeableItem *item)
+{
+    TreeItem *treeItem = searchChild(m_rootItem->child(0), item);
+    if(treeItem)
+    {
+        QModelIndex index = createIndex(treeItem->row(), 0, treeItem->parentItem());
+        beginRemoveRows(index.parent(), treeItem->row(), treeItem->row());
+        treeItem->parentItem()->children()->removeAt(treeItem->row());
+        endRemoveRows();
+        delete treeItem;
+    }
+}
+
 int TreeModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())

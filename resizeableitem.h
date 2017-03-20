@@ -100,6 +100,7 @@ signals:
     void idChanged(ResizeableItem *item, QString value);
     void sizeChanged(qreal width, qreal height);
     void positionChanged(qreal x, qreal y);
+    void itemRemoved(ResizeableItem *item);
 
 protected:
     void setHandlePositions();

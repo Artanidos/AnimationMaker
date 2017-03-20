@@ -262,6 +262,7 @@ void MainWindow::createGui()
     connect(scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
     connect(scene, SIGNAL(itemAdded(QGraphicsItem*)), this, SLOT(sceneItemAdded(QGraphicsItem*)));
     connect(scene, SIGNAL(sizeChanged(int,int)), this, SLOT(sceneSizeChanged(int, int)));
+    connect(scene, SIGNAL(itemRemoved(ResizeableItem*)), this, SLOT(sceneItemRemoved(ResizeableItem*)));
 
     model = new TreeModel();
     model->setScene(scene);
@@ -536,3 +537,9 @@ void MainWindow::paste()
 {
     scene->pasteItem();
 }
+
+ void MainWindow::sceneItemRemoved(ResizeableItem *item)
+ {
+     model->removeItem(item);
+     timeline->removeItem(item);
+ }

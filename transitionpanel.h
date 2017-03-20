@@ -40,6 +40,7 @@ public:
     void setTreeview(QTreeView *tv);
     void reset();
     void setPlayheadPosition(int value);
+    void removeItem(ResizeableItem *item);
 
 public slots:
     void treeExpanded(QModelIndex);

@@ -611,6 +611,13 @@ void AnimationScene::setPlayheadPosition(int val)
     }
 }
 
+void AnimationScene::removeAndDeleteItem(ResizeableItem *item)
+{
+    this->removeItem(item);
+    emit itemRemoved(item);
+    delete item;
+}
+
 QDataStream& operator <<(QDataStream &out, const AnimationScene *s)
 {
     return s->write(out);

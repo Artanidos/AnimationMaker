@@ -60,11 +60,14 @@ public:
 
     void copyItem();
     void pasteItem();
+
+    void removeAndDeleteItem(ResizeableItem *item);
         
 signals:
     void itemAdded(QGraphicsItem *item);
     void sizeChanged(int width, int height);
     void keyframeAdded(ResizeableItem *item, QString propertyName, KeyFrame *key);
+    void itemRemoved(ResizeableItem *item);
 
 public slots:
     void setPlayheadPosition(int value);

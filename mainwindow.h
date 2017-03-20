@@ -115,6 +115,7 @@ public slots:
     void copy();
     void paste();
     void sceneSizeChanged(int width, int height);
+    void sceneItemRemoved(ResizeableItem *item);
 };
 
 #endif // MAINWINDOW_H

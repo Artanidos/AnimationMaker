@@ -620,6 +620,7 @@ void ResizeableItem::sendToBack()
 
 void ResizeableItem::deleteItem()
 {
-    scene()->removeItem(this);
-    delete this;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(scene());
+    if(as)
+        as->removeAndDeleteItem(this);
 }
