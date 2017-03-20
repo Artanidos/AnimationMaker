@@ -36,6 +36,7 @@ class ResizeableItem : public QObject, public QGraphicsItem
     Q_PROPERTY(qreal top READ top WRITE setTop)
 public:
     ResizeableItem();
+    ~ResizeableItem();
 
     void drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option);
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);

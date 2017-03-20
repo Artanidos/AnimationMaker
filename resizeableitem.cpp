@@ -64,6 +64,34 @@ ResizeableItem::ResizeableItem()
     m_contextMenu->addSeparator();
 }
 
+ResizeableItem::~ResizeableItem()
+{
+    QHash<QString, KeyFrame*>::iterator it;
+    for(it = m_keyframes->begin(); it != m_keyframes->end(); it++)
+    {
+        KeyFrame *frame = it.value();
+        for(; frame != NULL; frame = frame->next())
+        {
+            if(frame->prev())
+                delete frame->prev();
+        }
+        delete frame;
+    }
+    delete m_keyframes;
+    delete delAct;
+    delete bringToFrontAct;
+    delete sendToBackAct;
+    delete raiseAct;
+    delete lowerAct;
+    if(m_hasHandles)
+    {
+        for(int i = 0; i < 8; i++)
+        {
+            delete m_handles[i];
+        }
+    }
+}
+
 void ResizeableItem::addKeyframe(QString propertyName, KeyFrame *frame)
 {
     if(m_keyframes->contains(propertyName))
@@ -308,10 +336,10 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
         int yMoved = handle->mouseDownY - y;
 
         int newWidth = rect().width() + ( XaxisSign * xMoved);
-        if ( newWidth < 40 ) newWidth  = 40;
+        if ( newWidth < 20 ) newWidth  = 20;
 
         int newHeight = rect().height() + (YaxisSign * yMoved);
-        if ( newHeight < 40 ) newHeight = 40;
+        if ( newHeight < 20 ) newHeight = 20;
 
         qreal deltaWidth = newWidth - rect().width();
         qreal deltaHeight = newHeight - rect().height();
@@ -593,4 +621,5 @@ void ResizeableItem::sendToBack()
 void ResizeableItem::deleteItem()
 {
     scene()->removeItem(this);
+    delete this;
 }

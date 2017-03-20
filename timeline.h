@@ -53,6 +53,7 @@ public slots:
     void selectionChanged(const QItemSelection& current,const QItemSelection&);
     void playheadValueChanged(int val);
     void addKeyFrame(ResizeableItem *item,QString property, qreal value);
+    void autokeyframes(bool value);
 
 signals:
     void itemSelectionChanged(ResizeableItem *item);
@@ -69,6 +70,7 @@ private:
     bool m_playing;
     QToolButton *playButton;
     QToolButton *pauseButton;
+    bool m_autokeyframe;
 
     void addProperty(const QString name);
     void createAnimationGroup();

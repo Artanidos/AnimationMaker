@@ -16,15 +16,7 @@ Treeview
     - Object make invisible
     - Object lock
 
-Icon
-
-Scrolling for TransitionPanel
-
-Ticks over playhead
-
-Animation recording
-
-Transition resize handles, scrolling
+Icon integrate for each platform
 
 Export should not show animation on screen (freeze view)
 
@@ -34,6 +26,10 @@ Colorpicker, Color editor complete
 
 encode clean up - exit(1)
 
-Keyframes create, record, delete
+Keyframes record, delete
 
-Undo / Redo
+Undo / Redo - QUndoCommand
+
+Export HTML ?
+
+Minimum size of 20x20 not needed anymore if zoom is implemented

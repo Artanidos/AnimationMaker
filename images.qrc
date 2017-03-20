@@ -21,5 +21,6 @@
         <file>images/trans-left.png</file>
         <file>images/trans-right.png</file>
         <file>images/pause.png</file>
+        <file>images/autokeyframe.png</file>
     </qresource>
 </RCC>

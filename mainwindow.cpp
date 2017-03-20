@@ -30,6 +30,9 @@
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
 
+#define MAGIC 0x414D4200
+#define FILE_VERSION 100
+
 void video_encode(const char *filename, QGraphicsView *view, int length, MainWindow *win, AnimationScene *scene);
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -92,8 +95,8 @@ void MainWindow::writeFile(QString fileName)
     QDataStream out(&file);
 
     // Write a header with a "magic number" and a version
-    out << (quint32)0xA0B0C0D0;
-    out << (qint32)123;
+    out << (quint32)MAGIC;
+    out << (qint32)FILE_VERSION;
     out.setVersion(QDataStream::Qt_5_7);
 
     out << scene;
@@ -147,33 +150,33 @@ void MainWindow::open()
     // Read and check the header
     quint32 magic;
     in >> magic;
-    if (magic != 0xA0B0C0D0)
+    if (magic != MAGIC)
     {
         file.close();
-        printf("bad fileformat\n");
+        QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
         return;
     }
 
     // Read the version
     qint32 version;
     in >> version;
-    if (version < 100)
+    if (version < FILE_VERSION)
     {
         file.close();
-        printf("file to old\n");
+        QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
         return;
     }
-    if (version > 123)
+    if (version > FILE_VERSION)
     {
         file.close();
-        printf("file to new\n");
+        QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
         return;
     }
 
-    if (version <= 110)
-        in.setVersion(QDataStream::Qt_4_0);
-    else
-        in.setVersion(QDataStream::Qt_5_7);
+//    if (version <= 110)
+//        in.setVersion(QDataStream::Qt_4_0);
+//    else
+//        in.setVersion(QDataStream::Qt_5_7);
 
     // Read the data
     in >> scene;
