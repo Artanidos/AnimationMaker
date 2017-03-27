@@ -570,11 +570,10 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
                     }
                     last->setNext(newFrame);
 
-
-//                    if(as->autotransition())
-//                    {
-//                        frame->setEasing(0);
-//                    }
+                    if(as->autotransition())
+                    {
+                        last->setEasing(QEasingCurve::Linear);
+                    }
                 }
             }
         }

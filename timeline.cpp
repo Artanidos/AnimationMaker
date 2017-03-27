@@ -37,7 +37,7 @@ Timeline::Timeline(AnimationScene *scene)
     : QWidget(0)
 {
     m_scene = scene;
-    m_autokeyframes = false;
+
     QHBoxLayout *hbox = new QHBoxLayout();
     QToolButton *revertButton = new QToolButton();
     QToolButton *forwardButton = new QToolButton();
@@ -46,6 +46,12 @@ Timeline::Timeline(AnimationScene *scene)
     autokeyframeButton->setChecked(false);
     autokeyframeButton->setIcon(QIcon(":/images/autokeyframe.png"));
     connect(autokeyframeButton, SIGNAL(toggled(bool)), this, SLOT(autokeyframes(bool)));
+
+    QToolButton *autotransitionButton = new QToolButton();
+    autotransitionButton->setCheckable(true);
+    autotransitionButton->setChecked(false);
+    autotransitionButton->setIcon(QIcon(":/images/autotransition.png"));
+    connect(autotransitionButton, SIGNAL(toggled(bool)), this, SLOT(autotransitions(bool)));
     playButton = new QToolButton();
     pauseButton = new QToolButton();
     pauseButton->setVisible(false);
@@ -76,13 +82,14 @@ Timeline::Timeline(AnimationScene *scene)
     playButton->setDefaultAction(playAct);
     pauseButton->setDefaultAction(pauseAct);
     forwardButton->setDefaultAction(forwardAct);
-    //autokeyframeButton->setDefaultAction(autokeyframeAct);
+
     hbox->addWidget(revertButton);
     hbox->addWidget(playButton);
     hbox->addWidget(pauseButton);
     hbox->addWidget(forwardButton);
     hbox->addStretch();
     hbox->addWidget(autokeyframeButton);
+    hbox->addWidget(autotransitionButton);
     hbox->addSpacing(5);
     hbox->addWidget(m_time);
     QGridLayout *layout = new QGridLayout;
@@ -228,8 +235,12 @@ void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, qreal val
 
 void Timeline::autokeyframes(bool value)
 {
-    m_autokeyframes = value;
     m_scene->setAutokeyframes(value);
+}
+
+void Timeline::autotransitions(bool value)
+{
+    m_scene->setAutotransition(value);
 }
 
 void Timeline::removeItem(ResizeableItem *item)
