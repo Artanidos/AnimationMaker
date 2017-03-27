@@ -535,7 +535,7 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
         {
             KeyFrame *first = m_keyframes->value(propertyName);
             KeyFrame *found = NULL;
-            KeyFrame *last = first;
+            KeyFrame *last = NULL;
             for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
             {
                 if(as->autokeyframes())
@@ -561,18 +561,30 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
                 {
                     KeyFrame *newFrame = new KeyFrame();
                     newFrame->setValue(value);
-                    newFrame->setPrev(last);
                     newFrame->setTime(time);
-                    if(last->next())
+                    if(last == NULL)
                     {
-                        newFrame->setNext(last->next());
-                        last->next()->setPrev(newFrame);
-                    }
-                    last->setNext(newFrame);
+                        newFrame->setNext(first);
+                        first->setPrev(newFrame);
+                        // first has changed, so update hash
+                        m_keyframes->remove(propertyName);
+                        m_keyframes->insert(propertyName, newFrame);
 
-                    if(as->autotransition())
+                        if(as->autotransition())
+                            newFrame->setEasing(QEasingCurve::Linear);
+                    }
+                    else
                     {
-                        last->setEasing(QEasingCurve::Linear);
+                        newFrame->setPrev(last);
+                        if(last->next())
+                        {
+                            newFrame->setNext(last->next());
+                            last->next()->setPrev(newFrame);
+                        }
+                        last->setNext(newFrame);
+
+                        if(as->autotransition())
+                            last->setEasing(QEasingCurve::Linear);
                     }
                 }
             }
