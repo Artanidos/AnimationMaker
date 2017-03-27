@@ -522,7 +522,8 @@ void ResizeableItem::posChanged(qreal x, qreal y)
 
 /*
  * Looking for the keyframe which occures in front of the playhead position
- * and adjust its value
+ * and adjust its value.
+ * If no keyframe will be found and autokeyframe is switched to on a new keyframe will be added
  */
 void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
 {
@@ -534,13 +535,48 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value)
         {
             KeyFrame *first = m_keyframes->value(propertyName);
             KeyFrame *found = NULL;
+            KeyFrame *last = first;
             for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
             {
-                if(frame->time() <= time)
-                    found = frame;
+                if(as->autokeyframes())
+                {
+                    if(frame->time() < time)
+                        last = frame;
+                    if(frame->time() == time)
+                        found = frame;
+                }
+                else
+                {
+                    if(frame->time() <= time)
+                        found = frame;
+                }
             }
             if(found)
+            {
                 found->setValue(value);
+            }
+            else
+            {
+                if(as->autokeyframes())
+                {
+                    KeyFrame *newFrame = new KeyFrame();
+                    newFrame->setValue(value);
+                    newFrame->setPrev(last);
+                    newFrame->setTime(time);
+                    if(last->next())
+                    {
+                        newFrame->setNext(last->next());
+                        last->next()->setPrev(newFrame);
+                    }
+                    last->setNext(newFrame);
+
+
+//                    if(as->autotransition())
+//                    {
+//                        frame->setEasing(0);
+//                    }
+                }
+            }
         }
     }
 }

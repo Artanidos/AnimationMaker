@@ -37,7 +37,7 @@ Timeline::Timeline(AnimationScene *scene)
     : QWidget(0)
 {
     m_scene = scene;
-    m_autokeyframe = false;
+    m_autokeyframes = false;
     QHBoxLayout *hbox = new QHBoxLayout();
     QToolButton *revertButton = new QToolButton();
     QToolButton *forwardButton = new QToolButton();
@@ -228,7 +228,8 @@ void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, qreal val
 
 void Timeline::autokeyframes(bool value)
 {
-    m_autokeyframe = value;
+    m_autokeyframes = value;
+    m_scene->setAutokeyframes(value);
 }
 
 void Timeline::removeItem(ResizeableItem *item)

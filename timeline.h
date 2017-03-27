@@ -71,7 +71,7 @@ private:
     bool m_playing;
     QToolButton *playButton;
     QToolButton *pauseButton;
-    bool m_autokeyframe;
+    bool m_autokeyframes;
 
     void addProperty(const QString name);
     void createAnimationGroup();

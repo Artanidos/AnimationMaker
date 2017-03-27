@@ -4,8 +4,6 @@ Rectangle new
 
 Selection of an object triggers TreeSelection and PropertyPanel Selection
 
-Item delete also in TreeView
-
 Toolbar for files (Save, Open)
 
 Items Translation like Rotate
@@ -28,8 +26,13 @@ encode clean up - exit(1)
 
 Keyframes record, delete
 
-Undo / Redo - QUndoCommand
+Undo / Redo - QUndoCommand - QUndoStack
 
 Export HTML ?
 
 Minimum size of 20x20 not needed anymore if zoom is implemented
+
+
+Auto keyframe
+    When a keyframe for Left is on the last keyframe position then a new keyframe will be inserted if the left position will be changed
+    also a transition will be added if switch is on

@@ -62,6 +62,8 @@ public:
     void pasteItem();
 
     void removeAndDeleteItem(ResizeableItem *item);
+    inline bool autokeyframes() {return m_autokeyframes;}
+    inline void setAutokeyframes(bool value) {m_autokeyframes = value;}
         
 signals:
     void itemAdded(QGraphicsItem *item);
@@ -85,6 +87,7 @@ private:
     QGraphicsRectItem *m_rect;
     int m_playheadPosition;
     KeyFrame *m_tempKeyFrame;
+    bool m_autokeyframes;
 
     void initialize();
     void addBackgroundRect();
