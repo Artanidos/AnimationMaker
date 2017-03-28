@@ -20,6 +20,7 @@
 
 #include "itempropertyeditor.h"
 #include "animationscene.h"
+
 #include <QPushButton>
 
 ItemPropertyEditor::ItemPropertyEditor()
@@ -113,6 +114,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     m_textcolorpicker = new ColorPicker();
     expTextcolor->setVisible(false);
     QSlider *hueTextColorSlider = new QSlider();
+    m_textcolorRect = new ColorRect();
     hueTextColorSlider->setMinimum(0);
     hueTextColorSlider->setMaximum(100);
     hueTextColorSlider->setOrientation(Qt::Vertical);
@@ -121,32 +123,50 @@ ItemPropertyEditor::ItemPropertyEditor()
     QLabel *labelColor = new QLabel("Color");
     m_textcolor = new QLineEdit();
     layoutTextcolor->addWidget(labelColor, 0, 0);
-    layoutTextcolor->addWidget(m_textcolor, 0, 1);
+    layoutTextcolor->addWidget(m_textcolorRect, 0, 1);
+    layoutTextcolor->addWidget(m_textcolor, 0, 2);
     layoutTextcolor->addWidget(m_textcolorpicker, 1, 0);
     layoutTextcolor->addWidget(hueTextColorSlider, 1, 1);
     expTextcolor->addLayout(layoutTextcolor);
     vbox->addWidget(expTextcolor);
 
-    m_colorpicker = new ColorPicker();
-    QSlider *hueColorSlider = new QSlider();
-    hueColorSlider->setMinimum(0);
-    hueColorSlider->setMaximum(100);
-    hueColorSlider->setOrientation(Qt::Vertical);
-    hueColorSlider->setMaximumHeight(100);
+    m_colorPicker = new ColorPicker();
+    m_colorPicker->setVisible(false);
+    m_bordercolorPicker = new ColorPicker();
+    m_bordercolorPicker->setVisible(false);
+    m_hueColorSlider = new QSlider();
+    m_hueColorSlider->setVisible(false);
+    m_hueColorSlider->setMinimum(0);
+    m_hueColorSlider->setMaximum(100);
+    m_hueColorSlider->setOrientation(Qt::Vertical);
+    m_hueColorSlider->setMaximumHeight(100);
+
+    m_hueBordercolorSlider = new QSlider();
+    m_hueBordercolorSlider->setVisible(false);
+    m_hueBordercolorSlider->setMinimum(0);
+    m_hueBordercolorSlider->setMaximum(100);
+    m_hueBordercolorSlider->setOrientation(Qt::Vertical);
+    m_hueBordercolorSlider->setMaximumHeight(100);
 
     expColor = new Expander("Color");
     expColor->setVisible(false);
     QGridLayout *layoutColor = new QGridLayout();
     QLabel *labelBrush = new QLabel("Brush");
     QLabel *labelBorder = new QLabel("Border");
+    m_colorRect = new ColorRect();
+    m_borderColorRect = new ColorRect();
     m_brushcolor = new QLineEdit();
     m_pencolor = new QLineEdit();
     layoutColor->addWidget(labelBrush, 0, 0);
-    layoutColor->addWidget(m_brushcolor, 0, 1);
-    layoutColor->addWidget(m_colorpicker, 1, 0);
-    layoutColor->addWidget(hueColorSlider, 1, 1);
+    layoutColor->addWidget(m_colorRect, 0, 1);
+    layoutColor->addWidget(m_brushcolor, 0, 2);
+    layoutColor->addWidget(m_colorPicker, 1, 0);
+    layoutColor->addWidget(m_hueColorSlider, 1, 1);
     layoutColor->addWidget(labelBorder, 2, 0);
-    layoutColor->addWidget(m_pencolor, 2, 1);
+    layoutColor->addWidget(m_borderColorRect, 2, 1);
+    layoutColor->addWidget(m_pencolor, 2, 2);
+    layoutColor->addWidget(m_bordercolorPicker, 3, 0);
+    layoutColor->addWidget(m_hueBordercolorSlider, 3, 1);
     expColor->addLayout(layoutColor);
     vbox->addWidget(expColor);
 
@@ -183,8 +203,10 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(m_textcolor, SIGNAL(textChanged(QString)), this, SLOT(textcolorChanged(QString)));
     connect(m_brushcolor, SIGNAL(textChanged(QString)), this, SLOT(colorChanged(QString)));
     connect(m_pencolor, SIGNAL(textChanged(QString)), this, SLOT(borderColorChanged(QString)));
-    connect(hueColorSlider, SIGNAL(valueChanged(int)), this, SLOT(hueChanged(int)));
-    connect(m_colorpicker, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
+    connect(m_hueColorSlider, SIGNAL(valueChanged(int)), this, SLOT(hueChanged(int)));
+    connect(m_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
+    connect(m_hueBordercolorSlider, SIGNAL(valueChanged(int)), this, SLOT(hueBorderChanged(int)));
+    connect(m_bordercolorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(bordercolorChanged(QColor)));
     connect(hueTextColorSlider, SIGNAL(valueChanged(int)), this, SLOT(hueTextcolorChanged(int)));
     connect(m_textcolorpicker, SIGNAL(colorChanged(QColor)), this, SLOT(textcolorChanged(QColor)));
     connect(addXKeyframe, SIGNAL(clicked(bool)), this, SLOT(addLeftKeyFrame()));
@@ -194,6 +216,9 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(m_opacity, SIGNAL(valueChanged(int)), this, SLOT(opacityChanged(int)));
     connect(m_opacityText, SIGNAL(valueChanged(int)), this, SLOT(opacityTextChanged(int)));
     connect(addOpacityKeyframe, SIGNAL(clicked(bool)), this, SLOT(addOpacityKeyFrame()));
+    connect(m_colorRect, SIGNAL(mouseClicked()), this, SLOT(colorRectClicked()));
+    connect(m_borderColorRect, SIGNAL(mouseClicked()), this, SLOT(borderColorRectClicked()));
+    connect(m_textcolorRect, SIGNAL(mouseClicked()), this, SLOT(textColorRectClicked()));
 }
 
 void ItemPropertyEditor::addLeftKeyFrame()
@@ -310,12 +335,14 @@ void ItemPropertyEditor::textChanged(QString value)
 void ItemPropertyEditor::textcolorChanged(QString value)
 {
     m_textitem->setTextcolor(QColor(value));
+    m_textcolorRect->setColor(QColor(value));
 }
 
 void ItemPropertyEditor::textcolorChanged(QColor value)
 {
     m_textitem->setTextcolor(value);
     m_textcolor->setText(value.name());
+    m_textcolorRect->setColor(value);
 }
 
 void ItemPropertyEditor::colorChanged(QString value)
@@ -325,6 +352,8 @@ void ItemPropertyEditor::colorChanged(QString value)
 
     if(m_ellipse)
         m_ellipse->setBrush(QBrush(QColor(value)));
+
+    m_colorRect->setColor(QColor(value));
 }
 
 void ItemPropertyEditor::colorChanged(QColor value)
@@ -335,6 +364,7 @@ void ItemPropertyEditor::colorChanged(QColor value)
     if(m_ellipse)
         m_ellipse->setBrush(QBrush(value));
     m_brushcolor->setText(value.name());
+    m_colorRect->setColor(value);
 }
 
 void ItemPropertyEditor::borderColorChanged(QString value)
@@ -344,11 +374,28 @@ void ItemPropertyEditor::borderColorChanged(QString value)
 
     if(m_ellipse)
         m_ellipse->setPen(QPen(QColor(value)));
+    m_borderColorRect->setColor(QColor(value));
+}
+
+void ItemPropertyEditor::bordercolorChanged(QColor value)
+{
+    if(m_rectangle)
+        m_rectangle->setPen(QPen(value));
+
+    if(m_ellipse)
+        m_ellipse->setPen(QPen(value));
+    m_pencolor->setText(value.name());
+    m_borderColorRect->setColor(value);
 }
 
 void ItemPropertyEditor::hueChanged(int value)
 {
-    m_colorpicker->setHue((qreal)value / 100.0);
+    m_colorPicker->setHue((qreal)value / 100.0);
+}
+
+void ItemPropertyEditor::hueBorderChanged(int value)
+{
+    m_bordercolorPicker->setHue((qreal)value / 100.0);
 }
 
 void ItemPropertyEditor::hueTextcolorChanged(int value)
@@ -368,4 +415,32 @@ void ItemPropertyEditor::opacityTextChanged(int value)
     m_item->setOpacity((qreal)value / 100);
     m_opacity->setValue(value);
     m_item->adjustKeyframes("opacity", QVariant((qreal)value / 100));
+}
+
+
+void ItemPropertyEditor::colorRectClicked()
+{
+    bool visible = m_colorPicker->isVisible();
+
+    m_colorPicker->setVisible(!visible);
+    m_hueColorSlider->setVisible(!visible);
+
+    m_bordercolorPicker->setVisible(visible);
+    m_hueBordercolorSlider->setVisible(visible);
+}
+
+void ItemPropertyEditor::borderColorRectClicked()
+{
+    bool visible = m_bordercolorPicker->isVisible();
+
+    m_bordercolorPicker->setVisible(!visible);
+    m_hueBordercolorSlider->setVisible(!visible);
+
+    m_colorPicker->setVisible(visible);
+    m_hueColorSlider->setVisible(visible);
+}
+
+void ItemPropertyEditor::textColorRectClicked()
+{
+
 }

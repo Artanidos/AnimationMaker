@@ -30,6 +30,7 @@
 #include "rectangle.h"
 #include "ellipse.h"
 #include "colorpicker.h"
+#include "colorrect.h"
 
 class ItemPropertyEditor : public QWidget
 {
@@ -61,9 +62,15 @@ private:
     QLineEdit *m_textcolor;
     QLineEdit *m_brushcolor;
     QLineEdit *m_pencolor;
-    ColorPicker *m_colorpicker;
+    ColorPicker *m_colorPicker;
+    ColorPicker *m_bordercolorPicker;
     ColorPicker *m_textcolorpicker;
     QSlider *m_opacity;
+    ColorRect *m_colorRect;
+    ColorRect *m_borderColorRect;
+    ColorRect *m_textcolorRect;
+    QSlider *m_hueColorSlider;
+    QSlider *m_hueBordercolorSlider;
 
 private slots:
     void idChanged(QString value);
@@ -77,7 +84,9 @@ private slots:
     void colorChanged(QString value);
     void colorChanged(QColor value);
     void borderColorChanged(QString);
+    void bordercolorChanged(QColor value);
     void hueChanged(int);
+    void hueBorderChanged(int);
     void hueTextcolorChanged(int);
     void addLeftKeyFrame();
     void addTopKeyFrame();
@@ -88,6 +97,9 @@ private slots:
     void itemPositionChanged(qreal x, qreal y);
     void opacityChanged(int value);
     void opacityTextChanged(int value);
+    void colorRectClicked();
+    void borderColorRectClicked();
+    void textColorRectClicked();
 };
 
 #endif // ITEMPROPERTYEDITOR_H
