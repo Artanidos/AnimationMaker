@@ -34,6 +34,8 @@ TransitionLine::TransitionLine(ResizeableItem *item, QString propertyName)
     m_playheadPosition = 0;
     m_pressed = false;
 
+    setMouseTracking(true);
+
     setMaximumHeight(14);
     setMinimumHeight(14);
 
@@ -127,6 +129,8 @@ void TransitionLine::mousePressEvent(QMouseEvent *ev)
 
 void TransitionLine::mouseMoveEvent(QMouseEvent *ev)
 {
+    bool isOverKeyframe = false;
+
     if(m_pressed)
     {   
         int x = ev->x();
@@ -142,6 +146,25 @@ void TransitionLine::mouseMoveEvent(QMouseEvent *ev)
         m_oldx = ev->pos().x();
         update();
     }
+
+    if(!m_propertyName.isEmpty())
+    {
+        int offset = m_horizontalScrollValue * 20;
+        KeyFrame *first = m_item->keyframes()->value(m_propertyName);
+        for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
+        {
+            int pos = frame->time() / 5 - 6;
+            if(ev->pos().x() + offset >= pos && ev->pos().x() + offset <= pos + 11)
+            {
+                isOverKeyframe = true;
+                break;
+            }
+        }
+    }
+    if(isOverKeyframe)
+        setCursor(Qt::SizeHorCursor);
+    else
+        setCursor(Qt::ArrowCursor);
 }
 
 void TransitionLine::mouseReleaseEvent(QMouseEvent *)

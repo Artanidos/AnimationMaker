@@ -35,6 +35,26 @@ ItemHandle::ItemHandle(int corner) :
     m_pen.setWidth(1);
     this->setAcceptHoverEvents(true);
     setZValue(100);
+
+    switch(corner)
+    {
+        case 0:
+        case 2:
+            setCursor(Qt::SizeFDiagCursor);
+            break;
+        case 1:
+        case 3:
+            setCursor(Qt::SizeBDiagCursor);
+            break;
+        case 4:
+        case 6:
+            setCursor(Qt::SizeVerCursor);
+            break;
+        case 5:
+        case 7:
+            setCursor(Qt::SizeHorCursor);
+            break;
+    }
 }
 
 void ItemHandle::setMouseState(int s)
