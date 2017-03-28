@@ -24,15 +24,11 @@ Colorpicker, Color editor complete
 
 encode clean up - exit(1)
 
-Keyframes record, delete
-
 Undo / Redo - QUndoCommand - QUndoStack
-
-Export HTML ?
 
 Minimum size of 20x20 not needed anymore if zoom is implemented
 
+Export as plugin?
 
-Auto keyframe
-    When a keyframe for Left is on the last keyframe position then a new keyframe will be inserted if the left position will be changed
-    also a transition will be added if switch is on
+Export HTML ?
+

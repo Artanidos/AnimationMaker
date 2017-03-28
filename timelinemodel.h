@@ -52,6 +52,7 @@ public:
 public slots:
     void idChanged(ResizeableItem *item, QString value);
     void keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key);
+    void keyframeDeleted(ResizeableItem *item, QString propertyName);
 
 signals:
     void keyframeAdded(ResizeableItem *item, QString propertyName);

@@ -121,6 +121,28 @@ void TimelineModel::keyframeAdded(ResizeableItem * item, QString propertyName, K
     }
 }
 
+void TimelineModel::keyframeDeleted(ResizeableItem *item, QString propertyName)
+{
+    TreeItem *treeItem = searchChild(m_rootItem, item);
+    if(treeItem)
+    {
+        TreeItem *treeChildItem = searchChild(treeItem, propertyName);
+        if(treeChildItem)
+        {
+            beginRemoveRows(createIndex(treeItem->row(), 0, treeItem), treeChildItem->row(), treeChildItem->row());
+            treeItem->children()->removeOne(treeChildItem);
+            endRemoveRows();
+
+            if(treeItem->childCount() == 0)
+            {
+                beginRemoveRows(QModelIndex(), treeItem->row(), treeItem->row());
+                m_rootItem->children()->removeOne(treeItem);
+                endRemoveRows();
+            }
+        }
+    }
+}
+
 int TimelineModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())

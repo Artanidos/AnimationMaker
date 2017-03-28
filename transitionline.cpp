@@ -44,7 +44,11 @@ TransitionLine::TransitionLine(ResizeableItem *item, QString propertyName)
 
     m_contextMenu = new QMenu();
     m_transitionAct = new QAction("Create transition");
+    m_delKeyframeAct = new QAction("Delete keyframe");
+    m_delTransitionAct = new QAction("Delete transition");
     connect(m_transitionAct, SIGNAL(triggered(bool)), this, SLOT(addTransaction()));
+    connect(m_delKeyframeAct, SIGNAL(triggered(bool)), this, SLOT(deleteKeyframe()));
+    connect(m_delTransitionAct, SIGNAL(triggered(bool)), this, SLOT(deleteTransition()));
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
@@ -151,11 +155,21 @@ void TransitionLine::onCustomContextMenu(const QPoint &point)
     for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
     {
         int pos = frame->time() / 5 - 6;
-        if(point.x() + m_horizontalScrollValue * 20 >= pos && point.x() + m_horizontalScrollValue * 20 <= pos + 11 && frame->prev())
+        if(point.x() + m_horizontalScrollValue * 20 >= pos && point.x() + m_horizontalScrollValue * 20 <= pos + 11)
         {
             m_frame = frame;
             m_contextMenu->clear();
-            m_contextMenu->addAction(m_transitionAct);
+            m_contextMenu->addAction(m_delKeyframeAct);
+            if(frame->prev() && frame->prev()->easing() < 0)
+                m_contextMenu->addAction(m_transitionAct);
+            m_contextMenu->exec(this->mapToGlobal(point));
+            break;
+        }
+        if(point.x() + m_horizontalScrollValue * 20 > pos + 11 && frame->next() && frame->easing() >=0 && point.x() + m_horizontalScrollValue * 20 < frame->next()->time() / 5 - 6)
+        {
+            m_frame = frame;
+            m_contextMenu->clear();
+            m_contextMenu->addAction(m_delTransitionAct);
             m_contextMenu->exec(this->mapToGlobal(point));
             break;
         }
@@ -165,5 +179,30 @@ void TransitionLine::onCustomContextMenu(const QPoint &point)
 void TransitionLine::addTransaction()
 {
     m_frame->prev()->setEasing((int)QEasingCurve::Linear);
+    update();
+}
+
+void TransitionLine::deleteKeyframe()
+{
+    if(m_frame->next())
+        m_frame->next()->setPrev(m_frame->prev());
+    if(m_frame->prev())
+        m_frame->prev()->setNext(m_frame->next());
+    else
+    {
+        m_item->keyframes()->remove(m_propertyName);
+        if(m_frame->next())
+            m_item->keyframes()->insert(m_propertyName, m_frame->next());
+        else
+            emit keyframeDeleted(m_item, m_propertyName);
+    }
+    delete m_frame;
+    m_frame = NULL;
+    update();
+}
+
+void TransitionLine::deleteTransition()
+{
+    m_frame->setEasing(-1);
     update();
 }

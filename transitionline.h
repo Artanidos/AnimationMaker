@@ -43,6 +43,11 @@ public:
 private slots:
     void onCustomContextMenu(const QPoint &point);
     void addTransaction();
+    void deleteKeyframe();
+    void deleteTransition();
+
+signals:
+    void keyframeDeleted(ResizeableItem *item, QString propertyName);
 
 private:
     QImage m_imageRaute;
@@ -56,6 +61,8 @@ private:
     int m_playheadPosition;
     QMenu *m_contextMenu;
     QAction *m_transitionAct;
+    QAction *m_delKeyframeAct;
+    QAction *m_delTransitionAct;
     bool m_pressed;
     int m_horizontalScrollValue;
 };
