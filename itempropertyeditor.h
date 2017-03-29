@@ -71,6 +71,7 @@ private:
     ColorRect *m_textcolorRect;
     QSlider *m_hueColorSlider;
     QSlider *m_hueBordercolorSlider;
+    QSlider *m_hueTextColorSlider;
 
 private slots:
     void idChanged(QString value);

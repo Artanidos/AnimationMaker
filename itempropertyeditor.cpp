@@ -113,12 +113,12 @@ ItemPropertyEditor::ItemPropertyEditor()
     expTextcolor = new Expander("Textcolor");
     m_textcolorpicker = new ColorPicker();
     expTextcolor->setVisible(false);
-    QSlider *hueTextColorSlider = new QSlider();
+    m_hueTextColorSlider = new QSlider();
     m_textcolorRect = new ColorRect();
-    hueTextColorSlider->setMinimum(0);
-    hueTextColorSlider->setMaximum(100);
-    hueTextColorSlider->setOrientation(Qt::Vertical);
-    hueTextColorSlider->setMaximumHeight(100);
+    m_hueTextColorSlider->setMinimum(0);
+    m_hueTextColorSlider->setMaximum(100);
+    m_hueTextColorSlider->setOrientation(Qt::Vertical);
+    m_hueTextColorSlider->setMaximumHeight(100);
     QGridLayout *layoutTextcolor = new QGridLayout();
     QLabel *labelColor = new QLabel("Color");
     m_textcolor = new QLineEdit();
@@ -126,7 +126,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     layoutTextcolor->addWidget(m_textcolorRect, 0, 1);
     layoutTextcolor->addWidget(m_textcolor, 0, 2);
     layoutTextcolor->addWidget(m_textcolorpicker, 1, 0);
-    layoutTextcolor->addWidget(hueTextColorSlider, 1, 1);
+    layoutTextcolor->addWidget(m_hueTextColorSlider, 1, 1);
     expTextcolor->addLayout(layoutTextcolor);
     vbox->addWidget(expTextcolor);
 
@@ -207,7 +207,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(m_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
     connect(m_hueBordercolorSlider, SIGNAL(valueChanged(int)), this, SLOT(hueBorderChanged(int)));
     connect(m_bordercolorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(bordercolorChanged(QColor)));
-    connect(hueTextColorSlider, SIGNAL(valueChanged(int)), this, SLOT(hueTextcolorChanged(int)));
+    connect(m_hueTextColorSlider, SIGNAL(valueChanged(int)), this, SLOT(hueTextcolorChanged(int)));
     connect(m_textcolorpicker, SIGNAL(colorChanged(QColor)), this, SLOT(textcolorChanged(QColor)));
     connect(addXKeyframe, SIGNAL(clicked(bool)), this, SLOT(addLeftKeyFrame()));
     connect(addYKeyframe, SIGNAL(clicked(bool)), this, SLOT(addTopKeyFrame()));
@@ -425,8 +425,11 @@ void ItemPropertyEditor::colorRectClicked()
     m_colorPicker->setVisible(!visible);
     m_hueColorSlider->setVisible(!visible);
 
-    m_bordercolorPicker->setVisible(visible);
-    m_hueBordercolorSlider->setVisible(visible);
+    if(!visible)
+    {
+        m_bordercolorPicker->setVisible(visible);
+        m_hueBordercolorSlider->setVisible(visible);
+    }
 }
 
 void ItemPropertyEditor::borderColorRectClicked()
@@ -436,11 +439,17 @@ void ItemPropertyEditor::borderColorRectClicked()
     m_bordercolorPicker->setVisible(!visible);
     m_hueBordercolorSlider->setVisible(!visible);
 
-    m_colorPicker->setVisible(visible);
-    m_hueColorSlider->setVisible(visible);
+    if(!visible)
+    {
+        m_colorPicker->setVisible(visible);
+        m_hueColorSlider->setVisible(visible);
+    }
 }
 
 void ItemPropertyEditor::textColorRectClicked()
 {
+    bool visible = m_textcolorpicker->isVisible();
 
+    m_textcolorpicker->setVisible(!visible);
+    m_hueTextColorSlider->setVisible(!visible);
 }
