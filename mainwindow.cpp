@@ -19,7 +19,6 @@
 ****************************************************************************/
 
 #include "mainwindow.h"
-#include "treemodel.h"
 #include "animationscene.h"
 #include "rectangle.h"
 #include "ellipse.h"
@@ -29,6 +28,7 @@
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
+#include <QTreeWidget>
 
 #define MAGIC 0x414D4200
 #define FILE_VERSION 100
@@ -50,10 +50,9 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete timeline;
-    delete tree;
+    delete elementTree;
     delete scene;
     delete view;
-    delete model;
 }
 
 void MainWindow::save()
@@ -116,7 +115,7 @@ void MainWindow::setTitle()
 void MainWindow::reset()
 {
     scene->reset();
-    model->reset();
+    //model->reset();
     timeline->reset();
 }
 
@@ -183,13 +182,49 @@ void MainWindow::open()
     in >> scene;
     file.close();
 
-    model->setScene(scene);
+    fillTree();
+    elementTree->expandAll();
     m_scenePropertyEditor->setScene(scene);
-    tree->expandAll();
     timeline->expandTree();
     loadedFile.setFile(fileName);
     saveAct->setEnabled(true);
     setTitle();
+}
+
+void MainWindow::fillTree()
+{
+    for(int i=root->childCount() - 1; i >= 0; i--)
+    {
+        QTreeWidgetItem *treeItem= root->child(i);
+        root->removeChild(treeItem);
+        delete treeItem;
+    }
+
+    QList<QGraphicsItem*> itemList = scene->items(Qt::AscendingOrder);
+    foreach (QGraphicsItem *item, itemList)
+    {
+        ResizeableItem *ri = dynamic_cast<ResizeableItem*>(item);
+        if(ri)
+        {
+            QTreeWidgetItem *treeItem = new QTreeWidgetItem();
+            treeItem->setText(0, ri->id());
+            treeItem->setData(0, 1, qVariantFromValue((void *) ri));
+            root->addChild(treeItem);
+            connect(ri, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+        }
+    }
+}
+
+void MainWindow::idChanged(ResizeableItem *item, QString id)
+{
+    for(int i=0; i < root->childCount(); i++)
+    {
+        if(root->child(i)->data(0, 1).value<void *>() == item)
+        {
+            root->child(i)->setText(0, id);
+            break;
+        }
+    }
 }
 
 void MainWindow::createGui()
@@ -266,20 +301,17 @@ void MainWindow::createGui()
     connect(scene, SIGNAL(sizeChanged(int,int)), this, SLOT(sceneSizeChanged(int, int)));
     connect(scene, SIGNAL(itemRemoved(ResizeableItem*)), this, SLOT(sceneItemRemoved(ResizeableItem*)));
 
-    model = new TreeModel();
-    model->setScene(scene);
-    tree = new QTreeView();
-    tree->setModel(model);
-    tree->header()->close();
-    tree->expandAll();
-    tree->setMinimumWidth(320);
-    tree->setCurrentIndex(model->index(0, 0));
-    QItemSelectionModel *selectionModel = tree->selectionModel();
-    connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this, SLOT(elementtreeSelectionChanged(const QItemSelection&,const QItemSelection&)));
+    elementTree = new QTreeWidget();
+    elementTree->header()->close();
+    root = new QTreeWidgetItem();
+    root->setText(0, "Scene");
+    elementTree->addTopLevelItem(root);
+    connect(elementTree, SIGNAL(itemSelectionChanged()), this, SLOT(elementTreeSelectionChanged()));
 
     QDockWidget *elementsdock = new QDockWidget(tr("Elements"), this);
     elementsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    elementsdock->setWidget(tree);
+    //elementsdock->setWidget(tree);
+    elementsdock->setWidget(elementTree);
     elementsdock->setObjectName("Elements");
     addDockWidget(Qt::LeftDockWidgetArea, elementsdock);
     splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
@@ -294,6 +326,25 @@ void MainWindow::createGui()
     splitter->addWidget(view);
     splitter->addWidget(timeline);
     setCentralWidget(splitter);
+}
+
+void MainWindow::elementTreeSelectionChanged()
+{
+    scene->clearSelection();
+
+    if(elementTree->selectedItems().isEmpty())
+        return;
+    ResizeableItem *item = (ResizeableItem *)  elementTree->selectedItems().first()->data(0, 1).value<void *>();
+    if(item)
+    {
+        item->setSelected(true);
+        m_itemPropertyEditor->setItem(item);
+        propertiesdock->setWidget(m_itemPropertyEditor);
+    }
+    else
+    {
+        propertiesdock->setWidget(m_scenePropertyEditor);
+    }
 }
 
 void MainWindow::sceneSizeChanged(int width, int height)
@@ -472,28 +523,6 @@ void MainWindow::setSvgMode()
     scene->setEditMode(AnimationScene::EditMode::ModeSvg);
 }
 
-void MainWindow::elementtreeSelectionChanged(const QItemSelection& current,const QItemSelection&)
-{
-    scene->clearSelection();
-
-    if(current.count() && current.at(0).indexes().count())
-    {
-        const QModelIndex index = current.at(0).indexes().at(0);
-        QVariant v = index.data(Qt::UserRole);
-        ResizeableItem *item = (ResizeableItem *) v.value<void *>();
-        if(item)
-        {
-            item->setSelected(true);
-            m_itemPropertyEditor->setItem(item);
-            propertiesdock->setWidget(m_itemPropertyEditor);
-        }
-        else
-        {
-            propertiesdock->setWidget(m_scenePropertyEditor);
-        }
-    }
-}
-
 void MainWindow::sceneSelectionChanged()
 {
     ResizeableItem *item = NULL;
@@ -519,9 +548,15 @@ void MainWindow::timelineSelectionChanged(ResizeableItem* item)
 
 void MainWindow::sceneItemAdded(QGraphicsItem *item)
 {
-    model->addItem(dynamic_cast<ResizeableItem*>(item));
-    tree->reset();
-    tree->expandAll();
+    ResizeableItem *ri = dynamic_cast<ResizeableItem*>(item);
+    QTreeWidgetItem *treeItem = new QTreeWidgetItem();
+    treeItem->setText(0, ri->id());
+    treeItem->setData(0, 1, qVariantFromValue((void *) ri));
+    root->addChild(treeItem);
+    root->setExpanded(true);
+    for(int i=0; i<root->childCount(); i++)
+        root->child(i)->setSelected(false);
+    treeItem->setSelected(true);
 
     item->setSelected(true);
     selectAct->setChecked(true);
@@ -550,6 +585,15 @@ void MainWindow::paste()
 
  void MainWindow::sceneItemRemoved(ResizeableItem *item)
  {
-     model->removeItem(item);
+     for(int i=0; i<root->childCount(); i++)
+     {
+         if(root->child(i)->data(0, 1).value<void *>() == item)
+         {
+             QTreeWidgetItem *treeItem = root->child(i);
+             root->removeChild(treeItem);
+             delete treeItem;
+             break;
+         }
+     }
      timeline->removeItem(item);
  }

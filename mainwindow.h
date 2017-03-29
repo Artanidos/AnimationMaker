@@ -23,7 +23,6 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
-#include "treemodel.h"
 #include "animationscene.h"
 #include "timeline.h"
 #include "itempropertyeditor.h"
@@ -56,11 +55,11 @@ private:
     void readSettings();
     void writeFile(QString fileName);
     void reset();
+    void fillTree();
 
     QSplitter *splitter;
     QToolBar *toolbar;
-    QTreeView *tree;
-    TreeModel *model;
+    QTreeWidget *elementTree;
     AnimationScene *scene;
     QGraphicsView *view;
     QFileInfo loadedFile;
@@ -69,6 +68,7 @@ private:
     ScenePropertyEditor *m_scenePropertyEditor;
     QDockWidget *propertiesdock;
     QDockWidget *tooldock;
+    QTreeWidgetItem *root;
 
 
     QAction *openAct;
@@ -109,7 +109,7 @@ public slots:
     void setTextMode();
     void setBitmapMode();
     void setSvgMode();
-    void elementtreeSelectionChanged(const QItemSelection&,const QItemSelection&);
+    void elementTreeSelectionChanged();
     void sceneItemAdded(QGraphicsItem *);
     void showPropertyPanel();
     void showToolPanel();
@@ -119,6 +119,7 @@ public slots:
     void paste();
     void sceneSizeChanged(int width, int height);
     void sceneItemRemoved(ResizeableItem *item);
+    void idChanged(ResizeableItem *, QString);
 };
 
 #endif // MAINWINDOW_H

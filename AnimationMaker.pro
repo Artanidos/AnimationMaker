@@ -32,7 +32,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     encode.cpp \
-    treemodel.cpp \
     treeitem.cpp \
     animationscene.cpp \
     rectangle.cpp \
@@ -56,7 +55,6 @@ SOURCES += main.cpp\
     commands.cpp
 
 HEADERS  += mainwindow.h \
-    treemodel.h \
     treeitem.h \
     animationscene.h \
     rectangle.h \
