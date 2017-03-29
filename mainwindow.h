@@ -109,7 +109,7 @@ public slots:
     void setTextMode();
     void setBitmapMode();
     void setSvgMode();
-    void elementTreeSelectionChanged();
+    void elementTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*);
     void sceneItemAdded(QGraphicsItem *);
     void showPropertyPanel();
     void showToolPanel();
