@@ -38,6 +38,7 @@ void video_encode(const char *filename, QGraphicsView *view, int length, MainWin
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    undoStack = new QUndoStack(this);
     setDockNestingEnabled(true);
     createStatusBar();
     createActions();
@@ -243,6 +244,7 @@ void MainWindow::createGui()
     addDockWidget(Qt::LeftDockWidgetArea, tooldock);
 
     scene = new AnimationScene();
+    scene->registerUndoStack(undoStack);
 
     m_itemPropertyEditor = new ItemPropertyEditor();
     m_scenePropertyEditor = new ScenePropertyEditor();
@@ -379,6 +381,12 @@ void MainWindow::createActions()
     exitAct->setStatusTip(tr("Exit the application"));
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
+    undoAct = undoStack->createUndoAction(this, tr("&Undo"));
+    undoAct->setShortcuts(QKeySequence::Undo);
+
+    redoAct = undoStack->createRedoAction(this, tr("&Redo"));
+    redoAct->setShortcuts(QKeySequence::Redo);
+
     copyAct = new QAction(tr("&Copy"), this);
     copyAct->setShortcuts(QKeySequence::Copy);
     connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
@@ -413,6 +421,8 @@ void MainWindow::createMenus()
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu->addAction(undoAct);
+    editMenu->addAction(redoAct);
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
 

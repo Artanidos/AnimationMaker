@@ -52,7 +52,8 @@ SOURCES += main.cpp\
     colorpicker.cpp \
     keyframe.cpp \
     transitionline.cpp \
-    colorrect.cpp
+    colorrect.cpp \
+    commands.cpp
 
 HEADERS  += mainwindow.h \
     treemodel.h \
@@ -75,7 +76,8 @@ HEADERS  += mainwindow.h \
     colorpicker.h \
     keyframe.h \
     transitionline.h \
-    colorrect.h
+    colorrect.h \
+    commands.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

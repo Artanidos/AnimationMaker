@@ -86,12 +86,15 @@ private:
     QAction *bitmapAct;
     QAction *showPropertyPanelAct;
     QAction *showToolPanelAct;
+    QAction *undoAct;
+    QAction *redoAct;
     QAction *copyAct;
     QAction *pasteAct;
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *helpMenu;
     QMenu *viewMenu;
+    QUndoStack *undoStack;
 
 public slots:
     void exportAnimation();

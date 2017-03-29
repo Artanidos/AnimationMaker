@@ -54,6 +54,7 @@ public slots:
 
 private:
     TreeItem *m_rootItem = NULL;
+    TreeItem *m_sceneItem;
     AnimationScene *m_scene;
 
     void readChildren(AnimationScene *scene, TreeItem *parent);

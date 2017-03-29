@@ -64,9 +64,9 @@ void TreeModel::setScene(AnimationScene *scene)
 
     if(scene)
     {
-        TreeItem *firstItem = new TreeItem("Scene", item, m_rootItem);
-        m_rootItem->appendChild(firstItem);
-        readChildren(scene, firstItem);
+        m_sceneItem = new TreeItem("Scene", item, m_rootItem);
+        m_rootItem->appendChild(m_sceneItem);
+        readChildren(scene, m_sceneItem);
     }
     endResetModel();
 }
@@ -95,14 +95,16 @@ void TreeModel::addItem(ResizeableItem *item)
 
 void TreeModel::removeItem(ResizeableItem *item)
 {
-    TreeItem *treeItem = searchChild(m_rootItem->child(0), item);
+    TreeItem *treeItem = searchChild(m_sceneItem, item);
     if(treeItem)
     {
-        QModelIndex index = createIndex(treeItem->row(), 0, treeItem->parentItem());
-        beginRemoveRows(index.parent(), treeItem->row(), treeItem->row());
-        treeItem->parentItem()->children()->removeAt(treeItem->row());
+        int row = treeItem->row();
+        QModelIndex index = createIndex(0, 0, m_rootItem);
+        beginRemoveRows(index, row, row);
+        m_sceneItem->children()->removeAt(row);
         endRemoveRows();
-        delete treeItem;
+        // crashes after delete
+        //delete treeItem;
     }
 }
 

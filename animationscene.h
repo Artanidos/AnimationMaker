@@ -28,6 +28,7 @@
 #include <QGraphicsItem>
 #include <QTest>
 #include <QFileDialog>
+#include <QUndoStack>
 
 #include "resizeableitem.h"
 #include "keyframe.h"
@@ -67,6 +68,8 @@ public:
 
     inline bool autotransition() {return m_autotransition;}
     inline void setAutotransition(bool value) {m_autotransition = value;}
+
+    inline void registerUndoStack(QUndoStack *stack) {m_undoStack = stack;}
         
 signals:
     void itemAdded(QGraphicsItem *item);
@@ -92,6 +95,7 @@ private:
     KeyFrame *m_tempKeyFrame;
     bool m_autokeyframes;
     bool m_autotransition;
+    QUndoStack *m_undoStack;
 
     void initialize();
     void addBackgroundRect();

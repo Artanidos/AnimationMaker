@@ -33,7 +33,7 @@ TreeItem::TreeItem(const QVariant &data, const QVariant &item, TreeItem *parent,
 
 TreeItem::~TreeItem()
 {
-
+    delete m_childItems;
 }
 
 void TreeItem::appendChild(TreeItem *item)
@@ -85,7 +85,7 @@ TreeItem *TreeItem::parentItem()
 int TreeItem::row() const
 {
     if (m_parentItem)
-        return m_parentItem->m_childItems->indexOf(const_cast<TreeItem*>(this));
+        return m_parentItem->children()->indexOf(const_cast<TreeItem*>(this));
 
     return 0;
 }

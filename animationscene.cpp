@@ -27,6 +27,8 @@
 #include "bitmap.h"
 #include "vectorgraphic.h"
 #include "keyframe.h"
+#include "commands.h"
+#include <QUndoCommand>
 
 AnimationScene::AnimationScene()
 {
@@ -60,95 +62,37 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         QGraphicsScene::mousePressEvent(mouseEvent);
     }
-    else if(m_editMode == EditMode::ModeRectangle)
+    else
     {
-        clearSelection();
-
-        Rectangle *r = new Rectangle(50, 50);
-        r->setId("Rectangle");
-        r->setPen(QPen(Qt::black));
-        r->setBrush(QBrush(Qt::blue));
-        r->setFlag(QGraphicsItem::ItemIsMovable, true);
-        r->setFlag(QGraphicsItem::ItemIsSelectable, true);
-        r->setPos(mouseEvent->scenePos());
-        addItem(r);
-        emit itemAdded(r);
-    }
-    else if(m_editMode == EditMode::ModeEllipse)
-    {
-        clearSelection();
-
-        Ellipse *e = new Ellipse(50, 50);
-        e->setId("Ellipse");
-        e->setPen(QPen(Qt::black));
-        e->setBrush(QBrush(Qt::blue));
-        e->setFlag(QGraphicsItem::ItemIsMovable, true);
-        e->setFlag(QGraphicsItem::ItemIsSelectable, true);
-        e->setPos(mouseEvent->scenePos());
-        addItem(e);
-        emit itemAdded(e);
-    }
-    else if(m_editMode == EditMode::ModeText)
-    {
-        clearSelection();
-
-        Text *t = new Text("Lorem ipsum dolor");
-        t->setId("Text");
-        t->setFlag(QGraphicsItem::ItemIsMovable, true);
-        t->setFlag(QGraphicsItem::ItemIsSelectable, true);
-        t->setPos(mouseEvent->scenePos());
-        addItem(t);
-        emit itemAdded(t);
-    }
-    else if(m_editMode == EditMode::ModeBitmap)
-    {
-        clearSelection();
-
         QString fileName;
-        QFileDialog *dialog = new QFileDialog();
-        dialog->setFileMode(QFileDialog::AnyFile);
-        dialog->setNameFilter(tr("Image Files (*.png *.jpeg *.jpg *.gif *.bmp);;All Files (*)"));
-        dialog->setWindowTitle(tr("Open Bitmap"));
-        dialog->setOption(QFileDialog::DontUseNativeDialog, true);
-        dialog->setAcceptMode(QFileDialog::AcceptOpen);
-        if(dialog->exec())
-            fileName = dialog->selectedFiles().first();
-        delete dialog;
-        if(fileName.isEmpty())
-            return;
-
-        Bitmap *b = new Bitmap(fileName);
-        b->setId("Bitmap");
-        b->setFlag(QGraphicsItem::ItemIsMovable, true);
-        b->setFlag(QGraphicsItem::ItemIsSelectable, true);
-        b->setPos(mouseEvent->scenePos());
-        addItem(b);
-        emit itemAdded(b);
-    }
-    else if(m_editMode == EditMode::ModeSvg)
-    {
-        clearSelection();
-
-        QString fileName;
-        QFileDialog *dialog = new QFileDialog();
-        dialog->setFileMode(QFileDialog::AnyFile);
-        dialog->setNameFilter(tr("SVG Files (*.svg);;All Files (*)"));
-        dialog->setWindowTitle(tr("Open SVG"));
-        dialog->setOption(QFileDialog::DontUseNativeDialog, true);
-        dialog->setAcceptMode(QFileDialog::AcceptOpen);
-        if(dialog->exec())
-            fileName = dialog->selectedFiles().first();
-        delete dialog;
-        if(fileName.isEmpty())
-            return;
-
-        Vectorgraphic *v = new Vectorgraphic(fileName);
-        v->setId("Vectorgraphic");
-        v->setFlag(QGraphicsItem::ItemIsMovable, true);
-        v->setFlag(QGraphicsItem::ItemIsSelectable, true);
-        v->setPos(mouseEvent->scenePos());
-        addItem(v);
-        emit itemAdded(v);
+        QString filter;
+        QString title;
+        if(m_editMode == EditMode::ModeBitmap)
+        {
+            filter = "Image Files (*.png *.jpeg *.jpg *.gif *.bmp);;All Files (*)";
+            title = "Open Bitmap";
+        }
+        else if(m_editMode == EditMode::ModeSvg)
+        {
+            filter = "SVG Files (*.svg);;All Files (*)";
+            title = "Open SVG";
+        }
+        if(!filter.isEmpty())
+        {
+            QFileDialog *dialog = new QFileDialog();
+            dialog->setFileMode(QFileDialog::AnyFile);
+            dialog->setNameFilter(filter);
+            dialog->setWindowTitle(title);
+            dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+            dialog->setAcceptMode(QFileDialog::AcceptOpen);
+            if(dialog->exec())
+                fileName = dialog->selectedFiles().first();
+            delete dialog;
+            if(fileName.isEmpty())
+                return;
+        }
+        QUndoCommand *addCommand = new AddItemCommand(mouseEvent->scenePos().x(), mouseEvent->scenePos().y(), m_editMode, fileName, this);
+        m_undoStack->push(addCommand);
     }
 }
 
