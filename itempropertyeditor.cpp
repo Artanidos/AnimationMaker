@@ -112,8 +112,10 @@ ItemPropertyEditor::ItemPropertyEditor()
 
     expTextcolor = new Expander("Textcolor");
     m_textcolorpicker = new ColorPicker();
+    m_textcolorpicker->setVisible(false);
     expTextcolor->setVisible(false);
     m_hueTextColorSlider = new QSlider();
+    m_hueTextColorSlider->setValue(false);
     m_textcolorRect = new ColorRect();
     m_hueTextColorSlider->setMinimum(0);
     m_hueTextColorSlider->setMaximum(100);
