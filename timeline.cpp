@@ -389,6 +389,18 @@ void Timeline::removeItem(ResizeableItem *item)
     m_transitionPanel->removeItem(item);
 }
 
+void Timeline::selectItem(ResizeableItem *item)
+{
+    for(int i=0; i < m_tree->topLevelItemCount(); i++)
+    {
+        QTreeWidgetItem *treeItem = m_tree->topLevelItem(i);
+        if(treeItem->data(0, 1).value<void *>() == item)
+            treeItem->setSelected(true);
+        else
+            treeItem->setSelected(false);
+    }
+}
+
 int Timeline::lastKeyframe()
 {
     int last = 0;

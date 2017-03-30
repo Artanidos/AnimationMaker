@@ -539,6 +539,8 @@ void MainWindow::sceneSelectionChanged()
                 treeItem->setSelected(false);
         }
         root->setSelected(false);
+
+        timeline->selectItem(item);
     }
     else
     {
@@ -546,6 +548,7 @@ void MainWindow::sceneSelectionChanged()
         for(int i=0; i<root->childCount(); i++)
             root->child(i)->setSelected(false);
         root->setSelected(true);
+        timeline->selectItem(NULL);
     }
 }
 

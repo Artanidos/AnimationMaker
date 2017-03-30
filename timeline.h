@@ -26,7 +26,6 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QPropertyAnimation>
-#include "timelinemodel.h"
 #include "resizeableitem.h"
 #include "animationscene.h"
 #include "transitionpanel.h"
@@ -38,12 +37,12 @@ class Timeline : public QWidget
 public:
     Timeline(AnimationScene *scene);
 
-    QParallelAnimationGroup *getAnimations();
     void reset();
     inline void setPlayheadPosition(int value) {m_playhead->setValue(value);}
     inline void expandTree() {m_tree->expandAll();}
     int lastKeyframe();
     void removeItem(ResizeableItem *item);
+    void selectItem(ResizeableItem *item);
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
