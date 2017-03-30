@@ -49,9 +49,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete scene;
     delete timeline;
     delete elementTree;
-    delete scene;
     delete view;
 }
 
@@ -208,7 +208,8 @@ void MainWindow::fillTree()
         {
             QTreeWidgetItem *treeItem = new QTreeWidgetItem();
             treeItem->setText(0, ri->id());
-            treeItem->setData(0, 1, qVariantFromValue((void *) ri));
+            treeItem->setIcon(0, QIcon(":/images/rect.png"));
+            treeItem->setData(0, 3, qVariantFromValue((void *) ri));
             root->addChild(treeItem);
             connect(ri, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
         }
@@ -219,7 +220,7 @@ void MainWindow::idChanged(ResizeableItem *item, QString id)
 {
     for(int i=0; i < root->childCount(); i++)
     {
-        if(root->child(i)->data(0, 1).value<void *>() == item)
+        if(root->child(i)->data(0, 3).value<void *>() == item)
         {
             root->child(i)->setText(0, id);
             break;
@@ -331,7 +332,7 @@ void MainWindow::createGui()
 void MainWindow::elementTreeItemChanged(QTreeWidgetItem *newItem, QTreeWidgetItem *)
 {
     scene->clearSelection();
-    ResizeableItem *item = (ResizeableItem *)  newItem->data(0, 1).value<void *>();
+    ResizeableItem *item = (ResizeableItem *)  newItem->data(0, 3).value<void *>();
     if(item)
     {
         item->setSelected(true);
@@ -533,7 +534,7 @@ void MainWindow::sceneSelectionChanged()
         for(int i=0; i<root->childCount(); i++)
         {
             QTreeWidgetItem *treeItem = root->child(i);
-            if(treeItem->data(0, 1).value<void *>() == item)
+            if(treeItem->data(0, 3).value<void *>() == item)
                 treeItem->setSelected(true);
             else
                 treeItem->setSelected(false);
@@ -566,7 +567,10 @@ void MainWindow::sceneItemAdded(QGraphicsItem *item)
     ResizeableItem *ri = dynamic_cast<ResizeableItem*>(item);
     QTreeWidgetItem *treeItem = new QTreeWidgetItem();
     treeItem->setText(0, ri->id());
-    treeItem->setData(0, 1, qVariantFromValue((void *) ri));
+    treeItem->setIcon(0, QIcon(":/images/rect.png"));
+    treeItem->setData(0, 3, qVariantFromValue((void *) ri));
+    connect(ri, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+
     root->addChild(treeItem);
     root->setExpanded(true);
     root->setSelected(false);
@@ -603,7 +607,7 @@ void MainWindow::paste()
  {
      for(int i=0; i<root->childCount(); i++)
      {
-         if(root->child(i)->data(0, 1).value<void *>() == item)
+         if(root->child(i)->data(0, 3).value<void *>() == item)
          {
              QTreeWidgetItem *treeItem = root->child(i);
              root->removeChild(treeItem);
