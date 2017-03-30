@@ -21,6 +21,7 @@
 #include "transitionpanel.h"
 #include "keyframe.h"
 #include "transitionline.h"
+#include "timeline.h"
 
 #include <QPainter>
 #include <QTest>
@@ -45,14 +46,9 @@ TransitionPanel::TransitionPanel()
     m_playheadPosition = 0;
 }
 
-void TransitionPanel::setModel(TimelineModel *model)
+void TransitionPanel::setTreeWidget(QTreeWidget *tv)
 {
-    m_timelineModel = model;
-}
-
-void TransitionPanel::setTreeview(QTreeView *tv)
-{
-    m_treeview = tv;
+    m_tree = tv;
 }
 
 void TransitionPanel::paintEvent(QPaintEvent *)
@@ -99,33 +95,32 @@ void TransitionPanel::enableDisableLines()
     }
 
     int row = 0;
-    int rows = m_timelineModel->rowCount();
+    int rows = m_tree->topLevelItemCount();
     for(int i = 0; i < rows; i++)
     {
-        QModelIndex childIndex = m_timelineModel->index(i, 0);
-        QVariant v = m_timelineModel->data(childIndex, Qt::UserRole);
-        ResizeableItem *item = (ResizeableItem *) v.value<void *>();
+        QTreeWidgetItem *treeItem = m_tree->topLevelItem(i);
+        ResizeableItem *item = (ResizeableItem *) treeItem->data(0, 1).value<void *>();
         TransitionLine *line = getTransitionLine(item, "");
         if(line)
         {
             if(m_verticalScrollPos <= row)
                 line->setVisible(true);
             row++;
-            if((row + 1 - m_verticalScrollPos) * 15 > height())
+            if((row + 1 - m_verticalScrollPos) * 18 > height())
                 return;
         }
-        if(m_treeview->isExpanded(m_timelineModel->index(i, 0)))
+        if(treeItem->isExpanded())
         {
-            for(int j = 0; j < m_timelineModel->rowCount(childIndex); j++)
+            for(int j = 0; j < treeItem->childCount(); j++)
             {
-                QModelIndex keyframeIndex = m_timelineModel->index(j, 0, childIndex);
-                TransitionLine *line = getTransitionLine(item, m_timelineModel->data(keyframeIndex, Qt::DisplayRole).toString());
+                QTreeWidgetItem *childItem = treeItem->child(j);
+                TransitionLine *line = getTransitionLine(item, childItem->text(0));
                 if(line)
                 {
                     if(m_verticalScrollPos <= row)
                         line->setVisible(true);
                     row++;
-                    if((row + 1 - m_verticalScrollPos) * 15 > height())
+                    if((row + 1 - m_verticalScrollPos) * 18 > height())
                         return;
                 }
             }
@@ -178,7 +173,7 @@ void TransitionPanel::keyframeAdded(ResizeableItem *item, QString propertyName)
     {
         TransitionLine *line = new TransitionLine(item, propertyName);
         line->setScrollValue(m_horizontalScrollPos);
-        connect(line, SIGNAL(keyframeDeleted(ResizeableItem*,QString)), m_timelineModel, SLOT(keyframeDeleted(ResizeableItem*,QString)));
+        connect(line, SIGNAL(keyframeDeleted(ResizeableItem*,QString)), m_timeline, SLOT(keyframeDeleted(ResizeableItem*,QString)));
         m_layout->insertWidget(m_layout->count() - 1, line);
         enableDisableLines();
     }
@@ -210,7 +205,6 @@ void TransitionPanel::removeItem(ResizeableItem *item)
         TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
         if(line && line->item() == item)
         {
-            //m_layout->removeItem(m_layout->itemAt(i));
             m_layout->removeWidget(line);
             delete line;
         }

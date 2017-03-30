@@ -403,7 +403,7 @@ void MainWindow::exportAnimation()
     view->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setGeometry(0,0,scene->width(), scene->height());
-    video_encode(fileName.toLatin1(), view, timeline->lastKeyFrame(), this, scene);
+    video_encode(fileName.toLatin1(), view, timeline->lastKeyframe(), this, scene);
 }
 
 void MainWindow::createActions()

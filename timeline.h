@@ -21,7 +21,7 @@
 #ifndef TIMELINE_H
 #define TIMELINE_H
 
-#include <QTreeView>
+#include <QTreeWidget>
 #include <QGraphicsItem>
 #include <QLabel>
 #include <QToolButton>
@@ -41,8 +41,8 @@ public:
     QParallelAnimationGroup *getAnimations();
     void reset();
     inline void setPlayheadPosition(int value) {m_playhead->setValue(value);}
-    inline void expandTree() {m_treeview->expandAll();}
-    inline int lastKeyFrame() {return m_timelineModel->lastKeyframe();}
+    inline void expandTree() {m_tree->expandAll();}
+    int lastKeyframe();
     void removeItem(ResizeableItem *item);
 
 public slots:
@@ -51,18 +51,21 @@ public slots:
     void pauseAnimation();
     void revertAnimation();
     void forwardAnimation();
-    void selectionChanged(const QItemSelection& current,const QItemSelection&);
     void playheadValueChanged(int val);
     void addKeyFrame(ResizeableItem *item,QString property, qreal value);
     void autokeyframes(bool value);
     void autotransitions(bool value);
+    void idChanged(ResizeableItem *item, QString value);
+    void treeCurrentItemChanged(QTreeWidgetItem *currentItem, QTreeWidgetItem*);
+    void keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key);
+    void keyframeDeleted(ResizeableItem *item, QString propertyName);
 
 signals:
     void itemSelectionChanged(ResizeableItem *item);
+    void keyframeAdded(ResizeableItem *item, QString propertyName);
 
 private:
-    QTreeView *m_treeview;
-    TimelineModel *m_timelineModel;
+    QTreeWidget *m_tree;
     QMenu *m_contextMenu;
     QAction *m_delAct;
     AnimationScene *m_scene;
@@ -75,6 +78,8 @@ private:
 
     void addProperty(const QString name);
     void createAnimationGroup();
+    QTreeWidgetItem *search(ResizeableItem *item);
+    QTreeWidgetItem *search(QTreeWidgetItem *treeItem, QString propertyName);
 };
 
 #endif // TIMELINE_H

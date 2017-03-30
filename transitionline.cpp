@@ -36,8 +36,8 @@ TransitionLine::TransitionLine(ResizeableItem *item, QString propertyName)
 
     setMouseTracking(true);
 
-    setMaximumHeight(14);
-    setMinimumHeight(14);
+    setMaximumHeight(17);
+    setMinimumHeight(17);
 
     m_imageRaute = QImage(":/images/raute-weiss.png");
     m_imageRauteHohl = QImage(":/images/raute-hohl.png");
@@ -210,7 +210,10 @@ void TransitionLine::deleteKeyframe()
     if(m_frame->next())
         m_frame->next()->setPrev(m_frame->prev());
     if(m_frame->prev())
+    {
+        m_frame->prev()->setEasing(-1);
         m_frame->prev()->setNext(m_frame->next());
+    }
     else
     {
         m_item->keyframes()->remove(m_propertyName);

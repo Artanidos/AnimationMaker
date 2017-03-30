@@ -23,11 +23,11 @@
 
 #include <QWidget>
 #include <QModelIndex>
-#include <QTreeView>
+#include <QTreeWidget>
 #include <QVBoxLayout>
-#include "timelinemodel.h"
 #include "transitionline.h"
 
+class Timeline;
 class TransitionPanel : public QWidget
 {
     Q_OBJECT
@@ -36,11 +36,11 @@ public:
 
     void paintEvent(QPaintEvent*);
     void resizeEvent(QResizeEvent *);
-    void setModel(TimelineModel *model);
-    void setTreeview(QTreeView *tv);
+    void setTreeWidget(QTreeWidget *tv);
     void reset();
     void setPlayheadPosition(int value);
     void removeItem(ResizeableItem *item);
+    inline void registerTimeline(Timeline *timeline) {m_timeline = timeline;}
 
 public slots:
     void treeExpanded(QModelIndex);
@@ -52,10 +52,11 @@ public slots:
 private:
     int m_verticalScrollPos;
     int m_horizontalScrollPos;
-    TimelineModel *m_timelineModel;
-    QTreeView *m_treeview;
+    QTreeWidget *m_tree;
     QVBoxLayout *m_layout;
+    Timeline *m_timeline;
     int m_playheadPosition;
+
     void enableDisableLines();
     TransitionLine *getTransitionLine(ResizeableItem *item, QString propertyName);
 };

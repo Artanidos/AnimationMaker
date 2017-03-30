@@ -32,7 +32,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     encode.cpp \
-    treeitem.cpp \
     animationscene.cpp \
     rectangle.cpp \
     itemhandle.cpp \
@@ -42,7 +41,6 @@ SOURCES += main.cpp\
     bitmap.cpp \
     vectorgraphic.cpp \
     timeline.cpp \
-    timelinemodel.cpp \
     expander.cpp \
     itempropertyeditor.cpp \
     scenepropertyeditor.cpp \
@@ -55,7 +53,6 @@ SOURCES += main.cpp\
     commands.cpp
 
 HEADERS  += mainwindow.h \
-    treeitem.h \
     animationscene.h \
     rectangle.h \
     itemhandle.h \
@@ -65,7 +62,6 @@ HEADERS  += mainwindow.h \
     bitmap.h \
     vectorgraphic.h \
     timeline.h \
-    timelinemodel.h \
     expander.h \
     itempropertyeditor.h \
     scenepropertyeditor.h \
