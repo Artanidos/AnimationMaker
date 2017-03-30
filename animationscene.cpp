@@ -53,6 +53,12 @@ void AnimationScene::reset()
     initialize();
 }
 
+void AnimationScene::deleteItem(ResizeableItem *item)
+{
+    QUndoCommand *deleteCommand = new DeleteItemCommand(item, this);
+    m_undoStack->push(deleteCommand);
+}
+
 void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() != Qt::LeftButton)
@@ -553,13 +559,6 @@ void AnimationScene::setPlayheadPosition(int val)
             }
         }
     }
-}
-
-void AnimationScene::removeAndDeleteItem(ResizeableItem *item)
-{
-    this->removeItem(item);
-    emit itemRemoved(item);
-    delete item;
 }
 
 QDataStream& operator <<(QDataStream &out, const AnimationScene *s)

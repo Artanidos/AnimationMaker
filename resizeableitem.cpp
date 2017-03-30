@@ -669,5 +669,5 @@ void ResizeableItem::deleteItem()
 {
     AnimationScene *as = dynamic_cast<AnimationScene *>(scene());
     if(as)
-        as->removeAndDeleteItem(this);
+        as->deleteItem(this);
 }

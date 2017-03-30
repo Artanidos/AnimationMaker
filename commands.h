@@ -39,4 +39,19 @@ private:
     AnimationScene *m_scene;
 };
 
+
+class DeleteItemCommand : public QUndoCommand
+{
+public:
+    DeleteItemCommand(ResizeableItem *item, AnimationScene *scene, QUndoCommand *parent = 0);
+    ~DeleteItemCommand();
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+    AnimationScene *m_scene;
+};
+
 #endif // COMMANDS_H

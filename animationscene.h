@@ -62,7 +62,7 @@ public:
     void copyItem();
     void pasteItem();
 
-    void removeAndDeleteItem(ResizeableItem *item);
+    void deleteItem(ResizeableItem *item);
     inline bool autokeyframes() {return m_autokeyframes;}
     inline void setAutokeyframes(bool value) {m_autokeyframes = value;}
 

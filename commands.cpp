@@ -108,3 +108,31 @@ void AddItemCommand::redo()
     m_scene->addItem(m_item);
     emit m_scene->itemAdded(m_item);
 }
+
+
+DeleteItemCommand::DeleteItemCommand(ResizeableItem *item, AnimationScene *scene, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_scene = scene;
+    m_item = item;
+    setText("Delete " + getItemTypeName(item));
+}
+
+DeleteItemCommand::~DeleteItemCommand()
+{
+
+}
+
+void DeleteItemCommand::undo()
+{
+    m_scene->clearSelection();
+    m_scene->addItem(m_item);
+    emit m_scene->itemAdded(m_item);
+}
+
+void DeleteItemCommand::redo()
+{
+    m_scene->clearSelection();
+    m_scene->removeItem(m_item);
+    emit m_scene->itemRemoved(m_item);
+}
