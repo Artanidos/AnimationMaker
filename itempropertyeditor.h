@@ -44,12 +44,49 @@ signals:
     void addKeyFrame(ResizeableItem*, QString, qreal);
 
 private:
+    bool m_initializing;
     QLineEdit *m_id;
     QSpinBox *m_x;
     QSpinBox *m_y;
     QSpinBox *m_width;
     QSpinBox *m_height;
     QSpinBox *m_opacityText;
+    QSpinBox *m_hue;
+    QSpinBox *m_saturation;
+    QSpinBox *m_lightness;
+    QSpinBox *m_red;
+    QSpinBox *m_green;
+    QSpinBox *m_blue;
+    QLabel *m_labelHue;
+    QLabel *m_labelSaturation;
+    QLabel *m_labelLightness;
+    QLabel *m_labelRed;
+    QLabel *m_labelGreen;
+    QLabel *m_labelBlue;
+    QSpinBox *m_hueBorder;
+    QSpinBox *m_saturationBorder;
+    QSpinBox *m_lightnessBorder;
+    QSpinBox *m_redBorder;
+    QSpinBox *m_greenBorder;
+    QSpinBox *m_blueBorder;
+    QLabel *m_labelHueBorder;
+    QLabel *m_labelSaturationBorder;
+    QLabel *m_labelLightnessBorder;
+    QLabel *m_labelRedBorder;
+    QLabel *m_labelGreenBorder;
+    QLabel *m_labelBlueBorder;
+    QSpinBox *m_hueText;
+    QSpinBox *m_saturationText;
+    QSpinBox *m_lightnessText;
+    QSpinBox *m_redText;
+    QSpinBox *m_greenText;
+    QSpinBox *m_blueText;
+    QLabel *m_labelHueText;
+    QLabel *m_labelSaturationText;
+    QLabel *m_labelLightnessText;
+    QLabel *m_labelRedText;
+    QLabel *m_labelGreenText;
+    QLabel *m_labelBlueText;
     QLabel *m_typ;
     QLineEdit *m_text;
     Expander *expText;
@@ -72,6 +109,10 @@ private:
     QSlider *m_hueColorSlider;
     QSlider *m_hueBordercolorSlider;
     QSlider *m_hueTextColorSlider;
+
+    void setColorParts(QColor value);
+    void setBordercolorParts(QColor value);
+    void setTextcolorParts(QColor value);
 
 private slots:
     void idChanged(QString value);
@@ -101,6 +142,24 @@ private slots:
     void colorRectClicked();
     void borderColorRectClicked();
     void textColorRectClicked();
+    void hueValueChanged(int value);
+    void saturationValueChanged(int value);
+    void lightnessValueChanged(int value);
+    void redValueChanged(int value);
+    void greenValueChanged(int value);
+    void blueValueChanged(int value);
+    void hueBorderValueChanged(int value);
+    void saturationBorderValueChanged(int value);
+    void lightnessBorderValueChanged(int value);
+    void redBorderValueChanged(int value);
+    void greenBorderValueChanged(int value);
+    void blueBorderValueChanged(int value);
+    void hueTextValueChanged(int value);
+    void saturationTextValueChanged(int value);
+    void lightnessTextValueChanged(int value);
+    void redTextValueChanged(int value);
+    void greenTextValueChanged(int value);
+    void blueTextValueChanged(int value);
 };
 
 #endif // ITEMPROPERTYEDITOR_H

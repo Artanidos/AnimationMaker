@@ -88,13 +88,6 @@ AddItemCommand::AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, 
     }
 }
 
-AddItemCommand::~AddItemCommand()
-{
-    // crashes
-    //if(!m_item->scene())
-    //    delete m_item;
-}
-
 void AddItemCommand::undo()
 {
     m_scene->clearSelection();
@@ -116,11 +109,6 @@ DeleteItemCommand::DeleteItemCommand(ResizeableItem *item, AnimationScene *scene
     m_scene = scene;
     m_item = item;
     setText("Delete " + getItemTypeName(item));
-}
-
-DeleteItemCommand::~DeleteItemCommand()
-{
-
 }
 
 void DeleteItemCommand::undo()

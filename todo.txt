@@ -14,8 +14,6 @@ Export should not show animation on screen (freeze view)
 
 ScrollArea for PropertyPanel
 
-Colorpicker, Color editor complete
-
 encode clean up - exit(1)
 
 Undo / Redo - QUndoCommand - QUndoStack
