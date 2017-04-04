@@ -20,6 +20,7 @@
 
 #include <math.h>
 #include "mainwindow.h"
+#include "exception.h"
 #include <QtWidgets>
 #include <QImage>
 #include <QPainter>
@@ -65,16 +66,15 @@ static AVFrame *alloc_picture(enum AVPixelFormat pix_fmt, int width, int height)
     int ret;
     picture = av_frame_alloc();
     if (!picture)
-        return NULL;
+        throw new Exception("Could not allocate frame data.");
     picture->format = pix_fmt;
     picture->width  = width;
     picture->height = height;
+
     ret = av_frame_get_buffer(picture, 32);
     if (ret < 0)
-    {
-        fprintf(stderr, "Could not allocate frame data.\n");
-        exit(1);
-    }
+        throw new Exception("Could not allocate frame data.");
+
     return picture;
 }
 
@@ -84,23 +84,17 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc, AVCodec **codec, 
 
     *codec = avcodec_find_encoder(codec_id);
     if (!(*codec))
-    {
-        fprintf(stderr, "Could not find encoder for '%s'\n", avcodec_get_name(codec_id));
-        exit(1);
-    }
+        throw new Exception(QString("Could not find encoder for ") + avcodec_get_name(codec_id));
+
     ost->st = avformat_new_stream(oc, NULL);
     if (!ost->st)
-    {
-        fprintf(stderr, "Could not allocate stream\n");
-        exit(1);
-    }
+        throw new Exception("Could not allocate stream");
+
     ost->st->id = oc->nb_streams-1;
     c = avcodec_alloc_context3(*codec);
     if (!c)
-    {
-        fprintf(stderr, "Could not alloc an encoding context\n");
-        exit(1);
-    }
+        throw new Exception("Could not alloc an encoding context");
+
     ost->enc = c;
     switch ((*codec)->type)
     {
@@ -135,27 +129,20 @@ static void open_video(AVCodec *codec, OutputStream *ost, AVDictionary *opt_arg)
     int ret;
     AVCodecContext *c = ost->enc;
     AVDictionary *opt = NULL;
+
     av_dict_copy(&opt, opt_arg, 0);
     ret = avcodec_open2(c, codec, &opt);
     av_dict_free(&opt);
     if (ret < 0)
-    {
-        fprintf(stderr, "Could not open video codec\n");
-        exit(1);
-    }
+        throw new Exception("Could not open video codec");
+
     ost->frame = alloc_picture(c->pix_fmt, c->width, c->height);
     if (!ost->frame)
-    {
-        fprintf(stderr, "Could not allocate video frame\n");
-        exit(1);
-    }
+        throw new Exception("Could not allocate video frame");
 
     ret = avcodec_parameters_from_context(ost->st->codecpar, c);
     if (ret < 0)
-    {
-        fprintf(stderr, "Could not copy the stream parameters\n");
-        exit(1);
-    }
+        throw new Exception("Could not copy the stream parameters");
 }
 
 static AVFrame *get_video_frame(OutputStream *ost, QImage img)
@@ -163,7 +150,7 @@ static AVFrame *get_video_frame(OutputStream *ost, QImage img)
     AVCodecContext *c = ost->enc;
 
     if (av_frame_make_writable(ost->frame) < 0)
-        exit(1);
+        throw new Exception("Could not make frame writeable");
 
     uint8_t * inData[1] = { img.bits() };
     int inLinesize[1] = { 4 * c->width };
@@ -172,14 +159,12 @@ static AVFrame *get_video_frame(OutputStream *ost, QImage img)
     {
         ost->sws_ctx = sws_getContext(c->width, c->height, AV_PIX_FMT_BGRA, c->width, c->height, c->pix_fmt, SWS_BICUBIC, NULL, NULL, NULL);
         if (!ost->sws_ctx)
-        {
-            fprintf(stderr,"Could not initialize the conversion context\n");
-            exit(1);
-        }
+            throw new Exception("Could not initialize the conversion context");
     }
     sws_scale(ost->sws_ctx, (const uint8_t * const *)inData, inLinesize, 0, c->height, ost->frame->data, ost->frame->linesize);
 
     ost->frame->pts = ost->next_pts++;
+
     return ost->frame;
 }
 
@@ -210,10 +195,8 @@ static int write_video_frame(AVFormatContext *oc, OutputStream *ost, QImage img)
     av_init_packet(&pkt);
     ret = avcodec_encode_video2(c, &pkt, frame, &got_packet);
     if (ret < 0)
-    {
-        fprintf(stderr, "Error encoding video frame\n");
-        exit(1);
-    }
+        throw new Exception("Error encoding video frame");
+
     if (got_packet)
     {
         ret = write_frame(oc, &c->time_base, ost->st, &pkt);
@@ -223,10 +206,8 @@ static int write_video_frame(AVFormatContext *oc, OutputStream *ost, QImage img)
         ret = 0;
     }
     if (ret < 0)
-    {
-        fprintf(stderr, "Error while writing video frame\n");
-        exit(1);
-    }
+        throw new Exception("Error while writing video frame");
+
     return (frame || got_packet) ? 0 : 1;
 }
 
@@ -244,11 +225,11 @@ int video_encode(const char *filename, QGraphicsView *view, int length, MainWind
     avformat_alloc_output_context2(&oc, NULL, NULL, filename);
     if (!oc)
     {
-        printf("Could not deduce output format from file extension: using MPEG.\n");
+        //printf("Could not deduce output format from file extension: using MPEG.\n");
         avformat_alloc_output_context2(&oc, NULL, "mpeg", filename);
     }
     if (!oc)
-        return 1;
+        throw new Exception("Unable to allocate context");
     fmt = oc->oformat;
     if (fmt->video_codec != AV_CODEC_ID_NONE)
     {
@@ -260,17 +241,12 @@ int video_encode(const char *filename, QGraphicsView *view, int length, MainWind
     {
         ret = avio_open(&oc->pb, filename, AVIO_FLAG_WRITE);
         if (ret < 0)
-        {
-            fprintf(stderr, "Could not open '%s'\n", filename);
-            return 1;
-        }
+            throw new Exception(QString("Could not open '%1'").arg(filename));
+
     }
     ret = avformat_write_header(oc, &opt);
     if (ret < 0)
-    {
-        fprintf(stderr, "Error occurred when opening output file\n");
-        return 1;
-    }
+        throw new Exception("Error occurred when opening output file");
 
     int delay = 1000 / scene->fps();
     int frames = length / delay + 2;
@@ -293,5 +269,6 @@ int video_encode(const char *filename, QGraphicsView *view, int length, MainWind
         avio_closep(&oc->pb);
     avformat_free_context(oc);
     win->statusBar()->showMessage(QString("Ready"));
+
     return 0;
 }

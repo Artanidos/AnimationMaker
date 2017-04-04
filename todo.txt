@@ -1,24 +1,11 @@
-Rectangle new
-    - create via mouse drag
-    - pressing ALT-key mouse position will be used as center
 
-Toolbar for files (Save, Open)
-
-Items Translation like Rotate
-
-Scene Zoom
+Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
 
 Icon integrate for each platform
 
 Export should not show animation on screen (freeze view)
 
-ScrollArea for PropertyPanel
-
-encode clean up - exit(1)
-
 Undo / Redo - QUndoCommand - QUndoStack
-
-Minimum size of 20x20 not needed anymore if zoom is implemented
 
 
 
@@ -31,3 +18,13 @@ Treeview
 Export as plugin?
 
 Export HTML ?
+
+Rectangle new
+    - create via mouse drag
+    - pressing ALT-key mouse position will be used as center
+
+Toolbar for files (Save, Open)
+
+Items Translation like Rotate
+
+ScrollArea for PropertyPanel

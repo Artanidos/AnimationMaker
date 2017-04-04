@@ -25,6 +25,7 @@
 #include "vectorgraphic.h"
 #include "text.h"
 #include "bitmap.h"
+#include "exception.h"
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
@@ -404,7 +405,14 @@ void MainWindow::exportAnimation()
     view->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     view->setGeometry(0,0,scene->width(), scene->height());
-    video_encode(fileName.toLatin1(), view, timeline->lastKeyframe(), this, scene);
+    try
+    {
+        video_encode(fileName.toLatin1(), view, timeline->lastKeyframe(), this, scene);
+    }
+    catch(Exception *e)
+    {
+        QMessageBox::critical(this, "An error occured on export", e->msg());
+    }
 }
 
 void MainWindow::createActions()
