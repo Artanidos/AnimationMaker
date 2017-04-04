@@ -52,4 +52,20 @@ private:
     AnimationScene *m_scene;
 };
 
+
+class MoveItemCommand : public QUndoCommand
+{
+public:
+    MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+    qreal m_x, m_y, m_oldx, m_oldy;
+};
+
+
+
 #endif // COMMANDS_H

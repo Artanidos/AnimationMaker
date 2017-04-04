@@ -70,6 +70,7 @@ public:
     inline void setAutotransition(bool value) {m_autotransition = value;}
 
     inline void registerUndoStack(QUndoStack *stack) {m_undoStack = stack;}
+    inline QUndoStack *undoStack() {return m_undoStack;}
         
 signals:
     void itemAdded(QGraphicsItem *item);
@@ -96,6 +97,8 @@ private:
     bool m_autokeyframes;
     bool m_autotransition;
     QUndoStack *m_undoStack;
+    QGraphicsItem *m_movingItem;
+    QPointF m_oldPos;
 
     void initialize();
     void addBackgroundRect();

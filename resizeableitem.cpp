@@ -21,6 +21,7 @@
 #include "resizeableitem.h"
 #include "animationscene.h"
 #include "keyframe.h"
+#include "commands.h"
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 #include <QGuiApplication>
@@ -263,17 +264,18 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
             handle->setMouseState(ItemHandle::kMouseDown);
             handle->mouseDownX = mevent->pos().x();
             handle->mouseDownY = mevent->pos().y();
-        }
             break;
-
+        }
         case QEvent::GraphicsSceneMouseRelease:
+        {
             handle->setMouseState(ItemHandle::kMouseReleased);
             break;
-
+        }
         case QEvent::GraphicsSceneMouseMove:
+        {
             handle->setMouseState(ItemHandle::kMouseMoving );
             break;
-
+        }
         default:
             return false;
     }

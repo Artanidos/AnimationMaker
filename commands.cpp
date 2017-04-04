@@ -124,3 +124,25 @@ void DeleteItemCommand::redo()
     m_scene->removeItem(m_item);
     emit m_scene->itemRemoved(m_item);
 }
+
+MoveItemCommand::MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, ResizeableItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_x = x;
+    m_y = y;
+    m_oldx = oldx;
+    m_oldy = oldy;
+    m_item = item;
+    setText("Move " + getItemTypeName(item));
+}
+
+void MoveItemCommand::undo()
+{
+    m_item->setPos(m_oldx, m_oldy);
+}
+
+void MoveItemCommand::redo()
+{
+    m_item->setPos(m_x, m_y);
+}
+

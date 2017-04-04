@@ -1,6 +1,4 @@
 
-Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
-
 Icon integrate for each platform
 
 Undo / Redo - QUndoCommand - QUndoStack
@@ -28,3 +26,5 @@ Toolbar for files (Save, Open)
 Items Translation like Rotate
 
 ScrollArea for PropertyPanel
+
+Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented

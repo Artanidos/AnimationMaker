@@ -8,8 +8,6 @@ class Exception : QException
 public:
     Exception(QString msg);
 
-    //void raise() const;
-    //Exception *clone() const;
     QString msg() {return m_msg;}
 
 private:
