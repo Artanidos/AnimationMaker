@@ -52,6 +52,7 @@ void AnimationScene::reset()
 {
     clear();
     initialize();
+    m_undoStack->clear();
 }
 
 void AnimationScene::deleteItem(ResizeableItem *item)

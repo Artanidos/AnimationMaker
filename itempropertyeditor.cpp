@@ -20,7 +20,7 @@
 
 #include "itempropertyeditor.h"
 #include "animationscene.h"
-
+#include "commands.h"
 #include <QPushButton>
 
 ItemPropertyEditor::ItemPropertyEditor()
@@ -486,8 +486,10 @@ void ItemPropertyEditor::itemSizeChanged(qreal width, qreal height)
 
 void ItemPropertyEditor::itemPositionChanged(qreal x, qreal y)
 {
+    m_initializing = true;
     m_x->setValue(x);
     m_y->setValue(y);
+    m_initializing = false;
 }
 
 void ItemPropertyEditor::idChanged(QString value)
@@ -497,12 +499,30 @@ void ItemPropertyEditor::idChanged(QString value)
 
 void ItemPropertyEditor::xChanged(int value)
 {
-    m_item->setX(value);
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new MoveItemCommand(value, m_item->y(), m_item->x(), m_item->y(), m_item);
+        undoStack->push(cmd);
+    }
+    //m_item->setX(value);
 }
 
 void ItemPropertyEditor::yChanged(int value)
 {
-    m_item->setY(value);
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new MoveItemCommand(m_item->x(), value, m_item->x(), m_item->y(), m_item);
+        undoStack->push(cmd);
+    }
+    //m_item->setY(value);
 }
 
 void ItemPropertyEditor::widthChanged(int value)
