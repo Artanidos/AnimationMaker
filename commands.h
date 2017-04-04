@@ -67,5 +67,20 @@ private:
 };
 
 
+class ResizeItemCommand : public QUndoCommand
+{
+public:
+    ResizeItemCommand(qreal width, qreal height, qreal oldwidth, qreal oldheight, ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+    qreal m_width, m_height, m_oldwidth, m_oldheight;
+};
+
+
+
 
 #endif // COMMANDS_H

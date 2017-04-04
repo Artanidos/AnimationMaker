@@ -480,8 +480,10 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
 
 void ItemPropertyEditor::itemSizeChanged(qreal width, qreal height)
 {
+    m_initializing = true;
     m_width->setValue(width);
     m_height->setValue(height);
+    m_initializing = false;
 }
 
 void ItemPropertyEditor::itemPositionChanged(qreal x, qreal y)
@@ -508,7 +510,6 @@ void ItemPropertyEditor::xChanged(int value)
         QUndoCommand *cmd = new MoveItemCommand(value, m_item->y(), m_item->x(), m_item->y(), m_item);
         undoStack->push(cmd);
     }
-    //m_item->setX(value);
 }
 
 void ItemPropertyEditor::yChanged(int value)
@@ -522,19 +523,32 @@ void ItemPropertyEditor::yChanged(int value)
         QUndoCommand *cmd = new MoveItemCommand(m_item->x(), value, m_item->x(), m_item->y(), m_item);
         undoStack->push(cmd);
     }
-    //m_item->setY(value);
 }
 
 void ItemPropertyEditor::widthChanged(int value)
 {
-    m_item->setWidth(value);
-    m_item->adjustKeyframes("width", QVariant(value));
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ResizeItemCommand(value, m_item->rect().height(), m_item->rect().width(), m_item->rect().height(), m_item);
+        undoStack->push(cmd);
+    }
 }
 
 void ItemPropertyEditor::heightChanged(int value)
 {
-    m_item->setHeight(value);
-    m_item->adjustKeyframes("height", QVariant(value));
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ResizeItemCommand(m_item->rect().width(), value, m_item->rect().width(), m_item->rect().height(), m_item);
+        undoStack->push(cmd);
+    }
 }
 
 void ItemPropertyEditor::textChanged(QString value)

@@ -70,7 +70,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         QPointF mousePos(mouseEvent->buttonDownScenePos(Qt::LeftButton).x(), mouseEvent->buttonDownScenePos(Qt::LeftButton).y());
         const QList<QGraphicsItem *> itemList = items(mousePos);
-        m_movingItem = itemList.isEmpty() ? 0 : itemList.first();
+        m_movingItem = itemList.isEmpty() ? 0 : dynamic_cast<ResizeableItem*>(itemList.first());
         if(m_movingItem)
             m_oldPos = m_movingItem->pos();
         QGraphicsScene::mousePressEvent(mouseEvent);
@@ -120,8 +120,7 @@ void AnimationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         if(m_oldPos != m_movingItem->pos())
         {
-            ResizeableItem *item = qgraphicsitem_cast<ResizeableItem *>(m_movingItem);
-            QUndoCommand *cmd = new MoveItemCommand(m_movingItem->x(), m_movingItem->y(), m_oldPos.x(), m_oldPos.y(), item);
+            QUndoCommand *cmd = new MoveItemCommand(m_movingItem->x(), m_movingItem->y(), m_oldPos.x(), m_oldPos.y(), m_movingItem);
             m_undoStack->push(cmd);
         }
         m_movingItem = NULL;

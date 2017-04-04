@@ -2,6 +2,14 @@
 Icon integrate for each platform
 
 Undo / Redo - QUndoCommand - QUndoStack
+    ResizeableItem->setRect() inkl. adjustkeyframes
+    ResizeableItem->setPos() inkl. adjustkeyframes
+    Color changed
+    id changed
+
+ColorAnimation ?
+
+additional properties?
 
 Install package
 

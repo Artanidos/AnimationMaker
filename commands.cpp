@@ -139,10 +139,43 @@ MoveItemCommand::MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, Resiz
 void MoveItemCommand::undo()
 {
     m_item->setPos(m_oldx, m_oldy);
+    m_item->adjustKeyframes("left", QVariant(m_oldx));
+    m_item->adjustKeyframes("top", QVariant(m_oldy));
 }
 
 void MoveItemCommand::redo()
 {
     m_item->setPos(m_x, m_y);
+    m_item->adjustKeyframes("left", QVariant(m_x));
+    m_item->adjustKeyframes("top", QVariant(m_y));
+}
+
+
+ResizeItemCommand::ResizeItemCommand(qreal width, qreal height, qreal oldwidth, qreal oldheight, ResizeableItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_width = width;
+    m_height = height;
+    m_oldwidth = oldwidth;
+    m_oldheight = oldheight;
+    m_item = item;
+    setText("Resize " + getItemTypeName(item));
+}
+
+void ResizeItemCommand::undo()
+{
+    m_item->setWidth(m_oldwidth);
+    m_item->setHeight(m_oldheight);
+    m_item->adjustKeyframes("width", QVariant(m_oldwidth));
+    m_item->adjustKeyframes("height", QVariant(m_oldheight));
+}
+
+void ResizeItemCommand::redo()
+{
+    m_item->setWidth(m_width);
+    m_item->setHeight(m_height);
+
+    m_item->adjustKeyframes("width", QVariant(m_width));
+    m_item->adjustKeyframes("height", QVariant(m_height));
 }
 

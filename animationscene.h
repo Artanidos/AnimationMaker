@@ -97,7 +97,7 @@ private:
     bool m_autokeyframes;
     bool m_autotransition;
     QUndoStack *m_undoStack;
-    QGraphicsItem *m_movingItem;
+    ResizeableItem *m_movingItem;
     QPointF m_oldPos;
 
     void initialize();

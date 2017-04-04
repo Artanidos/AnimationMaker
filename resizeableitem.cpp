@@ -199,7 +199,7 @@ void ResizeableItem::setWidth(qreal value)
     m_rect.setWidth(value);
     update();
     setHandlePositions();
-
+    emit sizeChanged(value, rect().height());
 }
 
 void ResizeableItem::setHeight(qreal value)
@@ -208,7 +208,7 @@ void ResizeableItem::setHeight(qreal value)
     m_rect.setHeight(value);
     update();
     setHandlePositions();
-
+    emit sizeChanged(rect().width(), value);
 }
 
 QPen ResizeableItem::pen() const
