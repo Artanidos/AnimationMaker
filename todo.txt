@@ -3,9 +3,9 @@ Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
 
 Icon integrate for each platform
 
-Export should not show animation on screen (freeze view)
-
 Undo / Redo - QUndoCommand - QUndoStack
+
+Install package
 
 
 

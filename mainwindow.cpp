@@ -401,18 +401,22 @@ void MainWindow::exportAnimation()
     if(fileName.isEmpty())
         return;
 
-    QGraphicsView *view = new QGraphicsView(scene);
-    view->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    view->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    view->setGeometry(0,0,scene->width(), scene->height());
+    scene->clearSelection();
+    view->setUpdatesEnabled(false);
+    QGraphicsView *exportView = new QGraphicsView(scene);
+    exportView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    exportView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    exportView->setGeometry(0,0,scene->width(), scene->height());
+
     try
     {
-        video_encode(fileName.toLatin1(), view, timeline->lastKeyframe(), this, scene);
+        video_encode(fileName.toLatin1(), exportView, timeline->lastKeyframe(), this, scene);
     }
     catch(Exception *e)
     {
         QMessageBox::critical(this, "An error occured on export", e->msg());
     }
+    view->setUpdatesEnabled(true);
 }
 
 void MainWindow::createActions()
