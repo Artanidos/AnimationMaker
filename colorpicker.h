@@ -33,6 +33,7 @@ public:
     void paintEvent(QPaintEvent *ev);
     virtual void mousePressEvent(QMouseEvent * event);
     virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
 
     QSize sizeHint() const;
 
@@ -41,6 +42,7 @@ public:
 
 signals:
     void colorChanged(QColor color);
+    void colorPicked(QColor color);
 
 private:
     qreal m_hue;

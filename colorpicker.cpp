@@ -75,6 +75,15 @@ void ColorPicker::mousePressEvent(QMouseEvent * event)
     }
 }
 
+void ColorPicker::mouseReleaseEvent(QMouseEvent * event)
+{
+    if(m_lpressed)
+    {
+        m_lpressed = false;
+        emit colorPicked(getColor(event));
+    }
+}
+
 QColor ColorPicker::getColor(QMouseEvent *event)
 {
     qreal s, l, a;

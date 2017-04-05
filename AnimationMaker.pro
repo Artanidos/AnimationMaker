@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     transitionline.cpp \
     colorrect.cpp \
     commands.cpp \
-    exception.cpp
+    exception.cpp \
+    coloreditor.cpp
 
 HEADERS  += mainwindow.h \
     animationscene.h \
@@ -73,7 +74,8 @@ HEADERS  += mainwindow.h \
     transitionline.h \
     colorrect.h \
     commands.h \
-    exception.h
+    exception.h \
+    coloreditor.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

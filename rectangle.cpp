@@ -24,8 +24,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-Rectangle::Rectangle(qreal width, qreal height)
-    : ResizeableItem()
+Rectangle::Rectangle(qreal width, qreal height, AnimationScene *scene)
+    : ResizeableItem(scene)
 {
     setRect(0, 0, width, height);
 }

@@ -28,6 +28,7 @@
 #include "itemhandle.h"
 #include "keyframe.h"
 
+class AnimationScene;
 class ResizeableItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
@@ -35,7 +36,7 @@ class ResizeableItem : public QObject, public QGraphicsItem
     Q_PROPERTY(qreal left READ left WRITE setLeft)
     Q_PROPERTY(qreal top READ top WRITE setTop)
 public:
-    ResizeableItem();
+    ResizeableItem(AnimationScene *scene);
     ~ResizeableItem();
 
     void drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option);
@@ -71,9 +72,12 @@ public:
     void addKeyframe(QString propertyName, KeyFrame *frame);
     inline QHash<QString, KeyFrame*> *keyframes() {return m_keyframes;}
 
-    void adjustKeyframes(QString propertyName, QVariant value);
+    void adjustKeyframes(QString propertyName, QVariant value, int time, bool autokeyframes, bool autotransition);
+
+    void posChanged(qreal x, qreal y);
 
 private:
+    AnimationScene *m_scene;
     ItemHandle*  m_handles[8];
     bool m_hasHandles;
     QString m_id;
@@ -87,6 +91,7 @@ private:
     QAction *lowerAct;
     QAction *raiseAct;
     QHash<QString, KeyFrame*> *m_keyframes;
+    qreal m_oldx, m_oldy, m_oldwidth, m_oldheight;
 
 private slots:
     void deleteItem();
@@ -101,6 +106,7 @@ signals:
     void sizeChanged(qreal width, qreal height);
     void positionChanged(qreal x, qreal y);
     void itemRemoved(ResizeableItem *item);
+    void brushChanged(QColor);
 
 protected:
     void setHandlePositions();
@@ -108,8 +114,6 @@ protected:
     qreal m_xscale;
     qreal m_yscale;
 
-private:
-    void posChanged(qreal x, qreal y);
 };
 
 #endif // RESIZEABLEITEM_H

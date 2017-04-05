@@ -24,6 +24,7 @@
 #include <QUndoCommand>
 #include "animationscene.h"
 #include "resizeableitem.h"
+#include "text.h"
 
 class AddItemCommand : public QUndoCommand
 {
@@ -56,7 +57,7 @@ private:
 class MoveItemCommand : public QUndoCommand
 {
 public:
-    MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, ResizeableItem *item, QUndoCommand *parent = 0);
+    MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -64,13 +65,16 @@ public:
 private:
     ResizeableItem *m_item;
     qreal m_x, m_y, m_oldx, m_oldy;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
 };
 
 
 class ResizeItemCommand : public QUndoCommand
 {
 public:
-    ResizeItemCommand(qreal width, qreal height, qreal oldwidth, qreal oldheight, ResizeableItem *item, QUndoCommand *parent = 0);
+    ResizeItemCommand(qreal width, qreal height, qreal oldwidth, qreal oldheight, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -78,9 +82,78 @@ public:
 private:
     ResizeableItem *m_item;
     qreal m_width, m_height, m_oldwidth, m_oldheight;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
 };
 
 
+class ScaleItemCommand : public QUndoCommand
+{
+public:
+    ScaleItemCommand(qreal x, qreal y, qreal width, qreal height, qreal oldx, qreal oldy, qreal oldwidth, qreal oldheight, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+    qreal m_x, m_y, m_width, m_height, m_oldx, m_oldy, m_oldwidth, m_oldheight;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
+};
 
 
+class ChangeIdItemCommand : public QUndoCommand
+{
+public:
+    ChangeIdItemCommand(QString id, QString oldid, ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+    QString m_id, m_oldid;
+};
+
+class ChangeColorItemCommand : public QUndoCommand
+{
+public:
+    ChangeColorItemCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+    QColor m_color, m_oldcolor;
+};
+
+class ChangePenItemCommand : public QUndoCommand
+{
+public:
+    ChangePenItemCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+    QColor m_color, m_oldcolor;
+};
+
+class ChangeTextcolorItemCommand : public QUndoCommand
+{
+public:
+    ChangeTextcolorItemCommand(QColor color, QColor oldcolor, Text *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    Text *m_item;
+    QColor m_color, m_oldcolor;
+};
 #endif // COMMANDS_H

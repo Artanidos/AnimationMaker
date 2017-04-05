@@ -120,7 +120,7 @@ void AnimationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         if(m_oldPos != m_movingItem->pos())
         {
-            QUndoCommand *cmd = new MoveItemCommand(m_movingItem->x(), m_movingItem->y(), m_oldPos.x(), m_oldPos.y(), m_movingItem);
+            QUndoCommand *cmd = new MoveItemCommand(m_movingItem->x(), m_movingItem->y(), m_oldPos.x(), m_oldPos.y(), this, m_movingItem);
             m_undoStack->push(cmd);
         }
         m_movingItem = NULL;
@@ -213,7 +213,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> brush;
             dataStream >> opacity;
 
-            Rectangle *r = new Rectangle(width, height);
+            Rectangle *r = new Rectangle(width, height, this);
             r->setId(id);
             r->setPos(x, y);
             r->setPen(pen);
@@ -237,7 +237,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> brush;
             dataStream >> opacity;
 
-            Ellipse *e = new Ellipse(width, height);
+            Ellipse *e = new Ellipse(width, height, this);
             e->setId(id);
             e->setPos(x, y);
             e->setPen(pen);
@@ -261,7 +261,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> color;
             dataStream >> opacity;
 
-            Text *t = new Text(text);
+            Text *t = new Text(text, this);
             t->setId(id);
             t->setPos(x, y);
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -285,7 +285,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> img;
             dataStream >> opacity;
 
-            Bitmap *b = new Bitmap(img, width, height);
+            Bitmap *b = new Bitmap(img, width, height, this);
             b->setId(id);
             b->setPos(x, y);
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -307,7 +307,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> yscale;
             dataStream >> opacity;
             dataStream >> arr;
-            Vectorgraphic *v = new Vectorgraphic(arr);
+            Vectorgraphic *v = new Vectorgraphic(arr, this);
             v->setId(id);
             v->setPos(x, y);
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -462,7 +462,7 @@ void AnimationScene::pasteItem()
     {
         case Rectangle::Type:
         {
-            Rectangle *r = new Rectangle(m_copy->rect().width(), m_copy->rect().height());
+            Rectangle *r = new Rectangle(m_copy->rect().width(), m_copy->rect().height(), this);
             r->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
             r->setId("");
             r->setPen(m_copy->pen());
@@ -475,7 +475,7 @@ void AnimationScene::pasteItem()
         }
         case Ellipse::Type:
         {
-            Ellipse *e = new Ellipse(m_copy->rect().width(), m_copy->rect().height());
+            Ellipse *e = new Ellipse(m_copy->rect().width(), m_copy->rect().height(), this);
             e->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
             e->setId("");
             e->setPen(m_copy->pen());
@@ -489,7 +489,7 @@ void AnimationScene::pasteItem()
         case Text::Type:
         {
             Text *cpy = dynamic_cast<Text*>(m_copy);
-            Text *t = new Text(cpy->text());
+            Text *t = new Text(cpy->text(), this);
             t->setId("");
             t->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -503,7 +503,7 @@ void AnimationScene::pasteItem()
         case Bitmap::Type:
         {
             Bitmap *bm = dynamic_cast<Bitmap*>(m_copy);
-            Bitmap *b = new Bitmap(bm->getImage(), bm->rect().width(), bm->rect().height());
+            Bitmap *b = new Bitmap(bm->getImage(), bm->rect().width(), bm->rect().height(), this);
             b->setId("");
             b->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -516,7 +516,7 @@ void AnimationScene::pasteItem()
         case Vectorgraphic::Type:
         {
             Vectorgraphic *vg = dynamic_cast<Vectorgraphic*>(m_copy);
-            Vectorgraphic *v = new Vectorgraphic(vg->getData());
+            Vectorgraphic *v = new Vectorgraphic(vg->getData(), this);
             v->setId("");
             v->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
             v->setFlag(QGraphicsItem::ItemIsMovable, true);

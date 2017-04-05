@@ -30,7 +30,7 @@
 class Text : public ResizeableItem
 {
 public:
-    Text(QString text);
+    Text(QString text, AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
     void scaleObjects();

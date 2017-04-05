@@ -27,8 +27,8 @@
 class Bitmap : public ResizeableItem
 {
 public:
-    Bitmap(QString filename);
-    Bitmap(QImage img, qreal width, qreal height);
+    Bitmap(QString filename, AnimationScene *scene);
+    Bitmap(QImage img, qreal width, qreal height, AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 

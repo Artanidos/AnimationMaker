@@ -24,8 +24,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-Text::Text(QString text)
-    : ResizeableItem()
+Text::Text(QString text, AnimationScene *scene)
+    : ResizeableItem(scene)
 {
    m_font = QFont("Arial", 13);
    m_text = text;

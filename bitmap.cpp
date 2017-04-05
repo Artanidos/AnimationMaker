@@ -24,15 +24,15 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-Bitmap::Bitmap(QString filename)
-    : ResizeableItem()
+Bitmap::Bitmap(QString filename, AnimationScene *scene)
+    : ResizeableItem(scene)
 {
     m_image.load(filename);
     setRect(0, 0, m_image.width(), m_image.height());
 }
 
-Bitmap::Bitmap(QImage image, qreal width, qreal height)
-    :ResizeableItem()
+Bitmap::Bitmap(QImage image, qreal width, qreal height, AnimationScene *scene)
+    :ResizeableItem(scene)
 {
     m_image = image;
     setRect(0, 0, width, height);

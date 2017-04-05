@@ -29,7 +29,7 @@ class Rectangle : public ResizeableItem
 {
     Q_OBJECT
 public:
-    Rectangle(qreal width, qreal height);
+    Rectangle(qreal width, qreal height, AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 
