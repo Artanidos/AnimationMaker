@@ -164,7 +164,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(addYKeyframe, SIGNAL(clicked(bool)), this, SLOT(addTopKeyFrame()));
     connect(addWidthKeyframe, SIGNAL(clicked(bool)), this, SLOT(addWidthKeyFrame()));
     connect(addHeightKeyframe, SIGNAL(clicked(bool)), this, SLOT(addHeightKeyFrame()));
-    connect(m_opacity, SIGNAL(valueChanged(int)), this, SLOT(opacityChanged(int)));
+    connect(m_opacity, SIGNAL(sliderReleased()), this, SLOT(opacitySliderReleased()));
     connect(m_opacityText, SIGNAL(valueChanged(int)), this, SLOT(opacityTextChanged(int)));
     connect(addOpacityKeyframe, SIGNAL(clicked(bool)), this, SLOT(addOpacityKeyFrame()));
     connect(colorEditor, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
@@ -178,7 +178,7 @@ void ItemPropertyEditor::colorChanged(QColor color)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeColorItemCommand(color, m_item->brush().color(), m_item);
+        QUndoCommand *cmd = new ChangeColorCommand(color, m_item->brush().color(), m_item);
         undoStack->push(cmd);
     }
 }
@@ -189,7 +189,7 @@ void ItemPropertyEditor::borderColorChanged(QColor color)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangePenItemCommand(color, m_item->pen().color(), m_item);
+        QUndoCommand *cmd = new ChangePenCommand(color, m_item->pen().color(), m_item);
         undoStack->push(cmd);
     }
 }
@@ -200,7 +200,7 @@ void ItemPropertyEditor::textColorChanged(QColor color)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeTextcolorItemCommand(color, m_textitem->textcolor(), m_textitem);
+        QUndoCommand *cmd = new ChangeTextcolorCommand(color, m_textitem->textcolor(), m_textitem);
         undoStack->push(cmd);
     }
 }
@@ -232,6 +232,7 @@ void ItemPropertyEditor::addOpacityKeyFrame()
 
 void ItemPropertyEditor::setItem(ResizeableItem *item)
 {
+    m_initializing = true;
     m_item = item;
     expColor->setVisible(false);
     m_x->setValue(m_item->x());
@@ -268,12 +269,14 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     }
     expText->setVisible(m_textitem);
     expTextcolor->setVisible(m_textitem);
+    m_initializing = false;
 
     connect(item, SIGNAL(idChanged(ResizeableItem*,QString)), this, SLOT(idChanged(ResizeableItem*,QString)));
     connect(item, SIGNAL(sizeChanged(qreal,qreal)), this, SLOT(itemSizeChanged(qreal, qreal)));
     connect(item, SIGNAL(positionChanged(qreal,qreal)), this, SLOT(itemPositionChanged(qreal, qreal)));
     connect(item, SIGNAL(brushChanged(QColor)), this, SLOT(brushChanged(QColor)));
     connect(item, SIGNAL(penChanged(QColor)), this, SLOT(penChanged(QColor)));
+    connect(item, SIGNAL(opacityChanged(qreal)), this, SLOT(opacityChanged(qreal)));
 }
 
 void ItemPropertyEditor::brushChanged(QColor color)
@@ -322,7 +325,7 @@ void ItemPropertyEditor::idChanged(QString value)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeIdItemCommand(value, m_item->id(), m_item);
+        QUndoCommand *cmd = new ChangeIdCommand(value, m_item->id(), m_item);
         undoStack->push(cmd);
     }
 }
@@ -392,24 +395,45 @@ void ItemPropertyEditor::changeBrush(QColor color)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeColorItemCommand(color, m_item->brush().color(), m_item);
+        QUndoCommand *cmd = new ChangeColorCommand(color, m_item->brush().color(), m_item);
         undoStack->push(cmd);
     }
 }
 
-
-void ItemPropertyEditor::opacityChanged(int value)
+void ItemPropertyEditor::opacitySliderReleased()
 {
-    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
-    m_item->setOpacity((qreal)value / 100);
-    m_opacityText->setValue(value);
-    m_item->adjustKeyframes("opacity", QVariant((qreal)value / 100), as->playheadPosition(), as->autokeyframes(), as->autotransition());
+    changeOpacity((qreal)m_opacity->value() / 100);
 }
 
 void ItemPropertyEditor::opacityTextChanged(int value)
 {
+    qDebug() << value << "edit";
+    changeOpacity((qreal)value / 100);
+}
+
+void ItemPropertyEditor::changeOpacity(qreal opacity)
+{
+    if(m_initializing)
+        return;
     AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
-    m_item->setOpacity((qreal)value / 100);
-    m_opacity->setValue(value);
-    m_item->adjustKeyframes("opacity", QVariant((qreal)value / 100), as->playheadPosition(), as->autokeyframes(), as->autotransition());
+    if(as)
+    {
+        QUndoCommand *cmd = new ChangeOpacityCommand(opacity, m_item->opacity(), as, m_item);
+        as->undoStack()->push(cmd);
+    }
+}
+
+void ItemPropertyEditor::opacityChanged(qreal opacity)
+{
+    float value = opacity * 100.0;
+    int val = value;
+    //qDebug() << opacity << "item" << value << val;
+    //qDebug() << "qreal" << (int)(qreal)(0.57 * 100.0);
+    //qDebug() << "double" << (int)(double)(0.57 * 100.0);
+    //qDebug() << "float" << (int)(float)(0.57 * 100.0);
+
+    m_initializing = true;
+    m_opacity->setValue(val);
+    m_opacityText->setValue(val);
+    m_initializing = false;
 }

@@ -61,6 +61,8 @@ public:
     QBrush brush() const;
     void setBrush(const QBrush &brush);
 
+    inline void setOpacity(qreal opacity) {QGraphicsItem::setOpacity(opacity); emit opacityChanged(opacity);}
+
     inline qreal left() {return x();}
     inline qreal top() {return y();}
     inline void setLeft(qreal val) {setX(val);}
@@ -108,6 +110,7 @@ signals:
     void itemRemoved(ResizeableItem *item);
     void brushChanged(QColor);
     void penChanged(QColor);
+    void opacityChanged(qreal opacity);
 
 protected:
     void setHandlePositions();

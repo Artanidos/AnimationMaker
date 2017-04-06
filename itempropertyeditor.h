@@ -67,6 +67,7 @@ private:
     QSlider *m_opacity;
 
     void changeBrush(QColor value);
+    void changeOpacity(qreal opacity);
 
 private slots:
     void idChanged(QString value);
@@ -86,8 +87,9 @@ private slots:
     void addOpacityKeyFrame();
     void itemSizeChanged(qreal width, qreal height);
     void itemPositionChanged(qreal x, qreal y);
-    void opacityChanged(int value);
+    void opacitySliderReleased();
     void opacityTextChanged(int value);
+    void opacityChanged(qreal value);
     void colorChanged(QColor);
     void borderColorChanged(QColor);
     void textColorChanged(QColor);

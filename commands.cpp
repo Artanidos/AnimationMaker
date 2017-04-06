@@ -229,7 +229,7 @@ void ScaleItemCommand::redo()
     m_item->posChanged(m_x, m_y);
 }
 
-ChangeIdItemCommand::ChangeIdItemCommand(QString id, QString oldid, ResizeableItem *item, QUndoCommand *parent)
+ChangeIdCommand::ChangeIdCommand(QString id, QString oldid, ResizeableItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_id = id;
@@ -238,17 +238,17 @@ ChangeIdItemCommand::ChangeIdItemCommand(QString id, QString oldid, ResizeableIt
     setText("Change " + getItemTypeName(item) + " Id");
 }
 
-void ChangeIdItemCommand::undo()
+void ChangeIdCommand::undo()
 {
     m_item->setId(m_oldid);
 }
 
-void ChangeIdItemCommand::redo()
+void ChangeIdCommand::redo()
 {
     m_item->setId(m_id);
 }
 
-ChangeColorItemCommand::ChangeColorItemCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent)
+ChangeColorCommand::ChangeColorCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_color = color;
@@ -257,17 +257,17 @@ ChangeColorItemCommand::ChangeColorItemCommand(QColor color, QColor oldcolor, Re
     setText("Change " + getItemTypeName(item) + " Color");
 }
 
-void ChangeColorItemCommand::undo()
+void ChangeColorCommand::undo()
 {
     m_item->setBrush(QBrush(m_oldcolor));
 }
 
-void ChangeColorItemCommand::redo()
+void ChangeColorCommand::redo()
 {
     m_item->setBrush(QBrush(m_color));
 }
 
-ChangePenItemCommand::ChangePenItemCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent)
+ChangePenCommand::ChangePenCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_color = color;
@@ -276,17 +276,17 @@ ChangePenItemCommand::ChangePenItemCommand(QColor color, QColor oldcolor, Resize
     setText("Change " + getItemTypeName(item) + " Pen");
 }
 
-void ChangePenItemCommand::undo()
+void ChangePenCommand::undo()
 {
     m_item->setPen(QPen(m_oldcolor));
 }
 
-void ChangePenItemCommand::redo()
+void ChangePenCommand::redo()
 {
     m_item->setPen(QPen(m_color));
 }
 
-ChangeTextcolorItemCommand::ChangeTextcolorItemCommand(QColor color, QColor oldcolor, Text *item, QUndoCommand *parent)
+ChangeTextcolorCommand::ChangeTextcolorCommand(QColor color, QColor oldcolor, Text *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_color = color;
@@ -295,12 +295,12 @@ ChangeTextcolorItemCommand::ChangeTextcolorItemCommand(QColor color, QColor oldc
     setText("Change " + getItemTypeName(item) + " Textcolor");
 }
 
-void ChangeTextcolorItemCommand::undo()
+void ChangeTextcolorCommand::undo()
 {
     m_item->setTextcolor(m_oldcolor);
 }
 
-void ChangeTextcolorItemCommand::redo()
+void ChangeTextcolorCommand::redo()
 {
     m_item->setTextcolor(m_color);
 }
@@ -324,4 +324,27 @@ void ChangeSceneColorCommand::redo()
     m_scene->setBackgroundColor(m_color);
 }
 
+ChangeOpacityCommand::ChangeOpacityCommand(qreal opacity, qreal oldopacity, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_opacity = opacity;
+    m_oldopacity = oldopacity;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
+    m_item = item;
+    setText("Change " + getItemTypeName(item) + " Opacity");
+}
+
+void ChangeOpacityCommand::undo()
+{
+    m_item->setOpacity(m_oldopacity);
+    m_item->adjustKeyframes("opacity", QVariant(m_oldopacity), m_time, m_autokeyframes, m_autotransition);
+}
+
+void ChangeOpacityCommand::redo()
+{
+    m_item->setOpacity(m_opacity);
+    m_item->adjustKeyframes("opacity", QVariant(m_opacity), m_time, m_autokeyframes, m_autotransition);
+}
 

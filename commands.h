@@ -105,10 +105,10 @@ private:
 };
 
 
-class ChangeIdItemCommand : public QUndoCommand
+class ChangeIdCommand : public QUndoCommand
 {
 public:
-    ChangeIdItemCommand(QString id, QString oldid, ResizeableItem *item, QUndoCommand *parent = 0);
+    ChangeIdCommand(QString id, QString oldid, ResizeableItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -118,10 +118,10 @@ private:
     QString m_id, m_oldid;
 };
 
-class ChangeColorItemCommand : public QUndoCommand
+class ChangeColorCommand : public QUndoCommand
 {
 public:
-    ChangeColorItemCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent = 0);
+    ChangeColorCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -131,10 +131,10 @@ private:
     QColor m_color, m_oldcolor;
 };
 
-class ChangePenItemCommand : public QUndoCommand
+class ChangePenCommand : public QUndoCommand
 {
 public:
-    ChangePenItemCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent = 0);
+    ChangePenCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -144,10 +144,10 @@ private:
     QColor m_color, m_oldcolor;
 };
 
-class ChangeTextcolorItemCommand : public QUndoCommand
+class ChangeTextcolorCommand : public QUndoCommand
 {
 public:
-    ChangeTextcolorItemCommand(QColor color, QColor oldcolor, Text *item, QUndoCommand *parent = 0);
+    ChangeTextcolorCommand(QColor color, QColor oldcolor, Text *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -168,6 +168,22 @@ public:
 private:
     AnimationScene *m_scene;
     QColor m_color, m_oldcolor;
+};
+
+class ChangeOpacityCommand : public QUndoCommand
+{
+public:
+    ChangeOpacityCommand(qreal opacity, qreal oldopacity, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+    qreal m_opacity, m_oldopacity;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
 };
 
 #endif // COMMANDS_H
