@@ -73,6 +73,7 @@ void Text::setTextcolor(QColor color)
 {
    m_textcolor = color;
    m_textitem->setBrush(QBrush(m_textcolor));
+   emit textcolorChanged(color);
 }
 
 void Text::setScale(qreal x, qreal y)

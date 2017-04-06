@@ -29,6 +29,7 @@
 
 class Text : public ResizeableItem
 {
+    Q_OBJECT
 public:
     Text(QString text, AnimationScene *scene);
 
@@ -43,6 +44,9 @@ public:
 
     enum { Type = UserType + 3 };
     int type() const Q_DECL_OVERRIDE;
+
+signals:
+    void textcolorChanged(QColor);
 
 private:
     QFont m_font;

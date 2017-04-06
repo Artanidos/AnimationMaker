@@ -247,6 +247,7 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     {
         m_text->setText(m_textitem->text());
         textcolorEditor->setColor(m_textitem->textcolor());
+        connect(m_textitem, SIGNAL(textcolorChanged(QColor)), this, SLOT(textcolorChanged(QColor)));
     }
 
     m_rectangle = dynamic_cast<Rectangle*>(item);
@@ -270,6 +271,23 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     connect(item, SIGNAL(idChanged(ResizeableItem*,QString)), this, SLOT(idChanged(ResizeableItem*,QString)));
     connect(item, SIGNAL(sizeChanged(qreal,qreal)), this, SLOT(itemSizeChanged(qreal, qreal)));
     connect(item, SIGNAL(positionChanged(qreal,qreal)), this, SLOT(itemPositionChanged(qreal, qreal)));
+    connect(item, SIGNAL(brushChanged(QColor)), this, SLOT(brushChanged(QColor)));
+    connect(item, SIGNAL(penChanged(QColor)), this, SLOT(penChanged(QColor)));
+}
+
+void ItemPropertyEditor::brushChanged(QColor color)
+{
+    colorEditor->setColor(color);
+}
+
+void ItemPropertyEditor::penChanged(QColor color)
+{
+    borderColorEditor->setColor(color);
+}
+
+void ItemPropertyEditor::textcolorChanged(QColor color)
+{
+    textcolorEditor->setColor(color);
 }
 
 void ItemPropertyEditor::itemSizeChanged(qreal width, qreal height)

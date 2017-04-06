@@ -221,6 +221,7 @@ void ResizeableItem::setPen(const QPen &pen)
 {
     m_pen = pen;
     update();
+    emit penChanged(m_pen.color());
 }
 
 QBrush ResizeableItem::brush() const

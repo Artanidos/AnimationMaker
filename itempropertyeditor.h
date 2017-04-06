@@ -71,7 +71,9 @@ private:
 private slots:
     void idChanged(QString value);
     void idChanged(ResizeableItem*,QString);
-    //void brushChanged(QColor color);
+    void brushChanged(QColor color);
+    void penChanged(QColor color);
+    void textcolorChanged(QColor color);
     void xChanged(int value);
     void yChanged(int value);
     void widthChanged(int value);

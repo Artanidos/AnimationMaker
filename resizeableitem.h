@@ -107,6 +107,7 @@ signals:
     void positionChanged(qreal x, qreal y);
     void itemRemoved(ResizeableItem *item);
     void brushChanged(QColor);
+    void penChanged(QColor);
 
 protected:
     void setHandlePositions();
