@@ -55,7 +55,12 @@ public:
     inline void setHeight(int value) {setSceneRect(0, 0, width(), value); m_rect->setRect(0,0,width(), value); emit sizeChanged(width(), value);}
 
     inline QColor backgroundColor() const {return m_backgroundColor;}
-    inline void setBackgroundColor(QColor value) {m_backgroundColor = value; m_rect->setBrush(QBrush(QColor(m_backgroundColor)));}
+    inline void setBackgroundColor(QColor value)
+    {
+        m_backgroundColor = value;
+        m_rect->setBrush(QBrush(QColor(m_backgroundColor)));
+        emit backgroundColorChanged(value);
+    }
 
     inline int playheadPosition() {return m_playheadPosition;}
 
@@ -77,6 +82,7 @@ signals:
     void sizeChanged(int width, int height);
     void keyframeAdded(ResizeableItem *item, QString propertyName, KeyFrame *key);
     void itemRemoved(ResizeableItem *item);
+    void backgroundColorChanged(QColor color);
 
 public slots:
     void setPlayheadPosition(int value);

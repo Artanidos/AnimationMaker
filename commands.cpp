@@ -305,4 +305,23 @@ void ChangeTextcolorItemCommand::redo()
     m_item->setTextcolor(m_color);
 }
 
+ChangeSceneColorCommand::ChangeSceneColorCommand(QColor color, QColor oldcolor, AnimationScene *scene, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_color = color;
+    m_oldcolor = oldcolor;
+    m_scene = scene;
+    setText("Change Scene Color");
+}
+
+void ChangeSceneColorCommand::undo()
+{
+    m_scene->setBackgroundColor(m_oldcolor);
+}
+
+void ChangeSceneColorCommand::redo()
+{
+    m_scene->setBackgroundColor(m_color);
+}
+
 

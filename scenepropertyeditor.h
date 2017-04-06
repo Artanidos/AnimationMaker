@@ -28,6 +28,7 @@
 #include "animationscene.h"
 #include "colorpicker.h"
 #include "colorrect.h"
+#include "coloreditor.h"
 
 class ScenePropertyEditor : public QWidget
 {
@@ -38,26 +39,11 @@ public:
     void setScene(AnimationScene *scene);
 private:
     bool m_initializing;
+    ColorEditor *m_colorEditor;
     QSpinBox *m_width;
     QSpinBox *m_height;
     QSpinBox *m_fps;
-    QLineEdit *m_color;
     AnimationScene *m_scene;
-    ColorPicker *m_colorpicker;
-    QSpinBox *m_hue;
-    QSpinBox *m_saturation;
-    QSpinBox *m_lightness;
-    QSpinBox *m_red;
-    QSpinBox *m_green;
-    QSpinBox *m_blue;
-    QLabel *m_labelHue;
-    QLabel *m_labelSaturation;
-    QLabel *m_labelLightness;
-    QLabel *m_labelRed;
-    QLabel *m_labelGreen;
-    QLabel *m_labelBlue;
-    QSlider *m_hueSlider;
-    ColorRect *m_colorRect;
 
     void setColorParts(QColor value);
 
@@ -65,16 +51,8 @@ private slots:
     void widthChanged(int value);
     void heightChanged(int value);
     void fpsChanged(int value);
-    void colorChanged(QString value);
-    void colorChanged(QColor value);
-    void hueChanged(int value);
-    void hueValueChanged(int value);
-    void saturationValueChanged(int value);
-    void lightnessValueChanged(int value);
-    void redValueChanged(int value);
-    void greenValueChanged(int value);
-    void blueValueChanged(int value);
-    void colorRectClicked();
+    void backgroundColorChanged(QColor color);
+    void colorChanged(QColor color);
 };
 
 #endif // SCENEPROPERTYEDITOR_H

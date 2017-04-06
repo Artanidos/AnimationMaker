@@ -103,6 +103,8 @@ void MainWindow::writeFile(QString fileName)
     out << scene;
 
     file.close();
+
+    undoStack->clear();
 }
 
 void MainWindow::setTitle()

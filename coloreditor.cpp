@@ -102,7 +102,6 @@ ColorEditor::ColorEditor(QString label)
 
 void ColorEditor::setColor(QColor color)
 {
-    m_color->setText(color.name());
     setColorParts(color);
 }
 

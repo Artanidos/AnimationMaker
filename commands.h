@@ -156,4 +156,18 @@ private:
     Text *m_item;
     QColor m_color, m_oldcolor;
 };
+
+class ChangeSceneColorCommand : public QUndoCommand
+{
+public:
+    ChangeSceneColorCommand(QColor color, QColor oldcolor, AnimationScene *scene, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    AnimationScene *m_scene;
+    QColor m_color, m_oldcolor;
+};
+
 #endif // COMMANDS_H
