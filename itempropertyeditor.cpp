@@ -407,7 +407,6 @@ void ItemPropertyEditor::opacitySliderReleased()
 
 void ItemPropertyEditor::opacityTextChanged(int value)
 {
-    qDebug() << value << "edit";
     changeOpacity((qreal)value / 100);
 }
 

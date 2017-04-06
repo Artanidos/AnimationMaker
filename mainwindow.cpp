@@ -176,10 +176,10 @@ void MainWindow::open()
         return;
     }
 
-//    if (version <= 110)
-//        in.setVersion(QDataStream::Qt_4_0);
-//    else
-//        in.setVersion(QDataStream::Qt_5_7);
+    //    if (version <= 110)
+    //        in.setVersion(QDataStream::Qt_4_0);
+    //    else
+    //        in.setVersion(QDataStream::Qt_5_7);
 
     // Read the data
     in >> scene;
@@ -360,8 +360,8 @@ void MainWindow::createStatusBar()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-        writeSettings();
-        event->accept();
+    writeSettings();
+    event->accept();
 }
 
 void MainWindow::writeSettings()
@@ -458,6 +458,10 @@ void MainWindow::createActions()
     pasteAct->setShortcuts(QKeySequence::Paste);
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 
+    delAct = new QAction(tr("&Delete"), this);
+    delAct->setShortcut(QKeySequence::Delete);
+    connect(delAct, SIGNAL(triggered()), this, SLOT(del()));
+
     showPropertyPanelAct = new QAction("Properties");
     connect(showPropertyPanelAct, SIGNAL(triggered()), this, SLOT(showPropertyPanel()));
 
@@ -470,6 +474,7 @@ void MainWindow::createActions()
     addAction(copyAct);
     addAction(pasteAct);
     addAction(exitAct);
+    addAction(delAct);
 }
 
 void MainWindow::createMenus()
@@ -488,6 +493,7 @@ void MainWindow::createMenus()
     editMenu->addAction(redoAct);
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
+    editMenu->addAction(delAct);
 
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(showToolPanelAct);
@@ -497,12 +503,17 @@ void MainWindow::createMenus()
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
+
+    this->addAction(undoAct);
+    this->addAction(redoAct);
+    this->addAction(copyAct);
+    this->addAction(pasteAct);
 }
 
 void MainWindow::about()
 {
-   QMessageBox::about(this, tr("AnimationMaker"),
-            tr("The AnimationMaker is a tool to create presentation videos.\nVersion: ") + QCoreApplication::applicationVersion());
+    QMessageBox::about(this, tr("About AnimationMaker"),
+                       tr("The AnimationMaker is a tool to create presentation videos.\nVersion: ") + QCoreApplication::applicationVersion() + "\n(C) Copyright 2017 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
 }
 
 void MainWindow::setSelectMode()
@@ -604,12 +615,12 @@ void MainWindow::showPropertyPanel()
 
 void MainWindow::showToolPanel()
 {
-     tooldock->setVisible(true);
+    tooldock->setVisible(true);
 }
 
 void MainWindow::copy()
 {
-   scene->copyItem();
+    scene->copyItem();
 }
 
 void MainWindow::paste()
@@ -617,17 +628,27 @@ void MainWindow::paste()
     scene->pasteItem();
 }
 
- void MainWindow::sceneItemRemoved(ResizeableItem *item)
- {
-     for(int i=0; i<root->childCount(); i++)
-     {
-         if(root->child(i)->data(0, 3).value<void *>() == item)
-         {
-             QTreeWidgetItem *treeItem = root->child(i);
-             root->removeChild(treeItem);
-             delete treeItem;
-             break;
-         }
-     }
-     timeline->removeItem(item);
- }
+void MainWindow::del()
+{
+    while(scene->selectedItems().count())
+    {
+        ResizeableItem *item = dynamic_cast<ResizeableItem*>(scene->selectedItems().first());
+        if(item)
+            scene->deleteItem(item);
+    }
+}
+
+void MainWindow::sceneItemRemoved(ResizeableItem *item)
+{
+    for(int i=0; i<root->childCount(); i++)
+    {
+        if(root->child(i)->data(0, 3).value<void *>() == item)
+        {
+            QTreeWidgetItem *treeItem = root->child(i);
+            root->removeChild(treeItem);
+            delete treeItem;
+            break;
+        }
+    }
+    timeline->removeItem(item);
+}

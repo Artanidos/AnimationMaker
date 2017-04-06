@@ -90,6 +90,7 @@ private:
     QAction *redoAct;
     QAction *copyAct;
     QAction *pasteAct;
+    QAction *delAct;
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *helpMenu;
@@ -117,6 +118,7 @@ public slots:
     void timelineSelectionChanged(ResizeableItem*);
     void copy();
     void paste();
+    void del();
     void sceneSizeChanged(int width, int height);
     void sceneItemRemoved(ResizeableItem *item);
     void idChanged(ResizeableItem *, QString);
