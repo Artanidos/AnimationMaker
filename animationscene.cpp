@@ -152,6 +152,8 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
 
     m_tempKeyFrame = NULL;
     dataStream >> vars;
+    qDebug() << "read" << vars;
+
     for(int i=0; i < vars; i++)
     {
         dataStream >> propertyName;
@@ -180,8 +182,8 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
 
 QDataStream& AnimationScene::read(QDataStream &dataStream)
 {
-    int type, fps;
-    qreal x, y, width, height, xscale, yscale, opacity;
+    int type, fps, opacity;
+    qreal x, y, width, height, xscale, yscale;
     QPen pen;
     QBrush brush;
     QString text, id;
@@ -328,6 +330,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
 
 void AnimationScene::writeKeyframes(QDataStream &dataStream, ResizeableItem *item) const
 {
+    qDebug() << "write" << item->keyframes()->count();
     dataStream << item->keyframes()->count();
     QHash<QString, KeyFrame*>::iterator it;
     for(it = item->keyframes()->begin(); it != item->keyframes()->end(); it++)

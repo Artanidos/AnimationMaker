@@ -30,3 +30,5 @@ Items Translation like Rotate
 ScrollArea for PropertyPanel
 
 Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
+
+Change Transition Easing
