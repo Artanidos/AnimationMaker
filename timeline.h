@@ -63,6 +63,7 @@ public slots:
     void keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key);
     void deleteKeyFrameSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
     void deleteTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
+    void addTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
 
 signals:
     void itemSelectionChanged(ResizeableItem *item);

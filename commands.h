@@ -217,6 +217,21 @@ private:
     Timeline *m_timeline;
 };
 
+class AddTransitionCommand : public QUndoCommand
+{
+public:
+    AddTransitionCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+    QString m_propertyName;
+    KeyFrame *m_frame;
+    Timeline *m_timeline;
+};
+
 class DeleteTransitionCommand : public QUndoCommand
 {
 public:

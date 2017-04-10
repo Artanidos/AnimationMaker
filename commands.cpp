@@ -388,6 +388,26 @@ void DeleteKeyframeCommand::redo()
     m_timeline->deleteKeyFrame(m_item, m_propertyName, m_frame);
 }
 
+AddTransitionCommand::AddTransitionCommand(QString propertyName, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_propertyName = propertyName;
+    m_frame = frame;
+    m_item = item;
+    m_timeline = timeline;
+    setText("Add " + getItemTypeName(item) + " Transition");
+}
+
+void AddTransitionCommand::undo()
+{
+    m_timeline->deleteTransition(m_item, m_propertyName, m_frame);
+}
+
+void AddTransitionCommand::redo()
+{
+    m_timeline->addTransition(m_item, m_propertyName, m_frame);
+}
+
 DeleteTransitionCommand::DeleteTransitionCommand(QString propertyName, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent)
     : QUndoCommand(parent)
 {

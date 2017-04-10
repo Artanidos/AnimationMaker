@@ -203,7 +203,7 @@ void TransitionLine::onCustomContextMenu(const QPoint &point)
 
 void TransitionLine::addTransition()
 {
-    m_frame->prev()->setEasing((int)QEasingCurve::Linear);
+    emit addTransition(m_item, m_propertyName, m_frame->prev());
     update();
 }
 

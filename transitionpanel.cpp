@@ -176,6 +176,7 @@ void TransitionPanel::keyframeAdded(ResizeableItem *item, QString propertyName)
         m_layout->insertWidget(m_layout->count() - 1, line);
         connect(line, SIGNAL(deleteKeyframe(ResizeableItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteKeyFrameSlot(ResizeableItem*,QString,KeyFrame*)));
         connect(line, SIGNAL(deleteTransition(ResizeableItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteTransitionSlot(ResizeableItem*,QString,KeyFrame*)));
+        connect(line, SIGNAL(addTransition(ResizeableItem*,QString,KeyFrame*)), m_timeline, SLOT(addTransitionSlot(ResizeableItem*,QString,KeyFrame*)));
         enableDisableLines();
     }
     else
