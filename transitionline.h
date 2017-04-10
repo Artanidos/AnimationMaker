@@ -42,7 +42,7 @@ public:
 
 private slots:
     void onCustomContextMenu(const QPoint &point);
-    void addTransaction();
+    void addTransition();
     void deleteKeyframe();
     void deleteTransition();
 

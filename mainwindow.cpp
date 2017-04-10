@@ -324,7 +324,7 @@ void MainWindow::createGui()
     timeline->setMinimumHeight(110);
 
     connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(timelineSelectionChanged(ResizeableItem*)));
-    connect(m_itemPropertyEditor, SIGNAL(addKeyFrame(ResizeableItem*,QString,qreal)), timeline, SLOT(addKeyFrame(ResizeableItem*,QString,qreal)));
+    connect(m_itemPropertyEditor, SIGNAL(addKeyFrame(ResizeableItem*,QString,QVariant)), timeline, SLOT(addKeyFrame(ResizeableItem*,QString,QVariant)));
 
     QSplitter *splitter = new QSplitter(Qt::Vertical);
     splitter->addWidget(view);

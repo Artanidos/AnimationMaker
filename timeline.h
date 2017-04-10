@@ -51,7 +51,7 @@ public slots:
     void revertAnimation();
     void forwardAnimation();
     void playheadValueChanged(int val);
-    void addKeyFrame(ResizeableItem *item,QString property, qreal value);
+    void addKeyFrame(ResizeableItem *item,QString property, QVariant value);
     void autokeyframes(bool value);
     void autotransitions(bool value);
     void idChanged(ResizeableItem *item, QString value);

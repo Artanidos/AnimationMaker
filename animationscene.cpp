@@ -32,6 +32,8 @@
 
 AnimationScene::AnimationScene()
 {
+    m_autokeyframes = false;
+    m_autotransitions = false;
     initialize();
 }
 

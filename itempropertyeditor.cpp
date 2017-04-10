@@ -207,27 +207,27 @@ void ItemPropertyEditor::textColorChanged(QColor color)
 
 void ItemPropertyEditor::addLeftKeyFrame()
 {
-    emit addKeyFrame(m_item, "left", m_x->value());
+    emit addKeyFrame(m_item, "left", QVariant(m_x->value()));
 }
 
 void ItemPropertyEditor::addTopKeyFrame()
 {
-    emit addKeyFrame(m_item, "top", m_y->value());
+    emit addKeyFrame(m_item, "top", QVariant(m_y->value()));
 }
 
 void ItemPropertyEditor::addWidthKeyFrame()
 {
-    emit addKeyFrame(m_item, "width", m_width->value());
+    emit addKeyFrame(m_item, "width", QVariant(m_width->value()));
 }
 
 void ItemPropertyEditor::addHeightKeyFrame()
 {
-    emit addKeyFrame(m_item, "height", m_height->value());
+    emit addKeyFrame(m_item, "height", QVariant(m_height->value()));
 }
 
 void ItemPropertyEditor::addOpacityKeyFrame()
 {
-    emit addKeyFrame(m_item, "opacity", (qreal)m_opacity->value() / 100);
+    emit addKeyFrame(m_item, "opacity", QVariant(m_opacity->value()));
 }
 
 void ItemPropertyEditor::setItem(ResizeableItem *item)
@@ -241,8 +241,8 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     m_height->setValue(m_item->rect().height());
     m_typ->setText(getItemTypeName(m_item));
     m_id->setText(item->id());
-    m_opacity->setValue(item->opacity() * 100);
-    m_opacityText->setValue(item->opacity() * 100);
+    m_opacity->setValue(item->opacity());
+    m_opacityText->setValue(item->opacity());
 
     m_textitem = dynamic_cast<Text*>(item);
     if(m_textitem)
@@ -276,7 +276,7 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     connect(item, SIGNAL(positionChanged(qreal,qreal)), this, SLOT(itemPositionChanged(qreal, qreal)));
     connect(item, SIGNAL(brushChanged(QColor)), this, SLOT(brushChanged(QColor)));
     connect(item, SIGNAL(penChanged(QColor)), this, SLOT(penChanged(QColor)));
-    connect(item, SIGNAL(opacityChanged(qreal)), this, SLOT(opacityChanged(qreal)));
+    connect(item, SIGNAL(opacityChanged(int)), this, SLOT(opacityChanged(int)));
 }
 
 void ItemPropertyEditor::brushChanged(QColor color)
@@ -402,15 +402,15 @@ void ItemPropertyEditor::changeBrush(QColor color)
 
 void ItemPropertyEditor::opacitySliderReleased()
 {
-    changeOpacity((qreal)m_opacity->value() / 100);
+    changeOpacity(m_opacity->value());
 }
 
 void ItemPropertyEditor::opacityTextChanged(int value)
 {
-    changeOpacity((qreal)value / 100);
+    changeOpacity(value);
 }
 
-void ItemPropertyEditor::changeOpacity(qreal opacity)
+void ItemPropertyEditor::changeOpacity(int opacity)
 {
     if(m_initializing)
         return;
@@ -422,15 +422,8 @@ void ItemPropertyEditor::changeOpacity(qreal opacity)
     }
 }
 
-void ItemPropertyEditor::opacityChanged(qreal opacity)
+void ItemPropertyEditor::opacityChanged(int val)
 {
-    float value = opacity * 100.0;
-    int val = value;
-    //qDebug() << opacity << "item" << value << val;
-    //qDebug() << "qreal" << (int)(qreal)(0.57 * 100.0);
-    //qDebug() << "double" << (int)(double)(0.57 * 100.0);
-    //qDebug() << "float" << (int)(float)(0.57 * 100.0);
-
     m_initializing = true;
     m_opacity->setValue(val);
     m_opacityText->setValue(val);

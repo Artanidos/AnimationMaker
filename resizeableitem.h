@@ -61,7 +61,8 @@ public:
     QBrush brush() const;
     void setBrush(const QBrush &brush);
 
-    inline void setOpacity(qreal opacity) {QGraphicsItem::setOpacity(opacity); emit opacityChanged(opacity);}
+    inline int opacity() {return m_opacity;}
+    inline void setOpacity(int opacity) {m_opacity = opacity; QGraphicsItem::setOpacity((qreal)m_opacity / 100); emit opacityChanged(opacity);}
 
     inline qreal left() {return x();}
     inline qreal top() {return y();}
@@ -72,6 +73,7 @@ public:
     void setHeight(qreal value);
 
     void addKeyframe(QString propertyName, KeyFrame *frame);
+    bool deleteKeyframe(QString propertyName, KeyFrame *frame);
     inline QHash<QString, KeyFrame*> *keyframes() {return m_keyframes;}
 
     void adjustKeyframes(QString propertyName, QVariant value, int time, bool autokeyframes, bool autotransition);
@@ -94,6 +96,7 @@ private:
     QAction *raiseAct;
     QHash<QString, KeyFrame*> *m_keyframes;
     qreal m_oldx, m_oldy, m_oldwidth, m_oldheight;
+    int m_opacity;
 
 private slots:
     void deleteItem();
@@ -110,7 +113,7 @@ signals:
     void itemRemoved(ResizeableItem *item);
     void brushChanged(QColor);
     void penChanged(QColor);
-    void opacityChanged(qreal opacity);
+    void opacityChanged(int opacity);
 
 protected:
     void setHandlePositions();

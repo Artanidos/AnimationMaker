@@ -36,6 +36,7 @@ ResizeableItem::ResizeableItem(AnimationScene *scene)
     m_hasHandles = false;
     m_xscale = 1;
     m_yscale = 1;
+    m_opacity = 100;
     m_keyframes = new QHash<QString, KeyFrame*>();
 
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
@@ -131,6 +132,27 @@ void ResizeableItem::addKeyframe(QString propertyName, KeyFrame *frame)
     }
     else
         m_keyframes->insert(propertyName, frame);
+}
+
+bool ResizeableItem::deleteKeyframe(QString propertyName, KeyFrame *frame)
+{
+    if(frame->next())
+        frame->next()->setPrev(frame->prev());
+    if(frame->prev())
+    {
+        frame->prev()->setEasing(-1);
+        frame->prev()->setNext(frame->next());
+    }
+    else
+    {
+        m_keyframes->remove(propertyName);
+        if(frame->next())
+            m_keyframes->insert(propertyName, frame->next());
+        else
+            return true;
+    }
+    delete frame;
+    return false;
 }
 
 void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option)

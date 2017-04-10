@@ -324,7 +324,7 @@ void ChangeSceneColorCommand::redo()
     m_scene->setBackgroundColor(m_color);
 }
 
-ChangeOpacityCommand::ChangeOpacityCommand(qreal opacity, qreal oldopacity, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent)
+ChangeOpacityCommand::ChangeOpacityCommand(int opacity, int oldopacity, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_opacity = opacity;
@@ -348,3 +348,21 @@ void ChangeOpacityCommand::redo()
     m_item->adjustKeyframes("opacity", QVariant(m_opacity), m_time, m_autokeyframes, m_autotransition);
 }
 
+AddKeyframeCommand::AddKeyframeCommand(QString propertyName, KeyFrame *frame, ResizeableItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_propertyName = propertyName;
+    m_frame = frame;
+    m_item = item;
+    setText("Add " + getItemTypeName(item) + " Keyframe");
+}
+
+void AddKeyframeCommand::undo()
+{
+    //m_item->addKeyframe(m_propertyName, m_frame);
+}
+
+void AddKeyframeCommand::redo()
+{
+    //m_item->addKeyframe(m_propertyName, m_frame);
+}

@@ -277,7 +277,7 @@ void Timeline::keyframeDeleted(ResizeableItem *item, QString propertyName)
     }
 }
 
-void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, qreal value)
+void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, QVariant value)
 {
     QTreeWidgetItem *treeChildItem = NULL;
     int time = m_playhead->value();
@@ -299,7 +299,7 @@ void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, qreal val
     }
 
     KeyFrame *keyframe = new KeyFrame();
-    keyframe->setValue(QVariant(value));
+    keyframe->setValue(value);
     keyframe->setTime(time);
     item->addKeyframe(propertyName, keyframe);
     if(treeChildItem)

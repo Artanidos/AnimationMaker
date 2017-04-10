@@ -173,17 +173,30 @@ private:
 class ChangeOpacityCommand : public QUndoCommand
 {
 public:
-    ChangeOpacityCommand(qreal opacity, qreal oldopacity, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
+    ChangeOpacityCommand(int opacity, int oldopacity, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
     ResizeableItem *m_item;
-    qreal m_opacity, m_oldopacity;
+    int m_opacity, m_oldopacity;
     int m_time;
     bool m_autokeyframes;
     bool m_autotransition;
 };
 
+class AddKeyframeCommand : public QUndoCommand
+{
+public:
+    AddKeyframeCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+    QString m_propertyName;
+    KeyFrame *m_frame;
+};
 #endif // COMMANDS_H

@@ -42,7 +42,7 @@ public:
     void setItem(ResizeableItem *item);
 
 signals:
-    void addKeyFrame(ResizeableItem*, QString, qreal);
+    void addKeyFrame(ResizeableItem*, QString, QVariant);
 
 private:
     bool m_initializing;
@@ -67,7 +67,7 @@ private:
     QSlider *m_opacity;
 
     void changeBrush(QColor value);
-    void changeOpacity(qreal opacity);
+    void changeOpacity(int opacity);
 
 private slots:
     void idChanged(QString value);
@@ -89,7 +89,7 @@ private slots:
     void itemPositionChanged(qreal x, qreal y);
     void opacitySliderReleased();
     void opacityTextChanged(int value);
-    void opacityChanged(qreal value);
+    void opacityChanged(int value);
     void colorChanged(QColor);
     void borderColorChanged(QColor);
     void textColorChanged(QColor);

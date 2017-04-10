@@ -71,8 +71,8 @@ public:
     inline bool autokeyframes() {return m_autokeyframes;}
     inline void setAutokeyframes(bool value) {m_autokeyframes = value;}
 
-    inline bool autotransition() {return m_autotransition;}
-    inline void setAutotransition(bool value) {m_autotransition = value;}
+    inline bool autotransition() {return m_autotransitions;}
+    inline void setAutotransition(bool value) {m_autotransitions = value;}
 
     inline void registerUndoStack(QUndoStack *stack) {m_undoStack = stack;}
     inline QUndoStack *undoStack() {return m_undoStack;}
@@ -101,7 +101,7 @@ private:
     int m_playheadPosition;
     KeyFrame *m_tempKeyFrame;
     bool m_autokeyframes;
-    bool m_autotransition;
+    bool m_autotransitions;
     QUndoStack *m_undoStack;
     ResizeableItem *m_movingItem;
     QPointF m_oldPos;
