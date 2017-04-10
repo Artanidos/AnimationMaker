@@ -266,7 +266,20 @@ void Timeline::deleteKeyFrameSlot(ResizeableItem *item, QString propertyName, Ke
 
 void Timeline::deleteTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame)
 {
+    QUndoCommand *cmd = new DeleteTransitionCommand(propertyName, frame, item, this);
+    m_scene->undoStack()->push(cmd);
+}
+
+void Timeline::deleteTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+{
     frame->setEasing(-1);
+    m_transitionPanel->transitionDeleted(item, propertyName);
+}
+
+void Timeline::addTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+{
+    frame->setEasing((int)QEasingCurve::Linear);
+    m_transitionPanel->transitionAdded(item, propertyName);
 }
 
 void Timeline::deleteKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame)

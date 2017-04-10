@@ -182,6 +182,34 @@ void TransitionPanel::keyframeAdded(ResizeableItem *item, QString propertyName)
         update();
 }
 
+
+void TransitionPanel::transitionAdded(ResizeableItem *item, QString propertyName)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line && line->propertyName() == propertyName && line->item() == item)
+        {
+            line->update();
+            break;
+        }
+    }
+}
+
+
+void TransitionPanel::transitionDeleted(ResizeableItem *item, QString propertyName)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line && line->propertyName() == propertyName && line->item() == item)
+        {
+            line->update();
+            break;
+        }
+    }
+}
+
 void TransitionPanel::keyframeDeleted(ResizeableItem *item, QString propertyName)
 {
     if(!item->keyframes()->value(propertyName))

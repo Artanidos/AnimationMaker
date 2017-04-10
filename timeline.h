@@ -45,6 +45,8 @@ public:
     void selectItem(ResizeableItem *item);
     void addKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame);
     void deleteKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame);
+    void addTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame);
+    void deleteTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame);
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
@@ -66,6 +68,7 @@ signals:
     void itemSelectionChanged(ResizeableItem *item);
     void keyframeAdded(ResizeableItem *item, QString propertyName);
     void keyframeDeleted(ResizeableItem *item, QString propertyName);
+    void transitionDeleted(ResizeableItem *item, QString propertyName);
 
 private:
     QTreeWidget *m_tree;

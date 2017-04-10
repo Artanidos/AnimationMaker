@@ -41,6 +41,8 @@ public:
     void setPlayheadPosition(int value);
     void removeItem(ResizeableItem *item);
     inline void registerTimeline(Timeline *timeline) {m_timeline = timeline;}
+    void transitionAdded(ResizeableItem *item, QString propertyName);
+    void transitionDeleted(ResizeableItem *item, QString propertyName);
 
 public slots:
     void treeExpanded(QModelIndex);
