@@ -258,6 +258,17 @@ void Timeline::idChanged(ResizeableItem *item, QString value)
     }
 }
 
+void Timeline::deleteKeyFrameSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+{
+    QUndoCommand *cmd = new DeleteKeyframeCommand(propertyName, frame, item, this);
+    m_scene->undoStack()->push(cmd);
+}
+
+void Timeline::deleteTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+{
+    frame->setEasing(-1);
+}
+
 void Timeline::deleteKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame)
 {
     if(item->deleteKeyframe(propertyName, frame))

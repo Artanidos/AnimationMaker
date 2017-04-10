@@ -174,6 +174,8 @@ void TransitionPanel::keyframeAdded(ResizeableItem *item, QString propertyName)
         TransitionLine *line = new TransitionLine(item, propertyName);
         line->setScrollValue(m_horizontalScrollPos);
         m_layout->insertWidget(m_layout->count() - 1, line);
+        connect(line, SIGNAL(deleteKeyframe(ResizeableItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteKeyFrameSlot(ResizeableItem*,QString,KeyFrame*)));
+        connect(line, SIGNAL(deleteTransition(ResizeableItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteTransitionSlot(ResizeableItem*,QString,KeyFrame*)));
         enableDisableLines();
     }
     else

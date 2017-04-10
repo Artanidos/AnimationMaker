@@ -209,12 +209,13 @@ void TransitionLine::addTransition()
 
 void TransitionLine::deleteKeyframe()
 {
-    m_item->deleteKeyframe(m_propertyName, m_frame);
+    emit deleteKeyframe(m_item, m_propertyName, m_frame);
     update();
 }
 
 void TransitionLine::deleteTransition()
 {
-    m_frame->setEasing(-1);
+    //m_frame->setEasing(-1);
+    emit deleteTransition(m_item, m_propertyName, m_frame);
     update();
 }

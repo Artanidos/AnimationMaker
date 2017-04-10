@@ -59,6 +59,8 @@ public slots:
     void idChanged(ResizeableItem *item, QString value);
     void treeCurrentItemChanged(QTreeWidgetItem *currentItem, QTreeWidgetItem*);
     void keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key);
+    void deleteKeyFrameSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
+    void deleteTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
 
 signals:
     void itemSelectionChanged(ResizeableItem *item);

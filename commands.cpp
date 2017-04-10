@@ -367,3 +367,23 @@ void AddKeyframeCommand::redo()
 {
     m_timeline->addKeyFrame(m_item, m_propertyName, m_frame);
 }
+
+DeleteKeyframeCommand::DeleteKeyframeCommand(QString propertyName, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_propertyName = propertyName;
+    m_frame = frame;
+    m_item = item;
+    m_timeline = timeline;
+    setText("Delete " + getItemTypeName(item) + " Keyframe");
+}
+
+void DeleteKeyframeCommand::undo()
+{
+    m_timeline->addKeyFrame(m_item, m_propertyName, m_frame);
+}
+
+void DeleteKeyframeCommand::redo()
+{
+    m_timeline->deleteKeyFrame(m_item, m_propertyName, m_frame);
+}

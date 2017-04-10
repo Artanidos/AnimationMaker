@@ -201,4 +201,20 @@ private:
     KeyFrame *m_frame;
     Timeline *m_timeline;
 };
+
+class DeleteKeyframeCommand : public QUndoCommand
+{
+public:
+    DeleteKeyframeCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+    QString m_propertyName;
+    KeyFrame *m_frame;
+    Timeline *m_timeline;
+};
+
 #endif // COMMANDS_H
