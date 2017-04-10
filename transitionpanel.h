@@ -47,6 +47,7 @@ public slots:
     void treeCollapsed(QModelIndex);
     void treeScrollValueChanged(int);
     void keyframeAdded(ResizeableItem *item, QString propertyName);
+    void keyframeDeleted(ResizeableItem *item, QString propertyName);
     void scrollValueChanged(int pos);
 
 private:

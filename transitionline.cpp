@@ -209,8 +209,7 @@ void TransitionLine::addTransition()
 
 void TransitionLine::deleteKeyframe()
 {
-    if(m_item->deleteKeyframe(m_propertyName, m_frame))
-        emit keyframeDeleted(m_item, m_propertyName);
+    m_item->deleteKeyframe(m_propertyName, m_frame);
     update();
 }
 

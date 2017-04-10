@@ -80,6 +80,8 @@ public:
 
     void posChanged(qreal x, qreal y);
 
+    inline AnimationScene *scene() {return m_scene;}
+
 private:
     AnimationScene *m_scene;
     ItemHandle*  m_handles[8];

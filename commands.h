@@ -24,6 +24,7 @@
 #include <QUndoCommand>
 #include "animationscene.h"
 #include "resizeableitem.h"
+#include "timeline.h"
 #include "text.h"
 
 class AddItemCommand : public QUndoCommand
@@ -189,7 +190,7 @@ private:
 class AddKeyframeCommand : public QUndoCommand
 {
 public:
-    AddKeyframeCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, QUndoCommand *parent = 0);
+    AddKeyframeCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -198,5 +199,6 @@ private:
     ResizeableItem *m_item;
     QString m_propertyName;
     KeyFrame *m_frame;
+    Timeline *m_timeline;
 };
 #endif // COMMANDS_H

@@ -21,6 +21,7 @@
 #include "timeline.h"
 #include "resizeableitem.h"
 #include "keyframe.h"
+#include "commands.h"
 
 #include <QHeaderView>
 #include <QLabel>
@@ -117,6 +118,7 @@ Timeline::Timeline(AnimationScene *scene)
     connect(m_tree, SIGNAL(expanded(QModelIndex)), m_transitionPanel, SLOT(treeExpanded(QModelIndex)));
     connect(m_tree, SIGNAL(collapsed(QModelIndex)), m_transitionPanel, SLOT(treeCollapsed(QModelIndex)));
     connect(this, SIGNAL(keyframeAdded(ResizeableItem*,QString)), m_transitionPanel, SLOT(keyframeAdded(ResizeableItem *, QString)));
+    connect(this, SIGNAL(keyframeDeleted(ResizeableItem*,QString)), m_transitionPanel, SLOT(keyframeDeleted(ResizeableItem*,QString)));
 
     connect(m_tree->verticalScrollBar(), SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(treeScrollValueChanged(int)));
 
@@ -256,31 +258,44 @@ void Timeline::idChanged(ResizeableItem *item, QString value)
     }
 }
 
-void Timeline::keyframeDeleted(ResizeableItem *item, QString propertyName)
+void Timeline::deleteKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame)
 {
-    QTreeWidgetItem *treeItem = search(item);
-    if(treeItem)
+    if(item->deleteKeyframe(propertyName, frame))
     {
-        QTreeWidgetItem *treeChildItem = search(treeItem, propertyName);
-        if(treeChildItem)
+        QTreeWidgetItem *treeItem = search(item);
+        if(treeItem)
         {
-            treeItem->removeChild(treeChildItem);
-            delete treeChildItem;
-
-            if(treeItem->childCount() == 0)
+            QTreeWidgetItem *treeChildItem = search(treeItem, propertyName);
+            if(treeChildItem)
             {
-                int index = m_tree->indexOfTopLevelItem(treeItem);
-                m_tree->takeTopLevelItem(index);
-                delete treeItem;
+                treeItem->removeChild(treeChildItem);
+                delete treeChildItem;
+
+                if(treeItem->childCount() == 0)
+                {
+                    int index = m_tree->indexOfTopLevelItem(treeItem);
+                    m_tree->takeTopLevelItem(index);
+                    delete treeItem;
+                }
             }
         }
     }
+    emit keyframeDeleted(item, propertyName);
 }
 
 void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, QVariant value)
 {
+    KeyFrame *keyframe = new KeyFrame();
+    keyframe->setValue(value);
+    keyframe->setTime(m_playhead->value());
+
+    QUndoCommand *cmd = new AddKeyframeCommand(propertyName, keyframe, item, this);
+    item->scene()->undoStack()->push(cmd);
+}
+
+void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+{
     QTreeWidgetItem *treeChildItem = NULL;
-    int time = m_playhead->value();
 
     QTreeWidgetItem *treeItem = search(item);
     if(treeItem)
@@ -298,21 +313,18 @@ void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, QVariant 
         emit keyframeAdded(item, NULL);
     }
 
-    KeyFrame *keyframe = new KeyFrame();
-    keyframe->setValue(value);
-    keyframe->setTime(time);
-    item->addKeyframe(propertyName, keyframe);
+    item->addKeyframe(propertyName, frame);
     if(treeChildItem)
     {
         QVariant var = treeChildItem->data(0, 1);
         QList<KeyFrame*> *list = (QList<KeyFrame*>*) var.value<void *>();
-        list->append(keyframe);
+        list->append(frame);
         emit keyframeAdded(NULL, NULL);
     }
     else
     {
         QList<KeyFrame*> *list = new QList<KeyFrame*>();
-        list->append(keyframe);
+        list->append(frame);
         treeChildItem = new QTreeWidgetItem();
         treeChildItem->setText(0, propertyName);
         treeChildItem->setData(0, 1, qVariantFromValue((void *) list));

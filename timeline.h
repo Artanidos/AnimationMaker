@@ -43,6 +43,8 @@ public:
     int lastKeyframe();
     void removeItem(ResizeableItem *item);
     void selectItem(ResizeableItem *item);
+    void addKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame);
+    void deleteKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame);
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
@@ -57,11 +59,11 @@ public slots:
     void idChanged(ResizeableItem *item, QString value);
     void treeCurrentItemChanged(QTreeWidgetItem *currentItem, QTreeWidgetItem*);
     void keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key);
-    void keyframeDeleted(ResizeableItem *item, QString propertyName);
 
 signals:
     void itemSelectionChanged(ResizeableItem *item);
     void keyframeAdded(ResizeableItem *item, QString propertyName);
+    void keyframeDeleted(ResizeableItem *item, QString propertyName);
 
 private:
     QTreeWidget *m_tree;

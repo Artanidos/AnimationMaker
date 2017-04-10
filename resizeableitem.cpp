@@ -151,7 +151,6 @@ bool ResizeableItem::deleteKeyframe(QString propertyName, KeyFrame *frame)
         else
             return true;
     }
-    delete frame;
     return false;
 }
 

@@ -46,9 +46,6 @@ private slots:
     void deleteKeyframe();
     void deleteTransition();
 
-signals:
-    void keyframeDeleted(ResizeableItem *item, QString propertyName);
-
 private:
     QImage m_imageRaute;
     QImage m_imageRauteHohl;

@@ -173,12 +173,32 @@ void TransitionPanel::keyframeAdded(ResizeableItem *item, QString propertyName)
     {
         TransitionLine *line = new TransitionLine(item, propertyName);
         line->setScrollValue(m_horizontalScrollPos);
-        connect(line, SIGNAL(keyframeDeleted(ResizeableItem*,QString)), m_timeline, SLOT(keyframeDeleted(ResizeableItem*,QString)));
         m_layout->insertWidget(m_layout->count() - 1, line);
         enableDisableLines();
     }
     else
         update();
+}
+
+void TransitionPanel::keyframeDeleted(ResizeableItem *item, QString propertyName)
+{
+    if(!item->keyframes()->value(propertyName))
+    {
+        for(int i = 0; i < m_layout->count(); i++)
+        {
+            TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+            if(line)
+            {
+                if(line->propertyName() == propertyName && line->item() == item)
+                {
+                    m_layout->removeWidget(line);
+                    break;
+                }
+            }
+        }
+    }
+    enableDisableLines();
+    update();
 }
 
 void TransitionPanel::resizeEvent(QResizeEvent *)
