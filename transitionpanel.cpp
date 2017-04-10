@@ -183,7 +183,6 @@ void TransitionPanel::keyframeAdded(ResizeableItem *item, QString propertyName)
         update();
 }
 
-
 void TransitionPanel::transitionAdded(ResizeableItem *item, QString propertyName)
 {
     for(int i = 0; i < m_layout->count(); i++)

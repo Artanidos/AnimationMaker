@@ -23,5 +23,6 @@
         <file>images/pause.png</file>
         <file>images/autokeyframe.png</file>
         <file>images/autotransition.png</file>
+        <file>images/logo.png</file>
     </qresource>
 </RCC>

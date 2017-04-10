@@ -1,10 +1,6 @@
 
 Icon integrate for each platform
 
-Undo / Redo - QUndoCommand - QUndoStack
-    keyframe add/delete
-    transition add/delete
-
 ColorAnimation ?
 
 additional properties?

@@ -512,8 +512,13 @@ void MainWindow::createMenus()
 
 void MainWindow::about()
 {
-    QMessageBox::about(this, tr("About AnimationMaker"),
-                       tr("The AnimationMaker is a tool to create presentation videos.\nVersion: ") + QCoreApplication::applicationVersion() + "\n(C) Copyright 2017 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
+    //QMessageBox::about(this, tr("About AnimationMaker (Community Edition)"),
+    //                   tr("The AnimationMaker is a tool to create presentation videos.\nVersion: ") + QCoreApplication::applicationVersion() + "\n(C) Copyright 2017 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.\n\nTHIS COMMUNITY EDITION IS FOR NON COMMERCIAL USAGE ONLY!");
+    QMessageBox *msg = new QMessageBox(this);
+    msg->setWindowTitle("About AnimationMaker (Community Edition)");
+    msg->setText("The AnimationMaker is a tool to create presentation videos.\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2017 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.\n\nTHIS COMMUNITY EDITION IS FOR NON COMMERCIAL USAGE ONLY!");
+    msg->setIconPixmap(QPixmap(":/images/logo.png"));
+    msg->show();
 }
 
 void MainWindow::setSelectMode()
