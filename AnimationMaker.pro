@@ -52,7 +52,12 @@ SOURCES += main.cpp\
     colorrect.cpp \
     commands.cpp \
     exception.cpp \
-    coloreditor.cpp
+    coloreditor.cpp \
+    handleitem.cpp \
+    keyframehandle.cpp \
+    serializeableitem.cpp \
+    textpropertyeditor.cpp \
+    timelinetreeview.cpp
 
 HEADERS  += mainwindow.h \
     animationscene.h \
@@ -75,7 +80,13 @@ HEADERS  += mainwindow.h \
     colorrect.h \
     commands.h \
     exception.h \
-    coloreditor.h
+    coloreditor.h \
+    handleitem.h \
+    keyframehandle.h \
+    scene.h \
+    serializeableitem.h \
+    textpropertyeditor.h \
+    timelinetreeview.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 
@@ -95,7 +106,10 @@ RESOURCES += \
     images.qrc
 
 DISTFILES += \
-    todo.txt
+    todo.txt \
+    Deploy/AppImage/default.desktop \
+    Deploy/AppImage/create.sh \
+    Deploy/AppImage/default.png
 
 FORMS +=
 
