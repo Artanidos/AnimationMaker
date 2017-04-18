@@ -31,13 +31,6 @@ TEMPLATE = app
 DESTDIR += usr/bin
 target.path += /usr/bin
 INSTALLS += target
-imageformats.path += $$[QT_INSTALL_PLUGINS]/imageformats
-INSTALLS += imageformats
-platforms.path += $$[QT_INSTALL_PLUGINS]/platforms
-INSTALLS += platforms
-iconengines.path += $$[QT_INSTALL_PLUGINS]/iconengines
-INSTALLS += iconengines
-
 
 SOURCES += main.cpp\
         mainwindow.cpp \
