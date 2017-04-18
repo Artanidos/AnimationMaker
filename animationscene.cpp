@@ -19,8 +19,6 @@
 ****************************************************************************/
 
 #include "animationscene.h"
-#include "serializeableitem.h"
-#include "handleitem.h"
 #include "rectangle.h"
 #include "ellipse.h"
 #include "text.h"

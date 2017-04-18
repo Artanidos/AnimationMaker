@@ -52,12 +52,7 @@ SOURCES += main.cpp\
     colorrect.cpp \
     commands.cpp \
     exception.cpp \
-    coloreditor.cpp \
-    handleitem.cpp \
-    keyframehandle.cpp \
-    serializeableitem.cpp \
-    textpropertyeditor.cpp \
-    timelinetreeview.cpp
+    coloreditor.cpp
 
 HEADERS  += mainwindow.h \
     animationscene.h \
@@ -80,13 +75,7 @@ HEADERS  += mainwindow.h \
     colorrect.h \
     commands.h \
     exception.h \
-    coloreditor.h \
-    handleitem.h \
-    keyframehandle.h \
-    scene.h \
-    serializeableitem.h \
-    textpropertyeditor.h \
-    timelinetreeview.h
+    coloreditor.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

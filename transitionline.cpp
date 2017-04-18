@@ -19,7 +19,6 @@
 ****************************************************************************/
 
 #include "transitionline.h"
-#include "keyframehandle.h"
 #include "commands.h"
 
 #include <QPainter>
