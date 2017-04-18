@@ -30,6 +30,7 @@ TARGET = AnimationMaker
 TEMPLATE = app
 DESTDIR += usr/bin
 target.path += /usr/bin
+INSTALLS += target
 
 SOURCES += main.cpp\
         mainwindow.cpp \
