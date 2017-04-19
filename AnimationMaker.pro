@@ -28,8 +28,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = AnimationMaker
 TEMPLATE = app
-DESTDIR += usr/bin
-target.path += /usr/bin
+target.path += /bin
 INSTALLS += target
 
 SOURCES += main.cpp\
