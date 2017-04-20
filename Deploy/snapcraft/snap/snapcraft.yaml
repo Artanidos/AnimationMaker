@@ -1,0 +1,21 @@
+name: animationmaker
+version: '1.0'
+summary: Create keyframe animation and export them to a movie file
+description: |
+  This app can be used to create animated movie based on keyframe animations.
+
+grade: stable
+confinement: strict
+
+apps:
+  animationmaker:
+    command: desktop-launch AnimationMaker
+    plugs: [x11,home,unity7]
+
+parts:
+  animationmaker:
+    plugin: dump
+    prime:
+      - bin/*
+      - lib/*
+    after: [desktop-qt5]

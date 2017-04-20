@@ -88,7 +88,7 @@ LIBS += -lavutil
 LIBS += -lavformat
 LIBS += -lavcodec
 LIBS += -lswresample
-LIBS += -lavfilter
+#LIBS += -lavfilter
 LIBS += -lswscale
 LIBS += -lm
 LIBS += -ldl
@@ -100,7 +100,8 @@ DISTFILES += \
     todo.txt \
     Deploy/AppImage/default.desktop \
     Deploy/AppImage/create.sh \
-    Deploy/AppImage/default.png
+    Deploy/AppImage/default.png \
+    Deploy/snapcraft/snap/snapcraft.yaml
 
 FORMS +=
 
