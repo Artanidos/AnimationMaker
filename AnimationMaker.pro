@@ -101,7 +101,9 @@ DISTFILES += \
     Deploy/AppImage/default.desktop \
     Deploy/AppImage/create.sh \
     Deploy/AppImage/default.png \
-    Deploy/snapcraft/snap/snapcraft.yaml
+    Deploy/snapcraft/snap/snapcraft.yaml \
+    Deploy/snapcraft/snap/gui/animationmaker.desktop \
+    Deploy/snapcraft/snap/gui/icon.png
 
 FORMS +=
 

@@ -34,3 +34,12 @@ Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
 Change Transition Easing
 
 Change Text font
+
+
+
+SNAP
+----
+Publishing checks failed.
+To release this to stable channel please request a review on the snapcraft list.
+Use devmode in the edge or beta channels to disable confinement.
+  - desktop interfaces (unity7,x11) specified without meta/gui/*.desktop. Please provide a desktop file via setup/gui/*.desktop if using snapcraft or meta/gui/*.desktop otherwise. It should reference one of the 'apps' from your snapcraft/snap.yaml.
