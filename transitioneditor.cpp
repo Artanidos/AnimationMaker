@@ -231,35 +231,35 @@ void TransitionEditor::setKeyframe(KeyFrame *frame)
             m_easing->setCurrentRow(4);
             m_type->setCurrentRow(6);
             break;
-        case QEasingCurve::InElastic:
-            m_easing->setCurrentRow(1);
-            m_type->setCurrentRow(7);
-            break;
-        case QEasingCurve::OutElastic:
-            m_easing->setCurrentRow(2);
-            m_type->setCurrentRow(7);
-            break;
-        case QEasingCurve::InOutElastic:
-            m_easing->setCurrentRow(3);
-            m_type->setCurrentRow(7);
-            break;
-        case QEasingCurve::OutInElastic:
-            m_easing->setCurrentRow(4);
-            m_type->setCurrentRow(7);
-            break;
         case QEasingCurve::InBack:
             m_easing->setCurrentRow(1);
-            m_type->setCurrentRow(8);
+            m_type->setCurrentRow(7);
             break;
         case QEasingCurve::OutBack:
             m_easing->setCurrentRow(2);
-            m_type->setCurrentRow(8);
+            m_type->setCurrentRow(7);
             break;
         case QEasingCurve::InOutBack:
             m_easing->setCurrentRow(3);
-            m_type->setCurrentRow(8);
+            m_type->setCurrentRow(7);
             break;
         case QEasingCurve::OutInBack:
+            m_easing->setCurrentRow(4);
+            m_type->setCurrentRow(7);
+            break;
+        case QEasingCurve::InElastic:
+            m_easing->setCurrentRow(1);
+            m_type->setCurrentRow(8);
+            break;
+        case QEasingCurve::OutElastic:
+            m_easing->setCurrentRow(2);
+            m_type->setCurrentRow(8);
+            break;
+        case QEasingCurve::InOutElastic:
+            m_easing->setCurrentRow(3);
+            m_type->setCurrentRow(8);
+            break;
+        case QEasingCurve::OutInElastic:
             m_easing->setCurrentRow(4);
             m_type->setCurrentRow(8);
             break;
