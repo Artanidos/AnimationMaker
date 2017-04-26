@@ -247,5 +247,17 @@ private:
     Timeline *m_timeline;
 };
 
+class ChangeEasingCommand : public QUndoCommand
+{
+public:
+    ChangeEasingCommand(int easing, int oldeasing, KeyFrame *frame, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    KeyFrame *m_frame;
+    int m_easing, m_oldeasing;
+};
 
 #endif // COMMANDS_H

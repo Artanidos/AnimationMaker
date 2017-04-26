@@ -427,3 +427,22 @@ void DeleteTransitionCommand::redo()
 {
     m_timeline->deleteTransition(m_item, m_propertyName, m_frame);
 }
+
+ChangeEasingCommand::ChangeEasingCommand(int easing, int oldeasing, KeyFrame *frame, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_easing = easing;
+    m_oldeasing = oldeasing;
+    m_frame = frame;
+    setText("Change  Easing");
+}
+
+void ChangeEasingCommand::undo()
+{
+    m_frame->setEasing(m_oldeasing);
+}
+
+void ChangeEasingCommand::redo()
+{
+    m_frame->setEasing(m_easing);
+}

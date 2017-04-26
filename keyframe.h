@@ -23,8 +23,9 @@
 
 #include <QVariant>
 
-class KeyFrame
+class KeyFrame : public QObject
 {
+    Q_OBJECT
 public:
     KeyFrame();
 
@@ -33,11 +34,14 @@ public:
     inline int time() {return m_time;}
     inline void setTime(int value) {m_time = value;}
     inline int easing() {return m_easing;}
-    inline void setEasing(int value) {m_easing = value;}
+    inline void setEasing(int value) {m_easing = value; emit easingChanged(value);}
     inline KeyFrame *next() {return m_next;}
     inline void setNext(KeyFrame *value) {m_next = value;}
     inline KeyFrame *prev() {return m_prev;}
     inline void setPrev(KeyFrame *value) {m_prev = value;}
+
+signals:
+    void easingChanged(int);
 
 private:
     QVariant m_value;

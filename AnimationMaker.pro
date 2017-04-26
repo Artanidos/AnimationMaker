@@ -90,7 +90,6 @@ LIBS += -lavutil
 LIBS += -lavformat
 LIBS += -lavcodec
 LIBS += -lswresample
-#LIBS += -lavfilter
 LIBS += -lswscale
 LIBS += -lm
 LIBS += -ldl

@@ -20,6 +20,7 @@
 
 #include "transitioneditor.h"
 #include "expander.h"
+#include "commands.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QTreeWidget>
@@ -29,6 +30,7 @@
 
 TransitionEditor::TransitionEditor()
 {
+    m_initializing = false;
     m_linear = QPixmap(":/images/linear.png");
     m_inquad = QPixmap(":/images/inquad.png");
     m_incubiq = QPixmap(":/images/incubiq.png");
@@ -113,8 +115,17 @@ TransitionEditor::TransitionEditor()
 
 void TransitionEditor::setKeyframe(KeyFrame *frame)
 {
+    m_initializing = true;
     m_frame = frame;
-    switch(m_frame->easing())
+    easingChanged(frame->easing());
+    connect(m_frame, SIGNAL(easingChanged(int)), this, SLOT(easingChanged(int)));
+    m_initializing = false;
+}
+
+void TransitionEditor::easingChanged(int easing)
+{
+    m_initializing = true;
+    switch(easing)
     {
         case QEasingCurve::Linear:
             m_easing->setCurrentRow(0);
@@ -280,6 +291,7 @@ void TransitionEditor::setKeyframe(KeyFrame *frame)
             m_type->setCurrentRow(9);
             break;
     }
+    m_initializing = false;
 }
 
 void TransitionEditor::listRowChanged(int row)
@@ -288,6 +300,14 @@ void TransitionEditor::listRowChanged(int row)
         m_type->setRowHidden(i, row == 0);
 
     setCurve();
+}
+
+void TransitionEditor::changeEasing(int easing)
+{
+    if(m_initializing)
+        return;
+    QUndoCommand *cmd = new ChangeEasingCommand(easing, m_frame->easing(), m_frame);
+    m_undoStack->push(cmd);
 }
 
 void TransitionEditor::setCurve()
@@ -299,7 +319,7 @@ void TransitionEditor::setCurve()
     {
         case 0: // Linear
             m_curve->setPixmap(m_linear);
-            m_frame->setEasing(QEasingCurve::Linear);
+            changeEasing(QEasingCurve::Linear);
             break;
         case 1: // Ease In
         {
@@ -307,43 +327,43 @@ void TransitionEditor::setCurve()
             {
                 case 0: // Quad
                     m_curve->setPixmap(m_inquad);
-                    m_frame->setEasing(QEasingCurve::InQuad);
+                    changeEasing(QEasingCurve::InQuad);
                     break;
                 case 1: // Cubiq
                     m_curve->setPixmap(m_incubiq);
-                    m_frame->setEasing(QEasingCurve::InCubic);
+                    changeEasing(QEasingCurve::InCubic);
                     break;
                 case 2: // Quart
                     m_curve->setPixmap(m_inquart);
-                    m_frame->setEasing(QEasingCurve::InQuart);
+                    changeEasing(QEasingCurve::InQuart);
                     break;
                 case 3: // Quint
                     m_curve->setPixmap(m_inquint);
-                    m_frame->setEasing(QEasingCurve::InQuint);
+                    changeEasing(QEasingCurve::InQuint);
                     break;
                 case 4: // Sine
                     m_curve->setPixmap(m_insine);
-                    m_frame->setEasing(QEasingCurve::InSine);
+                    changeEasing(QEasingCurve::InSine);
                     break;
                 case 5: // Expo
                     m_curve->setPixmap(m_inexpo);
-                    m_frame->setEasing(QEasingCurve::InExpo);
+                    changeEasing(QEasingCurve::InExpo);
                     break;
                 case 6: // Cirq
                     m_curve->setPixmap(m_incirq);
-                    m_frame->setEasing(QEasingCurve::InCirc);
+                    changeEasing(QEasingCurve::InCirc);
                     break;
                 case 7: // Back
                     m_curve->setPixmap(m_inback);
-                    m_frame->setEasing(QEasingCurve::InBack);
+                    changeEasing(QEasingCurve::InBack);
                     break;
                 case 8: // Elastic
                     m_curve->setPixmap(m_inelastic);
-                    m_frame->setEasing(QEasingCurve::InElastic);
+                    changeEasing(QEasingCurve::InElastic);
                     break;
                 case 9:
                     m_curve->setPixmap(m_inbounce);
-                    m_frame->setEasing(QEasingCurve::InBounce);
+                    changeEasing(QEasingCurve::InBounce);
                     break;
             }
             break;
@@ -354,43 +374,43 @@ void TransitionEditor::setCurve()
             {
                 case 0: // Quad
                     m_curve->setPixmap(m_outquad);
-                    m_frame->setEasing(QEasingCurve::OutQuad);
+                    changeEasing(QEasingCurve::OutQuad);
                     break;
                 case 1: // Cubiq
                     m_curve->setPixmap(m_outcubiq);
-                    m_frame->setEasing(QEasingCurve::OutCubic);
+                    changeEasing(QEasingCurve::OutCubic);
                     break;
                 case 2: // Quart
                     m_curve->setPixmap(m_outquart);
-                    m_frame->setEasing(QEasingCurve::OutQuart);
+                    changeEasing(QEasingCurve::OutQuart);
                     break;
                 case 3: // Quint
                     m_curve->setPixmap(m_outquint);
-                    m_frame->setEasing(QEasingCurve::OutQuint);
+                    changeEasing(QEasingCurve::OutQuint);
                     break;
                 case 4: // Sine
                     m_curve->setPixmap(m_outsine);
-                    m_frame->setEasing(QEasingCurve::OutSine);
+                    changeEasing(QEasingCurve::OutSine);
                     break;
                 case 5: // Expo
                     m_curve->setPixmap(m_outexpo);
-                    m_frame->setEasing(QEasingCurve::OutExpo);
+                    changeEasing(QEasingCurve::OutExpo);
                     break;
                 case 6: // Cirq
                     m_curve->setPixmap(m_outcirq);
-                    m_frame->setEasing(QEasingCurve::OutCirc);
+                    changeEasing(QEasingCurve::OutCirc);
                     break;
                 case 7: // Back
                     m_curve->setPixmap(m_outback);
-                    m_frame->setEasing(QEasingCurve::OutBack);
+                    changeEasing(QEasingCurve::OutBack);
                     break;
                 case 8: // Elastic
                     m_curve->setPixmap(m_outelastic);
-                    m_frame->setEasing(QEasingCurve::OutElastic);
+                    changeEasing(QEasingCurve::OutElastic);
                     break;
                 case 9:
                     m_curve->setPixmap(m_outbounce);
-                    m_frame->setEasing(QEasingCurve::OutBounce);
+                    changeEasing(QEasingCurve::OutBounce);
                     break;
             }
             break;
@@ -401,43 +421,43 @@ void TransitionEditor::setCurve()
             {
                 case 0: // Quad
                     m_curve->setPixmap(m_inoutquad);
-                    m_frame->setEasing(QEasingCurve::InOutQuad);
+                    changeEasing(QEasingCurve::InOutQuad);
                     break;
                 case 1: // Cubiq
                     m_curve->setPixmap(m_inoutcubiq);
-                    m_frame->setEasing(QEasingCurve::InOutCubic);
+                    changeEasing(QEasingCurve::InOutCubic);
                     break;
                 case 2: // Quart
                     m_curve->setPixmap(m_inoutquart);
-                    m_frame->setEasing(QEasingCurve::InOutQuart);
+                    changeEasing(QEasingCurve::InOutQuart);
                     break;
                 case 3: // Quint
                     m_curve->setPixmap(m_inoutquint);
-                    m_frame->setEasing(QEasingCurve::InOutQuint);
+                    changeEasing(QEasingCurve::InOutQuint);
                     break;
                 case 4: // Sine
                     m_curve->setPixmap(m_inoutsine);
-                    m_frame->setEasing(QEasingCurve::InOutSine);
+                    changeEasing(QEasingCurve::InOutSine);
                     break;
                 case 5: // Expo
                     m_curve->setPixmap(m_inoutexpo);
-                    m_frame->setEasing(QEasingCurve::InOutExpo);
+                    changeEasing(QEasingCurve::InOutExpo);
                     break;
                 case 6: // Cirq
                     m_curve->setPixmap(m_inoutcirq);
-                    m_frame->setEasing(QEasingCurve::InOutCirc);
+                    changeEasing(QEasingCurve::InOutCirc);
                     break;
                 case 7: // Back
                     m_curve->setPixmap(m_inoutback);
-                    m_frame->setEasing(QEasingCurve::InOutBack);
+                    changeEasing(QEasingCurve::InOutBack);
                     break;
                 case 8: // Elastic
                     m_curve->setPixmap(m_inoutelastic);
-                    m_frame->setEasing(QEasingCurve::InOutElastic);
+                    changeEasing(QEasingCurve::InOutElastic);
                     break;
                 case 9:
                     m_curve->setPixmap(m_inoutbounce);
-                    m_frame->setEasing(QEasingCurve::InOutBounce);
+                    changeEasing(QEasingCurve::InOutBounce);
                     break;
             }
             break;
@@ -448,43 +468,43 @@ void TransitionEditor::setCurve()
             {
                 case 0: // Quad
                     m_curve->setPixmap(m_outinquad);
-                    m_frame->setEasing(QEasingCurve::OutInQuad);
+                    changeEasing(QEasingCurve::OutInQuad);
                     break;
                 case 1: // Cubiq
                     m_curve->setPixmap(m_outincubiq);
-                    m_frame->setEasing(QEasingCurve::OutInCubic);
+                    changeEasing(QEasingCurve::OutInCubic);
                     break;
                 case 2: // Quart
                     m_curve->setPixmap(m_outinquart);
-                    m_frame->setEasing(QEasingCurve::OutInQuart);
+                    changeEasing(QEasingCurve::OutInQuart);
                     break;
                 case 3: // Quint
                     m_curve->setPixmap(m_outinquint);
-                    m_frame->setEasing(QEasingCurve::OutInQuint);
+                    changeEasing(QEasingCurve::OutInQuint);
                     break;
                 case 4: // Sine
                     m_curve->setPixmap(m_outinsine);
-                    m_frame->setEasing(QEasingCurve::OutInSine);
+                    changeEasing(QEasingCurve::OutInSine);
                     break;
                 case 5: // Expo
                     m_curve->setPixmap(m_outinexpo);
-                    m_frame->setEasing(QEasingCurve::OutInExpo);
+                    changeEasing(QEasingCurve::OutInExpo);
                     break;
                 case 6: // Cirq
                     m_curve->setPixmap(m_outincirq);
-                    m_frame->setEasing(QEasingCurve::OutInCirc);
+                    changeEasing(QEasingCurve::OutInCirc);
                     break;
                 case 7: // Back
                     m_curve->setPixmap(m_outinback);
-                    m_frame->setEasing(QEasingCurve::OutInBack);
+                    changeEasing(QEasingCurve::OutInBack);
                     break;
                 case 8: // Elastic
                     m_curve->setPixmap(m_outinelastic);
-                    m_frame->setEasing(QEasingCurve::OutInElastic);
+                    changeEasing(QEasingCurve::OutInElastic);
                     break;
                 case 9:
                     m_curve->setPixmap(m_outinbounce);
-                    m_frame->setEasing(QEasingCurve::OutInBounce);
+                    changeEasing(QEasingCurve::OutInBounce);
                     break;
             }
             break;

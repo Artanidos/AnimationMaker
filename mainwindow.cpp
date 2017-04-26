@@ -289,6 +289,7 @@ void MainWindow::createGui()
     m_itemPropertyEditor = new ItemPropertyEditor();
     m_scenePropertyEditor = new ScenePropertyEditor();
     m_transitionEditor = new TransitionEditor();
+    m_transitionEditor->setUndoStack(undoStack);
 
     m_scenePropertyEditor->setScene(scene);
 

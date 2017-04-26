@@ -24,6 +24,7 @@
 #include <QWidget>
 #include <QListWidget>
 #include <QLabel>
+#include <QUndoStack>
 #include "keyframe.h"
 
 class TransitionEditor : public QWidget
@@ -33,12 +34,16 @@ public:
     TransitionEditor();
 
     void setKeyframe(KeyFrame *frame);
+    inline void setUndoStack(QUndoStack *stack) {m_undoStack = stack;}
 
 private slots:
     void listRowChanged(int row);
     void setCurve();
+    void easingChanged(int easing);
 
 private:
+    bool m_initializing;
+    QUndoStack *m_undoStack;
     KeyFrame *m_frame;
     QListWidget *m_easing;
     QListWidget *m_type;
@@ -84,6 +89,8 @@ private:
     QPixmap m_outinback;
     QPixmap m_outinelastic;
     QPixmap m_outinbounce;
+
+    void changeEasing(int);
 };
 
 #endif // TRANSITIONEDITOR_H
