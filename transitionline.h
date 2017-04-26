@@ -50,6 +50,7 @@ signals:
     void deleteKeyframe(ResizeableItem *item, QString propertyName, KeyFrame *frame);
     void deleteTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame);
     void addTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame);
+    void transitionSelected(KeyFrame *frame);
 
 private:
     QImage m_imageRaute;

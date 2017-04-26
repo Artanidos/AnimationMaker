@@ -49,6 +49,7 @@ TransitionLine::TransitionLine(ResizeableItem *item, QString propertyName)
     m_transitionAct = new QAction("Create transition");
     m_delKeyframeAct = new QAction("Delete keyframe");
     m_delTransitionAct = new QAction("Delete transition");
+
     connect(m_transitionAct, SIGNAL(triggered(bool)), this, SLOT(addTransition()));
     connect(m_delKeyframeAct, SIGNAL(triggered(bool)), this, SLOT(deleteKeyframe()));
     connect(m_delTransitionAct, SIGNAL(triggered(bool)), this, SLOT(deleteTransition()));
@@ -121,6 +122,11 @@ void TransitionLine::mousePressEvent(QMouseEvent *ev)
                     m_oldx = ev->pos().x();
                     m_frame = frame;
                     m_pressed = true;
+                    break;
+                }
+                else if(ev->pos().x() + offset > pos + 11 && frame->next() && frame->easing() >= 0 && ev->pos().x() + offset < frame->next()->time() / 5 - 6)
+                {
+                    emit transitionSelected(frame);
                     break;
                 }
             }

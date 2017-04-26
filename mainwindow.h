@@ -27,6 +27,7 @@
 #include "timeline.h"
 #include "itempropertyeditor.h"
 #include "scenepropertyeditor.h"
+#include "transitioneditor.h"
 
 namespace Ui
 {
@@ -66,6 +67,7 @@ private:
     Timeline *timeline;
     ItemPropertyEditor *m_itemPropertyEditor;
     ScenePropertyEditor *m_scenePropertyEditor;
+    TransitionEditor *m_transitionEditor;
     QDockWidget *propertiesdock;
     QDockWidget *tooldock;
     QTreeWidgetItem *root;
@@ -122,6 +124,7 @@ public slots:
     void sceneSizeChanged(int width, int height);
     void sceneItemRemoved(ResizeableItem *item);
     void idChanged(ResizeableItem *, QString);
+    void transitionSelectionChanged(KeyFrame *frame);
 };
 
 #endif // MAINWINDOW_H

@@ -54,7 +54,8 @@ SOURCES += main.cpp\
     colorrect.cpp \
     commands.cpp \
     exception.cpp \
-    coloreditor.cpp
+    coloreditor.cpp \
+    transitioneditor.cpp
 
 HEADERS  += mainwindow.h \
     animationscene.h \
@@ -77,7 +78,8 @@ HEADERS  += mainwindow.h \
     colorrect.h \
     commands.h \
     exception.h \
-    coloreditor.h
+    coloreditor.h \
+    transitioneditor.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 
@@ -103,7 +105,8 @@ DISTFILES += \
     Deploy/AppImage/default.png \
     Deploy/snapcraft/snap/snapcraft.yaml \
     Deploy/snapcraft/snap/gui/animationmaker.desktop \
-    Deploy/snapcraft/snap/gui/icon.png
+    Deploy/snapcraft/snap/gui/icon.png \
+    changelog.txt
 
 FORMS +=
 

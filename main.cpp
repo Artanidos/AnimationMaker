@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setOrganizationName("CrowdWare");
     QCoreApplication::setApplicationName("AnimationMaker");
-    QCoreApplication::setApplicationVersion("1.0");
+    QCoreApplication::setApplicationVersion("1.1");
 
     a.setStyle(QStyleFactory::create("Fusion"));
     QPalette p = a.palette();

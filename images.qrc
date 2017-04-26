@@ -24,5 +24,46 @@
         <file>images/autokeyframe.png</file>
         <file>images/autotransition.png</file>
         <file>images/logo.png</file>
+        <file>images/linear.png</file>
+        <file>images/inquad.png</file>
+        <file>images/incubiq.png</file>
+        <file>images/inbounce.png</file>
+        <file>images/inback.png</file>
+        <file>images/incirq.png</file>
+        <file>images/inelastic.png</file>
+        <file>images/inexpo.png</file>
+        <file>images/insine.png</file>
+        <file>images/inquint.png</file>
+        <file>images/inquart.png</file>
+        <file>images/outback.png</file>
+        <file>images/outbounce.png</file>
+        <file>images/outcirq.png</file>
+        <file>images/outelastic.png</file>
+        <file>images/outexpo.png</file>
+        <file>images/outquad.png</file>
+        <file>images/outquart.png</file>
+        <file>images/outquint.png</file>
+        <file>images/outsine.png</file>
+        <file>images/outcubiq.png</file>
+        <file>images/inoutback.png</file>
+        <file>images/inoutbounce.png</file>
+        <file>images/inoutcirq.png</file>
+        <file>images/inoutcubiq.png</file>
+        <file>images/inoutelastic.png</file>
+        <file>images/inoutexpo.png</file>
+        <file>images/inoutquad.png</file>
+        <file>images/inoutquart.png</file>
+        <file>images/inoutquint.png</file>
+        <file>images/inoutsine.png</file>
+        <file>images/outinback.png</file>
+        <file>images/outincirq.png</file>
+        <file>images/outincubiq.png</file>
+        <file>images/outinelastic.png</file>
+        <file>images/outinexpo.png</file>
+        <file>images/outinquad.png</file>
+        <file>images/outinquart.png</file>
+        <file>images/outinsine.png</file>
+        <file>images/outinbounce.png</file>
+        <file>images/outinquint.png</file>
     </qresource>
 </RCC>

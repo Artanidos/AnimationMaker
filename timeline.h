@@ -64,12 +64,14 @@ public slots:
     void deleteKeyFrameSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
     void deleteTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
     void addTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
+    void transitionSelected(KeyFrame *frame);
 
 signals:
     void itemSelectionChanged(ResizeableItem *item);
     void keyframeAdded(ResizeableItem *item, QString propertyName);
     void keyframeDeleted(ResizeableItem *item, QString propertyName);
     void transitionDeleted(ResizeableItem *item, QString propertyName);
+    void transitionSelectionChanged(KeyFrame *frame);
 
 private:
     QTreeWidget *m_tree;

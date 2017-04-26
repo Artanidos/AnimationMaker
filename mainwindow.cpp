@@ -129,6 +129,7 @@ void MainWindow::newfile()
     loadedFile.setFile("");
     setTitle();
     m_scenePropertyEditor->setScene(scene);
+    propertiesdock->setWidget(m_scenePropertyEditor);
 }
 
 void MainWindow::open()
@@ -287,6 +288,7 @@ void MainWindow::createGui()
 
     m_itemPropertyEditor = new ItemPropertyEditor();
     m_scenePropertyEditor = new ScenePropertyEditor();
+    m_transitionEditor = new TransitionEditor();
 
     m_scenePropertyEditor->setScene(scene);
 
@@ -324,6 +326,7 @@ void MainWindow::createGui()
     timeline->setMinimumHeight(110);
 
     connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(timelineSelectionChanged(ResizeableItem*)));
+    connect(timeline, SIGNAL(transitionSelectionChanged(KeyFrame*)), this, SLOT(transitionSelectionChanged(KeyFrame*)));
     connect(m_itemPropertyEditor, SIGNAL(addKeyFrame(ResizeableItem*,QString,QVariant)), timeline, SLOT(addKeyFrame(ResizeableItem*,QString,QVariant)));
 
     QSplitter *splitter = new QSplitter(Qt::Vertical);
@@ -512,8 +515,6 @@ void MainWindow::createMenus()
 
 void MainWindow::about()
 {
-    //QMessageBox::about(this, tr("About AnimationMaker (Community Edition)"),
-    //                   tr("The AnimationMaker is a tool to create presentation videos.\nVersion: ") + QCoreApplication::applicationVersion() + "\n(C) Copyright 2017 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.\n\nTHIS COMMUNITY EDITION IS FOR NON COMMERCIAL USAGE ONLY!");
     QMessageBox *msg = new QMessageBox(this);
     msg->setWindowTitle("About AnimationMaker (Community Edition)");
     msg->setText("The AnimationMaker is a tool to create presentation videos.\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2017 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.\n\nTHIS COMMUNITY EDITION IS FOR NON COMMERCIAL USAGE ONLY!");
@@ -656,4 +657,11 @@ void MainWindow::sceneItemRemoved(ResizeableItem *item)
         }
     }
     timeline->removeItem(item);
+}
+
+void MainWindow::transitionSelectionChanged(KeyFrame *frame)
+{
+    scene->clearSelection();
+    m_transitionEditor->setKeyframe(frame);
+    propertiesdock->setWidget(m_transitionEditor);
 }
