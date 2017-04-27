@@ -149,6 +149,11 @@ void Timeline::transitionSelected(KeyFrame *frame)
     emit transitionSelectionChanged(frame);
 }
 
+void Timeline::transitionDeselected()
+{
+    emit transitionSelectionChanged(NULL);
+}
+
 void Timeline::onCustomContextMenu(const QPoint &point)
 {
     QTreeWidgetItem *treeItem = m_tree->itemAt(point);

@@ -51,6 +51,7 @@ public slots:
     void keyframeAdded(ResizeableItem *item, QString propertyName);
     void keyframeDeleted(ResizeableItem *item, QString propertyName);
     void scrollValueChanged(int pos);
+    void transitionSelected(KeyFrame *frame);
 
 private:
     int m_verticalScrollPos;

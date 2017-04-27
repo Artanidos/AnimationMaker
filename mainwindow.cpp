@@ -662,7 +662,12 @@ void MainWindow::sceneItemRemoved(ResizeableItem *item)
 
 void MainWindow::transitionSelectionChanged(KeyFrame *frame)
 {
-    scene->clearSelection();
-    m_transitionEditor->setKeyframe(frame);
-    propertiesdock->setWidget(m_transitionEditor);
+    if(frame)
+    {
+        scene->clearSelection();
+        m_transitionEditor->setKeyframe(frame);
+        propertiesdock->setWidget(m_transitionEditor);
+    }
+    else
+        propertiesdock->setWidget(m_scenePropertyEditor);
 }

@@ -39,6 +39,8 @@ public:
     inline ResizeableItem *item() {return m_item;}
     inline void setPlayheadPosition(int value) {m_playheadPosition = value; update();}
     inline void setScrollValue(int value) {m_horizontalScrollValue = value; update();}
+    inline KeyFrame *selectedFrame() {return m_selectedFrame;}
+    inline void deselectFrame() {m_selectedFrame = NULL; update();}
 
 private slots:
     void onCustomContextMenu(const QPoint &point);
@@ -60,6 +62,7 @@ private:
     ResizeableItem *m_item;
     QString m_propertyName;
     KeyFrame *m_frame;
+    KeyFrame *m_selectedFrame;
     int m_oldx;
     int m_playheadPosition;
     QMenu *m_contextMenu;
