@@ -27,7 +27,8 @@
 Text::Text(QString text, AnimationScene *scene)
     : ResizeableItem(scene)
 {
-   m_font = QFont("Arial", 13);
+   m_font = QFont("Arial", 14);
+   m_font.setStyleName("Standard");
    m_text = text;
    m_textcolor = QColor(Qt::black);
    QFontMetrics m(m_font);

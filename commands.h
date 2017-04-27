@@ -260,4 +260,17 @@ private:
     int m_easing, m_oldeasing;
 };
 
+class ChangeFontCommand : public QUndoCommand
+{
+public:
+    ChangeFontCommand(QFont font, QFont oldfont, Text *text, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    Text *m_textitem;
+    QFont m_font, m_oldfont;
+};
+
 #endif // COMMANDS_H

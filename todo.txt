@@ -22,21 +22,5 @@ ScrollArea for PropertyPanel
 
 Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
 
-Change Text font
-
-Change Transition Easing
-    Linear
-    Ease In
-    Ease Out
-        Quad
-        Cubiq
-        Quart
-        Quint
-        Sine
-        Expo
-        Circ
-        Back
-        Elastic
-        Bounce
-    Ease In Out
-    Ease Out In
+User should register a license (community or commercial)
+Need to know who is working with my software

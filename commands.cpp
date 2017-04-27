@@ -446,3 +446,22 @@ void ChangeEasingCommand::redo()
 {
     m_frame->setEasing(m_easing);
 }
+
+ChangeFontCommand::ChangeFontCommand(QFont font, QFont oldfont, Text *text, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_font = font;
+    m_oldfont = oldfont;
+    m_textitem = text;
+    setText("Change  Font");
+}
+
+void ChangeFontCommand::undo()
+{
+    m_textitem->setFont(m_oldfont);
+}
+
+void ChangeFontCommand::redo()
+{
+    m_textitem->setFont(m_font);
+}

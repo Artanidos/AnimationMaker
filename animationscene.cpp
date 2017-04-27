@@ -185,6 +185,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
     QBrush brush;
     QString text, id;
     QColor color, bgColor;
+    QFont font;
 
     clear();
 
@@ -261,6 +262,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             dataStream >> text;
             dataStream >> color;
             dataStream >> opacity;
+            dataStream >> font;
 
             Text *t = new Text(text, this);
             t->setId(id);
@@ -270,6 +272,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             t->setScale(xscale, yscale);
             t->setTextcolor(color);
             t->setOpacity(opacity);
+            t->setFont(font);
 
             readKeyframes(dataStream, t);
 
@@ -403,6 +406,7 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << t->text();
                 dataStream << t->textcolor();
                 dataStream << t->opacity();
+                dataStream << t->font();
 
                 writeKeyframes(dataStream, t);
                 break;
@@ -465,7 +469,7 @@ void AnimationScene::pasteItem()
         {
             Rectangle *r = new Rectangle(m_copy->rect().width(), m_copy->rect().height(), this);
             r->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
-            r->setId("");
+            r->setId("Rectangle");
             r->setPen(m_copy->pen());
             r->setBrush(m_copy->brush());
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -478,7 +482,7 @@ void AnimationScene::pasteItem()
         {
             Ellipse *e = new Ellipse(m_copy->rect().width(), m_copy->rect().height(), this);
             e->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
-            e->setId("");
+            e->setId("Ellipse");
             e->setPen(m_copy->pen());
             e->setBrush(m_copy->brush());
             e->setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -491,12 +495,13 @@ void AnimationScene::pasteItem()
         {
             Text *cpy = dynamic_cast<Text*>(m_copy);
             Text *t = new Text(cpy->text(), this);
-            t->setId("");
+            t->setId("Text");
             t->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
             t->setScale(cpy->xscale(), cpy->yscale());
             t->setTextcolor(cpy->textcolor());
+            t->setFont(cpy->font());
             addItem(t);
             emit itemAdded(t);
             break;
@@ -505,7 +510,7 @@ void AnimationScene::pasteItem()
         {
             Bitmap *bm = dynamic_cast<Bitmap*>(m_copy);
             Bitmap *b = new Bitmap(bm->getImage(), bm->rect().width(), bm->rect().height(), this);
-            b->setId("");
+            b->setId("Bitmap");
             b->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -518,7 +523,7 @@ void AnimationScene::pasteItem()
         {
             Vectorgraphic *vg = dynamic_cast<Vectorgraphic*>(m_copy);
             Vectorgraphic *v = new Vectorgraphic(vg->getData(), this);
-            v->setId("");
+            v->setId("Vectorgraphic");
             v->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);

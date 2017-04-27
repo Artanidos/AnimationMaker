@@ -24,6 +24,8 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QLabel>
+#include <QFontDatabase>
+#include <QComboBox>
 #include "resizeableitem.h"
 #include "expander.h"
 #include "text.h"
@@ -46,9 +48,13 @@ signals:
 
 private:
     bool m_initializing;
+    QFontDatabase m_fontdatabase;
     ColorEditor *colorEditor;
     ColorEditor *borderColorEditor;
     ColorEditor *textcolorEditor;
+    QComboBox *m_font;
+    QComboBox *m_fontSize;
+    QComboBox *m_style;
     QLineEdit *m_id;
     QSpinBox *m_x;
     QSpinBox *m_y;
@@ -93,6 +99,9 @@ private slots:
     void colorChanged(QColor);
     void borderColorChanged(QColor);
     void textColorChanged(QColor);
+    void fontFamilyChanged(int index);
+    void fontStyleChanged(int index);
+    void fontSizeChanged(int index);
  };
 
 #endif // ITEMPROPERTYEDITOR_H
