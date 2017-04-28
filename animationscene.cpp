@@ -70,9 +70,15 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     {
         QPointF mousePos(mouseEvent->buttonDownScenePos(Qt::LeftButton).x(), mouseEvent->buttonDownScenePos(Qt::LeftButton).y());
         const QList<QGraphicsItem *> itemList = items(mousePos);
-        m_movingItem = itemList.isEmpty() ? 0 : dynamic_cast<ResizeableItem*>(itemList.first());
-        if(m_movingItem)
-            m_oldPos = m_movingItem->pos();
+        for(int i=0; i < itemList.count(); i++)
+        {
+            m_movingItem = dynamic_cast<ResizeableItem*>(itemList.at(i));
+            if(m_movingItem)
+            {
+                m_oldPos = m_movingItem->pos();
+                break;
+            }
+        }
         QGraphicsScene::mousePressEvent(mouseEvent);
     }
     else
@@ -499,9 +505,9 @@ void AnimationScene::pasteItem()
             t->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            t->setScale(cpy->xscale(), cpy->yscale());
             t->setTextcolor(cpy->textcolor());
             t->setFont(cpy->font());
+            t->setScale(cpy->xscale(), cpy->yscale());
             addItem(t);
             emit itemAdded(t);
             break;

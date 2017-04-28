@@ -112,6 +112,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     QLabel *labelStyle = new QLabel("Style");
     labelStyle->setFixedWidth(40);
     m_fontSize = new QComboBox();
+    m_fontSize->setEditable(true);
     m_style = new QComboBox();
     m_font = new QComboBox();
     QStringList fonts = m_fontdatabase.families();
@@ -191,7 +192,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(textcolorEditor, SIGNAL(colorChanged(QColor)), this, SLOT(textColorChanged(QColor)));
     connect(m_font, SIGNAL(currentIndexChanged(int)), this, SLOT(fontFamilyChanged(int)));
     connect(m_style, SIGNAL(currentIndexChanged(int)), this, SLOT(fontStyleChanged(int)));
-    connect(m_fontSize, SIGNAL(currentIndexChanged(int)), this, SLOT(fontSizeChanged(int)));
+    connect(m_fontSize, SIGNAL(currentTextChanged(QString)), this, SLOT(fontSizeChanged()));
 }
 
 void ItemPropertyEditor::fontFamilyChanged(int index)
@@ -256,7 +257,7 @@ void ItemPropertyEditor::fontStyleChanged(int index)
     }
 }
 
-void ItemPropertyEditor::fontSizeChanged(int)
+void ItemPropertyEditor::fontSizeChanged()
 {
     if(m_initializing)
         return;

@@ -1,3 +1,5 @@
+Lower/Raise undo/redo
+
 ColorAnimation ?
 
 additional properties?

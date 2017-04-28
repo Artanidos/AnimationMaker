@@ -101,7 +101,7 @@ private slots:
     void textColorChanged(QColor);
     void fontFamilyChanged(int index);
     void fontStyleChanged(int index);
-    void fontSizeChanged(int index);
+    void fontSizeChanged();
  };
 
 #endif // ITEMPROPERTYEDITOR_H

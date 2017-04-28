@@ -43,14 +43,7 @@ public:
     void setTextcolor(QColor textcolor);
 
     inline QFont font() {return m_font;}
-    inline void setFont(QFont font)
-    {
-        m_font = font;
-        QFontMetrics m(m_font);
-        setRect(0, 0, m.width(m_text), m.height());
-        m_textitem->setFont(m_font);
-        setHandlePositions();
-    }
+    void setFont(QFont font);
 
     enum { Type = UserType + 3 };
     int type() const Q_DECL_OVERRIDE;
@@ -63,6 +56,8 @@ private:
     QString m_text;
     QGraphicsSimpleTextItem *m_textitem;
     QColor m_textcolor;
+    qreal m_width;
+    qreal m_height;
 };
 
 #endif // TEXT_H
