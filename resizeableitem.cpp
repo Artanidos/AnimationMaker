@@ -46,16 +46,16 @@ ResizeableItem::ResizeableItem(AnimationScene *scene)
     connect(delAct, SIGNAL(triggered()), this, SLOT(deleteItem()));
 
     bringToFrontAct = new QAction("Bring to front");
-    connect(bringToFrontAct, SIGNAL(triggered()), this, SLOT(bringToFront()));
+    connect(bringToFrontAct, SIGNAL(triggered()), this, SLOT(bringToFrontAction()));
 
     sendToBackAct = new QAction("Send to back");
-    connect(sendToBackAct, SIGNAL(triggered()), this, SLOT(sendToBack()));
+    connect(sendToBackAct, SIGNAL(triggered()), this, SLOT(sendToBackAction()));
 
     raiseAct = new QAction("Raise");
-    connect(raiseAct, SIGNAL(triggered()), this, SLOT(raise()));
+    connect(raiseAct, SIGNAL(triggered()), this, SLOT(raiseAction()));
 
     lowerAct = new QAction("Lower");
-    connect(lowerAct, SIGNAL(triggered()), this, SLOT(lower()));
+    connect(lowerAct, SIGNAL(triggered()), this, SLOT(lowerAction()));
 
     m_contextMenu = new QMenu();
     m_contextMenu->addAction(delAct);
@@ -618,6 +618,30 @@ void ResizeableItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     scene()->clearSelection();
     setSelected(true);
     m_contextMenu->exec(event->screenPos());
+}
+
+void ResizeableItem::lowerAction()
+{
+    QUndoCommand *cmd = new LowerItemCommand(this);
+    m_scene->undoStack()->push(cmd);
+}
+
+void ResizeableItem::raiseAction()
+{
+    QUndoCommand *cmd = new RaiseItemCommand(this);
+    m_scene->undoStack()->push(cmd);
+}
+
+void ResizeableItem::sendToBackAction()
+{
+    QUndoCommand *cmd = new SendItemToBackCommand(this);
+    m_scene->undoStack()->push(cmd);
+}
+
+void ResizeableItem::bringToFrontAction()
+{
+    QUndoCommand *cmd = new BringItemToFrontCommand(this);
+    m_scene->undoStack()->push(cmd);
 }
 
 void ResizeableItem::lower()

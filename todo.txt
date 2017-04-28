@@ -1,4 +1,4 @@
-Lower/Raise undo/redo
+Timeline should not be limited to 12.5 seconds
 
 ColorAnimation ?
 

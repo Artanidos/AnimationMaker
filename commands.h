@@ -273,4 +273,52 @@ private:
     QFont m_font, m_oldfont;
 };
 
+class RaiseItemCommand : public QUndoCommand
+{
+public:
+    RaiseItemCommand(ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+};
+
+class LowerItemCommand : public QUndoCommand
+{
+public:
+    LowerItemCommand(ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+};
+
+class BringItemToFrontCommand : public QUndoCommand
+{
+public:
+    BringItemToFrontCommand(ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+};
+
+class SendItemToBackCommand : public QUndoCommand
+{
+public:
+    SendItemToBackCommand(ResizeableItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    ResizeableItem *m_item;
+};
+
 #endif // COMMANDS_H

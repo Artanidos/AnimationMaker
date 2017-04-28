@@ -82,6 +82,12 @@ public:
 
     inline AnimationScene *scene() {return m_scene;}
 
+    void lower();
+    void raise();
+    void bringToFront();
+    void sendToBack();
+
+
 private:
     AnimationScene *m_scene;
     ItemHandle*  m_handles[8];
@@ -102,10 +108,10 @@ private:
 
 private slots:
     void deleteItem();
-    void bringToFront();
-    void sendToBack();
-    void lower();
-    void raise();
+    void bringToFrontAction();
+    void sendToBackAction();
+    void lowerAction();
+    void raiseAction();
 
 signals:
     void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value, int min, int max);

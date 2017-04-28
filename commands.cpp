@@ -465,3 +465,71 @@ void ChangeFontCommand::redo()
 {
     m_textitem->setFont(m_font);
 }
+
+RaiseItemCommand::RaiseItemCommand(ResizeableItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_item = item;
+    setText("Raise " + getItemTypeName(item));
+}
+
+void RaiseItemCommand::undo()
+{
+    m_item->lower();
+}
+
+void RaiseItemCommand::redo()
+{
+    m_item->raise();
+}
+
+LowerItemCommand::LowerItemCommand(ResizeableItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_item = item;
+    setText("Lower " + getItemTypeName(item));
+}
+
+void LowerItemCommand::undo()
+{
+    m_item->raise();
+}
+
+void LowerItemCommand::redo()
+{
+    m_item->lower();
+}
+
+BringItemToFrontCommand::BringItemToFrontCommand(ResizeableItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_item = item;
+    setText("Bring " + getItemTypeName(item) + " to front");
+}
+
+void BringItemToFrontCommand::undo()
+{
+    m_item->sendToBack();
+}
+
+void BringItemToFrontCommand::redo()
+{
+    m_item->bringToFront();
+}
+
+SendItemToBackCommand::SendItemToBackCommand(ResizeableItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_item = item;
+    setText("Send " + getItemTypeName(item) + " to back");
+}
+
+void SendItemToBackCommand::undo()
+{
+    m_item->bringToFront();
+}
+
+void SendItemToBackCommand::redo()
+{
+    m_item->sendToBack();
+}
