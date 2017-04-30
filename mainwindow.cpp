@@ -26,10 +26,12 @@
 #include "text.h"
 #include "bitmap.h"
 #include "exception.h"
+#include "newspage.h"
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
 #include <QTreeWidget>
+#include <QWebEngineView>
 
 #define MAGIC 0x414D4200
 #define FILE_VERSION 100
@@ -277,6 +279,18 @@ void MainWindow::createGui()
 
     selectAct->toggle();
 
+    QWebEngineView *newsBrowser = new QWebEngineView();
+    NewsPage *page = new NewsPage();
+    newsBrowser->setPage(page);
+    page->load(QUrl("http://wp12518071.server-he.de/animationmaker/news"));
+
+
+    newsdock = new QDockWidget(tr("News"), this);
+    newsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    newsdock->setWidget(newsBrowser);
+    newsdock->setObjectName("News");
+    addDockWidget(Qt::RightDockWidgetArea, newsdock);
+
     tooldock = new QDockWidget(tr("Tools"), this);
     tooldock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     tooldock->setWidget(toolpanel);
@@ -316,7 +330,7 @@ void MainWindow::createGui()
     elementTree->addTopLevelItem(root);
     connect(elementTree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(elementTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
-    QDockWidget *elementsdock = new QDockWidget(tr("Elements"), this);
+    elementsdock = new QDockWidget(tr("Elements"), this);
     elementsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     elementsdock->setWidget(elementTree);
     elementsdock->setObjectName("Elements");
@@ -466,11 +480,17 @@ void MainWindow::createActions()
     delAct->setShortcut(QKeySequence::Delete);
     connect(delAct, SIGNAL(triggered()), this, SLOT(del()));
 
+    showElementsAct = new QAction("Elements");
+    connect(showElementsAct, SIGNAL(triggered()), this, SLOT(showElementsPanel()));
+
     showPropertyPanelAct = new QAction("Properties");
     connect(showPropertyPanelAct, SIGNAL(triggered()), this, SLOT(showPropertyPanel()));
 
     showToolPanelAct = new QAction("Tools");
     connect(showToolPanelAct, SIGNAL(triggered()), this, SLOT(showToolPanel()));
+
+    showNewsPanelAct = new QAction("News");
+    connect(showNewsPanelAct, SIGNAL(triggered()), this, SLOT(showNewsPanel()));
 
     aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
@@ -501,7 +521,9 @@ void MainWindow::createMenus()
 
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(showToolPanelAct);
+    viewMenu->addAction(showElementsAct);
     viewMenu->addAction(showPropertyPanelAct);
+    viewMenu->addAction(showNewsPanelAct);
 
     menuBar()->addSeparator();
 
@@ -623,6 +645,16 @@ void MainWindow::showPropertyPanel()
 void MainWindow::showToolPanel()
 {
     tooldock->setVisible(true);
+}
+
+void MainWindow::showElementsPanel()
+{
+    elementsdock->setVisible(true);
+}
+
+void MainWindow::showNewsPanel()
+{
+    newsdock->setVisible(true);
 }
 
 void MainWindow::copy()

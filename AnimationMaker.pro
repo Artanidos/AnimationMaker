@@ -22,7 +22,7 @@
 #    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 QT += core gui svg
-QT += testlib
+QT += testlib webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -55,7 +55,8 @@ SOURCES += main.cpp\
     commands.cpp \
     exception.cpp \
     coloreditor.cpp \
-    transitioneditor.cpp
+    transitioneditor.cpp \
+    newspage.cpp
 
 HEADERS  += mainwindow.h \
     animationscene.h \
@@ -79,7 +80,8 @@ HEADERS  += mainwindow.h \
     commands.h \
     exception.h \
     coloreditor.h \
-    transitioneditor.h
+    transitioneditor.h \
+    newspage.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 

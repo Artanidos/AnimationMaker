@@ -70,6 +70,8 @@ private:
     TransitionEditor *m_transitionEditor;
     QDockWidget *propertiesdock;
     QDockWidget *tooldock;
+    QDockWidget *newsdock;
+    QDockWidget *elementsdock;
     QTreeWidgetItem *root;
 
 
@@ -88,6 +90,8 @@ private:
     QAction *bitmapAct;
     QAction *showPropertyPanelAct;
     QAction *showToolPanelAct;
+    QAction *showNewsPanelAct;
+    QAction *showElementsAct;
     QAction *undoAct;
     QAction *redoAct;
     QAction *copyAct;
@@ -116,6 +120,8 @@ public slots:
     void sceneItemAdded(QGraphicsItem *);
     void showPropertyPanel();
     void showToolPanel();
+    void showNewsPanel();
+    void showElementsPanel();
     void sceneSelectionChanged();
     void timelineSelectionChanged(ResizeableItem*);
     void copy();
