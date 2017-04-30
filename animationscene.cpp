@@ -161,6 +161,7 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
     {
         dataStream >> propertyName;
         dataStream >> keyframes;
+
         for(int j=0; j < keyframes; j++)
         {
             dataStream >> time;
@@ -170,6 +171,7 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
             key->setTime(time);
             key->setValue(value);
             key->setEasing(easing);
+
             item->addKeyframe(propertyName, key);
             // set double linked list
             if(m_tempKeyFrame)
@@ -180,6 +182,7 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
             m_tempKeyFrame = key;
             emit keyframeAdded(item, propertyName, key);
         }
+        m_tempKeyFrame = NULL;
     }
 }
 
