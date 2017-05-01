@@ -99,13 +99,14 @@ Timeline::Timeline(AnimationScene *scene)
     m_transitionPanel->setTreeWidget(m_tree);
     m_transitionPanel->registerTimeline(this);
     m_playhead = new PlayHead();
-    QScrollBar *sb = new QScrollBar(Qt::Horizontal);
+    m_sb = new QScrollBar(Qt::Horizontal);
+    m_sb->setMaximum(50);
 
     layout->addItem(hbox, 0, 0);
     layout->addWidget(m_playhead, 0, 1);
     layout->addWidget(m_tree, 1, 0);
     layout->addWidget(m_transitionPanel, 1, 1);
-    layout->addWidget(sb, 2, 1);
+    layout->addWidget(m_sb, 2, 1);
     layout->setColumnStretch(0,0);
     layout->setColumnStretch(1,1);
 
@@ -123,12 +124,21 @@ Timeline::Timeline(AnimationScene *scene)
     connect(m_tree->verticalScrollBar(), SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(treeScrollValueChanged(int)));
 
     connect(m_playhead, SIGNAL(valueChanged(int)), this, SLOT(playheadValueChanged(int)));
-    connect(sb, SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(scrollValueChanged(int)));
-    connect(sb, SIGNAL(valueChanged(int)), m_playhead, SLOT(scrollValueChanged(int)));
+    connect(m_sb, SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(scrollValueChanged(int)));
+    connect(m_sb, SIGNAL(valueChanged(int)), m_playhead, SLOT(scrollValueChanged(int)));
+    connect(m_sb, SIGNAL(valueChanged(int)), this, SLOT(scrollValueChanged(int)));
 
     connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(treeCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
     connect(m_playhead, SIGNAL(valueChanged(int)), scene, SLOT(setPlayheadPosition(int)));
     connect(m_scene, SIGNAL(keyframeAdded(ResizeableItem*, QString, KeyFrame*)), this, SLOT(keyframeAdded(ResizeableItem*, QString, KeyFrame*)));
+}
+
+void Timeline::scrollValueChanged(int value)
+{
+
+    int max = m_sb->maximum();
+    if(value > max * 90 / 100)
+        m_sb->setMaximum(max * 110 / 100);
 }
 
 void Timeline::reset()
@@ -142,6 +152,7 @@ void Timeline::reset()
     }
     m_transitionPanel->reset();
     m_playhead->setValue(0);
+    m_sb->setMaximum(50);
 }
 
 void Timeline::transitionSelected(KeyFrame *frame)

@@ -66,6 +66,7 @@ public slots:
     void addTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
     void transitionSelected(KeyFrame *frame);
     void transitionDeselected();
+    void scrollValueChanged(int value);
 
 signals:
     void itemSelectionChanged(ResizeableItem *item);
@@ -75,6 +76,7 @@ signals:
     void transitionSelectionChanged(KeyFrame *frame);
 
 private:
+    QScrollBar *m_sb;
     QTreeWidget *m_tree;
     QMenu *m_contextMenu;
     QAction *m_delAct;

@@ -1,5 +1,3 @@
-Timeline should not be limited to 12.5 seconds
-
 ColorAnimation ?
 
 additional properties?
@@ -23,5 +21,3 @@ Items Translation like Rotate
 ScrollArea for PropertyPanel
 
 Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
-
-News as HTML page
