@@ -32,10 +32,8 @@ class AnimationScene;
 class ResizeableItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
-    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
-    Q_PROPERTY(qreal left READ left WRITE setLeft)
-    Q_PROPERTY(qreal top READ top WRITE setTop)
 public:
+    ResizeableItem() {}
     ResizeableItem(AnimationScene *scene);
     ~ResizeableItem();
 

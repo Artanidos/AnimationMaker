@@ -27,11 +27,16 @@
 #include "bitmap.h"
 #include "exception.h"
 #include "newspage.h"
+#include "file.h"
+#include "resizeableitem.h"
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
 #include <QTreeWidget>
 #include <QWebEngineView>
+#include <QQmlEngine>
+#include <QQmlComponent>
+#include <QQmlContext>
 
 #define MAGIC 0x414D4200
 #define FILE_VERSION 100
@@ -282,7 +287,7 @@ void MainWindow::createGui()
     QWebEngineView *newsBrowser = new QWebEngineView();
     NewsPage *page = new NewsPage();
     newsBrowser->setPage(page);
-    page->load(QUrl("http://wp12518071.server-he.de/animationmaker/news"));
+    page->load(QUrl("http://wp12518071.server-he.de/animationmaker-news"));
 
 
     newsdock = new QDockWidget(tr("News"), this);
@@ -408,6 +413,46 @@ void MainWindow::readSettings()
 
 void MainWindow::exportAnimation()
 {
+    /*
+    //qmlRegisterType<ResizeableItem>("AnimationMaker", 1, 0, "ResizeableItem");
+
+    QList<ResizeableItem*> items;
+    items.append(new Rectangle(50, 50, NULL));
+
+    File file;
+    QQmlEngine engine;
+    QQmlComponent component(&engine, "/home/olaf/SourceCode/AnimationMaker/plugins/export.qml");
+    QQmlContext *context = new QQmlContext(engine.rootContext());
+    context->setContextProperty("scene", scene);
+    context->setContextProperty("file", &file);
+    context->setContextProperty("items", QVariant::fromValue(items));
+
+    QObject *object = component.create(context);
+
+    QString filter = object->property("filter").toString();
+    QString title = object->property("title").toString();
+
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter(filter);
+    dialog->setWindowTitle(title);
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptSave);
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
+    if(fileName.isEmpty())
+        return;
+
+    QVariant returnedValue;
+    QMetaObject::invokeMethod(object, "doExport", Q_RETURN_ARG(QVariant, returnedValue), Q_ARG(QVariant, fileName));
+    qDebug() << "QML function returned:" << returnedValue.toString();
+
+    delete object;
+*/
+
+
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
     dialog->setFileMode(QFileDialog::AnyFile);

@@ -3,3 +3,4 @@ Edit easing curve for transition
 Font of text objects is now editable
 News panel added
 Timeline is not limited anymore
+Item resizing while shift key pressed centers the item

@@ -44,7 +44,6 @@ void AnimationScene::initialize()
     m_playheadPosition = 0;
     m_tempKeyFrame = NULL;
     m_movingItem = NULL;
-
     addBackgroundRect();
 }
 

@@ -29,6 +29,7 @@
 #include <QTest>
 #include <QFileDialog>
 #include <QUndoStack>
+#include <QQmlListProperty>
 
 #include "resizeableitem.h"
 #include "keyframe.h"
@@ -36,6 +37,9 @@
 class AnimationScene : public QGraphicsScene
 {
     Q_OBJECT
+    Q_PROPERTY(int fps READ fps)
+    Q_PROPERTY(int width READ width)
+    Q_PROPERTY(int height READ height)
 public:
     AnimationScene();
 

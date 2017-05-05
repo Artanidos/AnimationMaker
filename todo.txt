@@ -12,7 +12,6 @@ Export HTML ?
 
 Rectangle new
     - create via mouse drag
-    - pressing ALT-key mouse position will be used as center
 
 Toolbar for files (Save, Open)
 
