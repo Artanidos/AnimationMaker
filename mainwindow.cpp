@@ -27,7 +27,6 @@
 #include "bitmap.h"
 #include "exception.h"
 #include "newspage.h"
-#include "file.h"
 #include "resizeableitem.h"
 #include <QtTest/QTest>
 #include <QMessageBox>

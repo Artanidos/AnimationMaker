@@ -53,7 +53,7 @@ Timeline::Timeline(AnimationScene *scene)
     pauseButton = new QToolButton();
     pauseButton->setVisible(false);
     m_time = new QLabel();
-    m_time->setText("0:00.000");
+    m_time->setText("0:00.0");
 
     QAction *playAct = new QAction("Play");
     playAct->setIcon(QIcon(":/images/play.png"));
@@ -197,8 +197,8 @@ void Timeline::playAnimation()
     }
     if(m_playing)
         m_playhead->setValue(lastKeyframe());
-    playButton->setVisible(true);
     pauseButton->setVisible(false);
+    playButton->setVisible(true);
     m_playing = false;
 }
 
@@ -221,14 +221,22 @@ void Timeline::forwardAnimation()
     m_playhead->setValue(last);
 }
 
+QString timeString(int val, bool showMinutes)
+{
+    int minutes = val / 60000;
+    int seconds = (val - minutes * 60000) / 1000;
+    int milliseconds = val - minutes * 60000 - seconds * 1000;
+    QString txt;
+    if(minutes > 0 || showMinutes)
+        txt.sprintf("%d:%02d.%d", minutes, seconds, milliseconds / 100);
+    else
+        txt.sprintf("%2d.%d", seconds, milliseconds / 100);
+    return txt;
+}
+
 void Timeline::playheadValueChanged(int val)
 {
-    int seconds = val / 1000;
-    int minutes = seconds / 60;
-    int milliseconds = val - seconds * 1000;
-    QString txt;
-    txt.sprintf("%d:%02d.%03d", minutes, seconds, milliseconds);
-    m_time->setText(txt);
+    m_time->setText(timeString(val));
     m_scene->clearSelection();
     m_scene->setPlayheadPosition(val);
     m_transitionPanel->setPlayheadPosition(val);

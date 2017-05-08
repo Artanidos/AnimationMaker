@@ -93,5 +93,5 @@ private:
     QTreeWidgetItem *search(ResizeableItem *item);
     QTreeWidgetItem *search(QTreeWidgetItem *treeItem, QString propertyName);
 };
-
+QString timeString(int milliseconds, bool showMinutes = true);
 #endif // TIMELINE_H
