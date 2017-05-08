@@ -26,9 +26,5 @@ Selecting more than on item at a time
 Bugs
 ----
 
-Id edit sets focus at the end of the name after each keyboard press
-
-Play/Pause button flickering at end of animation (both buttons are shown)
-
 Item copy does not copy keyframes
 

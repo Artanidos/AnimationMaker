@@ -174,7 +174,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     vbox->addStretch();
     this->setLayout(vbox);
 
-    connect(m_id, SIGNAL(textChanged(QString)), this, SLOT(idChanged(QString)));
+    connect(m_id, SIGNAL(editingFinished()), this, SLOT(idChanged()));
     connect(m_x, SIGNAL(valueChanged(int)), this, SLOT(xChanged(int)));
     connect(m_y, SIGNAL(valueChanged(int)), this, SLOT(yChanged(int)));
     connect(m_width, SIGNAL(valueChanged(int)), this, SLOT(widthChanged(int)));
@@ -422,7 +422,7 @@ void ItemPropertyEditor::idChanged(ResizeableItem*, QString id)
     m_initializing = false;
 }
 
-void ItemPropertyEditor::idChanged(QString value)
+void ItemPropertyEditor::idChanged()
 {
     if(m_initializing)
         return;
@@ -430,7 +430,7 @@ void ItemPropertyEditor::idChanged(QString value)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeIdCommand(value, m_item->id(), m_item);
+        QUndoCommand *cmd = new ChangeIdCommand(m_id->text(), m_item->id(), m_item);
         undoStack->push(cmd);
     }
 }

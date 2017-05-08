@@ -76,7 +76,7 @@ private:
     void changeOpacity(int opacity);
 
 private slots:
-    void idChanged(QString value);
+    void idChanged();
     void idChanged(ResizeableItem*,QString);
     void brushChanged(QColor color);
     void penChanged(QColor color);
