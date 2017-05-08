@@ -665,6 +665,13 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value, int t
     }
 }
 
+void ResizeableItem::setOpacity(int opacity)
+{
+    m_opacity = opacity;
+    QGraphicsItem::setOpacity((qreal)m_opacity / 100);
+    emit opacityChanged(opacity);
+}
+
 void ResizeableItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
     scene()->clearSelection();

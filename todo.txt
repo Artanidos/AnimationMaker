@@ -28,12 +28,7 @@ Bugs
 
 Id edit sets focus at the end of the name after each keyboard press
 
-Auto keyframe not working correctly for opacity
-
 Play/Pause button flickering at end of animation (both buttons are shown)
 
 Item copy does not copy keyframes
 
-Adjust keyframe opacity
-
-playhead click moves playhead

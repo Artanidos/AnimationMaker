@@ -185,6 +185,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(addWidthKeyframe, SIGNAL(clicked(bool)), this, SLOT(addWidthKeyFrame()));
     connect(addHeightKeyframe, SIGNAL(clicked(bool)), this, SLOT(addHeightKeyFrame()));
     connect(m_opacity, SIGNAL(sliderReleased()), this, SLOT(opacitySliderReleased()));
+    connect(m_opacity, SIGNAL(valueChanged(int)), this, SLOT(opacitySliderReleased()));
     connect(m_opacityText, SIGNAL(valueChanged(int)), this, SLOT(opacityTextChanged(int)));
     connect(addOpacityKeyframe, SIGNAL(clicked(bool)), this, SLOT(addOpacityKeyFrame()));
     connect(colorEditor, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));

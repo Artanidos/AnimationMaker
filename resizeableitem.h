@@ -60,8 +60,7 @@ public:
     void setBrush(const QBrush &brush);
 
     inline int opacity() {return m_opacity;}
-    inline void setOpacity(int opacity) {m_opacity = opacity; QGraphicsItem::setOpacity((qreal)m_opacity / 100); emit opacityChanged(opacity);}
-
+    void setOpacity(int opacity);
     inline qreal left() {return x();}
     inline qreal top() {return y();}
     inline void setLeft(qreal val) {setX(val);}
