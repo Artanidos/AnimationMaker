@@ -114,7 +114,7 @@ private:
     void addBackgroundRect();
     void writeKeyframes(QDataStream &dataStream, ResizeableItem *item) const;
     void readKeyframes(QDataStream &dataStream, ResizeableItem *item);
-
+    void copyKeyframes(ResizeableItem *item);
 };
 
 QDataStream &operator<<(QDataStream &, const AnimationScene *);

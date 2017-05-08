@@ -465,6 +465,36 @@ void AnimationScene::copyItem()
     m_copy = dynamic_cast<ResizeableItem*>(gi);
 }
 
+void AnimationScene::copyKeyframes(ResizeableItem *item)
+{
+    QHash<QString, KeyFrame*>::iterator it;
+    for (it = m_copy->keyframes()->begin(); it != m_copy->keyframes()->end(); ++it)
+    {
+        KeyFrame *first = it.value();
+        KeyFrame *firstFrame = new KeyFrame();
+        firstFrame->setEasing(first->easing());
+        firstFrame->setTime(first->time());
+        firstFrame->setValue(first->value());
+        firstFrame->setNext(NULL);
+        firstFrame->setPrev(NULL);
+        item->addKeyframe(it.key(), firstFrame);
+        KeyFrame *last = firstFrame;
+        for(KeyFrame *frame = first->next(); frame != NULL; frame = frame->next())
+        {
+            KeyFrame *nextFrame = new KeyFrame();
+            nextFrame->setEasing(frame->easing());
+            nextFrame->setTime(frame->time());
+            nextFrame->setValue(frame->value());
+            nextFrame->setNext(NULL);
+            nextFrame->setPrev(last);
+            last->setNext(nextFrame);
+            last = nextFrame;
+            //emit keyframeAdded(item, it.key(), nextFrame);
+        }
+        emit keyframeAdded(item, it.key(), firstFrame);
+    }
+}
+
 void AnimationScene::pasteItem()
 {
     if(m_copy == NULL)
@@ -482,6 +512,7 @@ void AnimationScene::pasteItem()
             r->setBrush(m_copy->brush());
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
             r->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            copyKeyframes(r);
             addItem(r);
             emit itemAdded(r);
             break;
@@ -495,6 +526,7 @@ void AnimationScene::pasteItem()
             e->setBrush(m_copy->brush());
             e->setFlag(QGraphicsItem::ItemIsMovable, true);
             e->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            copyKeyframes(e);
             addItem(e);
             emit itemAdded(e);
             break;
@@ -510,6 +542,7 @@ void AnimationScene::pasteItem()
             t->setTextcolor(cpy->textcolor());
             t->setFont(cpy->font());
             t->setScale(cpy->xscale(), cpy->yscale());
+            copyKeyframes(t);
             addItem(t);
             emit itemAdded(t);
             break;
@@ -523,6 +556,7 @@ void AnimationScene::pasteItem()
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
             b->setScale(bm->xscale(), bm->yscale());
+            copyKeyframes(b);
             addItem(b);
             emit itemAdded(b);
             break;
@@ -536,6 +570,7 @@ void AnimationScene::pasteItem()
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
             v->setScale(vg->xscale(), vg->yscale());
+            copyKeyframes(v);
             addItem(v);
             emit itemAdded(v);
             break;
