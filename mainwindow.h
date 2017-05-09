@@ -80,6 +80,8 @@ private:
     QAction *saveAct;
     QAction *saveAsAct;
     QAction *exportAct;
+    QAction *importXmlAct;
+    QAction *exportXmlAct;
     QAction *exitAct;
     QAction *aboutAct;
     QAction *selectAct;
@@ -105,6 +107,8 @@ private:
 
 public slots:
     void exportAnimation();
+    void exportXml();
+    void importXml();
     void about();
     void save();
     void saveAs();

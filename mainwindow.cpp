@@ -33,9 +33,6 @@
 #include <QGraphicsSvgItem>
 #include <QTreeWidget>
 #include <QWebEngineView>
-#include <QQmlEngine>
-#include <QQmlComponent>
-#include <QQmlContext>
 
 #define MAGIC 0x414D4200
 #define FILE_VERSION 100
@@ -154,7 +151,11 @@ void MainWindow::open()
         return;
     reset();
     QFile file(fileName);
-    file.open(QIODevice::ReadOnly);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        QMessageBox::warning(this, "Error", "Unable to open file " + fileName);
+        return;
+    }
     QDataStream in(&file);
 
     // Read and check the header
@@ -410,13 +411,80 @@ void MainWindow::readSettings()
     }
 }
 
+void MainWindow::importXml()
+{
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter(tr("XML format (*.xml);;All Files (*)"));
+    dialog->setWindowTitle(tr("Import XML"));
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptOpen);
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
+    if (fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        QMessageBox::warning(this, "Error", "Unable to open file " + fileName);
+        return;
+    }
+    QDomDocument doc;
+    if (!doc.setContent(&file))
+    {
+        QMessageBox::warning(this, "Error", "Unable to read file " + fileName);
+        file.close();
+        return;
+    }
+    file.close();
+
+    QDomElement docElem = doc.documentElement();
+    if(docElem.nodeName() == "Animation")
+        reset();
+
+    scene->readXml(&doc);
+
+    fillTree();
+    elementTree->expandAll();
+    m_scenePropertyEditor->setScene(scene);
+    timeline->expandTree();
+}
+
+void MainWindow::exportXml()
+{
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter(tr("XML format (*.xml);;All Files (*)"));
+    dialog->setWindowTitle(tr("Export Animation to XML"));
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptSave);
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
+    if(fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        QMessageBox::warning(this, "Error", "Unable to open file " + fileName);
+        return;
+    }
+    scene->writeXml(&file);
+    file.close();
+}
+
 void MainWindow::exportAnimation()
 {
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
     dialog->setFileMode(QFileDialog::AnyFile);
     dialog->setNameFilter(tr("Video format (*.mpg *.mp4 *.avi);;All Files (*)"));
-    dialog->setWindowTitle(tr("Export Animation"));
+    dialog->setWindowTitle(tr("Export Animation to Movie"));
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptSave);
     if(dialog->exec())
@@ -458,8 +526,14 @@ void MainWindow::createActions()
     saveAsAct = new QAction(tr("Save &As..."), this);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
-    exportAct = new QAction(tr("&Export"), this);
+    importXmlAct = new QAction(tr("&Import XML"), this);
+    connect(importXmlAct, SIGNAL(triggered()), this, SLOT(importXml()));
+
+    exportAct = new QAction(tr("&Export Movie"), this);
     connect(exportAct, SIGNAL(triggered()), this, SLOT(exportAnimation()));
+
+    exportXmlAct = new QAction(tr("&Export XML"), this);
+    connect(exportXmlAct, SIGNAL(triggered()), this, SLOT(exportXml()));
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
@@ -512,7 +586,10 @@ void MainWindow::createMenus()
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
+    fileMenu->addAction(importXmlAct);
     fileMenu->addAction(exportAct);
+    fileMenu->addAction(exportXmlAct);
+
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 

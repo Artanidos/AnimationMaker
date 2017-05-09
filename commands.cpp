@@ -31,6 +31,9 @@ AddItemCommand::AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, 
     m_scene = scene;
     switch(mode)
     {
+        case AnimationScene::EditMode::ModeSelect:
+            // ignore
+            break;
         case AnimationScene::EditMode::ModeRectangle:
         {
             m_item = new Rectangle(50, 50, m_scene);

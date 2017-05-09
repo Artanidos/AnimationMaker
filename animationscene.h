@@ -29,7 +29,7 @@
 #include <QTest>
 #include <QFileDialog>
 #include <QUndoStack>
-#include <QQmlListProperty>
+#include <QDomDocument>
 
 #include "resizeableitem.h"
 #include "keyframe.h"
@@ -51,6 +51,9 @@ public:
     void setEditMode(EditMode mode);
     QDataStream& read(QDataStream &dataStream);
     QDataStream& write(QDataStream &dataStream) const;
+
+    void readXml(QDomDocument *doc);
+    void writeXml(QFile *file);
 
     inline int fps() const {return m_fps;}
     inline void setFps(int value) {m_fps = value;}
@@ -113,7 +116,9 @@ private:
     void initialize();
     void addBackgroundRect();
     void writeKeyframes(QDataStream &dataStream, ResizeableItem *item) const;
+    void writeKeyframes(QDomDocument *doc, QDomElement *element, ResizeableItem *item);
     void readKeyframes(QDataStream &dataStream, ResizeableItem *item);
+    void readKeyframes(QDomElement *element, ResizeableItem *item);
     void copyKeyframes(ResizeableItem *item);
 };
 

@@ -1,14 +1,6 @@
-ColorAnimation ?
-
-additional properties?
-
 Treeview
     - Object make invisible
     - Object lock
-
-Export as plugin?
-
-Export HTML ?
 
 Rectangle new
     - create via mouse drag
@@ -22,9 +14,4 @@ ScrollArea for PropertyPanel
 Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
 
 Selecting more than on item at a time
-
-Bugs
-----
-
-Item copy does not copy keyframes
 
