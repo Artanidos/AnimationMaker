@@ -283,7 +283,9 @@ void AnimationScene::readXml(QDomDocument *doc)
         else if(node.nodeName() == "Bitmap")
         {
             QDomElement ele = node.toElement();
-            QImage img = QImage::fromData(QByteArray::fromBase64(ele.attribute("image").toLatin1()), "PNG");
+            QDomNode data = ele.firstChild();
+            QDomCDATASection cdata = data.toCDATASection();
+            QImage img = QImage::fromData(QByteArray::fromBase64(cdata.data().toLatin1()), "PNG");
             Bitmap *b = new Bitmap(img, ele.attribute("width", "50").toDouble(), ele.attribute("height", "50").toDouble(), this);
             b->setId(ele.attribute("id", "Bitmap"));
             b->setPos(ele.attribute("left", "0").toDouble(), ele.attribute("top", "0").toDouble());
@@ -598,8 +600,8 @@ void AnimationScene::writeXml(QFile *file)
                     bitmap.setAttribute("top", QVariant(b->pos().y()).toString());
                     bitmap.setAttribute("width", QVariant(b->rect().width()).toString());
                     bitmap.setAttribute("height", QVariant(b->rect().height()).toString());
-                    bitmap.setAttribute("image", QString::fromLatin1(byteArray.toBase64().data()));
                     bitmap.setAttribute("opacity", b->opacity());
+                    bitmap.appendChild(doc.createCDATASection(QString::fromLatin1(byteArray.toBase64().data())));
                     writeKeyframes(&doc, &bitmap, b);
                     root.appendChild(bitmap);
                     break;
