@@ -1,4 +1,5 @@
 1.1
+---
 Edit easing curve for transition
 Font of text objects is now editable
 News panel added
@@ -6,7 +7,10 @@ Timeline is not limited anymore
 Item resizing while shift key pressed centers the item
 Playhead can now be repositioned clicking into the new position
 Playhead scale has now labels every half a second
-Bugfix changing Id
-Bugfix changing opacity
 Scene or single items can now be exported to XML
 Scene and single items can now be imported from XML
+PropertyEditor sits now in a scrollarea
+
+Bugfix: now all selected items will be deleted if DEL is pressed
+Bugfix: changing Id
+Bugfix: changing opacity

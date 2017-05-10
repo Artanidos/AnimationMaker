@@ -32,7 +32,6 @@ ItemPropertyEditor::ItemPropertyEditor()
     m_initializing = false;
 
     QString buttonStyle = "QPushButton{border: none;image:url(:/images/raute.png)} QPushButton:hover{border: none;image:url(:/images/raute-hover.png)} QToolTip{background:#f5f0eb;}";
-
     QVBoxLayout *vbox = new QVBoxLayout();
     Expander *expTyp = new Expander("Typ");
     QGridLayout *layoutTyp = new QGridLayout();
@@ -170,9 +169,18 @@ ItemPropertyEditor::ItemPropertyEditor()
     layoutOpacity->addWidget(m_opacityText, 0, 3);
     expOpacity->addLayout(layoutOpacity);
     vbox->addWidget(expOpacity);
-
     vbox->addStretch();
-    this->setLayout(vbox);
+
+    QWidget *scrollContent = new QWidget();
+    scrollContent->setLayout(vbox);
+    QScrollArea *scroll = new QScrollArea();
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scroll->setWidget(scrollContent);
+    scroll->setWidgetResizable(true);
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(scroll);
+    this->setLayout(layout);
 
     connect(m_id, SIGNAL(editingFinished()), this, SLOT(idChanged()));
     connect(m_x, SIGNAL(valueChanged(int)), this, SLOT(xChanged(int)));

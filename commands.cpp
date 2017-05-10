@@ -116,14 +116,13 @@ DeleteItemCommand::DeleteItemCommand(ResizeableItem *item, AnimationScene *scene
 
 void DeleteItemCommand::undo()
 {
-    m_scene->clearSelection();
     m_scene->addItem(m_item);
     emit m_scene->itemAdded(m_item);
 }
 
 void DeleteItemCommand::redo()
 {
-    m_scene->clearSelection();
+    m_item->setSelected(false);
     m_scene->removeItem(m_item);
     emit m_scene->itemRemoved(m_item);
 }
