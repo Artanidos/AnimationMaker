@@ -4,13 +4,13 @@ summary: Create keyframe animation and export them to a movie file
 description: |
   This app can be used to create animated movie based on keyframe animations.
 
-grade: devel
-confinement: devmode
+grade: stable
+confinement: strict
 
 apps:
   animationmaker:
     command: desktop-launch AnimationMaker
-    plugs: [x11,home,unity7,opengl]
+    plugs: [x11,home,unity7]
 
 parts:
   animationmaker:
@@ -18,7 +18,4 @@ parts:
     prime:
       - bin/*
       - lib/*
-      - libexec/*
-      - resources/*
-      - translations/*
     after: [desktop-qt5]
