@@ -4,8 +4,8 @@ summary: Create keyframe animation and export them to a movie file
 description: |
   This app can be used to create animated movie based on keyframe animations.
 
-grade: stable
-confinement: strict
+grade: devel
+confinement: beta
 
 apps:
   animationmaker:
