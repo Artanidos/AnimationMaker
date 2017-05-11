@@ -1,6 +1,6 @@
 name: animationmaker
 version: '1.1'
-summary: Create keyframe animation and export them to a movie file
+summary: Create keyframe animation and export them to a movie file or XML
 description: |
   This app can be used to create animated movie based on keyframe animations.
 
