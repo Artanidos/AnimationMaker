@@ -26,13 +26,12 @@
 #include "text.h"
 #include "bitmap.h"
 #include "exception.h"
-#include "newspage.h"
+#include "news.h"
 #include "resizeableitem.h"
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
 #include <QTreeWidget>
-#include <QWebEngineView>
 
 #define MAGIC 0x414D4200
 #define FILE_VERSION 100
@@ -283,15 +282,10 @@ void MainWindow::createGui()
 
     selectAct->toggle();
 
-    QWebEngineView *newsBrowser = new QWebEngineView();
-    NewsPage *page = new NewsPage();
-    newsBrowser->setPage(page);
-    page->load(QUrl("http://wp12518071.server-he.de/animationmaker-news"));
-
-
+    News *news = new News("http://wp12518071.server-he.de/wp-content/uploads/animationmaker.txt");
     newsdock = new QDockWidget(tr("News"), this);
     newsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    newsdock->setWidget(newsBrowser);
+    newsdock->setWidget(news);
     newsdock->setObjectName("News");
     addDockWidget(Qt::RightDockWidgetArea, newsdock);
 

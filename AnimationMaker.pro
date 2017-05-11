@@ -22,7 +22,7 @@
 #    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 QT += core gui svg
-QT += testlib webenginewidgets xml
+QT += testlib xml network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -56,7 +56,7 @@ SOURCES += main.cpp\
     exception.cpp \
     coloreditor.cpp \
     transitioneditor.cpp \
-    newspage.cpp
+    news.cpp
 
 HEADERS  += mainwindow.h \
     animationscene.h \
@@ -81,7 +81,7 @@ HEADERS  += mainwindow.h \
     exception.h \
     coloreditor.h \
     transitioneditor.h \
-    newspage.h
+    news.h
 
 INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
 
@@ -107,7 +107,8 @@ DISTFILES += \
     Deploy/snapcraft/snap/snapcraft.yaml \
     Deploy/snapcraft/snap/gui/animationmaker.desktop \
     Deploy/snapcraft/snap/gui/icon.png \
-    changelog.txt
+    changelog.txt \
+    build.txt
 
 FORMS +=
 
