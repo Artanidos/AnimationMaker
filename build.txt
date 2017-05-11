@@ -1,15 +1,15 @@
 Create an AppImage
 ------------------
 - Build AnimationMaker as Release (Projects - Build Configuration - Release)
-- Copy AnimationMaker executable to Deploy/AppImage
+- Copy AnimationMaker executable from build-AnimationMaker-Desktop-Release to Deploy/AppImage
 - Edit create.sh and set new version in the last line
 - execute create.sh
 
 Create a SNAP
 -------------
 - Build AnimationMaker as Release (Projects - Build Configuration - Release)
-- Copy AnimationMaker executeable to snapcraft/bin
-- Copy all files from Delpoy/AppImage/lib to Deploy/snapcraft/lib (after creating an AppImage)
+- Copy AnimationMaker executeable from build-AnimationMaker-Desktop-Release to snapcraft/bin
+- Copy ffmpeg files from Delpoy/AppImage/lib to Deploy/snapcraft/lib (after creating an AppImage)
  Edit snapcraft/snap/snapcraft.yaml and set
       version: '1.0'
       grade: stable or devel
