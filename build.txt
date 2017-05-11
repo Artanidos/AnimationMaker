@@ -13,7 +13,7 @@ Create a SNAP
  Edit snapcraft/snap/snapcraft.yaml and set
       version: '1.0'
       grade: stable or devel
-      confinement: strict or beta
+      confinement: strict or devmode
 - Run: snapcraft
 - Install snap using: sudo snap install --devmode animationmaker_1.0_amd64.snap
 - Upload snap using: snapcraft login

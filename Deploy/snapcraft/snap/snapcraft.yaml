@@ -5,7 +5,7 @@ description: |
   This app can be used to create animated movie based on keyframe animations.
 
 grade: devel
-confinement: beta
+confinement: devmode
 
 apps:
   animationmaker:
