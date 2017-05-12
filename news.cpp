@@ -63,11 +63,9 @@ void News::fileIsReady( QNetworkReply *reply)
 
 void News::finished(int)
 {
-    delete m_proc;
-
     QFile err(m_err);
-    if(err.exists())
-        QMessageBox::warning(this, "Error opening link", "Unable to open the link to the webpage.\nThe reason might be that you are running this application from inside a SNAP installation.\nPlease install snapd-xdg-open using\n$sudo apt-get snapd-xdg-open\n or copy the url\n" + m_url +"\nand open it in a browser manually.");
+    if(err.exists() && err.size() > 0)
+        QMessageBox::warning(this, "Error opening link", "Unable to open the link to the webpage.\nThe reason might be that you are running this application from inside a SNAP installation.\nPlease install snapd-xdg-open using\n$ sudo apt-get install snapd-xdg-open\n or copy the url\n" + m_url +"\nand open it in a browser manually.");
 }
 
 void News::linkActivated(QString url)
