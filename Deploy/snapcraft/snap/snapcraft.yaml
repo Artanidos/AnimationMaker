@@ -1,8 +1,9 @@
 name: animationmaker
 version: '1.1'
-summary: Create keyframe animation and export them to a movie file or XML
+summary: Create animations and export them to a movie or XML file
 description: |
-  This app can be used to create animated movie based on keyframe animations.
+  This app can be used to create animated movies based on keyframe animations.
+  Parts can be exported and imported to and from XML.
 
 grade: stable
 confinement: strict
@@ -19,3 +20,4 @@ parts:
       - bin/*
       - lib/*
     after: [desktop-qt5]
+

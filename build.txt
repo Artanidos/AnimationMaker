@@ -18,3 +18,6 @@ Create a SNAP
 - Install snap using: sudo snap install --devmode animationmaker_1.0_amd64.snap
 - Upload snap using: snapcraft login
                      snap push animationmaker_1.0_amd64.snap
+
+- In addition to the snap also snapd-xdg-open must be installed so that the links in the news can be opnened
+  $ sudo apt-get install snapd-xdg-open

@@ -108,7 +108,8 @@ DISTFILES += \
     Deploy/snapcraft/snap/gui/animationmaker.desktop \
     Deploy/snapcraft/snap/gui/icon.png \
     changelog.txt \
-    build.txt
+    build.txt \
+    Deploy/snapcraft/bin/xdg-open
 
 FORMS +=
 

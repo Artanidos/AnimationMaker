@@ -6,6 +6,7 @@
 #include <QGridLayout>
 #include <QNetworkReply>
 #include <QDomDocument>
+#include <QMessageBox>
 
 News::News(QString url)
 {
@@ -45,9 +46,9 @@ void News::fileIsReady( QNetworkReply *reply)
                         {
                             QDomElement l = n.toElement();
                             QLabel *link = new QLabel();
-                            link->setOpenExternalLinks(true);
                             link->setText("<a href='" + l.attribute("url") + "'>" + l.attribute("caption")+ "</a>");
                             layout->addWidget(link, i, j + 1);
+                            connect(link, SIGNAL(linkActivated(QString)), this, SLOT(linkActivated(QString)));
                         }
                     }
                 }
@@ -58,4 +59,34 @@ void News::fileIsReady( QNetworkReply *reply)
     }
     else
         layout->addWidget(new QLabel("An error occured while reading the news..."), 0, 0);
+}
+
+void News::finished(int)
+{
+    delete m_proc;
+
+    QFile err(m_err);
+    if(err.exists())
+        QMessageBox::warning(this, "Error opening link", "Unable to open the link to the webpage.\nThe reason might be that you are running this application from inside a SNAP installation.\nPlease install snapd-xdg-open using\n$sudo apt-get snapd-xdg-open\n or copy the url\n" + m_url +"\nand open it in a browser manually.");
+}
+
+void News::linkActivated(QString url)
+{
+#ifdef Q_OS_LINUX
+    // When packaging with SNAP on linux the xdg-open will no function until snapd-xdg-open will be installed additionally
+    m_err = tr(qgetenv("SNAP_USER_DATA").constData()) + "/xdg-open.err";
+    QFile err(m_err);
+    if(err.exists())
+        err.remove();
+
+    m_url = url;
+    m_proc = new QProcess();
+    QStringList arguments;
+    arguments << url;
+    connect(m_proc, SIGNAL(finished(int)), this, SLOT(finished(int)));
+    m_proc->setStandardErrorFile("");
+    m_proc->start("xdg-open", arguments);
+#else
+    QDesktopServices::openUrl(QUrl(url));
+#endif
 }
