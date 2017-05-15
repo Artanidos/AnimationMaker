@@ -19,7 +19,13 @@
 ****************************************************************************/
 
 #include "itempropertyeditor.h"
+#include "resizeableitem.h"
 #include "animationscene.h"
+#include "text.h"
+#include "rectangle.h"
+#include "ellipse.h"
+#include "expander.h"
+#include "coloreditor.h"
 #include "commands.h"
 #include <QPushButton>
 #include <QComboBox>

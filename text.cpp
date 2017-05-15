@@ -19,7 +19,6 @@
 ****************************************************************************/
 
 #include "text.h"
-
 #include <QTest>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>

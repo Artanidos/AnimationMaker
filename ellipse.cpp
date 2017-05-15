@@ -19,7 +19,6 @@
 ****************************************************************************/
 
 #include "ellipse.h"
-
 #include <QtTest/QTest>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>

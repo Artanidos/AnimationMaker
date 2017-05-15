@@ -22,13 +22,21 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtWidgets>
-#include "animationscene.h"
-#include "timeline.h"
-#include "itempropertyeditor.h"
-#include "scenepropertyeditor.h"
-#include "transitioneditor.h"
+#include <QFileInfo>
 
+class AnimationScene;
+class Timeline;
+class ItemPropertyEditor;
+class ScenePropertyEditor;
+class TransitionEditor;
+class ResizeableItem;
+class KeyFrame;
+class QSplitter;
+class QTreeWidget;
+class QGraphicsView;
+class QTreeWidgetItem;
+class QUndoStack;
+class QGraphicsItem;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

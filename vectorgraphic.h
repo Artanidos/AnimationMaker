@@ -25,6 +25,7 @@
 #include <QGraphicsSvgItem>
 #include "resizeableitem.h"
 
+class AnimationScene;
 class Vectorgraphic : public ResizeableItem
 {
 public:

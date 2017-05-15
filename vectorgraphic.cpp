@@ -19,7 +19,7 @@
 ****************************************************************************/
 
 #include "vectorgraphic.h"
-
+#include "animationscene.h"
 #include <QtTest/QTest>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>

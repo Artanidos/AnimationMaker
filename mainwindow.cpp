@@ -20,23 +20,25 @@
 
 #include "mainwindow.h"
 #include "animationscene.h"
-#include "rectangle.h"
-#include "ellipse.h"
 #include "vectorgraphic.h"
-#include "text.h"
 #include "bitmap.h"
 #include "exception.h"
 #include "news.h"
-#include "resizeableitem.h"
+#include "itempropertyeditor.h"
+#include "timeline.h"
+#include "scenepropertyeditor.h"
+#include "transitioneditor.h"
+#include "expander.h"
+#include "encode.h"
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
 #include <QTreeWidget>
+#include <QMainWindow>
+#include <QtWidgets>
 
 #define MAGIC 0x414D4200
 #define FILE_VERSION 100
-
-void video_encode(const char *filename, QGraphicsView *view, int length, MainWindow *win, AnimationScene *scene);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)

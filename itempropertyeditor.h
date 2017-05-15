@@ -26,15 +26,13 @@
 #include <QLabel>
 #include <QFontDatabase>
 #include <QComboBox>
-#include "resizeableitem.h"
-#include "expander.h"
-#include "text.h"
-#include "rectangle.h"
-#include "ellipse.h"
-#include "colorpicker.h"
-#include "colorrect.h"
-#include "coloreditor.h"
 
+class ResizeableItem;
+class Text;
+class ColorEditor;
+class Expander;
+class Rectangle;
+class Ellipse;
 class ItemPropertyEditor : public QWidget
 {
     Q_OBJECT
@@ -52,6 +50,7 @@ private:
     ColorEditor *colorEditor;
     ColorEditor *borderColorEditor;
     ColorEditor *textcolorEditor;
+    Rectangle *m_rectangle;
     QComboBox *m_font;
     QComboBox *m_fontSize;
     QComboBox *m_style;
@@ -68,7 +67,7 @@ private:
     Expander *expColor;
     ResizeableItem *m_item;
     Text *m_textitem;
-    Rectangle *m_rectangle;
+
     Ellipse *m_ellipse;
     QSlider *m_opacity;
 

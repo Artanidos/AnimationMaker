@@ -19,7 +19,6 @@
 ****************************************************************************/
 
 #include "rectangle.h"
-
 #include <QtTest/QTest>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>

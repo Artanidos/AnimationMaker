@@ -33,7 +33,6 @@ INSTALLS += target
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    encode.cpp \
     animationscene.cpp \
     rectangle.cpp \
     itemhandle.cpp \
@@ -56,6 +55,7 @@ SOURCES += main.cpp\
     exception.cpp \
     coloreditor.cpp \
     transitioneditor.cpp \
+    encode.cpp \
     news.cpp
 
 HEADERS  += mainwindow.h \
@@ -81,11 +81,19 @@ HEADERS  += mainwindow.h \
     exception.h \
     coloreditor.h \
     transitioneditor.h \
-    news.h
+    news.h \
+    encode.h
 
-INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
-
-LIBS += -L$$PWD/lib/
+linux-g++ {
+    LIBS += -L$$PWD/lib/
+    INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
+    LIBS += -lm
+    LIBS += -ldl
+}
+win32 {
+    LIBS += -L$$PWD/../ffmpeg-3.2.4-win64-dev/lib/
+    INCLUDEPATH += "C:\SourceCode\ffmpeg-3.2.4-win64-dev\include"
+}
 
 
 LIBS += -lavutil
@@ -93,8 +101,7 @@ LIBS += -lavformat
 LIBS += -lavcodec
 LIBS += -lswresample
 LIBS += -lswscale
-LIBS += -lm
-LIBS += -ldl
+
 
 RESOURCES += \
     images.qrc
@@ -112,4 +119,3 @@ DISTFILES += \
     Deploy/snapcraft/bin/xdg-open
 
 FORMS +=
-

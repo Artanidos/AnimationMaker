@@ -24,9 +24,9 @@
 #include <QGraphicsItem>
 #include <QGraphicsRectItem>
 #include <QColor>
-#include "itemhandle.h"
 #include "resizeableitem.h"
 
+class AnimationScene;
 class Text : public ResizeableItem
 {
     Q_OBJECT

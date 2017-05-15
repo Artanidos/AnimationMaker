@@ -31,9 +31,8 @@
 #include <QUndoStack>
 #include <QDomDocument>
 
-#include "resizeableitem.h"
-#include "keyframe.h"
-
+class ResizeableItem;
+class KeyFrame;
 class AnimationScene : public QGraphicsScene
 {
     Q_OBJECT

@@ -20,6 +20,7 @@
 
 #include "animationscene.h"
 #include "rectangle.h"
+#include "resizeableitem.h"
 #include "ellipse.h"
 #include "text.h"
 #include "bitmap.h"

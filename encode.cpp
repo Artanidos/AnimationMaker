@@ -18,8 +18,10 @@
 **
 ****************************************************************************/
 
+#include "encode.h"
 #include <math.h>
 #include "mainwindow.h"
+#include "animationscene.h"
 #include "exception.h"
 #include <QtWidgets>
 #include <QImage>
@@ -104,7 +106,8 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc, AVCodec **codec, 
             c->bit_rate = 1600000;//400000;
             c->width    = width;
             c->height   = height;
-            ost->st->time_base = (AVRational){ 1, fps };
+            ost->st->time_base.num = 1;//(AVRational){ 1, fps };
+            ost->st->time_base.den = fps;
             c->time_base       = ost->st->time_base;
             c->gop_size      = 12;
             c->pix_fmt       = AV_PIX_FMT_YUV420P;
