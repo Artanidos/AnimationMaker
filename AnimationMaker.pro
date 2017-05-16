@@ -116,7 +116,6 @@ DISTFILES += \
     Deploy/snapcraft/snap/gui/icon.png \
     changelog.txt \
     build.txt \
-    Deploy/snapcraft/bin/xdg-open \
-    docs/Home.md
+    Deploy/snapcraft/bin/xdg-open
 
 FORMS +=
