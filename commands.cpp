@@ -91,10 +91,17 @@ AddItemCommand::AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, 
     }
 }
 
+AddItemCommand::~AddItemCommand()
+{
+    if(m_item->isDeleted())
+        delete m_item;
+}
+
 void AddItemCommand::undo()
 {
     m_scene->clearSelection();
     m_scene->removeItem(m_item);
+    m_item->setDeleted(true);
     emit m_scene->itemRemoved(m_item);
 }
 
@@ -114,6 +121,12 @@ DeleteItemCommand::DeleteItemCommand(ResizeableItem *item, AnimationScene *scene
     setText("Delete " + getItemTypeName(item));
 }
 
+DeleteItemCommand::~DeleteItemCommand()
+{
+    if(m_item->isDeleted())
+        delete m_item;
+}
+
 void DeleteItemCommand::undo()
 {
     m_scene->addItem(m_item);
@@ -124,6 +137,7 @@ void DeleteItemCommand::redo()
 {
     m_item->setSelected(false);
     m_scene->removeItem(m_item);
+    m_item->setDeleted(true);
     emit m_scene->itemRemoved(m_item);
 }
 

@@ -65,6 +65,8 @@ public:
     inline qreal top() {return y();}
     inline void setLeft(qreal val) {setX(val);}
     inline void setTop(qreal val) {setY(val);}
+    inline void setDeleted(bool val) {m_deleted = val;}
+    inline bool isDeleted() {return m_deleted;}
 
     void setWidth(qreal value);
     void setHeight(qreal value);
@@ -86,6 +88,7 @@ public:
 
 
 private:
+    bool m_deleted;
     AnimationScene *m_scene;
     ItemHandle*  m_handles[8];
     bool m_hasHandles;

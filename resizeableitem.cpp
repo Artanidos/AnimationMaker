@@ -33,6 +33,7 @@
 ResizeableItem::ResizeableItem(AnimationScene *scene)
 {
     m_scene = scene;
+    m_deleted = false;
     m_hasHandles = false;
     m_xscale = 1;
     m_yscale = 1;
