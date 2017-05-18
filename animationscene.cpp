@@ -56,6 +56,11 @@ void AnimationScene::reset()
     m_undoStack->clear();
 }
 
+int AnimationScene::fps() const
+{
+    return m_fps;
+}
+
 void AnimationScene::deleteItem(ResizeableItem *item)
 {
     QUndoCommand *deleteCommand = new DeleteItemCommand(item, this);

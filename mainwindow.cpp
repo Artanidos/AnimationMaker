@@ -29,7 +29,7 @@
 #include "scenepropertyeditor.h"
 #include "transitioneditor.h"
 #include "expander.h"
-#include "encode.h"
+#include "interfaces.h"
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenus();
     createGui();
     readSettings();
+    loadPlugins();
 }
 
 MainWindow::~MainWindow()
@@ -473,39 +474,6 @@ void MainWindow::exportXml()
     file.close();
 }
 
-void MainWindow::exportAnimation()
-{
-    QString fileName;
-    QFileDialog *dialog = new QFileDialog();
-    dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter(tr("Video format (*.mpg *.mp4 *.avi);;All Files (*)"));
-    dialog->setWindowTitle(tr("Export Animation to Movie"));
-    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
-    dialog->setAcceptMode(QFileDialog::AcceptSave);
-    if(dialog->exec())
-        fileName = dialog->selectedFiles().first();
-    delete dialog;
-    if(fileName.isEmpty())
-        return;
-
-    scene->clearSelection();
-    view->setUpdatesEnabled(false);
-    QGraphicsView *exportView = new QGraphicsView(scene);
-    exportView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    exportView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    exportView->setGeometry(0,0,scene->width(), scene->height());
-
-    try
-    {
-        video_encode(fileName.toLatin1(), exportView, timeline->lastKeyframe(), this, scene);
-    }
-    catch(Exception *e)
-    {
-        QMessageBox::critical(this, "An error occured on export", e->msg());
-    }
-    view->setUpdatesEnabled(true);
-}
-
 void MainWindow::createActions()
 {
     openAct = new QAction(tr("&Open..."), this);
@@ -523,9 +491,6 @@ void MainWindow::createActions()
 
     importXmlAct = new QAction(tr("&Import XML"), this);
     connect(importXmlAct, SIGNAL(triggered()), this, SLOT(importXml()));
-
-    exportAct = new QAction(tr("&Export Movie"), this);
-    connect(exportAct, SIGNAL(triggered()), this, SLOT(exportAnimation()));
 
     exportXmlAct = new QAction(tr("&Export XML"), this);
     connect(exportXmlAct, SIGNAL(triggered()), this, SLOT(exportXml()));
@@ -576,15 +541,16 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
+    exportMenu = new QMenu(tr("Export"));
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addAction(importXmlAct);
-    fileMenu->addAction(exportAct);
     fileMenu->addAction(exportXmlAct);
-
+    fileMenu->addSeparator();
+    fileMenu->addMenu(exportMenu);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
@@ -778,4 +744,87 @@ void MainWindow::transitionSelectionChanged(KeyFrame *frame)
     }
     else
         propertiesdock->setWidget(m_scenePropertyEditor);
+}
+
+void MainWindow::loadPlugins()
+{
+    pluginsDir = QDir(qApp->applicationDirPath());
+
+#if defined(Q_OS_WIN)
+    if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+        pluginsDir.cdUp();
+#elif defined(Q_OS_MAC)
+    if (pluginsDir.dirName() == "MacOS")
+    {
+        pluginsDir.cdUp();
+        pluginsDir.cdUp();
+        pluginsDir.cdUp();
+    }
+#endif
+    pluginsDir.cd("plugins");
+
+    foreach (QString fileName, pluginsDir.entryList(QDir::Files))
+    {
+        QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+        QObject *plugin = loader.instance();
+        if (plugin)
+        {
+            populateMenus(plugin);
+            pluginFileNames += fileName;
+        }
+    }
+}
+
+void MainWindow::populateMenus(QObject *plugin)
+{
+    ExportInterface *iExport = qobject_cast<ExportInterface *>(plugin);
+    if (iExport)
+    {
+        QAction *action = new QAction(iExport->displayName(), plugin);
+        connect(action, SIGNAL(triggered()), this, SLOT(doExport()));
+        exportMenu->addAction(action);
+        exportMenu->setEnabled(true);
+    }
+}
+
+void MainWindow::doExport()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    ExportInterface *iExport = qobject_cast<ExportInterface *>(action->parent());
+
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter(iExport->filter());
+    dialog->setWindowTitle(iExport->title());
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptSave);
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
+    if(fileName.isEmpty())
+        return;
+
+    scene->clearSelection();
+    view->setUpdatesEnabled(false);
+    QGraphicsView *exportView = new QGraphicsView(scene);
+    exportView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    exportView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    exportView->setGeometry(0,0,scene->width(), scene->height());
+
+    try
+    {
+        connect(iExport, SIGNAL(setPlayheadPos(int)), this, SLOT(pluginSetPlayheadPos(int)));
+        iExport->exportFile(fileName.toLatin1(), exportView, timeline->lastKeyframe(), this->statusBar(), scene->fps());
+    }
+    catch(Exception *e)
+    {
+        QMessageBox::critical(this, "An error occured on export", e->msg());
+    }
+    view->setUpdatesEnabled(true);
+}
+
+void MainWindow::pluginSetPlayheadPos(int pos)
+{
+    scene->setPlayheadPosition(pos);
 }

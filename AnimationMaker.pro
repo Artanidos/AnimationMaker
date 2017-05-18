@@ -19,7 +19,7 @@
 #    GNU General Public License for more details.
 #
 #    You should have received a copy of the GNU General Public License
-#    along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+#    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
 QT += core gui svg
 QT += testlib xml network
@@ -55,7 +55,6 @@ SOURCES += main.cpp\
     exception.cpp \
     coloreditor.cpp \
     transitioneditor.cpp \
-    encode.cpp \
     news.cpp
 
 HEADERS  += mainwindow.h \
@@ -82,26 +81,13 @@ HEADERS  += mainwindow.h \
     coloreditor.h \
     transitioneditor.h \
     news.h \
-    encode.h
+    interfaces.h
 
 linux-g++ {
     LIBS += -L$$PWD/lib/
-    INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
     LIBS += -lm
     LIBS += -ldl
 }
-win32 {
-    LIBS += -L$$PWD/../ffmpeg-3.2.4-win64-dev/lib/
-    INCLUDEPATH += "C:\SourceCode\ffmpeg-3.2.4-win64-dev\include"
-}
-
-
-LIBS += -lavutil
-LIBS += -lavformat
-LIBS += -lavcodec
-LIBS += -lswresample
-LIBS += -lswscale
-
 
 RESOURCES += \
     images.qrc
