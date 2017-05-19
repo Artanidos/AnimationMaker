@@ -52,7 +52,6 @@ public:
     QDataStream& write(QDataStream &dataStream) const;
 
     void readXml(QDomDocument *doc);
-    void writeXml(QFile *file);
 
     int fps() const;
     inline void setFps(int value) {m_fps = value;}
@@ -115,7 +114,6 @@ private:
     void initialize();
     void addBackgroundRect();
     void writeKeyframes(QDataStream &dataStream, ResizeableItem *item) const;
-    void writeKeyframes(QDomDocument *doc, QDomElement *element, ResizeableItem *item);
     void readKeyframes(QDataStream &dataStream, ResizeableItem *item);
     void readKeyframes(QDomElement *element, ResizeableItem *item);
     void copyKeyframes(ResizeableItem *item);

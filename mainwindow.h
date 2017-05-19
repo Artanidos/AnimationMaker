@@ -24,6 +24,7 @@
 #include <QMainWindow>
 #include <QFileInfo>
 #include <QDir>
+#include "interfaces.h"
 
 class AnimationScene;
 class Timeline;
@@ -64,6 +65,7 @@ private:
     void fillTree();
     void loadPlugins();
     void populateMenus(QObject *plugin);
+    void setKeyframes(AnimationMaker::AnimationItem *aitem, ResizeableItem *item);
 
     QSplitter *splitter;
     QToolBar *toolbar;
@@ -87,9 +89,7 @@ private:
     QAction *newAct;
     QAction *saveAct;
     QAction *saveAsAct;
-    //QAction *exportAct;
     QAction *importXmlAct;
-    QAction *exportXmlAct;
     QAction *exitAct;
     QAction *aboutAct;
     QAction *selectAct;
@@ -112,13 +112,14 @@ private:
     QMenu *editMenu;
     QMenu *helpMenu;
     QMenu *viewMenu;
+    QMenu *importMenu;
     QMenu *exportMenu;
     QUndoStack *undoStack;
 
 public slots:
-    void doExport();
-    //void exportAnimation();
-    void exportXml();
+    void doExportMovie();
+    void doExportMeta();
+    void doImport();
     void importXml();
     void about();
     void save();

@@ -24,20 +24,114 @@
 #include <QtPlugin>
 #include <QStatusBar>
 #include <QGraphicsView>
+#include <QVariant>
 
-class ExportInterface : public QObject
+namespace AnimationMaker
+{
+
+class Keyframe
+{
+public:
+    int time;
+    QVariant value;
+    int easing;
+    Keyframe *next;
+    Keyframe *prev;
+};
+
+class AnimationItem
+{
+public:
+    QString id;
+    qreal left;
+    qreal top;
+    int opacity;
+    QHash<QString, Keyframe*> keyframes;
+    virtual ~AnimationItem() {}
+};
+
+class Rectangle : public AnimationItem
+{
+public:
+    qreal width;
+    qreal height;
+    QString pen;
+    QString brush;
+};
+
+class Ellipse : public AnimationItem
+{
+public:
+    qreal width;
+    qreal height;
+    QString pen;
+    QString brush;
+};
+
+class Text : public AnimationItem
+{
+public:
+    qreal xscale;
+    qreal yscale;
+    QString text;
+    QString textcolor;
+    QString fontFamily;
+    int fontSize;
+    QString fontStyle;
+};
+
+class Bitmap : public AnimationItem
+{
+public:
+    qreal width;
+    qreal height;
+    QImage image;
+};
+
+class Vectorgraphic : public AnimationItem
+{
+public:
+    qreal xscale;
+    qreal yscale;
+    QByteArray data;
+};
+
+class Animation
+{
+public:
+    int fps;
+    int width;
+    int height;
+    QList<AnimationItem*> items;
+};
+}
+
+class ExportMovieInterface : public QObject
 {
     Q_OBJECT
 public:
     virtual QString displayName() const = 0;
     virtual QString filter() const = 0;
     virtual QString title() const = 0;
-    virtual int exportFile(const char *filename, QGraphicsView *view, int length, QStatusBar *bar, int fps) = 0;
+    virtual void exportMovie(QString filename, QGraphicsView *view, int length, int fps, QStatusBar *bar) = 0;
 signals:
-    void setPlayheadPos(int);
+    void setFrame(int);
 };
 
-#define ExportInterface_iid "org.artanidos.AnimationMaker.ExportInterface"
-Q_DECLARE_INTERFACE(ExportInterface, ExportInterface_iid)
+#define ExportMovieInterface_iid "org.artanidos.AnimationMaker.ExportMovieInterface"
+Q_DECLARE_INTERFACE(ExportMovieInterface, ExportMovieInterface_iid)
+
+class ExportMetaInterface : public QObject
+{
+    Q_OBJECT
+public:
+    virtual QString displayName() const = 0;
+    virtual QString filter() const = 0;
+    virtual QString title() const = 0;
+    virtual void exportMeta(QString filename, AnimationMaker::Animation *animation, bool exportAll, QStatusBar *bar) = 0;
+};
+
+#define ExportMetaInterface_iid "org.artanidos.AnimationMaker.ExportMetaInterface"
+Q_DECLARE_INTERFACE(ExportMetaInterface, ExportMetaInterface_iid)
 
 #endif // INTERFACES_H

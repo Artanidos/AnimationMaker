@@ -30,6 +30,11 @@
 #include "transitioneditor.h"
 #include "expander.h"
 #include "interfaces.h"
+#include "rectangle.h"
+#include "ellipse.h"
+#include "text.h"
+#include "bitmap.h"
+#include "vectorgraphic.h"
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
@@ -449,31 +454,6 @@ void MainWindow::importXml()
     timeline->expandTree();
 }
 
-void MainWindow::exportXml()
-{
-    QString fileName;
-    QFileDialog *dialog = new QFileDialog();
-    dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter(tr("XML format (*.xml);;All Files (*)"));
-    dialog->setWindowTitle(tr("Export Animation to XML"));
-    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
-    dialog->setAcceptMode(QFileDialog::AcceptSave);
-    if(dialog->exec())
-        fileName = dialog->selectedFiles().first();
-    delete dialog;
-    if(fileName.isEmpty())
-        return;
-
-    QFile file(fileName);
-    if(!file.open(QIODevice::WriteOnly))
-    {
-        QMessageBox::warning(this, "Error", "Unable to open file " + fileName);
-        return;
-    }
-    scene->writeXml(&file);
-    file.close();
-}
-
 void MainWindow::createActions()
 {
     openAct = new QAction(tr("&Open..."), this);
@@ -491,9 +471,6 @@ void MainWindow::createActions()
 
     importXmlAct = new QAction(tr("&Import XML"), this);
     connect(importXmlAct, SIGNAL(triggered()), this, SLOT(importXml()));
-
-    exportXmlAct = new QAction(tr("&Export XML"), this);
-    connect(exportXmlAct, SIGNAL(triggered()), this, SLOT(exportXml()));
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
@@ -541,15 +518,20 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
+    importMenu = new QMenu(tr("Import"));
+    importMenu->setEnabled(false);
+
     exportMenu = new QMenu(tr("Export"));
+    exportMenu->setEnabled(false);
+
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addAction(importXmlAct);
-    fileMenu->addAction(exportXmlAct);
     fileMenu->addSeparator();
+    fileMenu->addMenu(importMenu);
     fileMenu->addMenu(exportMenu);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
@@ -767,30 +749,47 @@ void MainWindow::loadPlugins()
     {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
+
         if (plugin)
         {
             populateMenus(plugin);
             pluginFileNames += fileName;
         }
+        else
+            qDebug() << "Error loading plugin" << fileName << loader.errorString();
     }
 }
 
 void MainWindow::populateMenus(QObject *plugin)
 {
-    ExportInterface *iExport = qobject_cast<ExportInterface *>(plugin);
-    if (iExport)
+    ExportMovieInterface *iExportMovie = qobject_cast<ExportMovieInterface *>(plugin);
+    if (iExportMovie)
     {
-        QAction *action = new QAction(iExport->displayName(), plugin);
-        connect(action, SIGNAL(triggered()), this, SLOT(doExport()));
+        QAction *action = new QAction(iExportMovie->displayName(), plugin);
+        connect(action, SIGNAL(triggered()), this, SLOT(doExportMovie()));
+        exportMenu->addAction(action);
+        exportMenu->setEnabled(true);
+    }
+
+    ExportMetaInterface *iExportMeta = qobject_cast<ExportMetaInterface *>(plugin);
+    if (iExportMeta)
+    {
+        QAction *action = new QAction(iExportMeta->displayName(), plugin);
+        connect(action, SIGNAL(triggered()), this, SLOT(doExportMeta()));
         exportMenu->addAction(action);
         exportMenu->setEnabled(true);
     }
 }
 
-void MainWindow::doExport()
+void MainWindow::doImport()
+{
+
+}
+
+void MainWindow::doExportMovie()
 {
     QAction *action = qobject_cast<QAction *>(sender());
-    ExportInterface *iExport = qobject_cast<ExportInterface *>(action->parent());
+    ExportMovieInterface *iExport = qobject_cast<ExportMovieInterface *>(action->parent());
 
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
@@ -814,14 +813,170 @@ void MainWindow::doExport()
 
     try
     {
-        connect(iExport, SIGNAL(setPlayheadPos(int)), this, SLOT(pluginSetPlayheadPos(int)));
-        iExport->exportFile(fileName.toLatin1(), exportView, timeline->lastKeyframe(), this->statusBar(), scene->fps());
+        connect(iExport, SIGNAL(setFrame(int)), this, SLOT(pluginSetPlayheadPos(int)));
+        iExport->exportMovie(fileName.toLatin1(), exportView, timeline->lastKeyframe(), scene->fps(), this->statusBar());
     }
     catch(Exception *e)
     {
         QMessageBox::critical(this, "An error occured on export", e->msg());
     }
     view->setUpdatesEnabled(true);
+}
+
+void MainWindow::doExportMeta()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    ExportMetaInterface *iExport = qobject_cast<ExportMetaInterface *>(action->parent());
+
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter(iExport->filter());
+    dialog->setWindowTitle(iExport->title());
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptSave);
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
+    if(fileName.isEmpty())
+        return;
+
+    try
+    {
+        AnimationMaker::Animation *animation = new AnimationMaker::Animation();
+        animation->fps = scene->fps();
+        animation->width = scene->width();
+        animation->height = scene->height();
+
+        bool exportAll = scene->selectedItems().count() == 0;
+
+        QList<QGraphicsItem*> itemList = scene->items(Qt::AscendingOrder);
+        foreach (QGraphicsItem *item, itemList)
+        {
+            if(exportAll || item->isSelected())
+            {
+                switch(item->type())
+                {
+                    case Rectangle::Type:
+                    {
+                        Rectangle *r = dynamic_cast<Rectangle *>(item);
+                        AnimationMaker::Rectangle *rect = new AnimationMaker::Rectangle();
+                        rect->id = r->id();
+                        rect->left = r->left();
+                        rect->top = r->top();
+                        rect->width = r->rect().width();
+                        rect->height = r->rect().height();
+                        rect->pen = r->pen().color().name();
+                        rect->brush = r->brush().color().name();
+                        rect->opacity = r->opacity();
+                        setKeyframes(rect, r);
+                        animation->items.append(rect);
+                        break;
+                    }
+                    case Ellipse::Type:
+                    {
+                        Ellipse *e = dynamic_cast<Ellipse *>(item);
+                        AnimationMaker::Ellipse *ellipse = new AnimationMaker::Ellipse();
+                        ellipse->id = e->id();
+                        ellipse->left = e->left();
+                        ellipse->top = e->top();
+                        ellipse->width = e->rect().width();
+                        ellipse->height = e->rect().height();
+                        ellipse->pen = e->pen().color().name();
+                        ellipse->brush = e->brush().color().name();
+                        ellipse->opacity = e->opacity();
+                        setKeyframes(ellipse, e);
+                        animation->items.append(ellipse);
+                        break;
+                    }
+                    case Text::Type:
+                    {
+                        Text *t = dynamic_cast<Text*>(item);
+                        AnimationMaker::Text *text = new AnimationMaker::Text();
+                        text->id = t->id();
+                        text->left = t->left();
+                        text->top = t->top();
+                        text->xscale = t->xscale();
+                        text->yscale = t->yscale();
+                        text->text = t->text();
+                        text->textcolor = t->textcolor().name();
+                        text->opacity = t->opacity();
+                        text->fontFamily = t->font().family();
+                        text->fontSize = t->font().pointSize();
+                        text->fontStyle = t->font().styleName();
+                        setKeyframes(text, t);
+                        animation->items.append(text);
+                        break;
+                    }
+                    case Bitmap::Type:
+                    {
+                        Bitmap *b = dynamic_cast<Bitmap*>(item);
+                        AnimationMaker::Bitmap *bitmap = new AnimationMaker::Bitmap();
+                        bitmap->id = b->id();
+                        bitmap->left = b->left();
+                        bitmap->top = b->top();
+                        bitmap->width = b->rect().width();
+                        bitmap->height = b->rect().height();
+                        bitmap->opacity = b->opacity();
+                        bitmap->image = b->getImage();
+                        setKeyframes(bitmap, b);
+                        animation->items.append(bitmap);
+                        break;
+                    }
+                    case Vectorgraphic::Type:
+                    {
+                        Vectorgraphic *v = dynamic_cast<Vectorgraphic*>(item);
+                        AnimationMaker::Vectorgraphic *vectorgraphic = new AnimationMaker::Vectorgraphic();
+                        vectorgraphic->id = v->id();
+                        vectorgraphic->left =v->left();
+                        vectorgraphic->top = v->top();
+                        vectorgraphic->xscale = v->xscale();
+                        vectorgraphic->yscale = v->yscale();
+                        vectorgraphic->opacity = v->opacity();
+                        vectorgraphic->data = v->getData();
+                        setKeyframes(vectorgraphic, v);
+                        animation->items.append(vectorgraphic);
+                        break;
+                    }
+                }
+            }
+        }
+        iExport->exportMeta(fileName.toLatin1(), animation, exportAll, this->statusBar());
+        qDeleteAll(animation->items);
+        delete animation;
+    }
+    catch(Exception *e)
+    {
+        QMessageBox::critical(this, "An error occured on export", e->msg());
+    }
+}
+
+void MainWindow::setKeyframes(AnimationMaker::AnimationItem *aitem, ResizeableItem *item)
+{
+    AnimationMaker::Keyframe *last;
+    QHash<QString, KeyFrame*>::iterator it;
+    for(it = item->keyframes()->begin(); it != item->keyframes()->end(); it++)
+    {
+        AnimationMaker::Keyframe *key = new AnimationMaker::Keyframe();
+        key->easing = it.value()->easing();
+        key->time = it.value()->time();
+        key->value = it.value()->value();
+        key->next = NULL;
+        key->prev = NULL;
+        aitem->keyframes.insert(it.key(), key);
+        last = key;
+        for(KeyFrame *frame = it.value()->next(); frame != NULL; frame = frame->next())
+        {
+            AnimationMaker::Keyframe *nextkey = new AnimationMaker::Keyframe();
+            nextkey->easing = frame->easing();
+            nextkey->time = frame->time();
+            nextkey->value = frame->value();
+            nextkey->next = NULL;
+            last->next = nextkey;
+            nextkey->prev = last;
+            last = nextkey;
+        }
+    }
 }
 
 void MainWindow::pluginSetPlayheadPos(int pos)
