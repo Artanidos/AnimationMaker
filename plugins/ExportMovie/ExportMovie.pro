@@ -33,14 +33,12 @@ SOURCES += exportmovie.cpp
 HEADERS += exportmovie.h \
     ../../interfaces.h
 
+INCLUDEPATH += ../../dependencies/ffmpeg-3.2.2/include
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
-    INCLUDEPATH += $$PWD/../../ffmpeg-3.2.2
-}
 
-win32 {
-    INCLUDEPATH += "C:\SourceCode\ffmpeg-3.2.4-win64-dev\include"
 }
 
 LIBS += -lavutil
