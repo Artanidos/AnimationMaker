@@ -437,7 +437,6 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             b->setPos(x, y);
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            b->setScale(xscale, yscale);
             b->setOpacity(opacity);
 
             readKeyframes(dataStream, b);
