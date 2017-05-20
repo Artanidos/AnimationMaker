@@ -55,8 +55,10 @@ typedef struct OutputStream
     int64_t next_pts;
     int samples_count;
     AVFrame *frame;
+    AVFrame *yuvFrame;
     float t, tincr, tincr2;
     struct SwsContext *sws_ctx;
+    struct SwsContext *sws_ctx_gif;
     struct SwrContext *swr_ctx;
 } OutputStream;
 
@@ -89,7 +91,7 @@ QString ExportMovie::displayName() const
 
 QString ExportMovie::filter() const
 {
-    return "Video format (*.mpg *.mp4 *.avi);;All Files (*)";
+    return "Video format (*.mpg *.mp4 *.avi *.gif);;All Files (*)";
 }
 
 QString ExportMovie::title() const
@@ -132,7 +134,10 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc, AVCodec **codec, 
             ost->st->time_base.den = fps;
             c->time_base       = ost->st->time_base;
             c->gop_size      = 12;
-            c->pix_fmt       = AV_PIX_FMT_YUV420P;
+            if(codec_id == AV_CODEC_ID_GIF)
+                c->pix_fmt = AV_PIX_FMT_RGB8;
+            else
+                c->pix_fmt = AV_PIX_FMT_YUV420P;
             if (c->codec_id == AV_CODEC_ID_MPEG2VIDEO)
             {
                 c->max_b_frames = 2;
@@ -165,6 +170,10 @@ static void open_video(AVCodec *codec, OutputStream *ost, AVDictionary *opt_arg)
     if (!ost->frame)
         throw new Exception("Could not allocate video frame");
 
+    ost->yuvFrame = alloc_picture(AV_PIX_FMT_YUV420P, c->width, c->height);
+    if (!ost->yuvFrame)
+        throw new Exception("Could not allocate video frame");
+
     ret = avcodec_parameters_from_context(ost->st->codecpar, c);
     if (ret < 0)
         throw new Exception("Could not copy the stream parameters");
@@ -177,17 +186,40 @@ static AVFrame *get_video_frame(OutputStream *ost, QImage img)
     if (av_frame_make_writable(ost->frame) < 0)
         throw new Exception("Could not make frame writeable");
 
+    if (av_frame_make_writable(ost->yuvFrame) < 0)
+        throw new Exception("Could not make frame writeable");
+
     uint8_t * inData[1] = { img.bits() };
     int inLinesize[1] = { 4 * c->width };
 
-    if (!ost->sws_ctx)
+    if(c->codec_id == AV_CODEC_ID_GIF)
     {
-        ost->sws_ctx = sws_getContext(c->width, c->height, AV_PIX_FMT_BGRA, c->width, c->height, c->pix_fmt, SWS_BICUBIC, NULL, NULL, NULL);
         if (!ost->sws_ctx)
-            throw new Exception("Could not initialize the conversion context");
-    }
-    sws_scale(ost->sws_ctx, (const uint8_t * const *)inData, inLinesize, 0, c->height, ost->frame->data, ost->frame->linesize);
+        {
+            ost->sws_ctx = sws_getContext(c->width, c->height, AV_PIX_FMT_BGRA, c->width, c->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
+            if (!ost->sws_ctx)
+                throw new Exception("Could not initialize the conversion context");
+        }
+        sws_scale(ost->sws_ctx, (const uint8_t * const *)inData, inLinesize, 0, c->height, ost->yuvFrame->data, ost->yuvFrame->linesize);
 
+        if(!ost->sws_ctx_gif)
+        {
+            ost->sws_ctx_gif = sws_getContext(c->width, c->height, AV_PIX_FMT_YUV420P, c->width, c->height, c->pix_fmt, SWS_BICUBIC, NULL, NULL, NULL);
+            if (!ost->sws_ctx_gif)
+                throw new Exception("Could not initialize the conversion context");
+        }
+        sws_scale(ost->sws_ctx_gif, (const uint8_t * const *)ost->yuvFrame->data, ost->yuvFrame->linesize, 0, c->height, ost->frame->data, ost->frame->linesize);
+    }
+    else
+    {
+        if (!ost->sws_ctx)
+        {
+            ost->sws_ctx = sws_getContext(c->width, c->height, AV_PIX_FMT_BGRA, c->width, c->height, c->pix_fmt, SWS_BICUBIC, NULL, NULL, NULL);
+            if (!ost->sws_ctx)
+                throw new Exception("Could not initialize the conversion context");
+        }
+        sws_scale(ost->sws_ctx, (const uint8_t * const *)inData, inLinesize, 0, c->height, ost->frame->data, ost->frame->linesize);
+    }
     ost->frame->pts = ost->next_pts++;
 
     return ost->frame;
@@ -197,7 +229,9 @@ static void close_stream(OutputStream *ost)
 {
     avcodec_free_context(&ost->enc);
     av_frame_free(&ost->frame);
+    av_frame_free(&ost->yuvFrame);
     sws_freeContext(ost->sws_ctx);
+    sws_freeContext(ost->sws_ctx_gif);
     swr_free(&ost->swr_ctx);
 }
 

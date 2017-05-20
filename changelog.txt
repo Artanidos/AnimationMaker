@@ -1,3 +1,8 @@
+1.2
+---
+Added the ability to load plugins for import and export
+Animated gifs can now be exported
+
 1.1
 ---
 Edit easing curve for transition
