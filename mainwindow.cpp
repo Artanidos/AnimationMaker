@@ -412,48 +412,6 @@ void MainWindow::readSettings()
     }
 }
 
-void MainWindow::importXml()
-{
-    QString fileName;
-    QFileDialog *dialog = new QFileDialog();
-    dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter(tr("XML format (*.xml);;All Files (*)"));
-    dialog->setWindowTitle(tr("Import XML"));
-    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
-    dialog->setAcceptMode(QFileDialog::AcceptOpen);
-    if(dialog->exec())
-        fileName = dialog->selectedFiles().first();
-    delete dialog;
-    if (fileName.isEmpty())
-        return;
-
-    QFile file(fileName);
-    if(!file.open(QIODevice::ReadOnly))
-    {
-        QMessageBox::warning(this, "Error", "Unable to open file " + fileName);
-        return;
-    }
-    QDomDocument doc;
-    if (!doc.setContent(&file))
-    {
-        QMessageBox::warning(this, "Error", "Unable to read file " + fileName);
-        file.close();
-        return;
-    }
-    file.close();
-
-    QDomElement docElem = doc.documentElement();
-    if(docElem.nodeName() == "Animation")
-        reset();
-
-    scene->readXml(&doc);
-
-    fillTree();
-    elementTree->expandAll();
-    m_scenePropertyEditor->setScene(scene);
-    timeline->expandTree();
-}
-
 void MainWindow::createActions()
 {
     openAct = new QAction(tr("&Open..."), this);
@@ -468,9 +426,6 @@ void MainWindow::createActions()
 
     saveAsAct = new QAction(tr("Save &As..."), this);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
-
-    importXmlAct = new QAction(tr("&Import XML"), this);
-    connect(importXmlAct, SIGNAL(triggered()), this, SLOT(importXml()));
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
@@ -529,7 +484,6 @@ void MainWindow::createMenus()
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
-    fileMenu->addAction(importXmlAct);
     fileMenu->addSeparator();
     fileMenu->addMenu(importMenu);
     fileMenu->addMenu(exportMenu);
@@ -779,11 +733,154 @@ void MainWindow::populateMenus(QObject *plugin)
         exportMenu->addAction(action);
         exportMenu->setEnabled(true);
     }
+
+    ImportMetaInterface *iImportMeta = qobject_cast<ImportMetaInterface *>(plugin);
+    if (iImportMeta)
+    {
+        QAction *action = new QAction(iImportMeta->displayName(), plugin);
+        connect(action, SIGNAL(triggered()), this, SLOT(doImport()));
+        importMenu->addAction(action);
+        importMenu->setEnabled(true);
+    }
+}
+
+void MainWindow::readKeyframes(AnimationMaker::AnimationItem *element, ResizeableItem *item)
+{
+    QHash<QString, AnimationMaker::Keyframe*>::iterator it;
+    for(it = element->keyframes.begin(); it != element->keyframes.end(); it++)
+    {
+        for(AnimationMaker::Keyframe *frame = it.value(); frame != NULL; frame = frame->next)
+        {
+            KeyFrame *key = new KeyFrame();
+            key->setTime(frame->time);
+            key->setValue(frame->value);
+            key->setEasing(frame->easing);
+            item->addKeyframe(it.key(), key);
+            emit scene->keyframeAdded(item, it.key(), key);
+        }
+    }
 }
 
 void MainWindow::doImport()
 {
+    QAction *action = qobject_cast<QAction *>(sender());
+    ImportMetaInterface *iImport = qobject_cast<ImportMetaInterface *>(action->parent());
 
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter(iImport->filter());
+    dialog->setWindowTitle(iImport->title());
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptOpen);
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
+    if(fileName.isEmpty())
+        return;
+
+    try
+    {
+        AnimationMaker::Animation *animation = new AnimationMaker::Animation();
+        animation->fps = -1;
+        iImport->importMeta(fileName.toLatin1(), animation, this->statusBar());
+        // whole animation has been imported
+        if(animation->fps != -1)
+        {
+            reset();
+            scene->setFps(animation->fps);
+            scene->setWidth(animation->width);
+            scene->setHeight(animation->height);
+        }
+        for(int i=0; i < animation->items.count(); i++)
+        {
+            AnimationMaker::AnimationItem *item = animation->items.at(i);
+            AnimationMaker::Rectangle *rect = dynamic_cast<AnimationMaker::Rectangle*>(item);
+            if(rect)
+            {
+                Rectangle *r = new Rectangle(rect->width, rect->height, scene);
+                r->setId(rect->id);
+                r->setPos(rect->left, rect->top);
+                r->setPen(QPen(rect->pen));
+                r->setBrush(QBrush(QColor(rect->brush)));
+                r->setFlag(QGraphicsItem::ItemIsMovable, true);
+                r->setFlag(QGraphicsItem::ItemIsSelectable, true);
+                r->setOpacity(rect->opacity);
+                readKeyframes(rect, r);
+                scene->addItem(r);
+            }
+            AnimationMaker::Ellipse *ellipse = dynamic_cast<AnimationMaker::Ellipse*>(item);
+            if(ellipse)
+            {
+                Ellipse *e = new Ellipse(ellipse->width, ellipse->height, scene);
+                e->setId(ellipse->id);
+                e->setPos(ellipse->left, ellipse->top);
+                e->setPen(QPen(ellipse->pen));
+                e->setBrush(QBrush(QColor(ellipse->brush)));
+                e->setFlag(QGraphicsItem::ItemIsMovable, true);
+                e->setFlag(QGraphicsItem::ItemIsSelectable, true);
+                e->setOpacity(ellipse->opacity);
+                //readKeyframes(&ele, e);
+                scene->addItem(e);
+            }
+            AnimationMaker::Text *text = dynamic_cast<AnimationMaker::Text*>(item);
+            if(text)
+            {
+                Text *t = new Text(text->text, scene);
+                t->setId(text->id);
+                t->setPos(text->left, text->top);
+                t->setFlag(QGraphicsItem::ItemIsMovable, true);
+                t->setFlag(QGraphicsItem::ItemIsSelectable, true);
+                t->setScale(text->xscale, text->yscale);
+                t->setTextcolor(text->textcolor);
+                t->setOpacity(text->opacity);
+                QFont font;
+                font.setFamily(text->fontFamily);
+                font.setPointSize(text->fontSize);
+                font.setStyleName(text->fontStyle);
+                t->setFont(font);
+                //readKeyframes(&ele, t);
+                scene->addItem(t);
+            }
+            AnimationMaker::Bitmap *bitmap = dynamic_cast<AnimationMaker::Bitmap*>(item);
+            if(bitmap)
+            {
+                Bitmap *b = new Bitmap(bitmap->image, bitmap->width, bitmap->height, scene);
+                b->setId(bitmap->id);
+                b->setPos(bitmap->left, bitmap->top);
+                b->setFlag(QGraphicsItem::ItemIsMovable, true);
+                b->setFlag(QGraphicsItem::ItemIsSelectable, true);
+                b->setOpacity(bitmap->opacity);
+                //readKeyframes(&ele, b);
+                scene->addItem(b);
+            }
+            AnimationMaker::Vectorgraphic *vect = dynamic_cast<AnimationMaker::Vectorgraphic*>(item);
+            if(vect)
+            {
+                Vectorgraphic *v = new Vectorgraphic(vect->data, scene);
+                v->setId(vect->id);
+                v->setPos(vect->left, vect->top);
+                v->setFlag(QGraphicsItem::ItemIsMovable, true);
+                v->setFlag(QGraphicsItem::ItemIsSelectable, true);
+                v->setScale(vect->xscale, vect->yscale);
+                v->setOpacity(vect->opacity);
+                //readKeyframes(&ele, v);
+                scene->addItem(v);
+            }
+        }
+
+        qDeleteAll(animation->items);
+        delete animation;
+
+        fillTree();
+        elementTree->expandAll();
+        m_scenePropertyEditor->setScene(scene);
+        timeline->expandTree();
+    }
+    catch(Exception *e)
+    {
+        QMessageBox::critical(this, "An error occured on import", e->msg());
+    }
 }
 
 void MainWindow::doExportMovie()

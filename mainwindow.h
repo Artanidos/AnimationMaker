@@ -66,6 +66,7 @@ private:
     void loadPlugins();
     void populateMenus(QObject *plugin);
     void setKeyframes(AnimationMaker::AnimationItem *aitem, ResizeableItem *item);
+    void readKeyframes(AnimationMaker::AnimationItem *element, ResizeableItem *item);
 
     QSplitter *splitter;
     QToolBar *toolbar;
@@ -89,7 +90,6 @@ private:
     QAction *newAct;
     QAction *saveAct;
     QAction *saveAsAct;
-    QAction *importXmlAct;
     QAction *exitAct;
     QAction *aboutAct;
     QAction *selectAct;
@@ -120,7 +120,6 @@ public slots:
     void doExportMovie();
     void doExportMeta();
     void doImport();
-    void importXml();
     void about();
     void save();
     void saveAs();

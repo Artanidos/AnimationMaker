@@ -68,6 +68,7 @@ void ExportXml::exportMeta(QString filename, AnimationMaker::Animation *animatio
     if(!file.open(QIODevice::WriteOnly))
     {
         QMessageBox::warning(0, "Error", "Unable to open file " + filename);
+        bar->showMessage("Unable to open file " + filename);
         return;
     }
     bar->showMessage("Writing to file " + filename);

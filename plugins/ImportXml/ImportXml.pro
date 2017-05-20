@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-#    Project created by QtCreator 2016-12-19T11:03:34
+# Project created by QtCreator 2017-05-20T10:39:18
 #
 #-------------------------------------------------
 #    Copyright (C) 2016 Olaf Japp
@@ -21,10 +21,22 @@
 #    You should have received a copy of the GNU General Public License
 #    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
-TEMPLATE = subdirs
-SUBDIRS = main xml movie \
-    plugins/ImportXml
+QT += xml testlib gui widgets
+TARGET = ImportXml
+CONFIG += plugin
+TEMPLATE = lib
+INCLUDEPATH += ../..
+DESTDIR = ..
+DEFINES += IMPORTXML_LIBRARY
+DEFINES += QT_DEPRECATED_WARNINGS
+SOURCES += importxml.cpp
+HEADERS += importxml.h \
+    ../../interfaces.h
 
-main.file = AnimationMaker.pro
-xml.file = plugins/ExportXml/ExportXml.pro
-movie.file = plugins/ExportMovie/ExportMovie.pro
+unix {
+    target.path = /usr/lib
+    INSTALLS += target
+}
+
+DISTFILES += \
+    imports.json

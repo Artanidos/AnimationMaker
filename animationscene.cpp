@@ -44,7 +44,6 @@ void AnimationScene::initialize()
     m_fps = 24;
     m_copy = NULL;
     m_playheadPosition = 0;
-    m_tempKeyFrame = NULL;
     m_movingItem = NULL;
     addBackgroundRect();
 }
@@ -154,48 +153,12 @@ void AnimationScene::addBackgroundRect()
     addItem(m_rect);
 }
 
-void AnimationScene::readKeyframes(QDomElement *element, ResizeableItem *item)
-{
-    m_tempKeyFrame = NULL;
-    for(int i=0; i < element->childNodes().count(); i++)
-    {
-        QDomNode node = element->childNodes().at(i);
-        if(node.nodeName() == "Keyframes")
-        {
-            QDomElement keyframes = node.toElement();
-            for(int j=0; j < node.childNodes().count(); j++)
-            {
-                QDomNode frameNode = node.childNodes().at(j);
-                if(frameNode.nodeName() == "Keyframe")
-                {
-                    QDomElement keyframe = frameNode.toElement();
-                    KeyFrame *key = new KeyFrame();
-                    key->setTime(keyframe.attribute("time", "0").toInt());
-                    key->setValue(keyframe.attribute("value"));
-                    key->setEasing(keyframe.attribute("easing", "-1").toInt());
-                    item->addKeyframe(keyframes.attribute("property"), key);
-                    // set double linked list
-                    if(m_tempKeyFrame)
-                    {
-                        m_tempKeyFrame->setNext(key);
-                        key->setPrev(m_tempKeyFrame);
-                    }
-                    m_tempKeyFrame = key;
-                    emit keyframeAdded(item, keyframes.attribute("property"), key);
-                }
-            }
-            m_tempKeyFrame = NULL;
-        }
-    }
-}
-
 void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item)
 {
     int vars, easing, time, keyframes;
     QVariant value;
     QString propertyName;
 
-    m_tempKeyFrame = NULL;
     dataStream >> vars;
 
     for(int i=0; i < vars; i++)
@@ -214,108 +177,7 @@ void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item
             key->setEasing(easing);
 
             item->addKeyframe(propertyName, key);
-            // set double linked list
-            if(m_tempKeyFrame)
-            {
-                m_tempKeyFrame->setNext(key);
-                key->setPrev(m_tempKeyFrame);
-            }
-            m_tempKeyFrame = key;
             emit keyframeAdded(item, propertyName, key);
-        }
-        m_tempKeyFrame = NULL;
-    }
-}
-
-void AnimationScene::readXml(QDomDocument *doc)
-{
-    QDomElement docElem = doc->documentElement();
-    if(docElem.nodeName() == "Animation")
-    {
-        setFps(docElem.attribute("fps", "24").toInt());
-        setWidth(docElem.attribute("width", "1200").toInt());
-        setHeight(docElem.attribute("height", "720").toInt());
-    }
-    for(int i=0; i < docElem.childNodes().count(); i++)
-    {
-        QDomNode node =docElem.childNodes().at(i);
-        if(node.nodeName() == "Rectangle")
-        {
-            QDomElement ele = node.toElement();
-            Rectangle *r = new Rectangle(ele.attribute("width", "50").toDouble(), ele.attribute("height", "50").toDouble(), this);
-            r->setId(ele.attribute("id", "Rectangle"));
-            r->setPos(ele.attribute("left", "0").toDouble(), ele.attribute("top", "0").toDouble());
-            r->setPen(QPen(ele.attribute("pen", "#000000")));
-            r->setBrush(QBrush(QColor(ele.attribute("brush", "#0000FF"))));
-            r->setFlag(QGraphicsItem::ItemIsMovable, true);
-            r->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            r->setOpacity(ele.attribute("opacity", "100").toInt());
-            readKeyframes(&ele, r);
-            addItem(r);
-        }
-        else if(node.nodeName() == "Ellipse")
-        {
-            QDomElement ele = node.toElement();
-            Ellipse *e = new Ellipse(ele.attribute("width", "50").toDouble(), ele.attribute("height", "50").toDouble(), this);
-            e->setId(ele.attribute("id", "Ellipse"));
-            e->setPos(ele.attribute("left", "0").toDouble(), ele.attribute("top", "0").toDouble());
-            e->setPen(QPen(ele.attribute("pen", "#000000")));
-            e->setBrush(QBrush(QColor(ele.attribute("brush", "#0000FF"))));
-            e->setFlag(QGraphicsItem::ItemIsMovable, true);
-            e->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            e->setOpacity(ele.attribute("opacity", "100").toInt());
-            readKeyframes(&ele, e);
-            addItem(e);
-        }
-        else if(node.nodeName() == "Text")
-        {
-            QDomElement ele = node.toElement();
-            Text *t = new Text(ele.attribute("text"), this);
-            t->setId(ele.attribute("id", "Text"));
-            t->setPos(ele.attribute("left", "0").toDouble(), ele.attribute("top", "0").toDouble());
-            t->setFlag(QGraphicsItem::ItemIsMovable, true);
-            t->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            t->setScale(ele.attribute("xscale", "1").toDouble(), ele.attribute("yscale", "1").toDouble());
-            t->setTextcolor(ele.attribute("textcolor", "#000000"));
-            t->setOpacity(ele.attribute("opacity", "100").toInt());
-            QFont font;
-            font.setFamily(ele.attribute("font-family"));
-            font.setPointSize(ele.attribute("font-size").toInt());
-            font.setStyleName(ele.attribute("font-style"));
-            t->setFont(font);
-            readKeyframes(&ele, t);
-            addItem(t);
-        }
-        else if(node.nodeName() == "Bitmap")
-        {
-            QDomElement ele = node.toElement();
-            QDomNode data = ele.firstChild();
-            QDomCDATASection cdata = data.toCDATASection();
-            QImage img = QImage::fromData(QByteArray::fromBase64(cdata.data().toLatin1()), "PNG");
-            Bitmap *b = new Bitmap(img, ele.attribute("width", "50").toDouble(), ele.attribute("height", "50").toDouble(), this);
-            b->setId(ele.attribute("id", "Bitmap"));
-            b->setPos(ele.attribute("left", "0").toDouble(), ele.attribute("top", "0").toDouble());
-            b->setFlag(QGraphicsItem::ItemIsMovable, true);
-            b->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            b->setScale(ele.attribute("xscale", "1").toDouble(), ele.attribute("yscale", "1").toDouble());
-            b->setOpacity(ele.attribute("opacity", "100").toInt());
-            readKeyframes(&ele, b);
-            addItem(b);
-        }
-        else if(node.nodeName() == "Vectorgraphic")
-        {
-            QDomElement ele = node.toElement();
-            QDomNode data = ele.firstChild();
-            QDomCDATASection cdata = data.toCDATASection();
-            Vectorgraphic *v = new Vectorgraphic(cdata.data().toLatin1(), this);
-            v->setId(ele.attribute("id", "Vectorgraphic"));
-            v->setPos(ele.attribute("left", "0").toDouble(), ele.attribute("top", "0").toDouble());
-            v->setFlag(QGraphicsItem::ItemIsMovable, true);
-            v->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            v->setScale(ele.attribute("xscale", "1").toDouble(), ele.attribute("yscale", "1").toDouble());
-            v->setOpacity(ele.attribute("opacity", "100").toInt());
-            readKeyframes(&ele, v);
-            addItem(v);
         }
     }
 }

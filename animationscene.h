@@ -29,7 +29,6 @@
 #include <QTest>
 #include <QFileDialog>
 #include <QUndoStack>
-#include <QDomDocument>
 
 class ResizeableItem;
 class KeyFrame;
@@ -50,8 +49,6 @@ public:
     void setEditMode(EditMode mode);
     QDataStream& read(QDataStream &dataStream);
     QDataStream& write(QDataStream &dataStream) const;
-
-    void readXml(QDomDocument *doc);
 
     int fps() const;
     inline void setFps(int value) {m_fps = value;}
@@ -104,7 +101,6 @@ private:
     QColor m_backgroundColor;
     QGraphicsRectItem *m_rect;
     int m_playheadPosition;
-    KeyFrame *m_tempKeyFrame;
     bool m_autokeyframes;
     bool m_autotransitions;
     QUndoStack *m_undoStack;
@@ -115,7 +111,6 @@ private:
     void addBackgroundRect();
     void writeKeyframes(QDataStream &dataStream, ResizeableItem *item) const;
     void readKeyframes(QDataStream &dataStream, ResizeableItem *item);
-    void readKeyframes(QDomElement *element, ResizeableItem *item);
     void copyKeyframes(ResizeableItem *item);
 };
 

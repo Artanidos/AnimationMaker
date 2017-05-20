@@ -106,13 +106,19 @@ public:
 };
 }
 
-class ExportMovieInterface : public QObject
+class AnimationMakerInterface: public QObject
 {
     Q_OBJECT
 public:
     virtual QString displayName() const = 0;
     virtual QString filter() const = 0;
     virtual QString title() const = 0;
+};
+
+class ExportMovieInterface : public AnimationMakerInterface
+{
+    Q_OBJECT
+public:
     virtual void exportMovie(QString filename, QGraphicsView *view, int length, int fps, QStatusBar *bar) = 0;
 signals:
     void setFrame(int);
@@ -121,17 +127,24 @@ signals:
 #define ExportMovieInterface_iid "org.artanidos.AnimationMaker.ExportMovieInterface"
 Q_DECLARE_INTERFACE(ExportMovieInterface, ExportMovieInterface_iid)
 
-class ExportMetaInterface : public QObject
+class ExportMetaInterface : public AnimationMakerInterface
 {
     Q_OBJECT
 public:
-    virtual QString displayName() const = 0;
-    virtual QString filter() const = 0;
-    virtual QString title() const = 0;
     virtual void exportMeta(QString filename, AnimationMaker::Animation *animation, bool exportAll, QStatusBar *bar) = 0;
 };
 
 #define ExportMetaInterface_iid "org.artanidos.AnimationMaker.ExportMetaInterface"
 Q_DECLARE_INTERFACE(ExportMetaInterface, ExportMetaInterface_iid)
+
+class ImportMetaInterface : public AnimationMakerInterface
+{
+    Q_OBJECT
+public:
+    virtual void importMeta(QString filename, AnimationMaker::Animation *animation, QStatusBar *bar) = 0;
+};
+
+#define ImportMetaInterface_iid "org.artanidos.AnimationMaker.ImportMetaInterface"
+Q_DECLARE_INTERFACE(ImportMetaInterface, ImportMetaInterface_iid)
 
 #endif // INTERFACES_H
