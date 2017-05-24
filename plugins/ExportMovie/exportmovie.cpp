@@ -48,6 +48,8 @@ extern "C"
 #include <libswresample/swresample.h>
 }
 
+AVPixelFormat tempFormat = AV_PIX_FMT_YUV420P;
+
 typedef struct OutputStream
 {
     AVStream *st;
@@ -132,8 +134,8 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc, AVCodec **codec, 
             c->height   = height;
             ost->st->time_base.num = 1;
             ost->st->time_base.den = fps;
-            c->time_base       = ost->st->time_base;
-            c->gop_size      = 12;
+            c->time_base = ost->st->time_base;
+            c->gop_size = 12;
             if(codec_id == AV_CODEC_ID_GIF)
                 c->pix_fmt = AV_PIX_FMT_RGB8;
             else
@@ -170,7 +172,7 @@ static void open_video(AVCodec *codec, OutputStream *ost, AVDictionary *opt_arg)
     if (!ost->frame)
         throw new Exception("Could not allocate video frame");
 
-    ost->yuvFrame = alloc_picture(AV_PIX_FMT_YUV420P, c->width, c->height);
+    ost->yuvFrame = alloc_picture(tempFormat, c->width, c->height);
     if (!ost->yuvFrame)
         throw new Exception("Could not allocate video frame");
 
@@ -196,7 +198,7 @@ static AVFrame *get_video_frame(OutputStream *ost, QImage img)
     {
         if (!ost->sws_ctx)
         {
-            ost->sws_ctx = sws_getContext(c->width, c->height, AV_PIX_FMT_BGRA, c->width, c->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
+            ost->sws_ctx = sws_getContext(c->width, c->height, AV_PIX_FMT_BGRA, c->width, c->height, tempFormat, SWS_BICUBIC, NULL, NULL, NULL);
             if (!ost->sws_ctx)
                 throw new Exception("Could not initialize the conversion context");
         }
@@ -204,7 +206,7 @@ static AVFrame *get_video_frame(OutputStream *ost, QImage img)
 
         if(!ost->sws_ctx_gif)
         {
-            ost->sws_ctx_gif = sws_getContext(c->width, c->height, AV_PIX_FMT_YUV420P, c->width, c->height, c->pix_fmt, SWS_BICUBIC, NULL, NULL, NULL);
+            ost->sws_ctx_gif = sws_getContext(c->width, c->height, tempFormat, c->width, c->height, c->pix_fmt, SWS_BICUBIC, NULL, NULL, NULL);
             if (!ost->sws_ctx_gif)
                 throw new Exception("Could not initialize the conversion context");
         }

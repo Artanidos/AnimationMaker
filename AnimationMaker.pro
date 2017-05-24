@@ -85,6 +85,7 @@ HEADERS  += mainwindow.h \
 
 linux-g++ {
     LIBS += -L$$PWD/lib/
+    LIBS += -L$$PWD/dependencies/ffmpeg-3.2.2/lib
     LIBS += -lm
     LIBS += -ldl
 }

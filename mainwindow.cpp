@@ -820,7 +820,7 @@ void MainWindow::doImport()
                 e->setFlag(QGraphicsItem::ItemIsMovable, true);
                 e->setFlag(QGraphicsItem::ItemIsSelectable, true);
                 e->setOpacity(ellipse->opacity);
-                //readKeyframes(&ele, e);
+                readKeyframes(ellipse, e);
                 scene->addItem(e);
             }
             AnimationMaker::Text *text = dynamic_cast<AnimationMaker::Text*>(item);
@@ -839,7 +839,7 @@ void MainWindow::doImport()
                 font.setPointSize(text->fontSize);
                 font.setStyleName(text->fontStyle);
                 t->setFont(font);
-                //readKeyframes(&ele, t);
+                readKeyframes(text, t);
                 scene->addItem(t);
             }
             AnimationMaker::Bitmap *bitmap = dynamic_cast<AnimationMaker::Bitmap*>(item);
@@ -851,7 +851,7 @@ void MainWindow::doImport()
                 b->setFlag(QGraphicsItem::ItemIsMovable, true);
                 b->setFlag(QGraphicsItem::ItemIsSelectable, true);
                 b->setOpacity(bitmap->opacity);
-                //readKeyframes(&ele, b);
+                readKeyframes(bitmap, b);
                 scene->addItem(b);
             }
             AnimationMaker::Vectorgraphic *vect = dynamic_cast<AnimationMaker::Vectorgraphic*>(item);
@@ -864,7 +864,7 @@ void MainWindow::doImport()
                 v->setFlag(QGraphicsItem::ItemIsSelectable, true);
                 v->setScale(vect->xscale, vect->yscale);
                 v->setOpacity(vect->opacity);
-                //readKeyframes(&ele, v);
+                readKeyframes(vect, v);
                 scene->addItem(v);
             }
         }

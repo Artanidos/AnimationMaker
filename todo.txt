@@ -10,3 +10,8 @@ Toolbar for files (Save, Open)
 Items Translation like Rotate
 
 Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
+
+
+use palette filter to create gif in ExportMovie, looks better
+ffmpeg -i bitmap.mp4 -vf palettegen -y palette.png
+ffmpeg -i bitmap.mp4 -i palette.png -lavfi paletteuse -y bitmap.gif

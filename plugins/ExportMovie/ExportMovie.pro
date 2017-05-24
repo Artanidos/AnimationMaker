@@ -38,7 +38,7 @@ INCLUDEPATH += ../../dependencies/ffmpeg-3.2.2/include
 unix {
     target.path = /usr/lib
     INSTALLS += target
-
+    LIBS += -L../../dependencies/ffmpeg-3.2.2/lib
 }
 
 LIBS += -lavutil
