@@ -64,7 +64,7 @@ private:
     void disconnectControls();
 
 private slots:
-    void colorTextChanged(QString value);
+    void colorTextChanged();
     void colorPickerChanged(QColor value);
     void colorPicked(QColor value);
     void rectClicked();

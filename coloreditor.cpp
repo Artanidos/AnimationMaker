@@ -107,7 +107,7 @@ void ColorEditor::setColor(QColor color)
 
 void ColorEditor::disconnectControls()
 {
-    disconnect(m_color, SIGNAL(textChanged(QString)), this, SLOT(colorTextChanged(QString)));
+    disconnect(m_color, SIGNAL(editingFinished()), this, SLOT(colorTextChanged()));
     disconnect(m_hueSlider, SIGNAL(valueChanged(int)), this, SLOT(hueChanged(int)));
     disconnect(m_hueSlider, SIGNAL(sliderReleased()), this, SLOT(huePicked()));
     disconnect(m_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(colorPickerChanged(QColor)));
@@ -123,7 +123,7 @@ void ColorEditor::disconnectControls()
 
 void ColorEditor::connectControls()
 {
-    connect(m_color, SIGNAL(textChanged(QString)), this, SLOT(colorTextChanged(QString)));
+    connect(m_color, SIGNAL(editingFinished()), this, SLOT(colorTextChanged()));
     connect(m_hueSlider, SIGNAL(valueChanged(int)), this, SLOT(hueChanged(int)));
     connect(m_hueSlider, SIGNAL(sliderReleased()), this, SLOT(huePicked()));
     connect(m_colorPicker, SIGNAL(colorChanged(QColor)), this, SLOT(colorPickerChanged(QColor)));
@@ -181,9 +181,9 @@ void ColorEditor::setColorParts(QColor value)
     connectControls();
 }
 
-void ColorEditor::colorTextChanged(QString value)
+void ColorEditor::colorTextChanged()
 {
-    QColor color = QColor(value);
+    QColor color = QColor(m_color->text());
     setColorParts(color);
     emit colorChanged(color);
 }
