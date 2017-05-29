@@ -55,7 +55,8 @@ SOURCES += main.cpp\
     exception.cpp \
     coloreditor.cpp \
     transitioneditor.cpp \
-    news.cpp
+    news.cpp \
+    options.cpp
 
 HEADERS  += mainwindow.h \
     animationscene.h \
@@ -81,7 +82,8 @@ HEADERS  += mainwindow.h \
     coloreditor.h \
     transitioneditor.h \
     news.h \
-    interfaces.h
+    interfaces.h \
+    options.h
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

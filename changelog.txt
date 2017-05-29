@@ -2,6 +2,7 @@
 ---
 Added the ability to load plugins for import and export
 Animated gifs can now be exported (via ExportGif plugin)
+PlginDir can now be altered
 
 Bugfix: color editor
 

@@ -107,6 +107,7 @@ private:
     QAction *copyAct;
     QAction *pasteAct;
     QAction *delAct;
+    QAction *optionsAct;
     QActionGroup *exportActionGroup;
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -117,6 +118,7 @@ private:
     QUndoStack *undoStack;
 
 public slots:
+    void options();
     void doExportMovie();
     void doExportMeta();
     void doImport();

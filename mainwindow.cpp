@@ -35,6 +35,7 @@
 #include "text.h"
 #include "bitmap.h"
 #include "vectorgraphic.h"
+#include "options.h"
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
@@ -393,6 +394,8 @@ void MainWindow::writeSettings()
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue("geometry", saveGeometry());
     settings.setValue("state", saveState());
+    settings.setValue("pluginsDir", pluginsDir.absolutePath());
+    qDebug() << pluginsDir.absolutePath();
 }
 
 void MainWindow::readSettings()
@@ -410,6 +413,7 @@ void MainWindow::readSettings()
         restoreGeometry(geometry);
         restoreState(settings.value("state").toByteArray());
     }
+    pluginsDir.setPath(settings.value("pluginsDir", qApp->applicationDirPath() + "/plugins").toString());
 }
 
 void MainWindow::createActions()
@@ -449,6 +453,9 @@ void MainWindow::createActions()
     delAct = new QAction(tr("&Delete"), this);
     delAct->setShortcut(QKeySequence::Delete);
     connect(delAct, SIGNAL(triggered()), this, SLOT(del()));
+
+    optionsAct = new QAction("Options...", this);
+    connect(optionsAct, SIGNAL(triggered(bool)), this, SLOT(options()));
 
     showElementsAct = new QAction("Elements");
     connect(showElementsAct, SIGNAL(triggered()), this, SLOT(showElementsPanel()));
@@ -496,6 +503,8 @@ void MainWindow::createMenus()
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
     editMenu->addAction(delAct);
+    editMenu->addSeparator();
+    editMenu->addAction(optionsAct);
 
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(showToolPanelAct);
@@ -684,20 +693,11 @@ void MainWindow::transitionSelectionChanged(KeyFrame *frame)
 
 void MainWindow::loadPlugins()
 {
-    pluginsDir = QDir(qApp->applicationDirPath());
-
-#if defined(Q_OS_WIN)
-    if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-        pluginsDir.cdUp();
-#elif defined(Q_OS_MAC)
-    if (pluginsDir.dirName() == "MacOS")
-    {
-        pluginsDir.cdUp();
-        pluginsDir.cdUp();
-        pluginsDir.cdUp();
-    }
-#endif
-    pluginsDir.cd("plugins");
+    // clear menu in the case the plugins where reloaded
+    exportMenu->clear();
+    importMenu->clear();
+    exportMenu->setEnabled(false);
+    importMenu->setEnabled(false);
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {
@@ -1079,4 +1079,15 @@ void MainWindow::setKeyframes(AnimationMaker::AnimationItem *aitem, ResizeableIt
 void MainWindow::pluginSetPlayheadPos(int pos)
 {
     scene->setPlayheadPosition(pos);
+}
+
+void MainWindow::options()
+{
+    Options opt;
+    opt.setPluginsDir(pluginsDir.absolutePath());
+    if(opt.exec() == 1)
+    {
+        pluginsDir.setPath(opt.pluginsDir());
+        loadPlugins();
+    }
 }
