@@ -18,7 +18,7 @@
 **
 ****************************************************************************/
 
-#include "exportmovie.h"
+#include "exportgif.h"
 
 #include <math.h>
 #include <QtWidgets>
@@ -78,23 +78,23 @@ static AVFrame *alloc_picture(enum AVPixelFormat pix_fmt, int width, int height)
     return picture;
 }
 
-ExportMovie::ExportMovie()
+ExportGif::ExportGif()
 {
 }
 
-QString ExportMovie::displayName() const
+QString ExportGif::displayName() const
 {
-    return "Movie";
+    return "Gif";
 }
 
-QString ExportMovie::filter() const
+QString ExportGif::filter() const
 {
-    return "Video format (*.mpg *.mp4 *.avi);;All Files (*)";
+    return "Video format (*.gif);;All Files (*)";
 }
 
-QString ExportMovie::title() const
+QString ExportGif::title() const
 {
-    return "Export Animation to Movie";
+    return "Export Animation to Gif";
 }
 
 Exception::Exception(QString msg)
@@ -236,7 +236,7 @@ static int write_video_frame(AVFormatContext *oc, OutputStream *ost, QImage img)
     return (frame || got_packet) ? 0 : 1;
 }
 
-void ExportMovie::exportMovie(QString filename, QGraphicsView *view, int length, int fps, QStatusBar *bar)
+void ExportGif::exportMovie(QString filename, QGraphicsView *view, int length, int fps, QStatusBar *bar)
 {
     AVFormatContext *oc;
     AVOutputFormat *fmt;
@@ -244,15 +244,14 @@ void ExportMovie::exportMovie(QString filename, QGraphicsView *view, int length,
     OutputStream video_st = { 0 };
     int ret;
     AVDictionary *opt = NULL;
+    m_bar = bar;
+    m_dir = QCoreApplication::applicationDirPath();
+    m_tempFileName = m_dir + "/temp.mp4";
+    m_fileName = filename;
 
     av_register_all();
 
-    avformat_alloc_output_context2(&oc, NULL, NULL, filename.toLatin1());
-    if (!oc)
-    {
-        //Could not deduce output format from file extension: using MPEG.
-        avformat_alloc_output_context2(&oc, NULL, "mpeg", filename.toLatin1());
-    }
+    avformat_alloc_output_context2(&oc, NULL, NULL, m_tempFileName.toLatin1());
     if (!oc)
         throw new Exception("Unable to allocate context");
     fmt = oc->oformat;
@@ -264,9 +263,9 @@ void ExportMovie::exportMovie(QString filename, QGraphicsView *view, int length,
     open_video(video_codec, &video_st, opt);
     if (!(fmt->flags & AVFMT_NOFILE))
     {
-        ret = avio_open(&oc->pb, filename.toLatin1(), AVIO_FLAG_WRITE);
+        ret = avio_open(&oc->pb, m_tempFileName.toLatin1(), AVIO_FLAG_WRITE);
         if (ret < 0)
-            throw new Exception(QString("Could not open '%1'").arg(filename));
+            throw new Exception(QString("Could not open '%1'").arg(m_tempFileName));
 
     }
     ret = avformat_write_header(oc, &opt);
@@ -293,5 +292,44 @@ void ExportMovie::exportMovie(QString filename, QGraphicsView *view, int length,
     if (!(fmt->flags & AVFMT_NOFILE))
         avio_closep(&oc->pb);
     avformat_free_context(oc);
-    bar->showMessage(QString("Ready"));
+
+    bar->showMessage(QString("Creating Gif Palette"));
+
+    QStringList paletteGenArgs;
+    paletteGenArgs << "-i" << m_tempFileName << "-vf" << "palettegen" << "-y" << m_dir + "/temp.png";
+    m_paletteGen = new QProcess(this);
+    connect(m_paletteGen, SIGNAL(finished(int)), this, SLOT(paletteGenFinished(int)));
+    connect(m_paletteGen, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(paletteGenError(QProcess::ProcessError)));
+    m_paletteGen->start("ffmpeg", paletteGenArgs);
+}
+
+void ExportGif::paletteGenError(QProcess::ProcessError err)
+{
+    qDebug() << err;
+    m_bar->showMessage(QString("An error occured creating the palette"));
+}
+
+void ExportGif::paletteUseError(QProcess::ProcessError err)
+{
+    qDebug() << err;
+    m_bar->showMessage(QString("An error occured converting to gif"));
+}
+
+void ExportGif::paletteGenFinished(int)
+{
+    qDebug() << m_paletteGen->readAllStandardError();
+    m_bar->showMessage(QString("Convert to Gif"));
+
+    QStringList paletteUseArgs;
+    m_paletteUse = new QProcess(this);
+    paletteUseArgs << "-i" << m_tempFileName << "-i" << m_dir + "/temp.png" << "-lavfi" << "paletteuse" << "-y" << m_fileName;
+    connect(m_paletteUse, SIGNAL(finished(int)), this, SLOT(paletteUseFinished(int)));
+    connect(m_paletteUse, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(paletteUseError(QProcess::ProcessError)));
+    m_paletteUse->start("ffmpeg", paletteUseArgs);
+}
+
+void ExportGif::paletteUseFinished(int)
+{
+    qDebug() << m_paletteUse->readAllStandardError();
+    m_bar->showMessage(QString("Ready"));
 }

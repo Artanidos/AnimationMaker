@@ -1,7 +1,9 @@
 1.2
 ---
 Added the ability to load plugins for import and export
-Animated gifs can now be exported (via ExportMovie plugin)
+Animated gifs can now be exported (via ExportGif plugin)
+
+Bugfix: color editor
 
 1.1
 ---

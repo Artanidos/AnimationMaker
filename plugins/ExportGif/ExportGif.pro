@@ -1,8 +1,3 @@
-#-------------------------------------------------
-#
-#    Project created by QtCreator 2016-12-19T11:03:34
-#
-#-------------------------------------------------
 #    Copyright (C) 2016 Olaf Japp
 #    https://facebook.com/artanidos
 #
@@ -21,11 +16,31 @@
 #    You should have received a copy of the GNU General Public License
 #    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
-TEMPLATE = subdirs
-SUBDIRS = main xml movie \
-    plugins/ImportXml \
-    plugins/ExportGif
+QT += testlib gui widgets
+TARGET = ExportGif
+CONFIG += plugin
+TEMPLATE = lib
+INCLUDEPATH += ../..
+DESTDIR = ..
+DEFINES += EXPORTGIF_LIBRARY
+DEFINES += QT_DEPRECATED_WARNINGS
+SOURCES += exportgif.cpp
+HEADERS += exportgif.h \
+    ../../interfaces.h
 
-main.file = AnimationMaker.pro
-xml.file = plugins/ExportXml/ExportXml.pro
-movie.file = plugins/ExportMovie/ExportMovie.pro
+INCLUDEPATH += ../../dependencies/ffmpeg-3.2.2/include
+
+unix {
+    target.path = /usr/lib
+    INSTALLS += target
+    LIBS += -L../../dependencies/ffmpeg-3.2.2/lib
+}
+
+LIBS += -lavutil
+LIBS += -lavformat
+LIBS += -lavcodec
+LIBS += -lswresample
+LIBS += -lswscale
+
+DISTFILES += \
+    exports.json

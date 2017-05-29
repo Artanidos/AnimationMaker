@@ -11,7 +11,5 @@ Items Translation like Rotate
 
 Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
 
+Options to enter plugin dir in case of a snap or AppImage installation
 
-use palette filter to create gif in ExportMovie, looks better
-ffmpeg -i bitmap.mp4 -vf palettegen -y palette.png
-ffmpeg -i bitmap.mp4 -i palette.png -lavfi paletteuse -y bitmap.gif
