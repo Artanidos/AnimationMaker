@@ -1,14 +1,15 @@
 Create an AppImage
 ------------------
 - Build AnimationMaker as Release (Projects - Build Configuration - Release)
-- Copy AnimationMaker executable from build-AnimationMaker-Desktop-Release to Deploy/AppImage
-- Edit create.sh and set new version in the last line
-- execute create.sh
+- Copy AnimationMaker executable from build-All-Desktop-Release to Deploy/AppImage
+- cd to Deploy/AppImage
+- run: linuxdeployqt-continuous-x86_64.AppImage AnimationMaker -appimage
+- rename: mv Application-x86_64.AppImage AnimationMaker-Linux-x86_64-1.0.AppImage
 
 Create a SNAP
 -------------
 - Build AnimationMaker as Release (Projects - Build Configuration - Release)
-- Copy AnimationMaker executeable from build-AnimationMaker-Desktop-Release to snapcraft/bin
+- Copy AnimationMaker executeable from build-All-Desktop-Release to snapcraft/bin
 - Copy all files from Deploy/AppImage/lib to Deploy/snapcraft/lib (after creating an AppImage)
  Edit snapcraft/snap/snapcraft.yaml and set
       version: '1.0'

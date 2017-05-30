@@ -32,7 +32,7 @@ target.path += /bin
 INSTALLS += target
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     animationscene.cpp \
     rectangle.cpp \
     itemhandle.cpp \
@@ -87,7 +87,6 @@ HEADERS  += mainwindow.h \
 
 linux-g++ {
     LIBS += -L$$PWD/lib/
-    LIBS += -L$$PWD/dependencies/ffmpeg-3.2.2/lib
     LIBS += -lm
     LIBS += -ldl
 }
@@ -98,7 +97,6 @@ RESOURCES += \
 DISTFILES += \
     todo.txt \
     Deploy/AppImage/default.desktop \
-    Deploy/AppImage/create.sh \
     Deploy/AppImage/default.png \
     Deploy/snapcraft/snap/snapcraft.yaml \
     Deploy/snapcraft/snap/gui/animationmaker.desktop \

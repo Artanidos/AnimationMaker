@@ -22,10 +22,10 @@
 #    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
 TEMPLATE = subdirs
-SUBDIRS = main xml movie \
+SUBDIRS = main \
     plugins/ImportXml \
-    plugins/ExportGif
+    plugins/ExportGif \
+    plugins/ExportMovie \
+    plugins/ExportXml
 
 main.file = AnimationMaker.pro
-xml.file = plugins/ExportXml/ExportXml.pro
-movie.file = plugins/ExportMovie/ExportMovie.pro

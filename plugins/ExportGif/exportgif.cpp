@@ -245,7 +245,7 @@ void ExportGif::exportMovie(QString filename, QGraphicsView *view, int length, i
     int ret;
     AVDictionary *opt = NULL;
     m_bar = bar;
-    m_dir = QCoreApplication::applicationDirPath();
+    m_dir = QDir::tempPath();
     m_tempFileName = m_dir + "/temp.mp4";
     m_fileName = filename;
 
