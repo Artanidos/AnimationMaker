@@ -38,7 +38,7 @@ void News::fileIsReady( QNetworkReply *reply)
                 if(node.nodeName() == "Entry")
                 {
                     QDomElement entry = node.toElement();
-                    layout->addWidget(new QLabel(entry.attribute("text")), i, 0);
+                    layout->addWidget(new QLabel(entry.attribute("text")), i * 2, 0, 1, 3);
                     for(int j=0; j < entry.childNodes().count(); j++)
                     {
                         QDomNode n = entry.childNodes().at(j);
@@ -47,7 +47,7 @@ void News::fileIsReady( QNetworkReply *reply)
                             QDomElement l = n.toElement();
                             QLabel *link = new QLabel();
                             link->setText("<a href='" + l.attribute("url") + "'>" + l.attribute("caption")+ "</a>");
-                            layout->addWidget(link, i, j + 1);
+                            layout->addWidget(link, i * 2 + 1, j);
                             connect(link, SIGNAL(linkActivated(QString)), this, SLOT(linkActivated(QString)));
                         }
                     }
