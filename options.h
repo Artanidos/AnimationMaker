@@ -15,6 +15,7 @@ public:
 
 private slots:
     void okClicked();
+    void browse();
 
 private:
     QLineEdit *m_pluginsDirEdit;

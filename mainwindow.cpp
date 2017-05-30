@@ -395,7 +395,6 @@ void MainWindow::writeSettings()
     settings.setValue("geometry", saveGeometry());
     settings.setValue("state", saveState());
     settings.setValue("pluginsDir", pluginsDir.absolutePath());
-    qDebug() << pluginsDir.absolutePath();
 }
 
 void MainWindow::readSettings()
