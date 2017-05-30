@@ -1,8 +1,9 @@
 <AnimationMaker>
-	<News>
-		<Entry text="AnimationMaker 1.0 Released">
-			<Link caption="AppImage" url="https://sourceforge.net/projects/animationmaker/files/"/>
-			<Link caption="SNAP" url="https://uappexplorer.com/app/animationmaker.artanidos"/>
-		</Entry>
-	</News>
+    <News>
+        <Entry text="AnimationMaker 1.1 Released">
+            <Link caption="Linux (AppImage)" url="https://github.com/Artanidos/AnimationMaker/releases"/>
+            <Link caption="Windows (.zip)" url="https://github.com/Artanidos/AnimationMaker/releases"/>
+            <Link caption="Linux (SNAP)" url="https://uappexplorer.com/app/animationmaker.artanidos"/>
+        </Entry>
+    </News>
 </AnimationMaker>

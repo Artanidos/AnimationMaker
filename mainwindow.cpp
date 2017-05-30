@@ -291,7 +291,7 @@ void MainWindow::createGui()
 
     selectAct->toggle();
 
-    News *news = new News("http://wp12518071.server-he.de/wp-content/uploads/animationmaker.txt");
+    News *news = new News("https://artanidos.github.io/AnimationMaker/news.xml");
     newsdock = new QDockWidget(tr("News"), this);
     newsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     newsdock->setWidget(news);
