@@ -1,0 +1,6 @@
+#!/bin/sh
+
+dbus-send --print-reply \
+          --session --dest=com.canonical.SafeLauncher \
+          / com.canonical.SafeLauncher.OpenURL \
+          string:"$1" 1> /dev/null 2> $SNAP_USER_DATA/xdg-open.err

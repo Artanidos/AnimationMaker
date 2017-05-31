@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=AnimationMaker
+Comment=Create animated videos
+Icon=${SNAP}/meta/gui/icon.png
+Exec=animationmaker
+Terminal=false

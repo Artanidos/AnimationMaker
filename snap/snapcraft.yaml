@@ -14,18 +14,19 @@ apps:
     plugs: [x11,home,unity7]
 
 parts:
-  animationmaker:
+  launcher:
     plugin: dump
     prime:
-      - bin/*
-      - lib/*
-    after: [desktop-qt5]
+      - /bin/*
 
   animationmaker:
-    source: .
+    source: https://github.com/Artanidos/AnimationMaker.git
     plugin: qmake
     qt-version: qt5
     build-packages:
       - build-essential
       - qt5-default
+      - qtbase5-dev-tools
+      - qttools5-dev-tools
+    after: [desktop-qt5]
 
