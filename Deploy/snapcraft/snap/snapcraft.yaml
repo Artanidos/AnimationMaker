@@ -1,5 +1,5 @@
 name: animationmaker
-version: '1.1'
+version: '1.2'
 summary: Create animations and export them to a movie or XML file
 description: |
   This app can be used to create animated movies based on keyframe animations.
@@ -10,7 +10,7 @@ confinement: strict
 
 apps:
   animationmaker:
-    command: desktop-launch AnimationMaker
+    command: launcher AnimationMaker
     plugs: [x11,home,unity7]
 
 parts:

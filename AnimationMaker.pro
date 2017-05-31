@@ -104,6 +104,7 @@ DISTFILES += \
     changelog.txt \
     build.txt \
     Deploy/snapcraft/bin/xdg-open \
-    news.xml
+    news.xml \
+    Deploy/snapcraft/bin/launcher
 
 FORMS +=
