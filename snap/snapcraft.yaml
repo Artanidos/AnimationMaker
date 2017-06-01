@@ -1,6 +1,6 @@
 name: animationmaker
 version: '1.2'
-summary: Create animations and export them to a movie or XML file
+summary: Create animations and export them to a movie, gif or XML file
 description: |
   This app can be used to create animated movies based on keyframe animations.
   Parts can be exported and imported to and from XML.
@@ -17,16 +17,16 @@ parts:
   launcher:
     plugin: dump
     prime:
-      - /bin/*
+      - bin/*
+      - lib/*
 
   animationmaker:
-    source: https://github.com/Artanidos/AnimationMaker.git
+    source: .
     plugin: qmake
     qt-version: qt5
+    project-files: [AnimationMaker.pro]
     build-packages:
       - build-essential
       - qt5-default
-      - qtbase5-dev-tools
-      - qttools5-dev-tools
     after: [desktop-qt5]
 

@@ -296,7 +296,6 @@ fi
 ###############################################
 # AnimationMaker plugins are loaded from here #
 ###############################################
-
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SNAP_USER_DATA/plugins/lib
 export PATH=$PATH:$SNAP_USER_DATA/plugins/bin
 
