@@ -412,7 +412,12 @@ void MainWindow::readSettings()
         restoreGeometry(geometry);
         restoreState(settings.value("state").toByteArray());
     }
-    pluginsDir.setPath(settings.value("pluginsDir", qApp->applicationDirPath() + "/plugins").toString());
+
+    QByteArray snap = qgetenv("SNAP_USER_DATA");
+    if(snap.length() == 0)
+        pluginsDir.setPath(settings.value("pluginsDir", qApp->applicationDirPath() + "/plugins").toString());
+    else
+        pluginsDir.setPath(QString(snap) + "/plugins");
 }
 
 void MainWindow::createActions()
@@ -453,9 +458,12 @@ void MainWindow::createActions()
     delAct->setShortcut(QKeySequence::Delete);
     connect(delAct, SIGNAL(triggered()), this, SLOT(del()));
 
-    optionsAct = new QAction("Options...", this);
-    connect(optionsAct, SIGNAL(triggered(bool)), this, SLOT(options()));
-
+    if(qgetenv ("SNAP_USER_DATA").length() == 0)
+    {
+        // Options are not available in a SNAP installation, because the plugin path is fixed
+        optionsAct = new QAction("Options...", this);
+        connect(optionsAct, SIGNAL(triggered(bool)), this, SLOT(options()));
+    }
     showElementsAct = new QAction("Elements");
     connect(showElementsAct, SIGNAL(triggered()), this, SLOT(showElementsPanel()));
 
@@ -698,6 +706,7 @@ void MainWindow::loadPlugins()
     exportMenu->setEnabled(false);
     importMenu->setEnabled(false);
 
+    int count = 0;
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
@@ -706,10 +715,28 @@ void MainWindow::loadPlugins()
         if (plugin)
         {
             populateMenus(plugin);
-            pluginFileNames += fileName;
+            count++;
         }
         else
             qDebug() << "Error loading plugin" << fileName << loader.errorString();
+    }
+
+    if(count == 0)
+    {
+        QString text = "There are no plugins installed yet.\n";
+        text += "That means you are not able to import and export animations.\n";
+        text += "You may download and install plugins yourself from the following website:\n";
+        text += "https://github.com/Artanidos/AnimationMaker-Plugins/releases\n\n";
+        text += "The plugins should be copied into the following directory.\n";
+        text += pluginsDir.absolutePath() + "\n";
+        QByteArray snap = qgetenv("SNAP_USER_DATA");
+        if(snap.length() == 0)
+            text += "The directory can be changed using the options dialog (Edit -> Options)";
+        QMessageBox msg;
+        msg.setWindowTitle("AnimationMaker Plugins");
+        msg.setText(text);
+        msg.setIconPixmap(QPixmap(":/images/logo.png"));
+        msg.exec();
     }
 }
 

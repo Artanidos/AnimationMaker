@@ -28,7 +28,5 @@ parts:
     build-packages:
       - build-essential
       - qt5-default
-    stage-packages:
-      - libqt5svg5
     after: [desktop-qt5]
 

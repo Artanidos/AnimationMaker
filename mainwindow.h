@@ -84,7 +84,6 @@ private:
     QDockWidget *elementsdock;
     QTreeWidgetItem *root;
     QDir pluginsDir;
-    QStringList pluginFileNames;
 
     QAction *openAct;
     QAction *newAct;
