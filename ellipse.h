@@ -29,7 +29,7 @@ class Ellipse : public ResizeableItem
 {
     Q_OBJECT
 public:
-    Ellipse() {}
+    Ellipse();
     Ellipse(qreal width, qreal height, AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);

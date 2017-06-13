@@ -24,6 +24,12 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
+Bitmap::Bitmap()
+    : ResizeableItem(NULL)
+{
+
+}
+
 Bitmap::Bitmap(QString filename, AnimationScene *scene)
     : ResizeableItem(scene)
 {
@@ -36,6 +42,11 @@ Bitmap::Bitmap(QImage image, qreal width, qreal height, AnimationScene *scene)
 {
     m_image = image;
     setRect(0, 0, width, height);
+}
+
+void Bitmap::setImage(QImage image)
+{
+    m_image = image;
 }
 
 int Bitmap::type() const

@@ -85,6 +85,7 @@ signals:
     void keyframeAdded(ResizeableItem *item, QString propertyName, KeyFrame *key);
     void itemRemoved(ResizeableItem *item);
     void backgroundColorChanged(QColor color);
+    void animationResetted();
 
 public slots:
     void setPlayheadPosition(int value);

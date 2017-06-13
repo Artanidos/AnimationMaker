@@ -32,11 +32,13 @@ class AnimationScene;
 class ResizeableItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
+    Q_PROPERTY(qreal top READ top)
 public:
     ResizeableItem() {}
     ResizeableItem(AnimationScene *scene);
     ~ResizeableItem();
 
+    void setScene(AnimationScene *scene);
     void drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option);
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
     QRectF boundingRect() const;

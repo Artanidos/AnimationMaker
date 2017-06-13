@@ -29,19 +29,20 @@
 #include "scenepropertyeditor.h"
 #include "transitioneditor.h"
 #include "expander.h"
-#include "interfaces.h"
+#include "pythonwrapper.h"
 #include "rectangle.h"
 #include "ellipse.h"
 #include "text.h"
 #include "bitmap.h"
 #include "vectorgraphic.h"
-#include "options.h"
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
 #include <QTreeWidget>
 #include <QMainWindow>
 #include <QtWidgets>
+#include "PythonQt.h"
+#include "PythonQt_QtAll.h"
 
 #define MAGIC 0x414D4200
 #define FILE_VERSION 100
@@ -50,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     undoStack = new QUndoStack(this);
+
+    initPython();
     setDockNestingEnabled(true);
     createStatusBar();
     createActions();
@@ -65,6 +68,23 @@ MainWindow::~MainWindow()
     delete timeline;
     delete elementTree;
     delete view;
+}
+
+void MainWindow::initPython()
+{
+    PythonQt::init();
+    PythonQt_QtAll::init();
+    connect(PythonQt::self(), SIGNAL(pythonStdOut(QString)), this, SLOT(OnPythonQtStdOut(QString)));
+    connect(PythonQt::self(), SIGNAL(pythonStdErr(QString)), this, SLOT(OnPythonQtStdErr(QString)));
+
+    PythonQt::self()->registerCPPClass("AnimationScene", "","animationmaker", PythonQtCreateObject<AnimationSceneWrapper>);
+    PythonQt::self()->registerCPPClass("ResizeableItem", "","animationmaker", PythonQtCreateObject<ResizeableItemWrapper>);
+    PythonQt::self()->registerCPPClass("Rectangle", "","animationmaker", PythonQtCreateObject<RectangleWrapper>);
+    PythonQt::self()->registerCPPClass("Ellipse", "","animationmaker", PythonQtCreateObject<EllipseWrapper>);
+    PythonQt::self()->registerCPPClass("Text", "","animationmaker", PythonQtCreateObject<TextWrapper>);
+    PythonQt::self()->registerCPPClass("Bitmap", "","animationmaker", PythonQtCreateObject<BitmapWrapper>);
+    PythonQt::self()->registerCPPClass("Vectorgraphic", "","animationmaker", PythonQtCreateObject<VectorgraphicWrapper>);
+    PythonQt::self()->registerCPPClass("KeyFrame", "","animationmaker", PythonQtCreateObject<KeyFrameWrapper>);
 }
 
 void MainWindow::save()
@@ -328,6 +348,7 @@ void MainWindow::createGui()
     connect(scene, SIGNAL(itemAdded(QGraphicsItem*)), this, SLOT(sceneItemAdded(QGraphicsItem*)));
     connect(scene, SIGNAL(sizeChanged(int,int)), this, SLOT(sceneSizeChanged(int, int)));
     connect(scene, SIGNAL(itemRemoved(ResizeableItem*)), this, SLOT(sceneItemRemoved(ResizeableItem*)));
+    connect(scene, SIGNAL(animationResetted()), this, SLOT(reset()));
 
     elementTree = new QTreeWidget();
     elementTree->header()->close();
@@ -394,7 +415,6 @@ void MainWindow::writeSettings()
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue("geometry", saveGeometry());
     settings.setValue("state", saveState());
-    settings.setValue("pluginsDir", pluginsDir.absolutePath());
 }
 
 void MainWindow::readSettings()
@@ -412,12 +432,6 @@ void MainWindow::readSettings()
         restoreGeometry(geometry);
         restoreState(settings.value("state").toByteArray());
     }
-
-    QByteArray snap = qgetenv("SNAP_USER_DATA");
-    if(snap.length() == 0)
-        pluginsDir.setPath(settings.value("pluginsDir", qApp->applicationDirPath() + "/plugins").toString());
-    else
-        pluginsDir.setPath(QString(snap) + "/plugins");
 }
 
 void MainWindow::createActions()
@@ -458,12 +472,6 @@ void MainWindow::createActions()
     delAct->setShortcut(QKeySequence::Delete);
     connect(delAct, SIGNAL(triggered()), this, SLOT(del()));
 
-    if(qgetenv ("SNAP_USER_DATA").length() == 0)
-    {
-        // Options are not available in a SNAP installation, because the plugin path is fixed
-        optionsAct = new QAction("Options...", this);
-        connect(optionsAct, SIGNAL(triggered(bool)), this, SLOT(options()));
-    }
     showElementsAct = new QAction("Elements");
     connect(showElementsAct, SIGNAL(triggered()), this, SLOT(showElementsPanel()));
 
@@ -510,8 +518,6 @@ void MainWindow::createMenus()
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
     editMenu->addAction(delAct);
-    editMenu->addSeparator();
-    editMenu->addAction(optionsAct);
 
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(showToolPanelAct);
@@ -706,19 +712,18 @@ void MainWindow::loadPlugins()
     exportMenu->setEnabled(false);
     importMenu->setEnabled(false);
 
-    int count = 0;
-    foreach (QString fileName, pluginsDir.entryList(QDir::Files))
-    {
-        QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
-        QObject *plugin = loader.instance();
+    QByteArray snap = qgetenv("SNAP_USER_DATA");
+    if(snap.length() == 0)
+        pluginsDir.setPath(QDir::homePath() + "/animationmaker/plugins");
+    else
+        pluginsDir.setPath(QString(snap) + "/plugins");
 
-        if (plugin)
-        {
-            populateMenus(plugin);
-            count++;
-        }
-        else
-            qDebug() << "Error loading plugin" << fileName << loader.errorString();
+    int count = 0;
+    QStringList filter("*.py");
+    foreach (QString fileName, pluginsDir.entryList(filter, QDir::Files))
+    {
+        count++;
+        populateMenus(fileName);
     }
 
     if(count == 0)
@@ -727,11 +732,8 @@ void MainWindow::loadPlugins()
         text += "That means you are not able to import and export animations.\n";
         text += "You may download and install plugins yourself from the following website:\n";
         text += "https://github.com/Artanidos/AnimationMaker-Plugins/releases\n\n";
-        text += "The plugins should be copied into the following directory.\n";
+        text += "The plugins should be copied into the following directory:\n";
         text += pluginsDir.absolutePath() + "\n";
-        QByteArray snap = qgetenv("SNAP_USER_DATA");
-        if(snap.length() == 0)
-            text += "The directory can be changed using the options dialog (Edit -> Options)";
         QMessageBox msg;
         msg.setWindowTitle("AnimationMaker Plugins");
         msg.setText(text);
@@ -740,63 +742,50 @@ void MainWindow::loadPlugins()
     }
 }
 
-void MainWindow::populateMenus(QObject *plugin)
+void MainWindow::populateMenus(QString fileName)
 {
-    ExportMovieInterface *iExportMovie = qobject_cast<ExportMovieInterface *>(plugin);
-    if (iExportMovie)
-    {
-        QAction *action = new QAction(iExportMovie->displayName(), plugin);
-        connect(action, SIGNAL(triggered()), this, SLOT(doExportMovie()));
-        exportMenu->addAction(action);
-        exportMenu->setEnabled(true);
-    }
+    PythonQtObjectPtr context = PythonQt::self()->getMainModule();
+    context.evalFile(pluginsDir.absoluteFilePath(fileName));
 
-    ExportMetaInterface *iExportMeta = qobject_cast<ExportMetaInterface *>(plugin);
-    if (iExportMeta)
+    QVariant type = context.call("type");
+    if(type == "EXPORT_META")
     {
-        QAction *action = new QAction(iExportMeta->displayName(), plugin);
+        QAction *action = new QAction(context.call("displayName").toString());
+        action->setData(fileName);
         connect(action, SIGNAL(triggered()), this, SLOT(doExportMeta()));
         exportMenu->addAction(action);
         exportMenu->setEnabled(true);
     }
-
-    ImportMetaInterface *iImportMeta = qobject_cast<ImportMetaInterface *>(plugin);
-    if (iImportMeta)
+    else if(type == "EXPORT_MOVIE")
     {
-        QAction *action = new QAction(iImportMeta->displayName(), plugin);
+        QAction *action = new QAction(context.call("displayName").toString());
+        action->setData(fileName);
+        connect(action, SIGNAL(triggered()), this, SLOT(doExportMovie()));
+        exportMenu->addAction(action);
+        exportMenu->setEnabled(true);
+    }
+    else if(type == "IMPORT_META")
+    {
+        QAction *action = new QAction(context.call("displayName").toString());
+        action->setData(fileName);
         connect(action, SIGNAL(triggered()), this, SLOT(doImport()));
         importMenu->addAction(action);
         importMenu->setEnabled(true);
     }
 }
 
-void MainWindow::readKeyframes(AnimationMaker::AnimationItem *element, ResizeableItem *item)
-{
-    QHash<QString, AnimationMaker::Keyframe*>::iterator it;
-    for(it = element->keyframes.begin(); it != element->keyframes.end(); it++)
-    {
-        for(AnimationMaker::Keyframe *frame = it.value(); frame != NULL; frame = frame->next)
-        {
-            KeyFrame *key = new KeyFrame();
-            key->setTime(frame->time);
-            key->setValue(frame->value);
-            key->setEasing(frame->easing);
-            item->addKeyframe(it.key(), key);
-            emit scene->keyframeAdded(item, it.key(), key);
-        }
-    }
-}
-
 void MainWindow::doImport()
 {
     QAction *action = qobject_cast<QAction *>(sender());
-    ImportMetaInterface *iImport = qobject_cast<ImportMetaInterface *>(action->parent());
+    QString file = action->data().toString();
+    PythonQtObjectPtr context = PythonQt::self()->getMainModule();
+    context.evalFile(pluginsDir.absoluteFilePath(file));
 
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
     dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter(iImport->filter());
-    dialog->setWindowTitle(iImport->title());
+    dialog->setNameFilter(context.call("filter").toString());
+    dialog->setWindowTitle(context.call("title").toString());
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
     if(dialog->exec())
@@ -805,112 +794,20 @@ void MainWindow::doImport()
     if(fileName.isEmpty())
         return;
 
-    try
-    {
-        AnimationMaker::Animation *animation = new AnimationMaker::Animation();
-        animation->fps = -1;
-        iImport->importMeta(fileName.toLatin1(), animation, this->statusBar());
-        // whole animation has been imported
-        if(animation->fps != -1)
-        {
-            reset();
-            scene->setFps(animation->fps);
-            scene->setWidth(animation->width);
-            scene->setHeight(animation->height);
-        }
-        for(int i=0; i < animation->items.count(); i++)
-        {
-            AnimationMaker::AnimationItem *item = animation->items.at(i);
-            AnimationMaker::Rectangle *rect = dynamic_cast<AnimationMaker::Rectangle*>(item);
-            if(rect)
-            {
-                Rectangle *r = new Rectangle(rect->width, rect->height, scene);
-                r->setId(rect->id);
-                r->setPos(rect->left, rect->top);
-                r->setPen(QPen(rect->pen));
-                r->setBrush(QBrush(QColor(rect->brush)));
-                r->setFlag(QGraphicsItem::ItemIsMovable, true);
-                r->setFlag(QGraphicsItem::ItemIsSelectable, true);
-                r->setOpacity(rect->opacity);
-                readKeyframes(rect, r);
-                scene->addItem(r);
-            }
-            AnimationMaker::Ellipse *ellipse = dynamic_cast<AnimationMaker::Ellipse*>(item);
-            if(ellipse)
-            {
-                Ellipse *e = new Ellipse(ellipse->width, ellipse->height, scene);
-                e->setId(ellipse->id);
-                e->setPos(ellipse->left, ellipse->top);
-                e->setPen(QPen(ellipse->pen));
-                e->setBrush(QBrush(QColor(ellipse->brush)));
-                e->setFlag(QGraphicsItem::ItemIsMovable, true);
-                e->setFlag(QGraphicsItem::ItemIsSelectable, true);
-                e->setOpacity(ellipse->opacity);
-                readKeyframes(ellipse, e);
-                scene->addItem(e);
-            }
-            AnimationMaker::Text *text = dynamic_cast<AnimationMaker::Text*>(item);
-            if(text)
-            {
-                Text *t = new Text(text->text, scene);
-                t->setId(text->id);
-                t->setPos(text->left, text->top);
-                t->setFlag(QGraphicsItem::ItemIsMovable, true);
-                t->setFlag(QGraphicsItem::ItemIsSelectable, true);
-                t->setScale(text->xscale, text->yscale);
-                t->setTextcolor(text->textcolor);
-                t->setOpacity(text->opacity);
-                QFont font;
-                font.setFamily(text->fontFamily);
-                font.setPointSize(text->fontSize);
-                font.setStyleName(text->fontStyle);
-                t->setFont(font);
-                readKeyframes(text, t);
-                scene->addItem(t);
-            }
-            AnimationMaker::Bitmap *bitmap = dynamic_cast<AnimationMaker::Bitmap*>(item);
-            if(bitmap)
-            {
-                Bitmap *b = new Bitmap(bitmap->image, bitmap->width, bitmap->height, scene);
-                b->setId(bitmap->id);
-                b->setPos(bitmap->left, bitmap->top);
-                b->setFlag(QGraphicsItem::ItemIsMovable, true);
-                b->setFlag(QGraphicsItem::ItemIsSelectable, true);
-                b->setOpacity(bitmap->opacity);
-                readKeyframes(bitmap, b);
-                scene->addItem(b);
-            }
-            AnimationMaker::Vectorgraphic *vect = dynamic_cast<AnimationMaker::Vectorgraphic*>(item);
-            if(vect)
-            {
-                Vectorgraphic *v = new Vectorgraphic(vect->data, scene);
-                v->setId(vect->id);
-                v->setPos(vect->left, vect->top);
-                v->setFlag(QGraphicsItem::ItemIsMovable, true);
-                v->setFlag(QGraphicsItem::ItemIsSelectable, true);
-                v->setScale(vect->xscale, vect->yscale);
-                v->setOpacity(vect->opacity);
-                readKeyframes(vect, v);
-                scene->addItem(v);
-            }
-        }
+    context.addObject("statusbar", statusBar());
+    QVariantList args;
+    args << fileName << qVariantFromValue<QObject *>(scene);
+    context.call("importMeta", args);
 
-        qDeleteAll(animation->items);
-        delete animation;
-
-        fillTree();
-        elementTree->expandAll();
-        m_scenePropertyEditor->setScene(scene);
-        timeline->expandTree();
-    }
-    catch(Exception *e)
-    {
-        QMessageBox::critical(this, "An error occured on import", e->msg());
-    }
+    fillTree();
+    elementTree->expandAll();
+    m_scenePropertyEditor->setScene(scene);
+    timeline->expandTree();
 }
 
 void MainWindow::doExportMovie()
 {
+    /*
     QAction *action = qobject_cast<QAction *>(sender());
     ExportMovieInterface *iExport = qobject_cast<ExportMovieInterface *>(action->parent());
 
@@ -944,18 +841,21 @@ void MainWindow::doExportMovie()
         QMessageBox::critical(this, "An error occured on export", e->msg());
     }
     view->setUpdatesEnabled(true);
+    */
 }
 
 void MainWindow::doExportMeta()
 {
     QAction *action = qobject_cast<QAction *>(sender());
-    ExportMetaInterface *iExport = qobject_cast<ExportMetaInterface *>(action->parent());
+    QString file = action->data().toString();
+    PythonQtObjectPtr context = PythonQt::self()->getMainModule();
+    context.evalFile(pluginsDir.absoluteFilePath(file));
 
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
     dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter(iExport->filter());
-    dialog->setWindowTitle(iExport->title());
+    dialog->setNameFilter(context.call("filter").toString());
+    dialog->setWindowTitle(context.call("title").toString());
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptSave);
     if(dialog->exec())
@@ -964,156 +864,19 @@ void MainWindow::doExportMeta()
     if(fileName.isEmpty())
         return;
 
-    try
-    {
-        AnimationMaker::Animation *animation = new AnimationMaker::Animation();
-        animation->fps = scene->fps();
-        animation->width = scene->width();
-        animation->height = scene->height();
-
-        bool exportAll = scene->selectedItems().count() == 0;
-
-        QList<QGraphicsItem*> itemList = scene->items(Qt::AscendingOrder);
-        foreach (QGraphicsItem *item, itemList)
-        {
-            if(exportAll || item->isSelected())
-            {
-                switch(item->type())
-                {
-                    case Rectangle::Type:
-                    {
-                        Rectangle *r = dynamic_cast<Rectangle *>(item);
-                        AnimationMaker::Rectangle *rect = new AnimationMaker::Rectangle();
-                        rect->id = r->id();
-                        rect->left = r->left();
-                        rect->top = r->top();
-                        rect->width = r->rect().width();
-                        rect->height = r->rect().height();
-                        rect->pen = r->pen().color().name();
-                        rect->brush = r->brush().color().name();
-                        rect->opacity = r->opacity();
-                        setKeyframes(rect, r);
-                        animation->items.append(rect);
-                        break;
-                    }
-                    case Ellipse::Type:
-                    {
-                        Ellipse *e = dynamic_cast<Ellipse *>(item);
-                        AnimationMaker::Ellipse *ellipse = new AnimationMaker::Ellipse();
-                        ellipse->id = e->id();
-                        ellipse->left = e->left();
-                        ellipse->top = e->top();
-                        ellipse->width = e->rect().width();
-                        ellipse->height = e->rect().height();
-                        ellipse->pen = e->pen().color().name();
-                        ellipse->brush = e->brush().color().name();
-                        ellipse->opacity = e->opacity();
-                        setKeyframes(ellipse, e);
-                        animation->items.append(ellipse);
-                        break;
-                    }
-                    case Text::Type:
-                    {
-                        Text *t = dynamic_cast<Text*>(item);
-                        AnimationMaker::Text *text = new AnimationMaker::Text();
-                        text->id = t->id();
-                        text->left = t->left();
-                        text->top = t->top();
-                        text->xscale = t->xscale();
-                        text->yscale = t->yscale();
-                        text->text = t->text();
-                        text->textcolor = t->textcolor().name();
-                        text->opacity = t->opacity();
-                        text->fontFamily = t->font().family();
-                        text->fontSize = t->font().pointSize();
-                        text->fontStyle = t->font().styleName();
-                        setKeyframes(text, t);
-                        animation->items.append(text);
-                        break;
-                    }
-                    case Bitmap::Type:
-                    {
-                        Bitmap *b = dynamic_cast<Bitmap*>(item);
-                        AnimationMaker::Bitmap *bitmap = new AnimationMaker::Bitmap();
-                        bitmap->id = b->id();
-                        bitmap->left = b->left();
-                        bitmap->top = b->top();
-                        bitmap->width = b->rect().width();
-                        bitmap->height = b->rect().height();
-                        bitmap->opacity = b->opacity();
-                        bitmap->image = b->getImage();
-                        setKeyframes(bitmap, b);
-                        animation->items.append(bitmap);
-                        break;
-                    }
-                    case Vectorgraphic::Type:
-                    {
-                        Vectorgraphic *v = dynamic_cast<Vectorgraphic*>(item);
-                        AnimationMaker::Vectorgraphic *vectorgraphic = new AnimationMaker::Vectorgraphic();
-                        vectorgraphic->id = v->id();
-                        vectorgraphic->left =v->left();
-                        vectorgraphic->top = v->top();
-                        vectorgraphic->xscale = v->xscale();
-                        vectorgraphic->yscale = v->yscale();
-                        vectorgraphic->opacity = v->opacity();
-                        vectorgraphic->data = v->getData();
-                        setKeyframes(vectorgraphic, v);
-                        animation->items.append(vectorgraphic);
-                        break;
-                    }
-                }
-            }
-        }
-        iExport->exportMeta(fileName.toLatin1(), animation, exportAll, this->statusBar());
-        qDeleteAll(animation->items);
-        delete animation;
-    }
-    catch(Exception *e)
-    {
-        QMessageBox::critical(this, "An error occured on export", e->msg());
-    }
+    bool exportAll = scene->selectedItems().count() == 0;
+    context.addObject("statusbar", statusBar());
+    QVariantList args;
+    args << fileName << exportAll << qVariantFromValue<QObject *>(scene);
+    context.call("exportMeta", args);
 }
 
-void MainWindow::setKeyframes(AnimationMaker::AnimationItem *aitem, ResizeableItem *item)
+void MainWindow::OnPythonQtStdOut(QString str)
 {
-    AnimationMaker::Keyframe *last;
-    QHash<QString, KeyFrame*>::iterator it;
-    for(it = item->keyframes()->begin(); it != item->keyframes()->end(); it++)
-    {
-        AnimationMaker::Keyframe *key = new AnimationMaker::Keyframe();
-        key->easing = it.value()->easing();
-        key->time = it.value()->time();
-        key->value = it.value()->value();
-        key->next = NULL;
-        key->prev = NULL;
-        aitem->keyframes.insert(it.key(), key);
-        last = key;
-        for(KeyFrame *frame = it.value()->next(); frame != NULL; frame = frame->next())
-        {
-            AnimationMaker::Keyframe *nextkey = new AnimationMaker::Keyframe();
-            nextkey->easing = frame->easing();
-            nextkey->time = frame->time();
-            nextkey->value = frame->value();
-            nextkey->next = NULL;
-            last->next = nextkey;
-            nextkey->prev = last;
-            last = nextkey;
-        }
-    }
+    qDebug() << "Python:" << str;
 }
 
-void MainWindow::pluginSetPlayheadPos(int pos)
+void MainWindow::OnPythonQtStdErr(QString str)
 {
-    scene->setPlayheadPosition(pos);
-}
-
-void MainWindow::options()
-{
-    Options opt;
-    opt.setPluginsDir(pluginsDir.absolutePath());
-    if(opt.exec() == 1)
-    {
-        pluginsDir.setPath(opt.pluginsDir());
-        loadPlugins();
-    }
+    qDebug() << "PythonErr:" << str;
 }

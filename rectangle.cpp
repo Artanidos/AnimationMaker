@@ -23,6 +23,11 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
+Rectangle::Rectangle()
+    : ResizeableItem(NULL)
+{
+}
+
 Rectangle::Rectangle(qreal width, qreal height, AnimationScene *scene)
     : ResizeableItem(scene)
 {

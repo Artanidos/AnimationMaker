@@ -96,6 +96,11 @@ ResizeableItem::~ResizeableItem()
     }
 }
 
+void ResizeableItem::setScene(AnimationScene *scene)
+{
+    m_scene = scene;
+}
+
 void ResizeableItem::addKeyframe(QString propertyName, KeyFrame *frame)
 {
     if(m_keyframes->contains(propertyName))
@@ -200,9 +205,12 @@ void ResizeableItem::setRect(qreal x, qreal y, qreal w, qreal h)
     prepareGeometryChange();
     m_rect = QRectF(x, y, w, h);
     update();
-    adjustKeyframes("width", QVariant(w), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
-    adjustKeyframes("height", QVariant(h), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
-    emit sizeChanged(w, h);
+    if(m_scene)
+    {
+        adjustKeyframes("width", QVariant(w), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
+        adjustKeyframes("height", QVariant(h), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
+        emit sizeChanged(w, h);
+    }
 }
 
 QString ResizeableItem::id() const

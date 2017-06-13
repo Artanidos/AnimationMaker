@@ -26,6 +26,10 @@ QT += testlib xml network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+include ( ../PythonQt3.1/build/common.prf )
+include ( ../PythonQt3.1/build/PythonQt.prf )
+include ( ../PythonQt3.1/build/PythonQt_QtAll.prf )
+
 TARGET = AnimationMaker
 TEMPLATE = app
 target.path += /bin
@@ -55,8 +59,7 @@ SOURCES += main.cpp\
     exception.cpp \
     coloreditor.cpp \
     transitioneditor.cpp \
-    news.cpp \
-    options.cpp
+    news.cpp
 
 HEADERS  += mainwindow.h \
     animationscene.h \
@@ -82,8 +85,7 @@ HEADERS  += mainwindow.h \
     coloreditor.h \
     transitioneditor.h \
     news.h \
-    interfaces.h \
-    options.h
+    pythonwrapper.h
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

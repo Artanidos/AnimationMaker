@@ -23,9 +23,8 @@
 
 TEMPLATE = subdirs
 SUBDIRS = main \
-    plugins/ImportXml \
-    plugins/ExportGif \
-    plugins/ExportMovie \
-    plugins/ExportXml
+    ../AnimationMaker-Plugins/ImportXml \
+    ../AnimationMaker-Plugins/ExportMovie \
+    ../AnimationMaker-Plugins/ExportXml
 
 main.file = AnimationMaker.pro

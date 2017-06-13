@@ -50,7 +50,6 @@ int main(int argc, char *argv[])
     p.setColor(QPalette::Disabled, QPalette::ButtonText, Qt::darkGray);
     a.setPalette(p);
 
-
     MainWindow w;
     w.show();
 

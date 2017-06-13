@@ -28,7 +28,9 @@
 class AnimationScene;
 class Vectorgraphic : public ResizeableItem
 {
+    Q_OBJECT
 public:
+    Vectorgraphic();
     Vectorgraphic(QString filename, AnimationScene *scene);
     Vectorgraphic(QByteArray arr, AnimationScene *scene);
 
@@ -36,6 +38,7 @@ public:
     void scaleObjects();
     void setScale(qreal x, qreal y);
     QByteArray getData();
+    void setData(QByteArray data);
 
     enum { Type = UserType + 5 };
     int type() const Q_DECL_OVERRIDE;

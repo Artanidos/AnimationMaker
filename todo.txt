@@ -10,3 +10,4 @@ Items Translation like Rotate, Shear
 Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
 
 
+checken on ffmpeg richtig läuft aus appimage/snap

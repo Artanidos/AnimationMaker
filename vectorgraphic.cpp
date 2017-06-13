@@ -25,6 +25,14 @@
 #include <QGraphicsItem>
 #include <QSvgRenderer>
 
+Vectorgraphic::Vectorgraphic()
+    : ResizeableItem(NULL)
+{
+    m_renderer = new QSvgRenderer();
+    m_svg = new QGraphicsSvgItem(this);
+    m_svg->setSharedRenderer(m_renderer);
+}
+
 Vectorgraphic::Vectorgraphic(QString filename, AnimationScene *scene)
     : ResizeableItem(scene)
 {
@@ -51,6 +59,13 @@ Vectorgraphic::Vectorgraphic(QByteArray arr, AnimationScene *scene)
     setRect(0, 0, m_svg->boundingRect().width(), m_svg->boundingRect().height());
 }
 
+void Vectorgraphic::setData(QByteArray data)
+{
+    m_data = data;
+    m_renderer->load(m_data);
+    m_svg->setSharedRenderer(m_renderer);
+    setRect(0, 0, m_svg->boundingRect().width(), m_svg->boundingRect().height());
+}
 
 int Vectorgraphic::type() const
 {

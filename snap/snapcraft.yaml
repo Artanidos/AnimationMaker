@@ -10,7 +10,7 @@ confinement: strict
 
 apps:
   animationmaker:
-    command: launcher AnimationMaker
+    command: desktop-launch AnimationMaker
     plugs: [x11,home,unity7]
 
 parts:

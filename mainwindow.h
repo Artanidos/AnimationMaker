@@ -24,7 +24,7 @@
 #include <QMainWindow>
 #include <QFileInfo>
 #include <QDir>
-#include "interfaces.h"
+#include "pythonwrapper.h"
 
 class AnimationScene;
 class Timeline;
@@ -40,6 +40,8 @@ class QTreeWidgetItem;
 class QUndoStack;
 class QGraphicsItem;
 class QActionGroup;
+class PythonQtObjectPtr;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -54,6 +56,7 @@ protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
 private:
+    void initPython();
     void createMenus();
     void createActions();
     void createStatusBar();
@@ -61,12 +64,10 @@ private:
     void writeSettings();
     void readSettings();
     void writeFile(QString fileName);
-    void reset();
     void fillTree();
     void loadPlugins();
     void populateMenus(QObject *plugin);
-    void setKeyframes(AnimationMaker::AnimationItem *aitem, ResizeableItem *item);
-    void readKeyframes(AnimationMaker::AnimationItem *element, ResizeableItem *item);
+    void populateMenus(QString fileName);
 
     QSplitter *splitter;
     QToolBar *toolbar;
@@ -106,7 +107,6 @@ private:
     QAction *copyAct;
     QAction *pasteAct;
     QAction *delAct;
-    QAction *optionsAct;
     QActionGroup *exportActionGroup;
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -117,7 +117,9 @@ private:
     QUndoStack *undoStack;
 
 public slots:
-    void options();
+    void reset();
+    void OnPythonQtStdOut(QString str);
+    void OnPythonQtStdErr(QString str);
     void doExportMovie();
     void doExportMeta();
     void doImport();
@@ -147,7 +149,6 @@ public slots:
     void sceneItemRemoved(ResizeableItem *item);
     void idChanged(ResizeableItem *, QString);
     void transitionSelectionChanged(KeyFrame *frame);
-    void pluginSetPlayheadPos(int);
 };
 
 #endif // MAINWINDOW_H

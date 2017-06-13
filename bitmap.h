@@ -26,13 +26,16 @@
 
 class Bitmap : public ResizeableItem
 {
+    Q_OBJECT
 public:
+    Bitmap();
     Bitmap(QString filename, AnimationScene *scene);
     Bitmap(QImage img, qreal width, qreal height, AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 
     QImage getImage();
+    void setImage(QImage image);
 
     enum { Type = UserType + 4 };
     int type() const Q_DECL_OVERRIDE;
