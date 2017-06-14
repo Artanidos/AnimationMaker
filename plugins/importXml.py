@@ -15,7 +15,7 @@ def type():
 	return "IMPORT_META"
 
 def readKeyframes(ele, item):
-	m_tempKeyFrame = None
+	tempKeyframe = None
 	for i in range(0, ele.childNodes().count()):
 		node = ele.childNodes().at(i)
 		if node.nodeName() == "Keyframes":
@@ -28,12 +28,13 @@ def readKeyframes(ele, item):
 					key.setTime(int(keyframe.attribute("time", "0")))
 					key.setValue(keyframe.attribute("value"))
 					key.setEasing(int(keyframe.attribute("easing", "-1")))
-					if m_tempKeyFrame <> None:
-						m_tempKeyFrame.setNext(key)
-						key.setPrev(m_tempKeyFrame)
+					if tempKeyframe <> None:
+						tempKeyframe.setNext(key)
+						key.setPrev(tempKeyframe)
 					else:
 						item.insertKeyframe(keyframes.attribute("property"), key)
-					m_tempKeyFrame = key
+					tempKeyframe = key
+			tempKeyframe = None
 
 def importMeta(filename, animation):
 	statusbar.showMessage("Reading from file " + filename)

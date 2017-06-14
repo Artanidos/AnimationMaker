@@ -712,12 +712,15 @@ void MainWindow::loadPlugins()
     exportMenu->setEnabled(false);
     importMenu->setEnabled(false);
 
+#ifdef NDEBUG
     QByteArray snap = qgetenv("SNAP_USER_DATA");
     if(snap.length() == 0)
         pluginsDir.setPath(QDir::homePath() + "/animationmaker/plugins");
     else
         pluginsDir.setPath(QString(snap) + "/plugins");
-
+#else
+        pluginsDir.setPath("../AnimationMaker/plugins");
+#endif
     int count = 0;
     QStringList filter("*.py");
     foreach (QString fileName, pluginsDir.entryList(filter, QDir::Files))
@@ -807,15 +810,16 @@ void MainWindow::doImport()
 
 void MainWindow::doExportMovie()
 {
-    /*
     QAction *action = qobject_cast<QAction *>(sender());
-    ExportMovieInterface *iExport = qobject_cast<ExportMovieInterface *>(action->parent());
+    QString file = action->data().toString();
+    PythonQtObjectPtr context = PythonQt::self()->getMainModule();
+    context.evalFile(pluginsDir.absoluteFilePath(file));
 
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
     dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter(iExport->filter());
-    dialog->setWindowTitle(iExport->title());
+    dialog->setNameFilter(context.call("filter").toString());
+    dialog->setWindowTitle(context.call("title").toString());
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptSave);
     if(dialog->exec())
@@ -831,17 +835,36 @@ void MainWindow::doExportMovie()
     exportView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     exportView->setGeometry(0,0,scene->width(), scene->height());
 
-    try
+    int delay = 1000 / scene->fps();
+    int frames = timeline->lastKeyframe() / delay + 2;
+
+    QDir tmp = QDir::temp();
+    tmp.mkdir("animationmaker");
+    QString filterString = tmp.absolutePath() + "/animationmaker/frame%03d.png";
+    tmp.cd("animationmaker");
+
+    for (int i = 0; i < frames; i++)
     {
-        connect(iExport, SIGNAL(setFrame(int)), this, SLOT(pluginSetPlayheadPos(int)));
-        iExport->exportMovie(fileName.toLatin1(), exportView, timeline->lastKeyframe(), scene->fps(), this->statusBar());
+        statusBar()->showMessage(QString("Writing frame %1 of %2 frames").arg(i).arg(frames));
+
+        timeline->setPlayheadPosition(i * delay);
+        QTest::qSleep(delay);
+        QCoreApplication::processEvents(QEventLoop::AllEvents, delay);
+
+        QImage img = exportView->grab().toImage();
+        QString imgName = QString::asprintf(filterString.toLatin1(), i);
+        img.save(imgName);
     }
-    catch(Exception *e)
-    {
-        QMessageBox::critical(this, "An error occured on export", e->msg());
-    }
+
+    context.addObject("statusbar", statusBar());
+    QVariantList args;
+    args << fileName << tmp.absolutePath();
+    context.call("exportMovie", args);
+
+    tmp.removeRecursively();
     view->setUpdatesEnabled(true);
-    */
+    statusBar()->showMessage("Ready");
+    delete exportView;
 }
 
 void MainWindow::doExportMeta()

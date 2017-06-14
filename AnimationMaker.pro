@@ -107,6 +107,9 @@ DISTFILES += \
     build.txt \
     Deploy/snapcraft/bin/xdg-open \
     news.xml \
-    Deploy/snapcraft/bin/launcher
+    Deploy/snapcraft/bin/launcher \
+    plugins/exportMovie.py \
+    plugins/exportXml.py \
+    plugins/importXml.py
 
 FORMS +=
