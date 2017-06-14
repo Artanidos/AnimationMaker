@@ -858,7 +858,7 @@ void MainWindow::doExportMovie()
 
     context.addObject("statusbar", statusBar());
     QVariantList args;
-    args << fileName << tmp.absolutePath();
+    args << fileName << tmp.absolutePath() << scene->fps();
     context.call("exportMovie", args);
 
     tmp.removeRecursively();

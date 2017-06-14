@@ -13,7 +13,7 @@ def title():
 def type():
 	return "EXPORT_MOVIE"
 
-def exportMovie(filename, directory):
+def exportMovie(filename, directory, fps):
 	statusbar.showMessage("creating file " + filename)
 	dir = QDir(directory)
 	file = QFile(directory + "/list")
@@ -25,5 +25,11 @@ def exportMovie(filename, directory):
 		if name <> "." and name <> ".." and name <> "list":
 			file.write("file '" + directory + "/" + name + "'\n")
 	file.close()
-	os.system("ffmpeg -safe 0 -f concat -i " + directory + "/list -c copy -y " + filename)
+	if filename.endswith(".gif"):
+		output = directory + "/temp.mp4";
+		os.system("ffmpeg -r " + str(fps) + " -safe 0 -f concat -i " + directory + "/list -c copy -y " + output)
+		os.system("ffmpeg -i " + output + " -vf palettegen -y " + directory + "/temp.png")
+		os.system("ffmpeg -r " + str(fps) + " -i " + output + " -i " + directory + "/temp.png -lavfi paletteuse -y " + filename)
+	else:
+		os.system("ffmpeg -r " + str(fps) + " -safe 0 -f concat -i " + directory + "/list -c copy -y " + filename)
 	return
