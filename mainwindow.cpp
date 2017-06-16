@@ -155,6 +155,7 @@ void MainWindow::reset()
 void MainWindow::newfile()
 {
     reset();
+    fillTree();
     saveAct->setEnabled(false);
     loadedFile.setFile("");
     setTitle();
@@ -712,14 +713,14 @@ void MainWindow::loadPlugins()
     exportMenu->setEnabled(false);
     importMenu->setEnabled(false);
 
-#ifdef NDEBUG
+#ifdef QT_DEBUG
+    pluginsDir.setPath("../AnimationMaker/plugins");
+#else
     QByteArray snap = qgetenv("SNAP_USER_DATA");
     if(snap.length() == 0)
         pluginsDir.setPath(QDir::homePath() + "/animationmaker/plugins");
     else
         pluginsDir.setPath(QString(snap) + "/plugins");
-#else
-        pluginsDir.setPath("../AnimationMaker/plugins");
 #endif
     int count = 0;
     QStringList filter("*.py");
@@ -734,7 +735,7 @@ void MainWindow::loadPlugins()
         QString text = "There are no plugins installed yet.\n";
         text += "That means you are not able to import and export animations.\n";
         text += "You may download and install plugins yourself from the following website:\n";
-        text += "https://github.com/Artanidos/AnimationMaker-Plugins/releases\n\n";
+        text += "https://github.com/Artanidos/AnimationMaker/releases\n\n";
         text += "The plugins should be copied into the following directory:\n";
         text += pluginsDir.absolutePath() + "\n";
         QMessageBox msg;

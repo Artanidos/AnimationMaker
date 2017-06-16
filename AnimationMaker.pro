@@ -26,9 +26,13 @@ QT += testlib xml network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-include ( ../PythonQt3.1/build/common.prf )
-include ( ../PythonQt3.1/build/PythonQt.prf )
-include ( ../PythonQt3.1/build/PythonQt_QtAll.prf )
+include ( ../PythonQt3.1_NoSql/build/common.prf )
+include ( ../PythonQt3.1_NoSql/build/PythonQt.prf )
+include ( ../PythonQt3.1_NoSql/build/PythonQt_QtAll.prf )
+
+debug {
+    DEFINES += DEBUG
+}
 
 TARGET = AnimationMaker
 TEMPLATE = app

@@ -24,7 +24,6 @@ parts:
     source: .
     plugin: qmake
     qt-version: qt5
-    project-files: [AnimationMaker.pro]
     build-packages:
       - build-essential
       - qt5-default

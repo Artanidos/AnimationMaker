@@ -1,3 +1,8 @@
+# exportXml.py
+# version: 1.0
+# author: Olaf Japp (artanidos@gmail.com)
+# copyright 2017, Olaf Japp
+
 from PythonQt.QtXml import QDomDocument
 from PythonQt.QtCore import QFile, QIODevice, QTextStream
 from PythonQt.animationmaker import *

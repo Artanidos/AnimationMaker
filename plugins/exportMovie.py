@@ -1,3 +1,8 @@
+# exportMovie.py
+# version: 1.0
+# author: Olaf Japp (artanidos@gmail.com)
+# copyright 2017, Olaf Japp
+
 from PythonQt.QtCore import QProcess, QFile, QDir
 import os
 
@@ -14,7 +19,6 @@ def type():
 	return "EXPORT_MOVIE"
 
 def exportMovie(filename, directory, fps):
-	statusbar.showMessage("creating file " + filename)
 	dir = QDir(directory)
 	file = QFile(directory + "/list")
 	if file.open(QIODevice.ReadWrite) == 0:
@@ -27,9 +31,14 @@ def exportMovie(filename, directory, fps):
 	file.close()
 	if filename.endswith(".gif"):
 		output = directory + "/temp.mp4";
-		os.system("ffmpeg -r " + str(fps) + " -safe 0 -f concat -i " + directory + "/list -c copy -y " + output)
+		statusbar.showMessage("Creating temporary movie " + output)
+		os.system("ffmpeg -r " + str(fps) + " -safe 0 -f concat -i " + directory + "/list -b 4M -y " + output)
+		statusbar.showMessage("Creating pallete from movie")
 		os.system("ffmpeg -i " + output + " -vf palettegen -y " + directory + "/temp.png")
+		statusbar.showMessage("Converting movie to " + filename)
 		os.system("ffmpeg -r " + str(fps) + " -i " + output + " -i " + directory + "/temp.png -lavfi paletteuse -y " + filename)
 	else:
-		os.system("ffmpeg -r " + str(fps) + " -safe 0 -f concat -i " + directory + "/list -c copy -y " + filename)
+		statusbar.showMessage("Creating movie " + filename)
+		os.system("ffmpeg -r " + str(fps) + " -safe 0 -f concat -i " + directory + "/list -b 4M -y " + filename)
+	statusbar.showMessage("Ready")
 	return

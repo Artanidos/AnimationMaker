@@ -1,6 +1,6 @@
 1.2
 ---
-Added the ability to load plugins for import and export
+Added the ability to load python plugins for import and export
 
 Bugfix: color editor
 

@@ -1,3 +1,8 @@
+# importXml.py
+# version: 1.0
+# author: Olaf Japp (artanidos@gmail.com)
+# copyright 2017, Olaf Japp
+
 from PythonQt.QtXml import QDomDocument
 from PythonQt.QtCore import QFile, QIODevice, QTextStream
 from PythonQt.animationmaker import *
@@ -68,7 +73,9 @@ def importMeta(filename, animation):
 			r.setHeight(float(ele.attribute("height", "50")))
 			r.setPen(ele.attribute("pen", "#000000"))
 			r.setBrush(ele.attribute("brush", "#0000FF"))
+			# first add the item to the animation
 			animation.addItem(r)
+			# then add keyframes (not the other way round or else ...)
 			readKeyframes(ele, r)
 		elif node.nodeName() == "Ellipse":
 			e = Ellipse()
@@ -80,7 +87,9 @@ def importMeta(filename, animation):
 			e.setHeight(float(ele.attribute("height", "50")))
 			e.setPen(ele.attribute("pen", "#000000"))
 			e.setBrush(ele.attribute("brush", "#0000FF"))
+			# first add the item to the animation
 			animation.addItem(e)
+			# then add keyframes (not the other way round or else ...)
 			readKeyframes(ele, e)
 		elif node.nodeName() == "Text":
 			t = Text()
@@ -95,7 +104,9 @@ def importMeta(filename, animation):
 			t.setFontStyle(ele.attribute("font-style"))
 			t.setXscale(float(ele.attribute("xscale", "1")))
 			t.setYscale(float(ele.attribute("yscale", "1")))
+			# first add the item to the animation
 			animation.addItem(t)
+			# then add keyframes (not the other way round or else ...)
 			readKeyframes(ele, t)
 		elif node.nodeName() == "Bitmap":
 			b = Bitmap()
@@ -109,7 +120,9 @@ def importMeta(filename, animation):
 			data = ele.firstChild()
 			cdata = data.toCDATASection()
 			b.setImage(cdata.data())
+			# first add the item to the animation
 			animation.addItem(b)
+			# then add keyframes (not the other way round or else ...)
 			readKeyframes(ele, b)
 		elif node.nodeName() == "Vectorgraphic":
 			v = Vectorgraphic()
@@ -122,7 +135,9 @@ def importMeta(filename, animation):
 			data = ele.firstChild()
 			cdata = data.toCDATASection()
 			v.setData(cdata.data())
+			# first add the item to the animation
 			animation.addItem(v)
+			# then add keyframes (not the other way round or else ...)
 			readKeyframes(ele, v)
 	statusbar.showMessage("Ready")
 	return
