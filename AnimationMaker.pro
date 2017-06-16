@@ -26,14 +26,15 @@ QT += testlib xml network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-include ( ../PythonQt3.1_NoSql/build/common.prf )
-include ( ../PythonQt3.1_NoSql/build/PythonQt.prf )
-include ( ../PythonQt3.1_NoSql/build/PythonQt_QtAll.prf )
+#include ( ../PythonQt3.1_NoSql/build/common.prf )
+#include ( ../PythonQt3.1_NoSql/build/PythonQt.prf )
+#include ( ../PythonQt3.1_NoSql/build/PythonQt_QtAll.prf )
 
 debug {
     DEFINES += DEBUG
 }
 
+unix:PYTHON_VERSION=2.7
 TARGET = AnimationMaker
 TEMPLATE = app
 target.path += /bin
@@ -95,6 +96,17 @@ linux-g++ {
     LIBS += -L$$PWD/lib/
     LIBS += -lm
     LIBS += -ldl
+
+    LIBS += -L$$PWD/dependencies/PythonQt3.1/lib/
+    LIBS += -lPythonQt
+    LIBS += -lPythonQt_QtAll
+
+    LIBS += $$system(python$${PYTHON_VERSION}-config --libs)
+    QMAKE_CXXFLAGS += $$system(python$${PYTHON_VERSION}-config --includes)
+
+
+    INCLUDEPATH += $$PWD/dependencies/PythonQt3.1/include
+    DEPENDPATH += $$PWD/dependencies/PythonQt3.1/include
 }
 
 RESOURCES += \
