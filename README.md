@@ -7,5 +7,9 @@ The idea for the AnimationMaker comes from Adobe Edge which is not available any
 
 See a video to see basic usage at [youtube](https://www.youtube.com/watch?v=Ir7Lvd-O2aE).
 
+## Donations
+If you like to support my work on the AnimationMaker you are invited to make a donation.
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/artanidos)
+
 
 
