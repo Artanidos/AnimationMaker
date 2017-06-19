@@ -10,13 +10,12 @@ Create a SNAP
 -------------
 - Build AnimationMaker as Release (Projects - Build Configuration - Release)
 - Copy AnimationMaker executeable from build-All-Desktop-Release to snapcraft/bin
-- Copy all files from Deploy/AppImage/lib to Deploy/snapcraft/lib (after creating an AppImage)
- Edit snapcraft/snap/snapcraft.yaml and set
+- Edit snapcraft/snap/snapcraft.yaml and set
       version: '1.0'
 - Run: snapcraft
 - Install snap using: sudo snap install --devmode animationmaker_1.0_amd64.snap
 - Upload snap using: snapcraft login
-                     snap push animationmaker_1.0_amd64.snap
+                     snapcraft push animationmaker_1.0_amd64.snap
 
 - In addition to the snap also snapd-xdg-open must be installed so that the links in the news can be opnened
   $ sudo apt-get install snapd-xdg-open

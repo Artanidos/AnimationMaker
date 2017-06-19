@@ -1,10 +1,9 @@
 # exportMovie.py
-# version: 1.0
+# version: 1.1
 # author: Olaf Japp (artanidos@gmail.com)
 # copyright 2017, Olaf Japp
 
-from PythonQt.QtCore import QProcess, QFile, QDir
-import os
+from PythonQt.QtCore import QFile, QDir, QProcess
 
 def displayName():
 	return "Movie"
@@ -32,13 +31,31 @@ def exportMovie(filename, directory, fps):
 	if filename.endswith(".gif"):
 		output = directory + "/temp.mp4";
 		statusbar.showMessage("Creating temporary movie " + output)
-		os.system("ffmpeg -r " + str(fps) + " -safe 0 -f concat -i " + directory + "/list -b 4M -y " + output)
+		proc = QProcess()
+		proc.start("ffmpeg -r " + str(fps) + " -safe 0 -f concat -i " + directory + "/list -b 4M -y " + output)
+		proc.waitForFinished()
+		print(proc.readAllStandardOutput())
+		print(proc.readAllStandardError())
+
 		statusbar.showMessage("Creating pallete from movie")
-		os.system("ffmpeg -i " + output + " -vf palettegen -y " + directory + "/temp.png")
+		proc = QProcess()
+		proc.start("ffmpeg -i " + output + " -vf palettegen -y " + directory + "/temp.png")
+		proc.waitForFinished()
+		print(proc.readAllStandardOutput())
+		print(proc.readAllStandardError())
+
 		statusbar.showMessage("Converting movie to " + filename)
-		os.system("ffmpeg -r " + str(fps) + " -i " + output + " -i " + directory + "/temp.png -lavfi paletteuse -y " + filename)
+		proc = QProcess()
+		proc.start("ffmpeg -r " + str(fps) + " -i " + output + " -i " + directory + "/temp.png -lavfi paletteuse -y " + filename)
+		proc.waitForFinished()
+		print(proc.readAllStandardOutput())
+		print(proc.readAllStandardError())
 	else:
 		statusbar.showMessage("Creating movie " + filename)
-		os.system("ffmpeg -r " + str(fps) + " -safe 0 -f concat -i " + directory + "/list -b 4M -y " + filename)
+		proc = QProcess()
+		proc.start("ffmpeg -r " + str(fps) + " -safe 0 -f concat -i " + directory + "/list -b 4M -y " + filename)
+		proc.waitForFinished()
+		print(proc.readAllStandardOutput())
+		print(proc.readAllStandardError())
 	statusbar.showMessage("Ready")
 	return
