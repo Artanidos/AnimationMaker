@@ -24,7 +24,7 @@
 #include <QMainWindow>
 #include <QFileInfo>
 #include <QDir>
-#include "pythonwrapper.h"
+#include <QDomDocument>
 
 class AnimationScene;
 class Timeline;
@@ -40,7 +40,6 @@ class QTreeWidgetItem;
 class QUndoStack;
 class QGraphicsItem;
 class QActionGroup;
-class PythonQtObjectPtr;
 
 class MainWindow : public QMainWindow
 {
@@ -56,7 +55,6 @@ protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
 private:
-    void initPython();
     void createMenus();
     void createActions();
     void createStatusBar();
@@ -65,9 +63,9 @@ private:
     void readSettings();
     void writeFile(QString fileName);
     void fillTree();
-    void loadPlugins();
-    void populateMenus(QObject *plugin);
-    void populateMenus(QString fileName);
+    void writeKeyframes(QDomDocument *doc, QDomElement *element, ResizeableItem *item);
+    void readKeyframes(QDomElement *element, ResizeableItem *item);
+
 
     QSplitter *splitter;
     QToolBar *toolbar;
@@ -84,7 +82,6 @@ private:
     QDockWidget *newsdock;
     QDockWidget *elementsdock;
     QTreeWidgetItem *root;
-    QDir pluginsDir;
 
     QAction *openAct;
     QAction *newAct;
@@ -102,6 +99,9 @@ private:
     QAction *showToolPanelAct;
     QAction *showNewsPanelAct;
     QAction *showElementsAct;
+    QAction *importXmlAct;
+    QAction *exportXmlAct;
+    QAction *exportMovieAct;
     QAction *undoAct;
     QAction *redoAct;
     QAction *copyAct;
@@ -118,11 +118,9 @@ private:
 
 public slots:
     void reset();
-    void OnPythonQtStdOut(QString str);
-    void OnPythonQtStdErr(QString str);
-    void doExportMovie();
-    void doExportMeta();
-    void doImport();
+    void exportMovie();
+    void exportXml();
+    void importXml();
     void about();
     void save();
     void saveAs();

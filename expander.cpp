@@ -53,10 +53,10 @@ Expander::Expander(QString header)
     vbox->addWidget(m_content);
     this->setLayout(vbox);
 
-    connect(m_button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked(bool)));
+    connect(m_button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
 }
 
-void Expander::buttonClicked(bool)
+void Expander::buttonClicked()
 {
     if(m_isExpanded)
         m_isExpanded = false;

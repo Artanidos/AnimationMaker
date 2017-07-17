@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("AnimationMaker");
-    QCoreApplication::setApplicationVersion("1.2");
+    QCoreApplication::setApplicationVersion("1.3");
 
     a.setStyle(QStyleFactory::create("Fusion"));
     QPalette p = a.palette();

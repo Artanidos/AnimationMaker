@@ -35,7 +35,7 @@ public:
     void addLayout(QLayout *l);
 
 public slots:
-    void buttonClicked(bool);
+    void buttonClicked();
 
 private :
     QWidget *m_content;
