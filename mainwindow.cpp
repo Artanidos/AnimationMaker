@@ -875,7 +875,6 @@ void MainWindow::exportMovie()
 
     statusBar()->showMessage(QString("Creating movie file"));
     QProcess *proc = new QProcess();
-    proc->setWorkingDirectory("/home/olaf/SourceCode/PyTest");
     proc->start("python -c \"from export import *; print exportMovie('" + fileName + "', '" + tmp.absolutePath() + "', " + QString::number(scene->fps()) + ")\"");
     proc->waitForFinished();
     qDebug() << proc->readAllStandardOutput();
