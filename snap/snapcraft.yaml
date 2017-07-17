@@ -69,6 +69,12 @@ parts:
       - bin/*
       - lib/*
 
+  python:
+      plugin: copy
+      source: .
+      files:
+         export.py: $SNAP_USER_DATA
+
   animationmaker:
     source: .
     plugin: qmake
