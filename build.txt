@@ -1,10 +1,12 @@
 Create an AppImage
 ------------------
 - Build AnimationMaker as Release (Projects - Build Configuration - Release)
-- Copy AnimationMaker executable from build-All-Desktop-Release to Deploy/AppImage
-- cd to Deploy/AppImage
-- run: linuxdeployqt-continuous-x86_64.AppImage AnimationMaker -appimage
-- rename: mv Application-x86_64.AppImage AnimationMaker-Linux-x86_64-1.0.AppImage
+- copy AnimationMaker executable from build-All-Desktop-Release to Deploy/AppImage/usr/bin
+- copy export.py to Deploy/AppImage
+- cd to Deploy
+- run: /home/olaf/appimagetool/appimagetool-x86_64.AppImage AppImage
+- rename: mv Application-x86_64.AppImage AnimationMaker-Linux-x86_64-1.3.AppImage
+
 
 Create a SNAP
 -------------

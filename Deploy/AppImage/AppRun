@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export APPDIR="$(dirname "$(readlink -f "$0")")"
+export PATH="$APPDIR/usr/bin/:$PATH"
+export LD_LIBRARY_PATH="$APPDIR/usr/lib"
+export QT_PLUGIN_PATH="$APPDIR/usr/plugins"
+export PYTHONPATH="$APPDIR:$PYTHONPATH"
+"$APPDIR"/usr/bin/AnimationMaker $@
