@@ -1,5 +1,5 @@
 name: animationmaker
-version: '1.2'
+version: '1.3'
 summary: Create animations and export them to a movie, gif or XML file
 description: |
   This app can be used to create animated movies based on keyframe animations.
