@@ -11,8 +11,9 @@ mkdir AppImage/usr/plugins/platforms
 mkdir AppImage/usr/plugins/printsupport
 mkdir AppImage/usr/plugins/xcbglintegration
 
-cp export.py AppImage
+cp bin/ffmpeg AppImage/usr/bin
 cp ../build-AnimationMaker-Desktop-Release/AnimationMaker AppImage/usr/bin
 cp lib/* AppImage/usr/lib
 cp -r plugins/* AppImage/usr/plugins
 /home/olaf/appimagetool/appimagetool-x86_64.AppImage AppImage
+mv Application-x86_64.AppImage AnimationMaker-x86_64-1.3.AppImage

@@ -762,7 +762,7 @@ void MainWindow::exportMovie()
     else
     {
         statusBar()->showMessage("Creating movie file");
-        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg.exe\" -r " + QString::number(scene->fps()) + " -safe 0 -f concat -i list -b 4M -y " + fileName, tmp.absolutePath());
+        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(scene->fps()) + " -safe 0 -f concat -i list -b 4M -y " + fileName, tmp.absolutePath());
     }
 
     tmp.removeRecursively();
