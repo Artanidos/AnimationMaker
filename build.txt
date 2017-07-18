@@ -21,3 +21,11 @@ Create a SNAP
 
 - In addition to the snap also snapd-xdg-open must be installed so that the links in the news can be opnened
   $ sudo apt-get install snapd-xdg-open
+
+Create a WinZip
+---------------
+- Build AnimationMaker as Release (Projects - Build Configuration - Release)
+- Create directory named AnimationMaker
+- Copy the AnimationMaker.exe and all files from winlib into AnimationMaker
+- Send the folder AnimationMaker to winzip
+- Rename the zip file to AnimationMaker-Windows-x86_64-1.3
