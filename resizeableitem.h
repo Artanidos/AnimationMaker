@@ -33,6 +33,8 @@ class ResizeableItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal top READ top)
+    Q_INTERFACES(QGraphicsItem)
+
 public:
     ResizeableItem() {}
     ResizeableItem(AnimationScene *scene);

@@ -25,13 +25,13 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDomDocument>
+#include "resizeableitem.h"
 
 class AnimationScene;
 class Timeline;
 class ItemPropertyEditor;
 class ScenePropertyEditor;
 class TransitionEditor;
-class ResizeableItem;
 class KeyFrame;
 class QSplitter;
 class QTreeWidget;
@@ -63,9 +63,7 @@ private:
     void readSettings();
     void writeFile(QString fileName);
     void fillTree();
-    void writeKeyframes(QDomDocument *doc, QDomElement *element, ResizeableItem *item);
-    void readKeyframes(QDomElement *element, ResizeableItem *item);
-
+    void runCommand(QString cmd, QString path);
 
     QSplitter *splitter;
     QToolBar *toolbar;
@@ -119,8 +117,8 @@ private:
 public slots:
     void reset();
     void exportMovie();
-    void exportXml();
     void importXml();
+    void exportXml();
     void about();
     void save();
     void saveAs();

@@ -24,6 +24,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsRectItem>
 #include <QColor>
+#include <QFont>
 #include "resizeableitem.h"
 
 class AnimationScene;

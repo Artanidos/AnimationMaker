@@ -29,6 +29,7 @@
 #include <QTest>
 #include <QFileDialog>
 #include <QUndoStack>
+#include <QDomDocument>
 
 class ResizeableItem;
 class KeyFrame;
@@ -89,6 +90,8 @@ signals:
 
 public slots:
     void setPlayheadPosition(int value);
+    void exportXml();
+    void importXml();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
@@ -113,6 +116,8 @@ private:
     void writeKeyframes(QDataStream &dataStream, ResizeableItem *item) const;
     void readKeyframes(QDataStream &dataStream, ResizeableItem *item);
     void copyKeyframes(ResizeableItem *item);
+    void writeKeyframes(QDomDocument *doc, QDomElement *element, ResizeableItem *item);
+    void readKeyframes(QDomElement *element, ResizeableItem *item);
 };
 
 QDataStream &operator<<(QDataStream &, const AnimationScene *);

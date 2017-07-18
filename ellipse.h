@@ -22,6 +22,7 @@
 #define ELLIPSE_H
 
 #include <QGraphicsItem>
+#include <QObject>
 #include "resizeableitem.h"
 
 class AnimationScene;
@@ -29,7 +30,6 @@ class Ellipse : public ResizeableItem
 {
     Q_OBJECT
 public:
-    Ellipse();
     Ellipse(qreal width, qreal height, AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);

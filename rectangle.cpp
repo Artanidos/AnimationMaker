@@ -22,11 +22,7 @@
 #include <QtTest/QTest>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
-
-Rectangle::Rectangle()
-    : ResizeableItem(NULL)
-{
-}
+#include "animationscene.h"
 
 Rectangle::Rectangle(qreal width, qreal height, AnimationScene *scene)
     : ResizeableItem(scene)

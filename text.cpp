@@ -23,6 +23,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 #include <QGraphicsView>
+#include "resizeableitem.h"
 
 #define EXTRA_HEIGHT 4
 

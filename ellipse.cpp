@@ -23,11 +23,6 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-Ellipse::Ellipse()
-    : ResizeableItem(NULL)
-{
-}
-
 Ellipse::Ellipse(qreal width, qreal height, AnimationScene *scene)
     : ResizeableItem(scene)
 {

@@ -22,14 +22,13 @@
 #define RECTANGLE_H
 
 #include <QGraphicsItem>
-#include <QGraphicsRectItem>
+#include <QObject>
 #include "resizeableitem.h"
 
 class Rectangle : public ResizeableItem
 {
     Q_OBJECT
 public:
-    Rectangle();
     Rectangle(qreal width, qreal height, AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
