@@ -27,6 +27,7 @@ void News::fileIsReady( QNetworkReply *reply)
     QDomDocument doc;
     doc.setContent(reply->readAll());
     QDomElement docElem = doc.documentElement();
+
     if(docElem.nodeName() == "AnimationMaker")
     {
         QDomElement news = docElem.firstChildElement();
