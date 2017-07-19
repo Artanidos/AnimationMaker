@@ -10,70 +10,15 @@ confinement: strict
 
 apps:
   animationmaker:
-    command: launcher AnimationMaker
+    command: desktop-launch AnimationMaker
     plugs: [x11,home,unity7]
 
 parts:
-  ffmpeg:
-    source: git://source.ffmpeg.org/ffmpeg.git
-    plugin: autotools
-    configflags: 
-      - --disable-ffplay
-      - --disable-ffprobe
-      - --disable-ffserver
-      - --enable-gpl
-      - --enable-libass
-      - --enable-libfreetype
-      - --enable-libmp3lame
-      - --enable-libopus
-      - --enable-libtheora
-      - --enable-libvorbis
-      - --enable-libvpx
-      - --enable-libx264
-      - --enable-libx265
-      - --enable-nonfree
-    organize:
-      usr/local/bin/: bin/
-    build-packages:
-      - autoconf
-      - automake
-      - build-essential
-      - cmake
-      - g++
-      - git
-      - libass-dev
-      - libfreetype6-dev
-      - libmp3lame-dev
-      - libopus-dev
-      - libsdl1.2-dev
-      - libtheora-dev
-      - libtool
-      - libva-dev
-      - libvdpau-dev
-      - libvorbis-dev
-      - libvpx-dev
-      - libx264-dev
-      - libx265-dev
-      - libxcb-shm0-dev
-      - libxcb-xfixes0-dev
-      - libxcb1-dev
-      - make
-      - pkg-config
-      - texinfo
-      - yasm
-      - zlib1g-dev
-
   launcher:
     plugin: dump
     prime:
       - bin/*
       - lib/*
-
-  python:
-      plugin: copy
-      source: .
-      files:
-         export.py: $SNAP_USER_DATA
 
   animationmaker:
     source: .
