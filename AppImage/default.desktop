@@ -5,3 +5,4 @@ Exec=AppRun %F
 Icon=default
 Comment=AnimationMaker
 Terminal=true
+Categories=Graphics;
