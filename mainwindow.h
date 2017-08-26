@@ -40,7 +40,10 @@ class QTreeWidgetItem;
 class QUndoStack;
 class QGraphicsItem;
 class QActionGroup;
-
+class QTextBrowser;
+class QNetworkReply;
+class QSplitter;
+class QProcess;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -65,6 +68,9 @@ private:
     void fillTree();
     void runCommand(QString cmd, QString path);
 
+    QProcess *m_proc;
+    QString m_url;
+    QString m_err;
     QSplitter *splitter;
     QToolBar *toolbar;
     QTreeWidget *elementTree;
@@ -80,6 +86,7 @@ private:
     QDockWidget *newsdock;
     QDockWidget *elementsdock;
     QTreeWidgetItem *root;
+    QTextBrowser *browser;
 
     QAction *openAct;
     QAction *newAct;

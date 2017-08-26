@@ -106,6 +106,8 @@ DISTFILES += \
     build.txt \
     Deploy/snapcraft/bin/xdg-open \
     news.xml \
-    Deploy/snapcraft/bin/launcher
+    Deploy/snapcraft/bin/launcher \
+    docs/news.xml \
+    docs/news.html
 
 FORMS +=

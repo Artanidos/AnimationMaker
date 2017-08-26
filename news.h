@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QNetworkAccessManager>
 #include <QProcess>
+#include <QUrl>
 
 class News : public QWidget
 {
@@ -13,7 +14,7 @@ public:
 
 private slots:
     void fileIsReady(QNetworkReply * reply);
-    void linkActivated(QString url);
+    void anchorClicked(QUrl url);
     void finished(int code);
 
 private:

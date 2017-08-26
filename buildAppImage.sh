@@ -16,4 +16,4 @@ cp ../build-AnimationMaker-Desktop-Release/AnimationMaker AppImage/usr/bin
 cp lib/* AppImage/usr/lib
 cp -r plugins/* AppImage/usr/plugins
 /home/olaf/appimagetool/appimagetool-x86_64.AppImage AppImage
-mv Application-x86_64.AppImage AnimationMaker-Linux-x86_64-1.3.AppImage
+mv Application-x86_64.AppImage AnimationMaker-Linux-x86_64-1.4.AppImage

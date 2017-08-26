@@ -41,6 +41,7 @@
 #include <QTreeWidget>
 #include <QMainWindow>
 #include <QtWidgets>
+#include <QTextBrowser>
 
 #define MAGIC 0x414D4200
 #define FILE_VERSION 100
@@ -127,6 +128,7 @@ void MainWindow::setTitle()
 
 void MainWindow::reset()
 {
+    setCentralWidget(splitter);
     scene->reset();
     timeline->reset();
 }
@@ -291,7 +293,7 @@ void MainWindow::createGui()
 
     selectAct->toggle();
 
-    News *news = new News("https://artanidos.github.io/AnimationMaker/news.xml");
+    News *news = new News("https://artanidos.github.io/AnimationMaker/news.html");
     newsdock = new QDockWidget(tr("News"), this);
     newsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     newsdock->setWidget(news);
@@ -352,9 +354,10 @@ void MainWindow::createGui()
     connect(timeline, SIGNAL(transitionSelectionChanged(KeyFrame*)), this, SLOT(transitionSelectionChanged(KeyFrame*)));
     connect(m_itemPropertyEditor, SIGNAL(addKeyFrame(ResizeableItem*,QString,QVariant)), timeline, SLOT(addKeyFrame(ResizeableItem*,QString,QVariant)));
 
-    QSplitter *splitter = new QSplitter(Qt::Vertical);
+    splitter = new QSplitter(Qt::Vertical);
     splitter->addWidget(view);
     splitter->addWidget(timeline);
+
     setCentralWidget(splitter);
 }
 
@@ -530,7 +533,7 @@ void MainWindow::about()
 {
     QMessageBox msg;
     msg.setWindowTitle("About AnimationMaker (Community Edition)");
-    msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2017 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.\n\nTHIS COMMUNITY EDITION IS FOR NON COMMERCIAL USAGE ONLY!");
+    msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2017 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
     msg.setIconPixmap(QPixmap(":/images/logo.png"));
     msg.exec();
 }

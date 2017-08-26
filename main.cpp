@@ -21,13 +21,14 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QStyleFactory>
+#include <QTest>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("AnimationMaker");
-    QCoreApplication::setApplicationVersion("1.3");
+    QCoreApplication::setApplicationVersion("1.4");
 
     a.setStyle(QStyleFactory::create("Fusion"));
     QPalette p = a.palette();

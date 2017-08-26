@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QNetworkReply>
+#include <QTextBrowser>
 #include <QDomDocument>
 #include <QMessageBox>
 
@@ -17,49 +18,13 @@ News::News(QString url)
 
 void News::fileIsReady( QNetworkReply *reply)
 {
-    QWidget *grid = new QWidget();
+    QTextBrowser *browser = new QTextBrowser;
+    browser->setOpenLinks(false);
     QVBoxLayout *box = new QVBoxLayout();
-    QGridLayout *layout = new QGridLayout();
-    grid->setLayout(layout);
-    box->addWidget(grid);
-    box->addStretch();
+    box->addWidget(browser);
     setLayout(box);
-    QDomDocument doc;
-    doc.setContent(reply->readAll());
-    QDomElement docElem = doc.documentElement();
-
-    if(docElem.nodeName() == "AnimationMaker")
-    {
-        QDomElement news = docElem.firstChildElement();
-        if(news.nodeName() == "News")
-        {
-            for(int i=0; i < news.childNodes().count(); i++)
-            {
-                QDomNode node = news.childNodes().at(i);
-                if(node.nodeName() == "Entry")
-                {
-                    QDomElement entry = node.toElement();
-                    layout->addWidget(new QLabel(entry.attribute("text")), i * 2, 0, 1, 3);
-                    for(int j=0; j < entry.childNodes().count(); j++)
-                    {
-                        QDomNode n = entry.childNodes().at(j);
-                        if(n.nodeName() == "Link")
-                        {
-                            QDomElement l = n.toElement();
-                            QLabel *link = new QLabel();
-                            link->setText("<a href='" + l.attribute("url") + "'>" + l.attribute("caption")+ "</a>");
-                            layout->addWidget(link, i * 2 + 1, j);
-                            connect(link, SIGNAL(linkActivated(QString)), this, SLOT(linkActivated(QString)));
-                        }
-                    }
-                }
-            }
-        }
-        else
-            layout->addWidget(new QLabel("A format error occured while reading the news..."), 0, 0);
-    }
-    else
-        layout->addWidget(new QLabel("An error occured while reading the news..."), 0, 0);
+    browser->setHtml(reply->readAll());
+    connect(browser, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
 }
 
 void News::finished(int)
@@ -69,7 +34,7 @@ void News::finished(int)
         QMessageBox::warning(this, "Error opening link", "Unable to open the link to the webpage.\nThe reason might be that you are running this application from inside a SNAP installation.\nPlease install snapd-xdg-open using\n$ sudo apt-get install snapd-xdg-open\n or copy the url\n" + m_url +"\nand open it in a browser manually.");
 }
 
-void News::linkActivated(QString url)
+void News::anchorClicked(QUrl url)
 {
 #ifdef Q_OS_LINUX
     // When packaging with SNAP on linux the xdg-open will no function until snapd-xdg-open will be installed additionally
@@ -78,14 +43,14 @@ void News::linkActivated(QString url)
     if(err.exists())
         err.remove();
 
-    m_url = url;
+    m_url = url.toString();
     m_proc = new QProcess();
     QStringList arguments;
-    arguments << url;
+    arguments << url.toString();
     connect(m_proc, SIGNAL(finished(int)), this, SLOT(finished(int)));
     m_proc->setStandardErrorFile("");
     m_proc->start("xdg-open", arguments);
 #else
-    QDesktopServices::openUrl(QUrl(url));
+    QDesktopServices::openUrl(url);
 #endif
 }
