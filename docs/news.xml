@@ -1,5 +1,8 @@
 <AnimationMaker>
     <News>
+        <Entry text="AnimationMaker 1.4 Released">
+            <Link caption="Linux (AppImage)" url="https://github.com/Artanidos/AnimationMaker/releases"/>
+        </Entry>
         <Entry text="AnimationMaker 1.3 Released">
             <Link caption="Linux (AppImage)" url="https://github.com/Artanidos/AnimationMaker/releases"/>
             <Link caption="Windows (.zip)" url="https://github.com/Artanidos/AnimationMaker/releases"/>
