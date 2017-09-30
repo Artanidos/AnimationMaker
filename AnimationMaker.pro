@@ -109,6 +109,9 @@ DISTFILES += \
     Deploy/snapcraft/bin/launcher \
     docs/news.xml \
     docs/news.html \
-    buildAppImage.sh
+    buildAppImage.sh \
+    default.desktop \
+    default.svg \
+    AppRun
 
 FORMS +=
