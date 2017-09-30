@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=AnimationMaker
-Exec=usr/bin/AnimationMaker
-Icon=default
-Comment=AnimationMaker
-Terminal=true
-Categories=Graphics;
