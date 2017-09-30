@@ -66,5 +66,6 @@
         <file>images/outinbounce.png</file>
         <file>images/outinquint.png</file>
         <file>images/lupe.png</file>
+        <file>images/logo.svg</file>
     </qresource>
 </RCC>
