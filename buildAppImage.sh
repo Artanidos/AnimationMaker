@@ -19,4 +19,3 @@ mv AnimationMaker-x86_64.AppImage AnimationMaker-Linux-x86_64-1.4.1.AppImage
 
 # Clean up
 rm -r AppImage/*
-rmdir AppImage

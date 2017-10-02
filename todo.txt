@@ -1,12 +1,19 @@
-Treeview
+- Treeview
     - Object make invisible
     - Object lock
 
-Rectangle new
+- Rectangle new
     - create via mouse drag
 
-Items Translation like Rotate, Shear
+- Items Translation like Rotate, Shear
 
-Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
+- Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
 
-Add the ability to add sound and voices.
+- Add the ability to add sound and voices.
+
+- Path painting a la videoscribe
+- Text to path translation
+
+- Plugin for export / import xml
+
+- Plugin for animated objects (tweens, videoscribe)
