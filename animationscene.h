@@ -67,6 +67,7 @@ public:
 
     inline int playheadPosition() {return m_playheadPosition;}
 
+    void setCursor(const QCursor &cursor) {m_rect->setCursor(cursor);}
     void copyItem();
     void pasteItem();
 

@@ -67,5 +67,10 @@
         <file>images/outinquint.png</file>
         <file>images/lupe.png</file>
         <file>images/logo.svg</file>
+        <file>images/rect_cursor.png</file>
+        <file>images/ellipse_cursor.png</file>
+        <file>images/bitmap_cursor.png</file>
+        <file>images/svg_cursor.png</file>
+        <file>images/text_cursor.png</file>
     </qresource>
 </RCC>

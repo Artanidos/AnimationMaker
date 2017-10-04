@@ -541,30 +541,41 @@ void MainWindow::about()
 void MainWindow::setSelectMode()
 {
     scene->setEditMode(AnimationScene::EditMode::ModeSelect);
+    scene->setCursor(Qt::ArrowCursor);
 }
 
 void MainWindow::setRectangleMode()
 {
+    scene->clearSelection();
+    scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/rect_cursor.png"))));
     scene->setEditMode(AnimationScene::EditMode::ModeRectangle);
 }
 
 void MainWindow::setEllipseMode()
 {
+    scene->clearSelection();
+    scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/ellipse_cursor.png"))));
     scene->setEditMode(AnimationScene::EditMode::ModeEllipse);
 }
 
 void MainWindow::setTextMode()
 {
+    scene->clearSelection();
+    scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/text_cursor.png"))));
     scene->setEditMode(AnimationScene::EditMode::ModeText);
 }
 
 void MainWindow::setBitmapMode()
 {
+    scene->clearSelection();
+    scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/bitmap_cursor.png"))));
     scene->setEditMode(AnimationScene::EditMode::ModeBitmap);
 }
 
 void MainWindow::setSvgMode()
 {
+    scene->clearSelection();
+    scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/svg_cursor.png"))));
     scene->setEditMode(AnimationScene::EditMode::ModeSvg);
 }
 
@@ -628,6 +639,7 @@ void MainWindow::sceneItemAdded(QGraphicsItem *item)
     item->setSelected(true);
     selectAct->setChecked(true);
     scene->setEditMode(AnimationScene::EditMode::ModeSelect);
+    scene->setCursor(Qt::ArrowCursor);
 }
 
 void MainWindow::showPropertyPanel()

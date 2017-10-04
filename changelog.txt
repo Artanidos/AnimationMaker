@@ -1,3 +1,8 @@
+1.4.1
+-----
+- App icon added
+- Cursors for adding items added
+
 1.4
 ---
 News-Panel is now able to display html.
