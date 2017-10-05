@@ -11,9 +11,6 @@
 
 - Add the ability to add sound and voices.
 
-- Path painting a la videoscribe
-- Text to path translation
-
 - Plugin for export / import xml
 
 - Plugin for animated objects (tweens, videoscribe)

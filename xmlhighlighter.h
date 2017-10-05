@@ -36,7 +36,9 @@ public:
     enum Construct
     {
         Entity,
-        Tag,
+        Element,
+        Attribute,
+        String,
         Comment,
         LastConstruct = Comment
     };
@@ -54,7 +56,9 @@ protected:
     {
         NormalState = -1,
         InComment,
-        InTag
+        InElement,
+        InString,
+        InAttribute
     };
 
     void highlightBlock(const QString &text);

@@ -2,6 +2,7 @@
 ---
 - App icon added
 - Cursors for adding items added
+- Added a texteditor for SVG
 - Added the ability to add svg attributes that can be animated
 
 1.4

@@ -28,10 +28,20 @@ XmlHighlighter::XmlHighlighter(QTextDocument *document)
     entityFormat.setFontWeight(QFont::Normal);
     setFormatFor(Entity, entityFormat);
 
-    QTextCharFormat tagFormat;
-    tagFormat.setForeground(QColor("#f0e68c"));
-    tagFormat.setFontWeight(QFont::Normal);
-    setFormatFor(Tag, tagFormat);
+    QTextCharFormat elementFormat;
+    elementFormat.setForeground(QColor("#f0e68c"));
+    elementFormat.setFontWeight(QFont::Normal);
+    setFormatFor(Element, elementFormat);
+
+    QTextCharFormat attributeFormat;
+    attributeFormat.setForeground(QColor("#1ca8b4"));
+    attributeFormat.setFontWeight(QFont::Normal);
+    setFormatFor(Attribute, attributeFormat);
+
+    QTextCharFormat stringFormat;
+    stringFormat.setForeground(QColor("#12ce00"));
+    stringFormat.setFontWeight(QFont::Normal);
+    setFormatFor(String, stringFormat);
 
     QTextCharFormat commentFormat;
     commentFormat.setForeground(QColor("#87ceeb"));
@@ -52,6 +62,7 @@ void XmlHighlighter::highlightBlock(const QString &text)
     int len = text.length();
     int start = 0;
     int pos = 0;
+    QChar quote = QChar::Null;
 
     while (pos < len)
     {
@@ -59,6 +70,7 @@ void XmlHighlighter::highlightBlock(const QString &text)
         {
             case NormalState:
             default:
+            {
                 while (pos < len)
                 {
                     QChar ch = text.at(pos);
@@ -70,7 +82,7 @@ void XmlHighlighter::highlightBlock(const QString &text)
                         }
                         else
                         {
-                            state = InTag;
+                            state = InElement;
                         }
                         break;
                     }
@@ -87,8 +99,9 @@ void XmlHighlighter::highlightBlock(const QString &text)
                     }
                 }
                 break;
-
+            }
             case InComment:
+            {
                 start = pos;
                 while (pos < len)
                 {
@@ -105,34 +118,85 @@ void XmlHighlighter::highlightBlock(const QString &text)
                 }
                 setFormat(start, pos - start, m_formats[Comment]);
                 break;
-
-            case InTag:
-                QChar quote = QChar::Null;
+            }
+            case InElement:
+            {
                 start = pos;
                 while (pos < len)
                 {
                     QChar ch = text.at(pos);
-                    if (quote.isNull())
+                    if (ch == ' ')
                     {
-                        if (ch == "\"" || ch == '"')
-                        {
-                            quote = ch;
-                        }
-                        else if (ch == '>')
-                        {
-                            pos++;
-                            state = NormalState;
-                            break;
-                        }
+                        pos++;
+                        state = InAttribute;
+                        break;
                     }
-                    else if (ch == quote)
+                    else if (ch == '>')
                     {
-                        quote = QChar::Null;
+                        pos++;
+                        state = NormalState;
+                        break;
+                    }
+                    else if(ch == "\"" || ch == '"')
+                    {
+                        quote = ch;
+                        pos++;
+                        state = InString;
+                        break;
                     }
                     pos++;
                 }
-                setFormat(start, pos - start, m_formats[Tag]);
+                setFormat(start, pos - start, m_formats[Element]);
                 break;
+            }
+
+            case InAttribute:
+            {
+                start = pos;
+                while (pos < len)
+                {
+                    QChar ch = text.at(pos);
+                    if(ch == '>')
+                    {
+                        pos++;
+                        state = NormalState;
+                        break;
+                    }
+                    else if(ch == "\"" || ch == '"')
+                    {
+                        quote = ch;
+                        pos++;
+                        state = InString;
+                        break;
+                    }
+                    else if(ch == "=")
+                    {
+                        state = InElement;
+                        break;
+                    }
+                    pos++;
+                }
+                setFormat(start, pos - start, m_formats[Attribute]);
+                break;
+            }
+            case InString:
+            {
+                start = pos;
+                while (pos < len)
+                {
+                    QChar ch = text.at(pos);
+                    if(ch == quote)
+                    {
+                        quote = QChar::Null;
+                        state = InElement;
+                        pos++;
+                        break;
+                    }
+                    pos++;
+                }
+                setFormat(start - 1, pos - start + 1, m_formats[String]);
+                break;
+            }
         }
     }
 
