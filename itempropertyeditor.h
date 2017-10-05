@@ -33,6 +33,39 @@ class ColorEditor;
 class Expander;
 class Rectangle;
 class Ellipse;
+class Vectorgraphic;
+class QTextEdit;
+class QVBoxLayout;
+
+class SvgAttributeEditor : public QWidget
+{
+    Q_OBJECT
+public:
+    SvgAttributeEditor();
+
+    bool isValid() {return !m_element->text().isEmpty() && !m_attribute->text().isEmpty();}
+    QString attributeName() {return m_element->text() + "." + m_attribute->text();}
+    void setAttributeName(QString name);
+    int value() {return m_value->value();}
+    void setValue(int val) {m_value->setValue(val);}
+
+signals:
+    void attributeNameChanged(QString oldName, QString newName);
+    void attributeValueChanged(QString name, int value);
+    void removeClicked(SvgAttributeEditor *editor);
+
+private slots:
+    void attributeNameChanged();
+    void valueChanged(int value);
+    void minusClicked();
+
+private:
+    QLineEdit *m_element;
+    QLineEdit *m_attribute;
+    QSpinBox *m_value;
+    QString m_attributeName;
+};
+
 class ItemPropertyEditor : public QWidget
 {
     Q_OBJECT
@@ -51,6 +84,8 @@ private:
     ColorEditor *borderColorEditor;
     ColorEditor *textcolorEditor;
     Rectangle *m_rectangle;
+    Vectorgraphic *m_vector;
+    QTextEdit *m_svgText;
     QComboBox *m_font;
     QComboBox *m_fontSize;
     QComboBox *m_style;
@@ -65,14 +100,17 @@ private:
     Expander *expText;
     Expander *expTextcolor;
     Expander *expColor;
+    Expander *expSvg;
     ResizeableItem *m_item;
     Text *m_textitem;
 
     Ellipse *m_ellipse;
     QSlider *m_opacity;
+    QVBoxLayout *m_vboxAttributeEditors;
 
     void changeBrush(QColor value);
     void changeOpacity(int opacity);
+    SvgAttributeEditor *addSvgAttributeEditor(QString name, int value);
 
 private slots:
     void idChanged();
@@ -101,6 +139,11 @@ private slots:
     void fontFamilyChanged(int index);
     void fontStyleChanged(int index);
     void fontSizeChanged();
+    void svgAttributeNameChanged(QString oldName, QString newName);
+    void svgAttributeValueChanged(QString attributeName, int value);
+    void svgTextChanged();
+    void addSvgAttributeEditor();
+    void svgEditorRemoveClicked(SvgAttributeEditor *editor);
  };
 
 #endif // ITEMPROPERTYEDITOR_H

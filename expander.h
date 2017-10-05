@@ -38,6 +38,7 @@ public slots:
     void buttonClicked();
 
 private :
+    QVBoxLayout *m_contentLayout;
     QWidget *m_content;
     QToolButton *m_button;
     bool m_isExpanded;

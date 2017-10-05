@@ -17,3 +17,11 @@
 - Plugin for export / import xml
 
 - Plugin for animated objects (tweens, videoscribe)
+
+- Tooltip color for FlatButton
+
+- Scollbar style for TextEdit (SVG)
+
+- XmlHighligther should mark attributes and strings also
+
+- move SvgEditor actions to undostack

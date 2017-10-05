@@ -59,7 +59,9 @@ SOURCES += main.cpp\
     exception.cpp \
     coloreditor.cpp \
     transitioneditor.cpp \
-    news.cpp
+    news.cpp \
+    xmlhighlighter.cpp \
+    flatbutton.cpp
 
 HEADERS  += mainwindow.h \
     animationscene.h \
@@ -84,7 +86,9 @@ HEADERS  += mainwindow.h \
     exception.h \
     coloreditor.h \
     transitioneditor.h \
-    news.h
+    news.h \
+    xmlhighlighter.h \
+    flatbutton.h
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

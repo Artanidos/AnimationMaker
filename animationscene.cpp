@@ -324,6 +324,17 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             v->setScale(xscale, yscale);
             v->setOpacity(opacity);
 
+            int attributes, value;
+            QString name;
+
+            dataStream >> attributes;
+            for(int i = 0; i < attributes; i++)
+            {
+                dataStream >> name;
+                dataStream >> value;
+                v->setAttributeValue(name, value);
+            }
+
             readKeyframes(dataStream, v);
 
             addItem(v);
@@ -442,6 +453,13 @@ QDataStream& AnimationScene::write(QDataStream &dataStream) const
                 dataStream << v->yscale();
                 dataStream << v->opacity();
                 dataStream << v->getData();
+
+                dataStream << v->attributes().count();
+                foreach(QString key, v->attributes().keys())
+                {
+                    dataStream << key;
+                    dataStream << v->attributes().value(key);
+                }
 
                 writeKeyframes(dataStream, v);
                 break;
@@ -895,6 +913,11 @@ void AnimationScene::setPlayheadPosition(int val)
 
     for(int i=0; i < items().count(); i++)
     {
+        Vectorgraphic *v = dynamic_cast<Vectorgraphic*>(items().at(i));
+        if(v)
+        {
+            v->setCurrentFrame(val);
+        }
         ResizeableItem *item = dynamic_cast<ResizeableItem *>(items().at(i));
         if(item)
         {

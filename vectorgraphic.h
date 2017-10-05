@@ -26,6 +26,7 @@
 #include "resizeableitem.h"
 
 class AnimationScene;
+class QDomElement;
 class Vectorgraphic : public ResizeableItem
 {
     Q_OBJECT
@@ -40,6 +41,12 @@ public:
     QByteArray getData();
     void setData(QByteArray data);
 
+    void setCurrentFrame(int frame);
+    void setAttributeValue(QString attributeName, int value);
+    void removeAttribute(QString attributeName);
+    void changeAttributeName(QString oldName, QString newName);
+    QHash<QString, int> attributes() {return m_attributes;}
+
     enum { Type = UserType + 5 };
     int type() const Q_DECL_OVERRIDE;
 
@@ -47,6 +54,11 @@ private:
     QGraphicsSvgItem *m_svg;
     QSvgRenderer *m_renderer;
     QByteArray m_data;
+    QByteArray m_changedData;
+    QHash<QString, int> m_attributes;
+
+    QDomElement elementById(QDomElement root, QString id);
+    void reload();
 };
 
 #endif // VECTORGRAPHIC_H

@@ -72,5 +72,9 @@
         <file>images/bitmap_cursor.png</file>
         <file>images/svg_cursor.png</file>
         <file>images/text_cursor.png</file>
+        <file>images/minus_hover.png</file>
+        <file>images/minus_normal.png</file>
+        <file>images/plus_hover.png</file>
+        <file>images/plus_normal.png</file>
     </qresource>
 </RCC>

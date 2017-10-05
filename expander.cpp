@@ -52,6 +52,8 @@ Expander::Expander(QString header)
     m_content->setStyleSheet("background-color: #4c4e50");
     vbox->addWidget(m_content);
     this->setLayout(vbox);
+    m_contentLayout = new QVBoxLayout;
+    m_content->setLayout(m_contentLayout);
 
     connect(m_button, SIGNAL(clicked(bool)), this, SLOT(buttonClicked()));
 }
@@ -68,5 +70,5 @@ void Expander::buttonClicked()
 
  void Expander::addLayout(QLayout *l)
  {
-    m_content->setLayout(l);
+    m_contentLayout->addLayout(l);
  }

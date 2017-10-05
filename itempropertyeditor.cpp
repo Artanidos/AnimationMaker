@@ -21,23 +21,91 @@
 #include "itempropertyeditor.h"
 #include "resizeableitem.h"
 #include "animationscene.h"
+#include "xmlhighlighter.h"
 #include "text.h"
 #include "rectangle.h"
 #include "ellipse.h"
+#include "flatbutton.h"
 #include "expander.h"
 #include "coloreditor.h"
+#include "vectorgraphic.h"
 #include "commands.h"
 #include <QPushButton>
 #include <QComboBox>
 #include <QFontDatabase>
+#include <QTextEdit>
+
+SvgAttributeEditor::SvgAttributeEditor()
+{
+    QGridLayout *layout = new QGridLayout();
+    m_element = new QLineEdit;
+    m_attribute = new QLineEdit;
+    m_value = new QSpinBox;
+    m_value->setMinimum(-999999);
+    m_value->setMaximum(999999);
+
+    FlatButton *addAttributeKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    addAttributeKeyframe->setMaximumWidth(9);
+    addAttributeKeyframe->setToolTip("Add keyframe for svg attribute");
+
+    FlatButton *minus = new FlatButton(":/images/minus_normal.png", ":/images/minus_hover.png");
+    minus->setToolTip("Delete attribute");
+
+    layout->addWidget(new QLabel("ElementId"), 0, 0);
+    layout->addWidget(m_element, 0, 1);
+    layout->addWidget(new QLabel("Attribute"), 0, 2);
+    layout->addWidget(m_attribute, 0, 3);
+    layout->addWidget(new QLabel("Value"), 0, 4);
+    layout->addWidget(addAttributeKeyframe, 0, 5);
+    layout->addWidget(m_value, 0, 6);
+    layout->addWidget(minus, 0, 7);
+    setLayout(layout);
+
+    connect(m_element, SIGNAL(editingFinished()), this, SLOT(attributeNameChanged()));
+    connect(m_attribute, SIGNAL(editingFinished()), this, SLOT(attributeNameChanged()));
+    connect(m_value, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    connect(minus, SIGNAL(clicked()), this, SLOT(minusClicked()));
+}
+
+void SvgAttributeEditor::setAttributeName(QString name)
+{
+    int dot = name.indexOf(".");
+    if(dot > 0)
+    {
+        QString id = name.mid(0, dot);
+        QString attribute = name.mid(dot + 1);
+        m_element->setText(id);
+        m_attribute->setText(attribute);
+    }
+}
+
+void SvgAttributeEditor::attributeNameChanged()
+{
+    if(isValid())
+    {
+        emit attributeNameChanged(m_attributeName, attributeName());
+        m_attributeName = attributeName();
+    }
+}
+
+void SvgAttributeEditor::valueChanged(int value)
+{
+    if(isValid())
+        emit attributeValueChanged(attributeName(), value);
+}
+
+void SvgAttributeEditor::minusClicked()
+{
+    emit removeClicked(this);
+}
 
 ItemPropertyEditor::ItemPropertyEditor()
 {
     m_rectangle = NULL;
     m_ellipse = NULL;
+    m_vector = NULL;
     m_initializing = false;
 
-    QString buttonStyle = "QPushButton{border: none;image:url(:/images/raute.png)} QPushButton:hover{border: none;image:url(:/images/raute-hover.png)} QToolTip{background:#f5f0eb;}";
     QVBoxLayout *vbox = new QVBoxLayout();
     Expander *expTyp = new Expander("Typ");
     QGridLayout *layoutTyp = new QGridLayout();
@@ -45,6 +113,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     m_typ = new QLabel("Unknown");
     QLabel *labelId = new QLabel("Id");
     m_id = new QLineEdit();
+
     layoutTyp->addWidget(labelTyp, 0, 0);
     layoutTyp->addWidget(m_typ, 0, 1);
     layoutTyp->addWidget(labelId, 1, 0);
@@ -74,20 +143,16 @@ ItemPropertyEditor::ItemPropertyEditor()
     m_y->setMaximum(10000);
     m_width->setMaximum(10000);
     m_height->setMaximum(10000);
-    QPushButton *addXKeyframe = new QPushButton();
-    addXKeyframe->setStyleSheet(buttonStyle);
+    FlatButton *addXKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
     addXKeyframe->setMaximumWidth(9);
     addXKeyframe->setToolTip("Add keyframe for Left");
-    QPushButton *addYKeyframe = new QPushButton();
-    addYKeyframe->setStyleSheet(buttonStyle);
+    FlatButton *addYKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
     addYKeyframe->setMaximumWidth(9);
     addYKeyframe->setToolTip("Add keyframe for Top");
-    QPushButton *addWidthKeyframe = new QPushButton();
-    addWidthKeyframe->setStyleSheet(buttonStyle);
+    FlatButton *addWidthKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
     addWidthKeyframe->setMaximumWidth(9);
     addWidthKeyframe->setToolTip("Add keyframe for Width");
-    QPushButton *addHeightKeyframe = new QPushButton();
-    addHeightKeyframe->setStyleSheet(buttonStyle);
+    FlatButton *addHeightKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
     addHeightKeyframe->setMaximumWidth(9);
     addHeightKeyframe->setToolTip("Add keyframe  for Height");
     layoutGeo->addWidget(labelPosition, 0, 0);
@@ -158,9 +223,7 @@ ItemPropertyEditor::ItemPropertyEditor()
 
     Expander *expOpacity = new Expander("Visibility");
     QGridLayout *layoutOpacity = new QGridLayout();
-    QPushButton *addOpacityKeyframe = new QPushButton();
-    addOpacityKeyframe->setStyleSheet(buttonStyle);
-    addOpacityKeyframe->setMaximumWidth(9);
+    FlatButton *addOpacityKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
     addOpacityKeyframe->setToolTip("Add keyframe for Opacity");
     QLabel *labelOpacity = new QLabel("Opacity");
     m_opacity = new QSlider(Qt::Horizontal);
@@ -175,6 +238,33 @@ ItemPropertyEditor::ItemPropertyEditor()
     layoutOpacity->addWidget(m_opacityText, 0, 3);
     expOpacity->addLayout(layoutOpacity);
     vbox->addWidget(expOpacity);
+
+    expSvg = new Expander("SVG");
+    QFont font;
+    font.setFamily("Courier");
+    font.setFixedPitch(true);
+    font.setPointSize(13);
+
+    m_svgText = new QTextEdit;
+    m_svgText->setFont(font);
+    m_svgText->setAcceptRichText(false);
+    m_svgText->setLineWrapMode(QTextEdit::NoWrap);
+    m_svgText->setMinimumHeight(200);
+    QFontMetrics metrics(font);
+    m_svgText->setTabStopWidth(4 * metrics.width(' '));
+    new XmlHighlighter(m_svgText->document());
+
+    QVBoxLayout *vboxSvg = new QVBoxLayout;
+    m_vboxAttributeEditors = new QVBoxLayout;
+    FlatButton *plus = new FlatButton(":/images/plus_normal.png", ":/images/plus_hover.png");
+    plus->setToolTip("Add attribute to animate");
+    plus->setMaximumWidth(13);
+
+    vboxSvg->addWidget(m_svgText);
+    vboxSvg->addLayout(m_vboxAttributeEditors);
+    vboxSvg->addWidget(plus, 0, Qt::AlignLeft);
+    expSvg->addLayout(vboxSvg);
+    vbox->addWidget(expSvg);
     vbox->addStretch();
 
     QWidget *scrollContent = new QWidget();
@@ -186,7 +276,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     scroll->setWidgetResizable(true);
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(scroll);
-    this->setLayout(layout);
+    setLayout(layout);
 
     connect(m_id, SIGNAL(editingFinished()), this, SLOT(idChanged()));
     connect(m_x, SIGNAL(valueChanged(int)), this, SLOT(xChanged(int)));
@@ -194,20 +284,22 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(m_width, SIGNAL(valueChanged(int)), this, SLOT(widthChanged(int)));
     connect(m_height, SIGNAL(valueChanged(int)), this, SLOT(heightChanged(int)));
     connect(m_text, SIGNAL(textChanged(QString)), this, SLOT(textChanged(QString)));
-    connect(addXKeyframe, SIGNAL(clicked(bool)), this, SLOT(addLeftKeyFrame()));
-    connect(addYKeyframe, SIGNAL(clicked(bool)), this, SLOT(addTopKeyFrame()));
-    connect(addWidthKeyframe, SIGNAL(clicked(bool)), this, SLOT(addWidthKeyFrame()));
-    connect(addHeightKeyframe, SIGNAL(clicked(bool)), this, SLOT(addHeightKeyFrame()));
+    connect(addXKeyframe, SIGNAL(clicked()), this, SLOT(addLeftKeyFrame()));
+    connect(addYKeyframe, SIGNAL(clicked()), this, SLOT(addTopKeyFrame()));
+    connect(addWidthKeyframe, SIGNAL(clicked()), this, SLOT(addWidthKeyFrame()));
+    connect(addHeightKeyframe, SIGNAL(clicked()), this, SLOT(addHeightKeyFrame()));
     connect(m_opacity, SIGNAL(sliderReleased()), this, SLOT(opacitySliderReleased()));
     connect(m_opacity, SIGNAL(valueChanged(int)), this, SLOT(opacitySliderReleased()));
     connect(m_opacityText, SIGNAL(valueChanged(int)), this, SLOT(opacityTextChanged(int)));
-    connect(addOpacityKeyframe, SIGNAL(clicked(bool)), this, SLOT(addOpacityKeyFrame()));
+    connect(addOpacityKeyframe, SIGNAL(clicked()), this, SLOT(addOpacityKeyFrame()));
     connect(colorEditor, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
     connect(borderColorEditor, SIGNAL(colorChanged(QColor)), this, SLOT(borderColorChanged(QColor)));
     connect(textcolorEditor, SIGNAL(colorChanged(QColor)), this, SLOT(textColorChanged(QColor)));
     connect(m_font, SIGNAL(currentIndexChanged(int)), this, SLOT(fontFamilyChanged(int)));
     connect(m_style, SIGNAL(currentIndexChanged(int)), this, SLOT(fontStyleChanged(int)));
     connect(m_fontSize, SIGNAL(currentTextChanged(QString)), this, SLOT(fontSizeChanged()));
+    connect(m_svgText, SIGNAL(textChanged()), this, SLOT(svgTextChanged()));
+    connect(plus, SIGNAL(clicked()), this, SLOT(addSvgAttributeEditor()));
 }
 
 void ItemPropertyEditor::fontFamilyChanged(int index)
@@ -287,6 +379,44 @@ void ItemPropertyEditor::fontSizeChanged()
     }
 }
 
+void ItemPropertyEditor::svgAttributeValueChanged(QString attributeName, int value)
+{
+    m_vector->setAttributeValue(attributeName, value);
+}
+
+void ItemPropertyEditor::svgTextChanged()
+{
+    if(m_initializing)
+        return;
+    m_vector->setData(m_svgText->toPlainText().toUtf8());
+
+    for(int i = 0; i < m_vboxAttributeEditors->count(); i++)
+    {
+        SvgAttributeEditor *editor = dynamic_cast<SvgAttributeEditor*>(m_vboxAttributeEditors->itemAt(i)->widget());
+        if(editor && editor->isValid())
+            m_vector->setAttributeValue(editor->attributeName(), editor->value());
+    }
+}
+
+void ItemPropertyEditor::addSvgAttributeEditor()
+{
+    addSvgAttributeEditor("", 0);
+}
+
+void ItemPropertyEditor::svgEditorRemoveClicked(SvgAttributeEditor *editor)
+{
+    m_vector->removeAttribute(editor->attributeName());
+    m_vboxAttributeEditors->removeWidget(editor);
+    delete editor;
+}
+
+void ItemPropertyEditor::svgAttributeNameChanged(QString oldName, QString newName)
+{
+    if(m_initializing)
+        return;
+    m_vector->changeAttributeName(oldName, newName);
+}
+
 void ItemPropertyEditor::colorChanged(QColor color)
 {
     AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
@@ -350,6 +480,7 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     m_initializing = true;
     m_item = item;
     expColor->setVisible(false);
+    expSvg->setVisible(false);
     m_x->setValue(m_item->x());
     m_y->setValue(m_item->y());
     m_width->setValue(m_item->rect().width());
@@ -386,6 +517,24 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
         colorEditor->setColor(m_ellipse->brush().color());
         borderColorEditor->setColor(m_ellipse->pen().color());
     }
+
+    m_vector = dynamic_cast<Vectorgraphic*>(item);
+    if(m_vector)
+    {
+        QString vec = QString::fromUtf8(m_vector->getData());
+        expSvg->setVisible(true);
+        m_svgText->setPlainText(vec);
+        if(m_vector->attributes().count() == 0)
+            addSvgAttributeEditor();
+        else
+        {
+            foreach(QString name, m_vector->attributes().keys())
+            {
+                addSvgAttributeEditor(name, m_vector->attributes().value(name));
+            }
+        }
+    }
+
     expText->setVisible(m_textitem);
     expTextcolor->setVisible(m_textitem);
     m_initializing = false;
@@ -539,6 +688,18 @@ void ItemPropertyEditor::changeOpacity(int opacity)
         QUndoCommand *cmd = new ChangeOpacityCommand(opacity, m_item->opacity(), as, m_item);
         as->undoStack()->push(cmd);
     }
+}
+
+SvgAttributeEditor *ItemPropertyEditor::addSvgAttributeEditor(QString name, int value)
+{
+    SvgAttributeEditor *attributeEditor = new SvgAttributeEditor;
+    attributeEditor->setAttributeName(name);
+    attributeEditor->setValue(value);
+    connect(attributeEditor, SIGNAL(attributeNameChanged(QString,QString)), this, SLOT(svgAttributeNameChanged(QString,QString)));
+    connect(attributeEditor, SIGNAL(attributeValueChanged(QString,int)), this, SLOT(svgAttributeValueChanged(QString,int)));
+    connect(attributeEditor, SIGNAL(removeClicked(SvgAttributeEditor*)), this, SLOT(svgEditorRemoveClicked(SvgAttributeEditor*)));
+    m_vboxAttributeEditors->addWidget(attributeEditor);
+    return attributeEditor;
 }
 
 void ItemPropertyEditor::opacityChanged(int val)

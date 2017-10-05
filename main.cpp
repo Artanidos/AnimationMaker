@@ -29,9 +29,14 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("AnimationMaker");
     QCoreApplication::setApplicationVersion("1.4.1");
+    QCoreApplication::setOrganizationName("Artanidos");
 
+    QFont newFont("Sans Serif", 10);
+    a.setFont(newFont);
     a.setStyle(QStyleFactory::create("Fusion"));
     QPalette p = a.palette();
+
+    //QToolTip{background:#f5f0eb;}";
 
     p.setColor(QPalette::Window, QColor(53,53,53));
     p.setColor(QPalette::WindowText, Qt::white);
@@ -50,8 +55,8 @@ int main(int argc, char *argv[])
     p.setColor(QPalette::Disabled, QPalette::Text, Qt::darkGray);
     p.setColor(QPalette::Disabled, QPalette::ButtonText, Qt::darkGray);
     a.setPalette(p);
-
     a.setWindowIcon(QIcon(QLatin1String(":/images/logo.svg")));
+
     MainWindow w;
     w.show();
 
