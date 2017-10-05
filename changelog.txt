@@ -1,7 +1,8 @@
-1.4.1
------
+1.5
+---
 - App icon added
 - Cursors for adding items added
+- Added the ability to add svg attributes that can be animated
 
 1.4
 ---
