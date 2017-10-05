@@ -41,7 +41,6 @@ public:
     QByteArray getData();
     void setData(QByteArray data);
 
-    void setCurrentFrame(int frame);
     void setAttributeValue(QString attributeName, int value);
     void removeAttribute(QString attributeName);
     void changeAttributeName(QString oldName, QString newName);

@@ -53,11 +53,13 @@ signals:
     void attributeNameChanged(QString oldName, QString newName);
     void attributeValueChanged(QString name, int value);
     void removeClicked(SvgAttributeEditor *editor);
+    void addKeyframeClicked(SvgAttributeEditor *editor);
 
 private slots:
     void attributeNameChanged();
     void valueChanged(int value);
     void minusClicked();
+    void addKeyframeClicked();
 
 private:
     QLineEdit *m_element;
@@ -144,6 +146,7 @@ private slots:
     void svgTextChanged();
     void addSvgAttributeEditor();
     void svgEditorRemoveClicked(SvgAttributeEditor *editor);
+    void svgEditorAddKeyframeClicked(SvgAttributeEditor *editor);
  };
 
 #endif // ITEMPROPERTYEDITOR_H

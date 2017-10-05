@@ -549,3 +549,29 @@ void SendItemToBackCommand::redo()
 {
     m_item->sendToBack();
 }
+
+ChangeAttributeCommand::ChangeAttributeCommand(QString attributeName, int newValue, int oldValue, AnimationScene *scene, Vectorgraphic *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_attributeName = attributeName;
+    m_newValue = newValue;
+    m_oldValue = oldValue;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
+    m_item = item;
+    setText("Change " + attributeName);
+}
+
+void ChangeAttributeCommand::undo()
+{
+    m_item->setAttributeValue(m_attributeName, m_oldValue);
+    m_item->adjustKeyframes(m_attributeName, QVariant(m_oldValue), m_time, m_autokeyframes, m_autotransition);
+}
+
+void ChangeAttributeCommand::redo()
+{
+     m_item->setAttributeValue(m_attributeName, m_newValue);
+     m_item->adjustKeyframes(m_attributeName, QVariant(m_newValue), m_time, m_autokeyframes, m_autotransition);
+}
+

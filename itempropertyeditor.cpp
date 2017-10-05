@@ -65,6 +65,7 @@ SvgAttributeEditor::SvgAttributeEditor()
     connect(m_attribute, SIGNAL(editingFinished()), this, SLOT(attributeNameChanged()));
     connect(m_value, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
     connect(minus, SIGNAL(clicked()), this, SLOT(minusClicked()));
+    connect(addAttributeKeyframe, SIGNAL(clicked()), this, SLOT(addKeyframeClicked()));
 }
 
 void SvgAttributeEditor::setAttributeName(QString name)
@@ -97,6 +98,11 @@ void SvgAttributeEditor::valueChanged(int value)
 void SvgAttributeEditor::minusClicked()
 {
     emit removeClicked(this);
+}
+
+void SvgAttributeEditor::addKeyframeClicked()
+{
+    emit addKeyframeClicked(this);
 }
 
 ItemPropertyEditor::ItemPropertyEditor()
@@ -381,7 +387,13 @@ void ItemPropertyEditor::fontSizeChanged()
 
 void ItemPropertyEditor::svgAttributeValueChanged(QString attributeName, int value)
 {
-    m_vector->setAttributeValue(attributeName, value);
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ChangeAttributeCommand(attributeName, value, m_vector->attributes().value(attributeName), as, m_vector);
+        undoStack->push(cmd);
+    }
 }
 
 void ItemPropertyEditor::svgTextChanged()
@@ -408,6 +420,11 @@ void ItemPropertyEditor::svgEditorRemoveClicked(SvgAttributeEditor *editor)
     m_vector->removeAttribute(editor->attributeName());
     m_vboxAttributeEditors->removeWidget(editor);
     delete editor;
+}
+
+void ItemPropertyEditor::svgEditorAddKeyframeClicked(SvgAttributeEditor *editor)
+{
+    emit addKeyFrame(m_vector, editor->attributeName(), QVariant(editor->value()));
 }
 
 void ItemPropertyEditor::svgAttributeNameChanged(QString oldName, QString newName)
@@ -524,6 +541,14 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
         QString vec = QString::fromUtf8(m_vector->getData());
         expSvg->setVisible(true);
         m_svgText->setPlainText(vec);
+
+        // remove all editors first
+        for(int i = m_vboxAttributeEditors->count() - 1; i >= 0; i--)
+        {
+            QWidget *editor = m_vboxAttributeEditors->itemAt(i)->widget();
+            m_vboxAttributeEditors->removeWidget(editor);
+            delete editor;
+        }
         if(m_vector->attributes().count() == 0)
             addSvgAttributeEditor();
         else
@@ -698,6 +723,8 @@ SvgAttributeEditor *ItemPropertyEditor::addSvgAttributeEditor(QString name, int 
     connect(attributeEditor, SIGNAL(attributeNameChanged(QString,QString)), this, SLOT(svgAttributeNameChanged(QString,QString)));
     connect(attributeEditor, SIGNAL(attributeValueChanged(QString,int)), this, SLOT(svgAttributeValueChanged(QString,int)));
     connect(attributeEditor, SIGNAL(removeClicked(SvgAttributeEditor*)), this, SLOT(svgEditorRemoveClicked(SvgAttributeEditor*)));
+    connect(attributeEditor, SIGNAL(addKeyframeClicked(SvgAttributeEditor*)), this, SLOT(svgEditorAddKeyframeClicked(SvgAttributeEditor*)));
+
     m_vboxAttributeEditors->addWidget(attributeEditor);
     return attributeEditor;
 }

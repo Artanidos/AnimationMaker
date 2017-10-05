@@ -24,6 +24,7 @@
 #include <QUndoCommand>
 #include "animationscene.h"
 #include "resizeableitem.h"
+#include "vectorgraphic.h"
 #include "timeline.h"
 #include "text.h"
 
@@ -319,6 +320,23 @@ public:
 
 private:
     ResizeableItem *m_item;
+};
+
+class ChangeAttributeCommand : public QUndoCommand
+{
+public:
+    ChangeAttributeCommand(QString attributeName, int newValue, int oldValue, AnimationScene *scene, Vectorgraphic *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    Vectorgraphic *m_item;
+    QString m_attributeName;
+    int m_newValue, m_oldValue;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
 };
 
 #endif // COMMANDS_H

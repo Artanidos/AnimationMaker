@@ -913,11 +913,6 @@ void AnimationScene::setPlayheadPosition(int val)
 
     for(int i=0; i < items().count(); i++)
     {
-        Vectorgraphic *v = dynamic_cast<Vectorgraphic*>(items().at(i));
-        if(v)
-        {
-            v->setCurrentFrame(val);
-        }
         ResizeableItem *item = dynamic_cast<ResizeableItem *>(items().at(i));
         if(item)
         {
@@ -934,26 +929,48 @@ void AnimationScene::setPlayheadPosition(int val)
                 if(found)
                 {
                     QString propertyName = it.key();
-                    qreal value;
-                    if(found->easing() >= 0)
+                    int dot = propertyName.indexOf(".");
+                    if(dot > 0)
                     {
-                        QEasingCurve easing((QEasingCurve::Type)found->easing());
-                        qreal progress = 1.0 / (found->next()->time() - found->time()) * (val - found->time());
-                        qreal progressValue = easing.valueForProgress(progress);
-                        value = found->value().toReal() + (found->next()->value().toReal() - found->value().toReal()) / 1.0 * progressValue;
+                        Vectorgraphic *vec = dynamic_cast<Vectorgraphic *>(items().at(i));
+                        if(vec)
+                        {
+                            int value;
+                            if(found->easing() >= 0)
+                            {
+                                QEasingCurve easing((QEasingCurve::Type)found->easing());
+                                qreal progress = 1.0 / (found->next()->time() - found->time()) * (val - found->time());
+                                qreal progressValue = easing.valueForProgress(progress);
+                                value = found->value().toInt() + (found->next()->value().toInt() - found->value().toInt()) / 1.0 * progressValue;
+                            }
+                            else
+                                value = found->value().toInt();
+                            vec->setAttributeValue(propertyName, value);
+                        }
                     }
                     else
-                        value = found->value().toReal();
-                    if(propertyName == "left")
-                        item->setX(value);
-                    else if(propertyName == "top")
-                        item->setY(value);
-                    else if(propertyName == "width")
-                        item->setWidth(value);
-                    else if(propertyName == "height")
-                        item->setHeight(value);
-                    else if(propertyName == "opacity")
-                        item->setOpacity(value);
+                    {
+                        qreal value;
+                        if(found->easing() >= 0)
+                        {
+                            QEasingCurve easing((QEasingCurve::Type)found->easing());
+                            qreal progress = 1.0 / (found->next()->time() - found->time()) * (val - found->time());
+                            qreal progressValue = easing.valueForProgress(progress);
+                            value = found->value().toReal() + (found->next()->value().toReal() - found->value().toReal()) / 1.0 * progressValue;
+                        }
+                        else
+                            value = found->value().toReal();
+                        if(propertyName == "left")
+                            item->setX(value);
+                        else if(propertyName == "top")
+                            item->setY(value);
+                        else if(propertyName == "width")
+                            item->setWidth(value);
+                        else if(propertyName == "height")
+                            item->setHeight(value);
+                        else if(propertyName == "opacity")
+                            item->setOpacity(value);
+                    }
                 }
             }
         }
@@ -995,8 +1012,8 @@ QString getItemTypeName(ResizeableItem *item)
             return QString("Vectorgraphic");
         }
         default:
-        qWarning() << "unknown item type: " << item->type();
-        break;
+            qWarning() << "unknown item type: " << item->type();
+            break;
     }
     return QString();
 }
