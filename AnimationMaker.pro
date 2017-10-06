@@ -116,6 +116,7 @@ DISTFILES += \
     buildAppImage.sh \
     default.desktop \
     default.svg \
-    AppRun
+    AppRun \
+    README.md
 
 FORMS +=
