@@ -7,6 +7,8 @@ It is also possible to create animated gifs.
 The idea for the AnimationMaker comes from Adobe Edge which is not available anymore.
 
 See a video to see basic usage at [youtube](https://www.youtube.com/watch?v=Ir7Lvd-O2aE).
+Also see a video of the newest features [youtube](https://youtu.be/pa53WfUkbO0).
+
 ## Contact
 If you have any feature requests then just send me an email with your ideas to [artanidos@gmail.com](mailto:artanidos@gmail.com).
 

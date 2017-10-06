@@ -117,6 +117,7 @@ DISTFILES += \
     default.desktop \
     default.svg \
     AppRun \
-    README.md
+    README.md \
+    docs/README.md
 
 FORMS +=
