@@ -35,6 +35,22 @@
 #include <QFontDatabase>
 #include <QTextEdit>
 
+XmlEditor::XmlEditor()
+{
+    QFont font;
+    font.setFamily("Courier");
+    font.setFixedPitch(true);
+    font.setPointSize(13);
+
+    setFont(font);
+    setAcceptRichText(false);
+    setLineWrapMode(QTextEdit::NoWrap);
+    setMinimumHeight(200);
+    QFontMetrics metrics(font);
+    setTabStopWidth(4 * metrics.width(' '));
+    new XmlHighlighter(document());
+}
+
 SvgAttributeEditor::SvgAttributeEditor()
 {
     QGridLayout *layout = new QGridLayout();
@@ -246,19 +262,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     vbox->addWidget(expOpacity);
 
     expSvg = new Expander("SVG");
-    QFont font;
-    font.setFamily("Courier");
-    font.setFixedPitch(true);
-    font.setPointSize(13);
-
-    m_svgText = new QTextEdit;
-    m_svgText->setFont(font);
-    m_svgText->setAcceptRichText(false);
-    m_svgText->setLineWrapMode(QTextEdit::NoWrap);
-    m_svgText->setMinimumHeight(200);
-    QFontMetrics metrics(font);
-    m_svgText->setTabStopWidth(4 * metrics.width(' '));
-    new XmlHighlighter(m_svgText->document());
+    m_svgText = new XmlEditor;
 
     QVBoxLayout *vboxSvg = new QVBoxLayout;
     m_vboxAttributeEditors = new QVBoxLayout;
@@ -304,7 +308,7 @@ ItemPropertyEditor::ItemPropertyEditor()
     connect(m_font, SIGNAL(currentIndexChanged(int)), this, SLOT(fontFamilyChanged(int)));
     connect(m_style, SIGNAL(currentIndexChanged(int)), this, SLOT(fontStyleChanged(int)));
     connect(m_fontSize, SIGNAL(currentTextChanged(QString)), this, SLOT(fontSizeChanged()));
-    connect(m_svgText, SIGNAL(textChanged()), this, SLOT(svgTextChanged()));
+    connect(m_svgText, SIGNAL(editingFinished()), this, SLOT(svgTextChanged()));
     connect(plus, SIGNAL(clicked()), this, SLOT(addSvgAttributeEditor()));
 }
 
@@ -400,13 +404,13 @@ void ItemPropertyEditor::svgTextChanged()
 {
     if(m_initializing)
         return;
-    m_vector->setData(m_svgText->toPlainText().toUtf8());
 
-    for(int i = 0; i < m_vboxAttributeEditors->count(); i++)
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
     {
-        SvgAttributeEditor *editor = dynamic_cast<SvgAttributeEditor*>(m_vboxAttributeEditors->itemAt(i)->widget());
-        if(editor && editor->isValid())
-            m_vector->setAttributeValue(editor->attributeName(), editor->value());
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ChangeSvgCommand(m_svgText->toPlainText().toUtf8(), m_vector->getData(), m_vector);
+        undoStack->push(cmd);
     }
 }
 
@@ -417,7 +421,18 @@ void ItemPropertyEditor::addSvgAttributeEditor()
 
 void ItemPropertyEditor::svgEditorRemoveClicked(SvgAttributeEditor *editor)
 {
-    m_vector->removeAttribute(editor->attributeName());
+    if(editor->isValid())
+    {
+        AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+        if(as)
+        {
+            QUndoStack *undoStack = as->undoStack();
+            QUndoCommand *cmd = new RemoveAttributeCommand(editor->attributeName(), editor->value(), m_vector);
+            undoStack->push(cmd);
+        }
+    }
+    else
+        m_vector->removeAttribute(editor->attributeName());
     m_vboxAttributeEditors->removeWidget(editor);
     delete editor;
 }
@@ -425,6 +440,11 @@ void ItemPropertyEditor::svgEditorRemoveClicked(SvgAttributeEditor *editor)
 void ItemPropertyEditor::svgEditorAddKeyframeClicked(SvgAttributeEditor *editor)
 {
     emit addKeyFrame(m_vector, editor->attributeName(), QVariant(editor->value()));
+}
+
+void ItemPropertyEditor::svgAttributeAdded()
+{
+    reloadAttributes();
 }
 
 void ItemPropertyEditor::svgAttributeNameChanged(QString oldName, QString newName)
@@ -492,6 +512,26 @@ void ItemPropertyEditor::addOpacityKeyFrame()
     emit addKeyFrame(m_item, "opacity", QVariant(m_opacity->value()));
 }
 
+void ItemPropertyEditor::reloadAttributes()
+{
+    // remove all editors first
+    for(int i = m_vboxAttributeEditors->count() - 1; i >= 0; i--)
+    {
+        QWidget *editor = m_vboxAttributeEditors->itemAt(i)->widget();
+        m_vboxAttributeEditors->removeWidget(editor);
+        delete editor;
+    }
+    if(m_vector->attributes().count() == 0)
+        addSvgAttributeEditor();
+    else
+    {
+        foreach(QString name, m_vector->attributes().keys())
+        {
+            addSvgAttributeEditor(name, m_vector->attributes().value(name));
+        }
+    }
+}
+
 void ItemPropertyEditor::setItem(ResizeableItem *item)
 {
     m_initializing = true;
@@ -542,22 +582,9 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
         expSvg->setVisible(true);
         m_svgText->setPlainText(vec);
 
-        // remove all editors first
-        for(int i = m_vboxAttributeEditors->count() - 1; i >= 0; i--)
-        {
-            QWidget *editor = m_vboxAttributeEditors->itemAt(i)->widget();
-            m_vboxAttributeEditors->removeWidget(editor);
-            delete editor;
-        }
-        if(m_vector->attributes().count() == 0)
-            addSvgAttributeEditor();
-        else
-        {
-            foreach(QString name, m_vector->attributes().keys())
-            {
-                addSvgAttributeEditor(name, m_vector->attributes().value(name));
-            }
-        }
+        reloadAttributes();
+
+        connect(m_vector, SIGNAL(attributeAdded()), this, SLOT(svgAttributeAdded()));
     }
 
     expText->setVisible(m_textitem);

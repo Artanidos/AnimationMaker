@@ -26,6 +26,7 @@
 #include <QLabel>
 #include <QFontDatabase>
 #include <QComboBox>
+#include <QTextEdit>
 
 class ResizeableItem;
 class Text;
@@ -34,8 +35,19 @@ class Expander;
 class Rectangle;
 class Ellipse;
 class Vectorgraphic;
-class QTextEdit;
 class QVBoxLayout;
+
+class XmlEditor : public QTextEdit
+{
+    Q_OBJECT
+public:
+    XmlEditor();
+
+    void focusOutEvent(QFocusEvent *e) {QTextEdit::focusOutEvent(e); emit editingFinished();}
+
+signals:
+    void editingFinished();
+};
 
 class SvgAttributeEditor : public QWidget
 {
@@ -87,7 +99,7 @@ private:
     ColorEditor *textcolorEditor;
     Rectangle *m_rectangle;
     Vectorgraphic *m_vector;
-    QTextEdit *m_svgText;
+    XmlEditor *m_svgText;
     QComboBox *m_font;
     QComboBox *m_fontSize;
     QComboBox *m_style;
@@ -113,6 +125,8 @@ private:
     void changeBrush(QColor value);
     void changeOpacity(int opacity);
     SvgAttributeEditor *addSvgAttributeEditor(QString name, int value);
+
+    void reloadAttributes();
 
 private slots:
     void idChanged();
@@ -147,6 +161,7 @@ private slots:
     void addSvgAttributeEditor();
     void svgEditorRemoveClicked(SvgAttributeEditor *editor);
     void svgEditorAddKeyframeClicked(SvgAttributeEditor *editor);
+    void svgAttributeAdded();
  };
 
 #endif // ITEMPROPERTYEDITOR_H

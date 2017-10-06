@@ -22,3 +22,7 @@
 - XmlHighligther should mark attributes and strings also
 
 - move SvgEditor actions to undostack
+
+- export xml for svg attributes
+
+- select with mouse rectangle

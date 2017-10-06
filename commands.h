@@ -339,4 +339,31 @@ private:
     bool m_autotransition;
 };
 
+class ChangeSvgCommand : public QUndoCommand
+{
+public:
+    ChangeSvgCommand(QByteArray newValue, QByteArray oldValue, Vectorgraphic *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    Vectorgraphic *m_item;
+    QByteArray m_newValue, m_oldValue;
+};
+
+class RemoveAttributeCommand : public QUndoCommand
+{
+public:
+    RemoveAttributeCommand(QString attributeName, int value, Vectorgraphic *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    Vectorgraphic *m_item;
+    QString m_attributeName;
+    int m_value;
+};
+
 #endif // COMMANDS_H

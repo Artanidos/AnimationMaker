@@ -49,6 +49,9 @@ public:
     enum { Type = UserType + 5 };
     int type() const Q_DECL_OVERRIDE;
 
+signals:
+    void attributeAdded();
+
 private:
     QGraphicsSvgItem *m_svg;
     QSvgRenderer *m_renderer;

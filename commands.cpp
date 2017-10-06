@@ -575,3 +575,42 @@ void ChangeAttributeCommand::redo()
      m_item->adjustKeyframes(m_attributeName, QVariant(m_newValue), m_time, m_autokeyframes, m_autotransition);
 }
 
+
+ChangeSvgCommand::ChangeSvgCommand(QByteArray newValue, QByteArray oldValue, Vectorgraphic *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_newValue = newValue;
+    m_oldValue = oldValue;
+    m_item = item;
+    setText("Change SVG");
+}
+
+void ChangeSvgCommand::undo()
+{
+    m_item->setData(m_oldValue);
+}
+
+void ChangeSvgCommand::redo()
+{
+    m_item->setData(m_newValue);
+}
+
+RemoveAttributeCommand::RemoveAttributeCommand(QString attributeName, int value, Vectorgraphic *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_item = item;
+    m_attributeName = attributeName;
+    m_value = value;
+    setText("Remove Attribute " + attributeName);
+}
+
+void RemoveAttributeCommand::undo()
+{
+    m_item->setAttributeValue(m_attributeName, m_value);
+    emit m_item->attributeAdded();
+}
+
+void RemoveAttributeCommand::redo()
+{
+    m_item->removeAttribute(m_attributeName);
+}
