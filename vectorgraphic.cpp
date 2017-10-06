@@ -76,7 +76,7 @@ void Vectorgraphic::reload()
 
     foreach(QString key, m_attributes.keys())
     {
-        int value = m_attributes.value(key);
+        QString value = m_attributes.value(key);
 
         int dot = key.indexOf(".");
         QString id = key.mid(0, dot);
@@ -134,7 +134,7 @@ QByteArray Vectorgraphic::getData()
     return m_data;
 }
 
-void Vectorgraphic::setAttributeValue(QString attributeName, int value)
+void Vectorgraphic::setAttributeValue(QString attributeName, QString value)
 {
     if(m_attributes.contains(attributeName))
         m_attributes[attributeName] = value;
@@ -152,7 +152,7 @@ void Vectorgraphic::removeAttribute(QString attributeName)
 
 void Vectorgraphic::changeAttributeName(QString oldName, QString newName)
 {
-    int value = m_attributes[oldName];
+    QString value = m_attributes[oldName];
     m_attributes.remove(oldName);
     m_attributes[newName] = value;
     reload();

@@ -324,9 +324,10 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             v->setScale(xscale, yscale);
             v->setOpacity(opacity);
 
-            int attributes, value;
-            QString name;
+            int attributes;
+            QString name, value;
 
+            // TODO: not compatible to prev version
             dataStream >> attributes;
             for(int i = 0; i < attributes; i++)
             {
@@ -624,7 +625,6 @@ void AnimationScene::exportXml()
         QMessageBox::warning(0, "Error", "Unable to open file " + fileName);
         return;
     }
-    //statusBar()->showMessage("Writing to file " + fileName);
 
     if(exportAll)
     {
@@ -818,7 +818,6 @@ void AnimationScene::copyKeyframes(ResizeableItem *item)
             nextFrame->setPrev(last);
             last->setNext(nextFrame);
             last = nextFrame;
-            //emit keyframeAdded(item, it.key(), nextFrame);
         }
         emit keyframeAdded(item, it.key(), firstFrame);
     }
@@ -935,16 +934,48 @@ void AnimationScene::setPlayheadPosition(int val)
                         Vectorgraphic *vec = dynamic_cast<Vectorgraphic *>(items().at(i));
                         if(vec)
                         {
-                            int value;
+                            QString value;
                             if(found->easing() >= 0)
                             {
                                 QEasingCurve easing((QEasingCurve::Type)found->easing());
                                 qreal progress = 1.0 / (found->next()->time() - found->time()) * (val - found->time());
                                 qreal progressValue = easing.valueForProgress(progress);
-                                value = found->value().toInt() + (found->next()->value().toInt() - found->value().toInt()) / 1.0 * progressValue;
+                                QString foundValue = found->value().toString();
+                                bool isInteger;
+                                int intVal = foundValue.toInt(&isInteger);
+                                if(isInteger)
+                                {
+                                    int nextVal = found->next()->value().toString().toInt();
+                                    value = QString::number(intVal + (nextVal - intVal) / 1.0 * progressValue);
+                                }
+                                else
+                                {
+                                    bool isColor;
+                                    foundValue.mid(1).toInt(&isColor, 16);
+                                    if(foundValue.startsWith("#") && isColor)
+                                    {
+                                        QColor fromColor(foundValue);
+                                        QColor toColor(found->next()->value().toString());
+                                        int fromRed = fromColor.red();
+                                        int fromBlue = fromColor.blue();
+                                        int fromGreen = fromColor.green();
+
+                                        int toRed = toColor.red();
+                                        int toBlue = toColor.blue();
+                                        int toGreen = toColor.green();
+
+                                        int newRed = fromRed + (toRed - fromRed) / 1.0 * progressValue;
+                                        int newBlue = fromBlue + (toBlue - fromBlue) / 1.0 * progressValue;
+                                        int newGreen = fromGreen + (toGreen - fromGreen) / 1.0 * progressValue;
+
+                                        value = QColor(newRed, newGreen, newBlue).name();
+                                    }
+                                    else // no animation for strings yet ;-)
+                                        value = found->value().toString();
+                                }
                             }
                             else
-                                value = found->value().toInt();
+                                value = found->value().toString();
                             vec->setAttributeValue(propertyName, value);
                         }
                     }

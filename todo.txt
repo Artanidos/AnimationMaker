@@ -26,3 +26,5 @@
 - export xml for svg attributes
 
 - select with mouse rectangle
+
+- animationScene read vector not compatible to prev version

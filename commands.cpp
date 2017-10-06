@@ -550,7 +550,7 @@ void SendItemToBackCommand::redo()
     m_item->sendToBack();
 }
 
-ChangeAttributeCommand::ChangeAttributeCommand(QString attributeName, int newValue, int oldValue, AnimationScene *scene, Vectorgraphic *item, QUndoCommand *parent)
+ChangeAttributeCommand::ChangeAttributeCommand(QString attributeName, QString newValue, QString oldValue, AnimationScene *scene, Vectorgraphic *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_attributeName = attributeName;
@@ -595,7 +595,7 @@ void ChangeSvgCommand::redo()
     m_item->setData(m_newValue);
 }
 
-RemoveAttributeCommand::RemoveAttributeCommand(QString attributeName, int value, Vectorgraphic *item, QUndoCommand *parent)
+RemoveAttributeCommand::RemoveAttributeCommand(QString attributeName, QString value, Vectorgraphic *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_item = item;

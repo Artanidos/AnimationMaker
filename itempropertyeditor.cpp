@@ -56,9 +56,7 @@ SvgAttributeEditor::SvgAttributeEditor()
     QGridLayout *layout = new QGridLayout();
     m_element = new QLineEdit;
     m_attribute = new QLineEdit;
-    m_value = new QSpinBox;
-    m_value->setMinimum(-999999);
-    m_value->setMaximum(999999);
+    m_value = new QLineEdit;
 
     FlatButton *addAttributeKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
     addAttributeKeyframe->setMaximumWidth(9);
@@ -79,7 +77,7 @@ SvgAttributeEditor::SvgAttributeEditor()
 
     connect(m_element, SIGNAL(editingFinished()), this, SLOT(attributeNameChanged()));
     connect(m_attribute, SIGNAL(editingFinished()), this, SLOT(attributeNameChanged()));
-    connect(m_value, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    connect(m_value, SIGNAL(editingFinished()), this, SLOT(valueChanged()));
     connect(minus, SIGNAL(clicked()), this, SLOT(minusClicked()));
     connect(addAttributeKeyframe, SIGNAL(clicked()), this, SLOT(addKeyframeClicked()));
 }
@@ -105,10 +103,10 @@ void SvgAttributeEditor::attributeNameChanged()
     }
 }
 
-void SvgAttributeEditor::valueChanged(int value)
+void SvgAttributeEditor::valueChanged()
 {
     if(isValid())
-        emit attributeValueChanged(attributeName(), value);
+        emit attributeValueChanged(attributeName(), m_value->text());
 }
 
 void SvgAttributeEditor::minusClicked()
@@ -389,7 +387,7 @@ void ItemPropertyEditor::fontSizeChanged()
     }
 }
 
-void ItemPropertyEditor::svgAttributeValueChanged(QString attributeName, int value)
+void ItemPropertyEditor::svgAttributeValueChanged(QString attributeName, QString value)
 {
     AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
     if(as)
@@ -742,13 +740,13 @@ void ItemPropertyEditor::changeOpacity(int opacity)
     }
 }
 
-SvgAttributeEditor *ItemPropertyEditor::addSvgAttributeEditor(QString name, int value)
+SvgAttributeEditor *ItemPropertyEditor::addSvgAttributeEditor(QString name, QString value)
 {
     SvgAttributeEditor *attributeEditor = new SvgAttributeEditor;
     attributeEditor->setAttributeName(name);
     attributeEditor->setValue(value);
     connect(attributeEditor, SIGNAL(attributeNameChanged(QString,QString)), this, SLOT(svgAttributeNameChanged(QString,QString)));
-    connect(attributeEditor, SIGNAL(attributeValueChanged(QString,int)), this, SLOT(svgAttributeValueChanged(QString,int)));
+    connect(attributeEditor, SIGNAL(attributeValueChanged(QString,QString)), this, SLOT(svgAttributeValueChanged(QString,QString)));
     connect(attributeEditor, SIGNAL(removeClicked(SvgAttributeEditor*)), this, SLOT(svgEditorRemoveClicked(SvgAttributeEditor*)));
     connect(attributeEditor, SIGNAL(addKeyframeClicked(SvgAttributeEditor*)), this, SLOT(svgEditorAddKeyframeClicked(SvgAttributeEditor*)));
 

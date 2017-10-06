@@ -41,10 +41,10 @@ public:
     QByteArray getData();
     void setData(QByteArray data);
 
-    void setAttributeValue(QString attributeName, int value);
+    void setAttributeValue(QString attributeName, QString value);
     void removeAttribute(QString attributeName);
     void changeAttributeName(QString oldName, QString newName);
-    QHash<QString, int> attributes() {return m_attributes;}
+    QHash<QString, QString> attributes() {return m_attributes;}
 
     enum { Type = UserType + 5 };
     int type() const Q_DECL_OVERRIDE;
@@ -57,7 +57,7 @@ private:
     QSvgRenderer *m_renderer;
     QByteArray m_data;
     QByteArray m_changedData;
-    QHash<QString, int> m_attributes;
+    QHash<QString, QString> m_attributes;
 
     QDomElement elementById(QDomElement root, QString id);
     void reload();

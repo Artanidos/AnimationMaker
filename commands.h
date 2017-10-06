@@ -325,7 +325,7 @@ private:
 class ChangeAttributeCommand : public QUndoCommand
 {
 public:
-    ChangeAttributeCommand(QString attributeName, int newValue, int oldValue, AnimationScene *scene, Vectorgraphic *item, QUndoCommand *parent = 0);
+    ChangeAttributeCommand(QString attributeName, QString newValue, QString oldValue, AnimationScene *scene, Vectorgraphic *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -333,7 +333,7 @@ public:
 private:
     Vectorgraphic *m_item;
     QString m_attributeName;
-    int m_newValue, m_oldValue;
+    QString m_newValue, m_oldValue;
     int m_time;
     bool m_autokeyframes;
     bool m_autotransition;
@@ -355,7 +355,7 @@ private:
 class RemoveAttributeCommand : public QUndoCommand
 {
 public:
-    RemoveAttributeCommand(QString attributeName, int value, Vectorgraphic *item, QUndoCommand *parent = 0);
+    RemoveAttributeCommand(QString attributeName, QString value, Vectorgraphic *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -363,7 +363,7 @@ public:
 private:
     Vectorgraphic *m_item;
     QString m_attributeName;
-    int m_value;
+    QString m_value;
 };
 
 #endif // COMMANDS_H

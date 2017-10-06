@@ -58,25 +58,25 @@ public:
     bool isValid() {return !m_element->text().isEmpty() && !m_attribute->text().isEmpty();}
     QString attributeName() {return m_element->text() + "." + m_attribute->text();}
     void setAttributeName(QString name);
-    int value() {return m_value->value();}
-    void setValue(int val) {m_value->setValue(val);}
+    QString value() {return m_value->text();}
+    void setValue(QString val) {m_value->setText(val);}
 
 signals:
     void attributeNameChanged(QString oldName, QString newName);
-    void attributeValueChanged(QString name, int value);
+    void attributeValueChanged(QString name, QString value);
     void removeClicked(SvgAttributeEditor *editor);
     void addKeyframeClicked(SvgAttributeEditor *editor);
 
 private slots:
     void attributeNameChanged();
-    void valueChanged(int value);
+    void valueChanged();
     void minusClicked();
     void addKeyframeClicked();
 
 private:
     QLineEdit *m_element;
     QLineEdit *m_attribute;
-    QSpinBox *m_value;
+    QLineEdit *m_value;
     QString m_attributeName;
 };
 
@@ -124,7 +124,7 @@ private:
 
     void changeBrush(QColor value);
     void changeOpacity(int opacity);
-    SvgAttributeEditor *addSvgAttributeEditor(QString name, int value);
+    SvgAttributeEditor *addSvgAttributeEditor(QString name, QString value);
 
     void reloadAttributes();
 
@@ -156,7 +156,7 @@ private slots:
     void fontStyleChanged(int index);
     void fontSizeChanged();
     void svgAttributeNameChanged(QString oldName, QString newName);
-    void svgAttributeValueChanged(QString attributeName, int value);
+    void svgAttributeValueChanged(QString attributeName, QString value);
     void svgTextChanged();
     void addSvgAttributeEditor();
     void svgEditorRemoveClicked(SvgAttributeEditor *editor);
