@@ -324,18 +324,19 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             v->setScale(xscale, yscale);
             v->setOpacity(opacity);
 
-            int attributes;
-            QString name, value;
-
-            // TODO: not compatible to prev version
-            dataStream >> attributes;
-            for(int i = 0; i < attributes; i++)
+            if(m_fileVersion > 100)
             {
-                dataStream >> name;
-                dataStream >> value;
-                v->setAttributeValue(name, value);
-            }
+                int attributes;
+                QString name, value;
 
+                dataStream >> attributes;
+                for(int i = 0; i < attributes; i++)
+                {
+                    dataStream >> name;
+                    dataStream >> value;
+                    v->setAttributeValue(name, value);
+                }
+            }
             readKeyframes(dataStream, v);
 
             addItem(v);

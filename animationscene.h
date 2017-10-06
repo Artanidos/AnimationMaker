@@ -51,6 +51,8 @@ public:
     QDataStream& read(QDataStream &dataStream);
     QDataStream& write(QDataStream &dataStream) const;
 
+    void setFileVersion(int version) {m_fileVersion = version;}
+
     int fps() const;
     inline void setFps(int value) {m_fps = value;}
 
@@ -111,6 +113,7 @@ private:
     QUndoStack *m_undoStack;
     ResizeableItem *m_movingItem;
     QPointF m_oldPos;
+    int m_fileVersion;
 
     void initialize();
     void addBackgroundRect();

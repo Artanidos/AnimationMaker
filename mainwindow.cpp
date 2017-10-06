@@ -44,7 +44,8 @@
 #include <QTextBrowser>
 
 #define MAGIC 0x414D4200
-#define FILE_VERSION 100
+#define FIRST_FILE_VERSION 100
+#define FILE_VERSION 150
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -180,7 +181,7 @@ void MainWindow::open()
     // Read the version
     qint32 version;
     in >> version;
-    if (version < FILE_VERSION)
+    if (version < FIRST_FILE_VERSION)
     {
         file.close();
         QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
@@ -192,11 +193,7 @@ void MainWindow::open()
         QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
         return;
     }
-
-    //    if (version <= 110)
-    //        in.setVersion(QDataStream::Qt_4_0);
-    //    else
-    //        in.setVersion(QDataStream::Qt_5_7);
+    scene->setFileVersion(version);
 
     // Read the data
     in >> scene;
