@@ -65,11 +65,11 @@ SvgAttributeEditor::SvgAttributeEditor()
     FlatButton *minus = new FlatButton(":/images/minus_normal.png", ":/images/minus_hover.png");
     minus->setToolTip("Delete attribute");
 
-    layout->addWidget(new QLabel("ElementId"), 0, 0);
+    layout->addWidget(new QLabel("Id"), 0, 0);
     layout->addWidget(m_element, 0, 1);
-    layout->addWidget(new QLabel("Attribute"), 0, 2);
+    layout->addWidget(new QLabel("Att"), 0, 2);
     layout->addWidget(m_attribute, 0, 3);
-    layout->addWidget(new QLabel("Value"), 0, 4);
+    layout->addWidget(new QLabel("Val"), 0, 4);
     layout->addWidget(addAttributeKeyframe, 0, 5);
     layout->addWidget(m_value, 0, 6);
     layout->addWidget(minus, 0, 7);
@@ -445,6 +445,11 @@ void ItemPropertyEditor::svgAttributeAdded()
     reloadAttributes();
 }
 
+void ItemPropertyEditor::svgDataChanged()
+{
+    m_svgText->setPlainText(QString::fromUtf8(m_vector->getData()));
+}
+
 void ItemPropertyEditor::svgAttributeNameChanged(QString oldName, QString newName)
 {
     if(m_initializing)
@@ -583,6 +588,7 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
         reloadAttributes();
 
         connect(m_vector, SIGNAL(attributeAdded()), this, SLOT(svgAttributeAdded()));
+        connect(m_vector, SIGNAL(dataChanged()), this, SLOT(svgDataChanged()));
     }
 
     expText->setVisible(m_textitem);

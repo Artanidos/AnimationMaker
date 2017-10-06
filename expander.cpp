@@ -29,8 +29,8 @@ Expander::Expander(QString header)
     m_isExpanded = true;
     QPalette pal = palette();
     pal.setColor(QPalette::Background, QColor(64, 66, 68));
-    this->setAutoFillBackground(true);
-    this->setPalette(pal);
+    setAutoFillBackground(true);
+    setPalette(pal);
     QVBoxLayout *vbox = new QVBoxLayout();
     QHBoxLayout *hbox = new QHBoxLayout();
     m_button = new QToolButton();
@@ -49,7 +49,10 @@ Expander::Expander(QString header)
     hbox->addStretch();
     vbox->addLayout(hbox);
     m_content = new QWidget();
-    m_content->setStyleSheet("background-color: #4c4e50");
+    QPalette cpal = m_content->palette();
+    cpal.setColor(QPalette::Background, QColor(76, 78, 80));
+    m_content->setPalette(cpal);
+    m_content->setAutoFillBackground(true);
     vbox->addWidget(m_content);
     this->setLayout(vbox);
     m_contentLayout = new QVBoxLayout;

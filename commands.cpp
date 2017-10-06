@@ -588,11 +588,13 @@ ChangeSvgCommand::ChangeSvgCommand(QByteArray newValue, QByteArray oldValue, Vec
 void ChangeSvgCommand::undo()
 {
     m_item->setData(m_oldValue);
+    emit m_item->dataChanged();
 }
 
 void ChangeSvgCommand::redo()
 {
     m_item->setData(m_newValue);
+    emit m_item->dataChanged();
 }
 
 RemoveAttributeCommand::RemoveAttributeCommand(QString attributeName, QString value, Vectorgraphic *item, QUndoCommand *parent)

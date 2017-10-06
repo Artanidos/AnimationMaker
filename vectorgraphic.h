@@ -51,6 +51,7 @@ public:
 
 signals:
     void attributeAdded();
+    void dataChanged();
 
 private:
     QGraphicsSvgItem *m_svg;

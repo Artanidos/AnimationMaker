@@ -162,6 +162,7 @@ private slots:
     void svgEditorRemoveClicked(SvgAttributeEditor *editor);
     void svgEditorAddKeyframeClicked(SvgAttributeEditor *editor);
     void svgAttributeAdded();
+    void svgDataChanged();
  };
 
 #endif // ITEMPROPERTYEDITOR_H
