@@ -594,6 +594,23 @@ void AnimationScene::importXml()
             v->setOpacity(ele.attribute("opacity", "100").toInt());
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            for(int j = 0; j < ele.childNodes().count(); j++)
+            {
+                QDomNode nodej = ele.childNodes().at(j);
+                if(nodej.nodeName() == "Attributes")
+                {
+                    QDomElement elej = nodej.toElement();
+                    for(int k = 0; k < elej.childNodes().count(); k++)
+                    {
+                        QDomNode nodek = elej.childNodes().at(k);
+                        if(nodek.nodeName() == "Attribute")
+                        {
+                            QDomElement elek = nodek.toElement();
+                            v->setAttributeValue(elek.attribute("attributeName"), elek.attribute("value"));
+                        }
+                    }
+                }
+            }
             readKeyframes(&ele, v);
             addItem(v);
         }
@@ -719,6 +736,16 @@ void AnimationScene::exportXml()
             vectorgraphic.setAttribute("yscale", QVariant(v->yscale()).toString());
             vectorgraphic.setAttribute("opacity", v->opacity());
             vectorgraphic.appendChild(doc.createCDATASection(QString::fromLatin1(v->getData())));
+            QDomElement attributes = doc.createElement("Attributes");
+            for(int i = 0; i < v->attributes().count(); i++)
+            {
+                QString key = v->attributes().keys().at(i);
+                QDomElement attribute = doc.createElement("Attribute");
+                attribute.setAttribute("attributeName", key);
+                attribute.setAttribute("value", v->attributes().value(key));
+                attributes.appendChild(attribute);
+            }
+            vectorgraphic.appendChild(attributes);
             writeKeyframes(&doc, &vectorgraphic, v);
             root.appendChild(vectorgraphic);
         }
