@@ -15,7 +15,7 @@ export LD_LIBRARY_PATH=~/Qt/5.9.1/gcc_64/lib
 rm AppImage/AppRun
 cp AppRun AppImage
 /home/olaf/appimagetool/appimagetool-x86_64.AppImage AppImage
-mv AnimationMaker-x86_64.AppImage AnimationMaker-Linux-x86_64-1.4.1.AppImage
+mv AnimationMaker-x86_64.AppImage AnimationMaker-Linux-x86_64-1.5.AppImage
 
 # Clean up
 rm -r AppImage/*
