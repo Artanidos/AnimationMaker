@@ -36,8 +36,6 @@ int main(int argc, char *argv[])
     a.setStyle(QStyleFactory::create("Fusion"));
     QPalette p = a.palette();
 
-    //QToolTip{background:#f5f0eb;}";
-
     p.setColor(QPalette::Window, QColor(53,53,53));
     p.setColor(QPalette::WindowText, Qt::white);
     p.setColor(QPalette::Base, QColor(64, 66, 68));
