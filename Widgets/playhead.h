@@ -18,24 +18,37 @@
 **
 ****************************************************************************/
 
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef PLAYHEAD_H
+#define PLAYHEAD_H
 
-#include <QGraphicsItem>
-#include <QObject>
-#include "resizeableitem.h"
+#include <QWidget>
+#include "widgets_global.h"
 
-class AnimationScene;
-class Ellipse : public ResizeableItem
+class WIDGETSSHARED_EXPORT PlayHead : public QWidget
 {
     Q_OBJECT
 public:
-    Ellipse(qreal width, qreal height, AnimationScene *scene);
+    PlayHead();
 
-    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
+    void paintEvent(QPaintEvent *ev);
+    void mousePressEvent(QMouseEvent *ev);
+    void mouseMoveEvent(QMouseEvent *ev);
+    void mouseReleaseEvent(QMouseEvent *ev);
 
-    enum { Type = UserType + 2 };
-    int type() const Q_DECL_OVERRIDE;
+    inline void setValue(int value) {m_value = value; update(); emit valueChanged(value);}
+    inline int value() {return m_value;}
+
+public slots:
+    void scrollValueChanged(int pos);
+
+signals:
+    void valueChanged(int val);
+
+private:
+    QImage m_image;
+    bool m_pressed;
+    int m_value;
+    int m_horizontalScrollPos;
 };
 
-#endif // ELLIPSE_H
+#endif // PLAYHEAD_H

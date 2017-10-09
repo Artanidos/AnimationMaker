@@ -17,4 +17,6 @@
 
 - select with mouse rectangle
 
-- animationScene read vector not compatible to prev version
+- animationScene paste should also copy plugin items and vector attributes
+
+- load xml should be done in items itself

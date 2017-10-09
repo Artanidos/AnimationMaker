@@ -49,6 +49,21 @@ int Text::type() const
     return Text::Type;
 }
 
+QDomElement Text::getXml(QDomDocument doc)
+{
+    QDomElement ele = doc.createElement("Text");
+    writeAttributes(ele);
+    ele.setAttribute("xscale", QVariant(xscale()).toString());
+    ele.setAttribute("yscale", QVariant(yscale()).toString());
+    ele.setAttribute("text", text());
+    ele.setAttribute("textcolor", textcolor().name());
+    ele.setAttribute("opacity", opacity());
+    ele.setAttribute("font-family", font().family());
+    ele.setAttribute("font-size", font().pointSize());
+    ele.setAttribute("font-style", font().styleName());
+    return ele;
+}
+
 void Text::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget);

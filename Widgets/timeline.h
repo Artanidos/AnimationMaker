@@ -30,8 +30,9 @@
 #include "animationscene.h"
 #include "transitionpanel.h"
 #include "playhead.h"
+#include "widgets_global.h"
 
-class Timeline : public QWidget
+class WIDGETSSHARED_EXPORT Timeline : public QWidget
 {
     Q_OBJECT
 public:

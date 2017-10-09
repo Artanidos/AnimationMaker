@@ -18,37 +18,33 @@
 **
 ****************************************************************************/
 
-#ifndef KEYFRAME_H
-#define KEYFRAME_H
+#ifndef BITMAP_H
+#define BITMAP_H
 
-#include <QVariant>
+#include <QGraphicsItem>
+#include "resizeableitem.h"
+#include "widgets_global.h"
 
-class KeyFrame : public QObject
+class WIDGETSSHARED_EXPORT Bitmap : public ResizeableItem
 {
     Q_OBJECT
 public:
-    KeyFrame();
+    Bitmap();
+    Bitmap(QString filename, AnimationScene *scene);
+    Bitmap(QImage img, qreal width, qreal height, AnimationScene *scene);
 
-    inline QVariant value() {return m_value;}
-    inline void setValue(QVariant value) {m_value = value;}
-    inline int time() {return m_time;}
-    inline void setTime(int value) {m_time = value;}
-    inline int easing() {return m_easing;}
-    inline void setEasing(int value) {m_easing = value; emit easingChanged(value);}
-    inline KeyFrame *next() {return m_next;}
-    inline void setNext(KeyFrame *value) {m_next = value;}
-    inline KeyFrame *prev() {return m_prev;}
-    inline void setPrev(KeyFrame *value) {m_prev = value;}
+    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 
-signals:
-    void easingChanged(int);
+    QImage getImage();
+    void setImage(QImage image);
+
+    enum { Type = UserType + 4 };
+    int type() const Q_DECL_OVERRIDE;
+    QString typeName() {return "Bitmap";}
+    QDomElement getXml(QDomDocument);
 
 private:
-    QVariant m_value;
-    int m_time;
-    int m_easing;
-    KeyFrame *m_next;
-    KeyFrame *m_prev;
+    QImage m_image;
 };
 
-#endif // KEYFRAME_H
+#endif // BITMAP_H

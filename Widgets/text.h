@@ -18,50 +18,50 @@
 **
 ****************************************************************************/
 
-#ifndef VECTORGRAPHIC_H
-#define VECTORGRAPHIC_H
+#ifndef TEXT_H
+#define TEXT_H
 
 #include <QGraphicsItem>
-#include <QGraphicsSvgItem>
+#include <QGraphicsRectItem>
+#include <QColor>
+#include <QFont>
 #include "resizeableitem.h"
+#include "widgets_global.h"
 
 class AnimationScene;
-class QDomElement;
-class Vectorgraphic : public ResizeableItem
+class WIDGETSSHARED_EXPORT Text : public ResizeableItem
 {
     Q_OBJECT
 public:
-    Vectorgraphic();
-    Vectorgraphic(QString filename, AnimationScene *scene);
-    Vectorgraphic(QByteArray arr, AnimationScene *scene);
+    Text(QString text, AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
     void scaleObjects();
     void setScale(qreal x, qreal y);
-    QByteArray getData();
-    void setData(QByteArray data);
+    QString text();
+    void setText(QString text);
 
-    void setAttributeValue(QString attributeName, QString value);
-    void removeAttribute(QString attributeName);
-    void changeAttributeName(QString oldName, QString newName);
-    QHash<QString, QString> attributes() {return m_attributes;}
+    QColor textcolor();
+    void setTextcolor(QColor textcolor);
 
-    enum { Type = UserType + 5 };
+    inline QFont font() {return m_font;}
+    void setFont(QFont font);
+
+    enum { Type = UserType + 3 };
     int type() const Q_DECL_OVERRIDE;
+    QString typeName() {return "Text";}
+    QDomElement getXml(QDomDocument);
 
 signals:
-    void attributeAdded();
-    void dataChanged();
+    void textcolorChanged(QColor);
 
 private:
-    QGraphicsSvgItem *m_svg;
-    QSvgRenderer *m_renderer;
-    QByteArray m_data;
-    QByteArray m_changedData;
-    QHash<QString, QString> m_attributes;
-
-    QDomElement elementById(QDomElement root, QString id);
-    void reload();
+    QFont m_font;
+    QString m_text;
+    QGraphicsSimpleTextItem *m_textitem;
+    QColor m_textcolor;
+    qreal m_width;
+    qreal m_height;
 };
 
-#endif // VECTORGRAPHIC_H
+#endif // TEXT_H

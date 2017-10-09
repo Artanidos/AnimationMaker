@@ -16,9 +16,20 @@
 #    You should have received a copy of the GNU General Public License
 #    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
-TEMPLATE = subdirs
+QT           += widgets gui core testlib xml
+TEMPLATE      = lib
+CONFIG       += plugin
+TARGET		  = FirstItem
+INCLUDEPATH  += ../../
+SOURCES		 += firstitem.cpp
+HEADERS		 += firstitem.h \
+    ../../interfaces.h
+DESTDIR       = ~/AnimationMaker/plugins
 
-SUBDIRS += \
-    Widgets \
-    plugins/FirstItem \
-    App.pro \
+LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
+INCLUDEPATH += $$PWD/../../Widgets
+DEPENDPATH += $$PWD/../../Widgets
+
+RESOURCES += \
+    images.qrc
+

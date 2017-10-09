@@ -545,7 +545,7 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     m_y->setValue(m_item->y());
     m_width->setValue(m_item->rect().width());
     m_height->setValue(m_item->rect().height());
-    m_typ->setText(getItemTypeName(m_item));
+    m_typ->setText(m_item->typeName());
     m_id->setText(item->id());
     m_opacity->setValue(item->opacity());
     m_opacityText->setValue(item->opacity());

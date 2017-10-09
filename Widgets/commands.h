@@ -27,8 +27,9 @@
 #include "vectorgraphic.h"
 #include "timeline.h"
 #include "text.h"
+#include "widgets_global.h"
 
-class AddItemCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT AddItemCommand : public QUndoCommand
 {
 public:
     AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, QString fileName, AnimationScene *scene, QUndoCommand *parent = 0);
@@ -42,7 +43,7 @@ private:
 };
 
 
-class DeleteItemCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT DeleteItemCommand : public QUndoCommand
 {
 public:
     DeleteItemCommand(ResizeableItem *item, AnimationScene *scene, QUndoCommand *parent = 0);
@@ -56,7 +57,7 @@ private:
 };
 
 
-class MoveItemCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT MoveItemCommand : public QUndoCommand
 {
 public:
     MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
@@ -73,7 +74,7 @@ private:
 };
 
 
-class ResizeItemCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ResizeItemCommand : public QUndoCommand
 {
 public:
     ResizeItemCommand(qreal width, qreal height, qreal oldwidth, qreal oldheight, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
@@ -90,7 +91,7 @@ private:
 };
 
 
-class ScaleItemCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ScaleItemCommand : public QUndoCommand
 {
 public:
     ScaleItemCommand(qreal x, qreal y, qreal width, qreal height, qreal oldx, qreal oldy, qreal oldwidth, qreal oldheight, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
@@ -107,7 +108,7 @@ private:
 };
 
 
-class ChangeIdCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ChangeIdCommand : public QUndoCommand
 {
 public:
     ChangeIdCommand(QString id, QString oldid, ResizeableItem *item, QUndoCommand *parent = 0);
@@ -120,7 +121,7 @@ private:
     QString m_id, m_oldid;
 };
 
-class ChangeColorCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ChangeColorCommand : public QUndoCommand
 {
 public:
     ChangeColorCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent = 0);
@@ -133,7 +134,7 @@ private:
     QColor m_color, m_oldcolor;
 };
 
-class ChangePenCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ChangePenCommand : public QUndoCommand
 {
 public:
     ChangePenCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent = 0);
@@ -146,7 +147,7 @@ private:
     QColor m_color, m_oldcolor;
 };
 
-class ChangeTextcolorCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ChangeTextcolorCommand : public QUndoCommand
 {
 public:
     ChangeTextcolorCommand(QColor color, QColor oldcolor, Text *item, QUndoCommand *parent = 0);
@@ -159,7 +160,7 @@ private:
     QColor m_color, m_oldcolor;
 };
 
-class ChangeSceneColorCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ChangeSceneColorCommand : public QUndoCommand
 {
 public:
     ChangeSceneColorCommand(QColor color, QColor oldcolor, AnimationScene *scene, QUndoCommand *parent = 0);
@@ -172,7 +173,7 @@ private:
     QColor m_color, m_oldcolor;
 };
 
-class ChangeOpacityCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ChangeOpacityCommand : public QUndoCommand
 {
 public:
     ChangeOpacityCommand(int opacity, int oldopacity, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
@@ -188,7 +189,7 @@ private:
     bool m_autotransition;
 };
 
-class AddKeyframeCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT AddKeyframeCommand : public QUndoCommand
 {
 public:
     AddKeyframeCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent = 0);
@@ -203,7 +204,7 @@ private:
     Timeline *m_timeline;
 };
 
-class DeleteKeyframeCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT DeleteKeyframeCommand : public QUndoCommand
 {
 public:
     DeleteKeyframeCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent = 0);
@@ -218,7 +219,7 @@ private:
     Timeline *m_timeline;
 };
 
-class AddTransitionCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT AddTransitionCommand : public QUndoCommand
 {
 public:
     AddTransitionCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent = 0);
@@ -233,7 +234,7 @@ private:
     Timeline *m_timeline;
 };
 
-class DeleteTransitionCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT DeleteTransitionCommand : public QUndoCommand
 {
 public:
     DeleteTransitionCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent = 0);
@@ -248,7 +249,7 @@ private:
     Timeline *m_timeline;
 };
 
-class ChangeEasingCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ChangeEasingCommand : public QUndoCommand
 {
 public:
     ChangeEasingCommand(int easing, int oldeasing, KeyFrame *frame, QUndoCommand *parent = 0);
@@ -261,7 +262,7 @@ private:
     int m_easing, m_oldeasing;
 };
 
-class ChangeFontCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ChangeFontCommand : public QUndoCommand
 {
 public:
     ChangeFontCommand(QFont font, QFont oldfont, Text *text, QUndoCommand *parent = 0);
@@ -274,7 +275,7 @@ private:
     QFont m_font, m_oldfont;
 };
 
-class RaiseItemCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT RaiseItemCommand : public QUndoCommand
 {
 public:
     RaiseItemCommand(ResizeableItem *item, QUndoCommand *parent = 0);
@@ -286,7 +287,7 @@ private:
     ResizeableItem *m_item;
 };
 
-class LowerItemCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT LowerItemCommand : public QUndoCommand
 {
 public:
     LowerItemCommand(ResizeableItem *item, QUndoCommand *parent = 0);
@@ -298,7 +299,7 @@ private:
     ResizeableItem *m_item;
 };
 
-class BringItemToFrontCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT BringItemToFrontCommand : public QUndoCommand
 {
 public:
     BringItemToFrontCommand(ResizeableItem *item, QUndoCommand *parent = 0);
@@ -310,7 +311,7 @@ private:
     ResizeableItem *m_item;
 };
 
-class SendItemToBackCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT SendItemToBackCommand : public QUndoCommand
 {
 public:
     SendItemToBackCommand(ResizeableItem *item, QUndoCommand *parent = 0);
@@ -322,7 +323,7 @@ private:
     ResizeableItem *m_item;
 };
 
-class ChangeAttributeCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ChangeAttributeCommand : public QUndoCommand
 {
 public:
     ChangeAttributeCommand(QString attributeName, QString newValue, QString oldValue, AnimationScene *scene, Vectorgraphic *item, QUndoCommand *parent = 0);
@@ -339,7 +340,7 @@ private:
     bool m_autotransition;
 };
 
-class ChangeSvgCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT ChangeSvgCommand : public QUndoCommand
 {
 public:
     ChangeSvgCommand(QByteArray newValue, QByteArray oldValue, Vectorgraphic *item, QUndoCommand *parent = 0);
@@ -352,7 +353,7 @@ private:
     QByteArray m_newValue, m_oldValue;
 };
 
-class RemoveAttributeCommand : public QUndoCommand
+class WIDGETSSHARED_EXPORT RemoveAttributeCommand : public QUndoCommand
 {
 public:
     RemoveAttributeCommand(QString attributeName, QString value, Vectorgraphic *item, QUndoCommand *parent = 0);

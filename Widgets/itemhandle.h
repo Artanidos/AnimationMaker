@@ -32,8 +32,9 @@
 #include <QPainter>
 #include <QPen>
 #include <QPointF>
+#include "widgets_global.h"
 
-class ItemHandle : public QGraphicsItem
+class WIDGETSSHARED_EXPORT ItemHandle : public QGraphicsItem
 {
 public:
     explicit ItemHandle(int corner = 0);

@@ -717,8 +717,8 @@ void ResizeableItem::lower()
     int pos = scene()->items().indexOf(this);
     for(int i = pos + 1; i < scene()->items().count(); i++)
     {
-        QGraphicsItem *item = scene()->items().at(i);
-        if(isAnimationMakerItem(item))
+        ResizeableItem *item = dynamic_cast<ResizeableItem*>(scene()->items().at(i));
+        if(item)
         {
             this->stackBefore(item);
             break;
@@ -734,8 +734,8 @@ void ResizeableItem::raise()
     int pos = scene()->items().indexOf(this);
     for(int i = pos - 1; i >= 0; i--)
     {
-        QGraphicsItem *item = scene()->items().at(i);
-        if(isAnimationMakerItem(item))
+        ResizeableItem *item = dynamic_cast<ResizeableItem*>(scene()->items().at(i));
+        if(item)
         {
             item->stackBefore(this);
             break;
@@ -751,8 +751,8 @@ void ResizeableItem::bringToFront()
     int pos = scene()->items().indexOf(this);
     for(int i = pos - 1; i >= 0; i--)
     {
-        QGraphicsItem *item = scene()->items().at(i);
-        if(isAnimationMakerItem(item))
+        ResizeableItem *item = dynamic_cast<ResizeableItem*>(scene()->items().at(i));
+        if(item)
         {
             item->stackBefore(this);
         }
@@ -767,8 +767,8 @@ void ResizeableItem::sendToBack()
     int pos = scene()->items().indexOf(this);
     for(int i = pos + 1; i < scene()->items().count(); i++)
     {
-        QGraphicsItem *item = scene()->items().at(i);
-        if(isAnimationMakerItem(item))
+        ResizeableItem *item = dynamic_cast<ResizeableItem*>(scene()->items().at(i));
+        if(item)
         {
             this->stackBefore(item);
         }
@@ -776,6 +776,26 @@ void ResizeableItem::sendToBack()
     // trick to repaint item
     this->setSelected(false);
     this->setSelected(true);
+}
+
+void ResizeableItem::writeAttributes(QDomElement ele)
+{
+    ele.setAttribute("id", id());
+    ele.setAttribute("left", QVariant(left()).toString());
+    ele.setAttribute("top", QVariant(top()).toString());
+    ele.setAttribute("width", QVariant(rect().width()).toString());
+    ele.setAttribute("height", QVariant(rect().height()).toString());
+    ele.setAttribute("opacity", opacity());
+}
+
+void ResizeableItem::readAttributes(QDomElement ele)
+{
+    setId(ele.attribute("id"));
+    setLeft(ele.attribute("left", "0").toDouble());
+    setTop(ele.attribute("top", "0").toDouble());
+    setWidth(ele.attribute("width", "50").toDouble());
+    setHeight(ele.attribute("height", "50").toDouble());
+    setOpacity(ele.attribute("opacity", "100").toInt());
 }
 
 void ResizeableItem::deleteItem()

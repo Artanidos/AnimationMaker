@@ -21,8 +21,9 @@
 #include "mainwindow.h"
 #include "animationscene.h"
 #include "vectorgraphic.h"
+#include "interfaces.h"
+#include "plugins.h"
 #include "bitmap.h"
-#include "exception.h"
 #include "news.h"
 #include "itempropertyeditor.h"
 #include "timeline.h"
@@ -53,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     undoStack = new QUndoStack(this);
 
     setDockNestingEnabled(true);
+    loadPlugins();
     createStatusBar();
     createActions();
     createMenus();
@@ -68,6 +70,30 @@ MainWindow::~MainWindow()
     delete view;
 }
 
+void MainWindow::loadPlugins()
+{
+    QDir pluginsDir(QDir::homePath() + "/AnimationMaker/plugins");
+
+    foreach (QString fileName, pluginsDir.entryList(QDir::Files))
+    {
+        QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+        QObject *plugin = loader.instance();
+        if (plugin)
+        {
+            ItemInterface *item = qobject_cast<ItemInterface*>(plugin);
+            if(item)
+            {
+                Plugins::insert(item->className(), item);
+                qDebug() << "Plugin loaded" << fileName;
+            }
+        }
+        else
+        {
+            qDebug() << "Plugin could not ne loaded" << fileName << loader.errorString();
+        }
+    }
+}
+
 void MainWindow::save()
 {
     writeFile(loadedFile.filePath());
@@ -78,10 +104,11 @@ void MainWindow::saveAs()
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
     dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter(tr("AnimationMaker (*.amb);;All Files (*)"));
+    dialog->setNameFilter(tr("AnimationMaker XML (*.amx);;All Files (*)"));
     dialog->setWindowTitle(tr("Save Animation"));
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptSave);
+    dialog->setDefaultSuffix("amx");
     if(dialog->exec())
         fileName = dialog->selectedFiles().first();
     delete dialog;
@@ -94,27 +121,42 @@ void MainWindow::saveAs()
     setTitle();
 }
 
+void MainWindow::saveItemAs()
+{
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter(tr("AnimationMaker XML (*.amx);;All Files (*)"));
+    dialog->setWindowTitle(tr("Save Animation"));
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptSave);
+    dialog->setDefaultSuffix("amx");
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
+    if(fileName.isEmpty())
+        return;
+
+    timeline->setPlayheadPosition(0);
+    scene->exportXml(fileName, false);
+    statusBar()->showMessage(QString("Item saved as " + fileName));
+}
+
 void MainWindow::writeFile(QString fileName)
 {
     scene->clearSelection();
     timeline->setPlayheadPosition(0);
 
-    QFile file(fileName);
-    if(!file.open(QIODevice::WriteOnly))
+    if(fileName.endsWith(".amb"))
     {
-        QMessageBox::warning(this, "Error", "Unable to open file " + fileName);
-        return;
+        // binary file format not supported anymore
+        // so we save as XML (.amx)
+        fileName = fileName.mid(0, fileName.indexOf(".amb")) + ".amx";
+        loadedFile.setFile(fileName);
+        setTitle();
     }
-    QDataStream out(&file);
-
-    // Write a header with a "magic number" and a version
-    out << (quint32)MAGIC;
-    out << (qint32)FILE_VERSION;
-    out.setVersion(QDataStream::Qt_5_7);
-
-    out << scene;
-
-    file.close();
+    scene->exportXml(fileName);
+    statusBar()->showMessage(QString("File saved as " + fileName));
 
     undoStack->clear();
 }
@@ -150,7 +192,7 @@ void MainWindow::open()
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
     dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter(tr("AnimationMaker (*.amb);;All Files (*)"));
+    dialog->setNameFilter(tr("AnimationMaker (*.amb *.amx);;All Files (*)"));
     dialog->setWindowTitle(tr("Open Animation"));
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
@@ -159,45 +201,57 @@ void MainWindow::open()
     delete dialog;
     if (fileName.isEmpty())
         return;
-    reset();
-    QFile file(fileName);
-    if(!file.open(QIODevice::ReadOnly))
-    {
-        QMessageBox::warning(this, "Error", "Unable to open file " + fileName);
-        return;
-    }
-    QDataStream in(&file);
 
-    // Read and check the header
-    quint32 magic;
-    in >> magic;
-    if (magic != MAGIC)
+    if(fileName.endsWith(".amb"))
     {
-        file.close();
-        QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
-        return;
-    }
+        // read binary version for backwards compability
+        reset();
 
-    // Read the version
-    qint32 version;
-    in >> version;
-    if (version < FIRST_FILE_VERSION)
-    {
-        file.close();
-        QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
-        return;
-    }
-    if (version > FILE_VERSION)
-    {
-        file.close();
-        QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
-        return;
-    }
-    scene->setFileVersion(version);
+        QFile file(fileName);
+        if(!file.open(QIODevice::ReadOnly))
+        {
+            QMessageBox::warning(this, "Error", "Unable to open file " + fileName);
+            return;
+        }
 
-    // Read the data
-    in >> scene;
-    file.close();
+        QDataStream in(&file);
+
+        // Read and check the header
+        quint32 magic;
+        in >> magic;
+        if (magic != MAGIC)
+        {
+            file.close();
+            QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
+            return;
+        }
+
+        // Read the version
+        qint32 version;
+        in >> version;
+        if (version < FIRST_FILE_VERSION)
+        {
+            file.close();
+            QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
+            return;
+        }
+        if (version > FILE_VERSION)
+        {
+            file.close();
+            QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
+            return;
+        }
+        scene->setFileVersion(version);
+
+        // Read the data
+        in >> scene;
+        file.close();
+    }
+    else
+    {
+        // read xml version
+        scene->importXml(fileName);
+    }
 
     fillTree();
     elementTree->expandAll();
@@ -288,6 +342,17 @@ void MainWindow::createGui()
     toolpanel->addAction(bitmapAct);
     toolpanel->addAction(svgAct);
 
+    // load plugins here
+    foreach(QString pluginName, Plugins::itemPluginNames())
+    {
+        ItemInterface *plugin = Plugins::getItemPlugin(pluginName);
+        QAction *act = new QAction(plugin->displayName(), anActionGroup);
+        act->setData(QVariant(plugin->className()));
+        act->setIcon(plugin->icon());
+        act->setCheckable(true);
+        connect(act, SIGNAL(triggered()), this, SLOT(setPluginMode()));
+        toolpanel->addAction(act);
+    }
     selectAct->toggle();
 
     News *news = new News("https://artanidos.github.io/AnimationMaker/news.html");
@@ -429,14 +494,12 @@ void MainWindow::createActions()
     saveAsAct = new QAction(tr("Save &As..."), this);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
-    exportXmlAct = new QAction(tr("Export XML"), this);
-    connect(exportXmlAct, SIGNAL(triggered()), this, SLOT(exportXml()));
+    saveItemAsAct = new QAction(tr("Save &Item as..."), this);
+    saveItemAsAct->setEnabled(false);
+    connect(saveItemAsAct, SIGNAL(triggered()), this, SLOT(saveItemAs()));
 
     exportMovieAct = new QAction(tr("Export Movie"), this);
     connect(exportMovieAct, SIGNAL(triggered()), this, SLOT(exportMovie()));
-
-    importXmlAct = new QAction(tr("Import XML"), this);
-    connect(importXmlAct, SIGNAL(triggered()), this, SLOT(importXml()));
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
@@ -495,9 +558,8 @@ void MainWindow::createMenus()
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
+    fileMenu->addAction(saveItemAsAct);
     fileMenu->addSeparator();
-    fileMenu->addAction(importXmlAct);
-    fileMenu->addAction(exportXmlAct);
     fileMenu->addAction(exportMovieAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
@@ -576,12 +638,31 @@ void MainWindow::setSvgMode()
     scene->setEditMode(AnimationScene::EditMode::ModeSvg);
 }
 
+void MainWindow::setPluginMode()
+{
+    QAction *act = qobject_cast<QAction*>(sender());
+    if(act)
+    {
+        QString pluginName = act->data().toString();
+        ItemInterface *item = Plugins::getItemPlugin(pluginName);
+        scene->clearSelection();
+        scene->setCursor(item->getCursor());
+        scene->setEditMode(item->className());
+    }
+}
+
 void MainWindow::sceneSelectionChanged()
 {
     ResizeableItem *item = NULL;
 
     if(scene->selectedItems().count())
+    {
         item = dynamic_cast<ResizeableItem*>(scene->selectedItems().first());
+        saveItemAsAct->setEnabled(true);
+    }
+    else
+        saveItemAsAct->setEnabled(false);
+
     if(item)
     {
         m_itemPropertyEditor->setItem(item);
@@ -792,20 +873,4 @@ void MainWindow::runCommand(QString cmd, QString path)
     qDebug() << proc->readAllStandardOutput();
     qDebug() << proc->readAllStandardError();
     delete proc;
-}
-
-void MainWindow::importXml()
-{
-    scene->importXml();
-    fillTree();
-    elementTree->expandAll();
-    m_scenePropertyEditor->setScene(scene);
-    timeline->expandTree();
-    statusBar()->showMessage(QString("Ready"));
-}
-
-void MainWindow::exportXml()
-{
-    scene->exportXml();
-    statusBar()->showMessage(QString("Ready"));
 }

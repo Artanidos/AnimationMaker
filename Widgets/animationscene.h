@@ -30,10 +30,11 @@
 #include <QFileDialog>
 #include <QUndoStack>
 #include <QDomDocument>
+#include "widgets_global.h"
 
 class ResizeableItem;
 class KeyFrame;
-class AnimationScene : public QGraphicsScene
+class WIDGETSSHARED_EXPORT AnimationScene : public QGraphicsScene
 {
     Q_OBJECT
     Q_PROPERTY(int fps READ fps)
@@ -45,11 +46,11 @@ public:
     void reset();
 
     enum ItemType { TypeItem, TypeRectangle, TypeEllipse, TypeText, TypeBitmap, TypeSvg };
-    enum EditMode { ModeSelect, ModeRectangle, ModeEllipse, ModeText, ModeBitmap, ModeSvg };
+    enum EditMode { ModeSelect, ModeRectangle, ModeEllipse, ModeText, ModeBitmap, ModeSvg, ModePlugin };
 
     void setEditMode(EditMode mode);
+    void setEditMode(QString pluginName);
     QDataStream& read(QDataStream &dataStream);
-    QDataStream& write(QDataStream &dataStream) const;
 
     void setFileVersion(int version) {m_fileVersion = version;}
 
@@ -82,6 +83,11 @@ public:
 
     inline void registerUndoStack(QUndoStack *stack) {m_undoStack = stack;}
     inline QUndoStack *undoStack() {return m_undoStack;}
+
+    QString actPluginName() {return m_actPluginName;}
+
+    void exportXml(QString fileName, bool exportAll = true);
+    void importXml(QString fileName);
         
 signals:
     void itemAdded(QGraphicsItem *item);
@@ -93,8 +99,6 @@ signals:
 
 public slots:
     void setPlayheadPosition(int value);
-    void exportXml();
-    void importXml();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
@@ -114,19 +118,16 @@ private:
     ResizeableItem *m_movingItem;
     QPointF m_oldPos;
     int m_fileVersion;
+    QString m_actPluginName;
 
     void initialize();
     void addBackgroundRect();
-    void writeKeyframes(QDataStream &dataStream, ResizeableItem *item) const;
     void readKeyframes(QDataStream &dataStream, ResizeableItem *item);
     void copyKeyframes(ResizeableItem *item);
     void writeKeyframes(QDomDocument *doc, QDomElement *element, ResizeableItem *item);
     void readKeyframes(QDomElement *element, ResizeableItem *item);
 };
 
-QDataStream &operator<<(QDataStream &, const AnimationScene *);
 QDataStream &operator>>(QDataStream &, AnimationScene *);
-QString getItemTypeName(ResizeableItem *item);
-bool isAnimationMakerItem(QGraphicsItem *item);
 
 #endif // ANIMATIONSCENE_H

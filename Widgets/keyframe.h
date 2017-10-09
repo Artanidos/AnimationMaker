@@ -18,30 +18,38 @@
 **
 ****************************************************************************/
 
-#ifndef BITMAP_H
-#define BITMAP_H
+#ifndef KEYFRAME_H
+#define KEYFRAME_H
 
-#include <QGraphicsItem>
-#include "resizeableitem.h"
+#include <QVariant>
+#include "widgets_global.h"
 
-class Bitmap : public ResizeableItem
+class WIDGETSSHARED_EXPORT KeyFrame : public QObject
 {
     Q_OBJECT
 public:
-    Bitmap();
-    Bitmap(QString filename, AnimationScene *scene);
-    Bitmap(QImage img, qreal width, qreal height, AnimationScene *scene);
+    KeyFrame();
 
-    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
+    inline QVariant value() {return m_value;}
+    inline void setValue(QVariant value) {m_value = value;}
+    inline int time() {return m_time;}
+    inline void setTime(int value) {m_time = value;}
+    inline int easing() {return m_easing;}
+    inline void setEasing(int value) {m_easing = value; emit easingChanged(value);}
+    inline KeyFrame *next() {return m_next;}
+    inline void setNext(KeyFrame *value) {m_next = value;}
+    inline KeyFrame *prev() {return m_prev;}
+    inline void setPrev(KeyFrame *value) {m_prev = value;}
 
-    QImage getImage();
-    void setImage(QImage image);
-
-    enum { Type = UserType + 4 };
-    int type() const Q_DECL_OVERRIDE;
+signals:
+    void easingChanged(int);
 
 private:
-    QImage m_image;
+    QVariant m_value;
+    int m_time;
+    int m_easing;
+    KeyFrame *m_next;
+    KeyFrame *m_prev;
 };
 
-#endif // BITMAP_H
+#endif // KEYFRAME_H

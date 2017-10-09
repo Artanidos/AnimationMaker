@@ -18,30 +18,37 @@
 **
 ****************************************************************************/
 
-#include "rectangle.h"
+#include "ellipse.h"
 #include <QtTest/QTest>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
-#include "animationscene.h"
 
-Rectangle::Rectangle(qreal width, qreal height, AnimationScene *scene)
+Ellipse::Ellipse(qreal width, qreal height, AnimationScene *scene)
     : ResizeableItem(scene)
 {
     setRect(0, 0, width, height);
 }
 
-int Rectangle::type() const
+QDomElement Ellipse::getXml(QDomDocument doc)
 {
-    return Rectangle::Type;
+    QDomElement ele = doc.createElement("Ellipse");
+    writeAttributes(ele);
+    ele.setAttribute("pen", pen().color().name());
+    ele.setAttribute("brush", brush().color().name());
+    return ele;
 }
 
-void Rectangle::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
+int Ellipse::type() const
 {
-    Q_UNUSED(option);
+    return Ellipse::Type;
+}
+
+void Ellipse::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
     Q_UNUSED(widget);
     paint->setPen(pen());
     paint->setBrush(brush());
-    paint->drawRect(rect());
+    paint->drawEllipse(rect());
 
     if (option->state & QStyle::State_Selected)
         drawHighlightSelected(paint, option);

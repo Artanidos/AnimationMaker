@@ -1,3 +1,8 @@
+1.6
+---
+- Saving files is done in XML now only. Binary files can still be readed.
+- New plugin technology for items added.
+
 1.5
 ---
 - App icon added

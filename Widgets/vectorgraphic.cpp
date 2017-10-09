@@ -62,6 +62,26 @@ Vectorgraphic::Vectorgraphic(QByteArray arr, AnimationScene *scene)
     setRect(0, 0, m_svg->boundingRect().width(), m_svg->boundingRect().height());
 }
 
+QDomElement Vectorgraphic::getXml(QDomDocument doc)
+{
+    QDomElement ele = doc.createElement("Vectorgraphic");
+    writeAttributes(ele);
+    ele.setAttribute("xscale", QVariant(xscale()).toString());
+    ele.setAttribute("yscale", QVariant(yscale()).toString());
+    ele.appendChild(doc.createCDATASection(QString::fromLatin1(getData())));
+    QDomElement atts = doc.createElement("Attributes");
+    for(int i = 0; i < attributes().count(); i++)
+    {
+        QString key = attributes().keys().at(i);
+        QDomElement attribute = doc.createElement("Attribute");
+        attribute.setAttribute("attributeName", key);
+        attribute.setAttribute("value", attributes().value(key));
+        atts.appendChild(attribute);
+    }
+    ele.appendChild(atts);
+    return ele;
+}
+
 void Vectorgraphic::setData(QByteArray data)
 {
     m_data = data;

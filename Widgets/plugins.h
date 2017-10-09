@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2016 Olaf Japp
+** Copyright (C) 2017 Olaf Japp
 **
 ** This file is part of AnimationMaker.
 **
@@ -18,23 +18,23 @@
 **
 ****************************************************************************/
 
-#ifndef RECTANGLE_H
-#define RECTANGLE_H
+#ifndef PLUGINS_H
+#define PLUGINS_H
 
-#include <QGraphicsItem>
-#include <QObject>
-#include "resizeableitem.h"
+#include <QMap>
+#include "../interfaces.h"
+#include "widgets_global.h"
 
-class Rectangle : public ResizeableItem
+class WIDGETSSHARED_EXPORT Plugins
 {
-    Q_OBJECT
 public:
-    Rectangle(qreal width, qreal height, AnimationScene *scene);
+    static ItemInterface *getItemPlugin(QString name);
+    static bool hasItemPlugin(QString name);
+    static QList<QString> itemPluginNames();
+    static void insert(QString name, ItemInterface* plugin);
 
-    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
-
-    enum { Type = UserType + 1 };
-    int type() const Q_DECL_OVERRIDE;
+private:
+    static QMap<QString, ItemInterface*> itemPlugins;
 };
 
-#endif // RECTANGLE_H
+#endif // PLUGINS_H

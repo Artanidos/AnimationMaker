@@ -23,8 +23,9 @@
 
 #include <QWidget>
 #include "resizeableitem.h"
+#include "widgets_global.h"
 
-class TransitionLine : public QWidget
+class WIDGETSSHARED_EXPORT TransitionLine : public QWidget
 {
     Q_OBJECT
 public:

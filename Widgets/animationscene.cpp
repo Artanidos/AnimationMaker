@@ -21,6 +21,7 @@
 #include "animationscene.h"
 #include "rectangle.h"
 #include "resizeableitem.h"
+#include "plugins.h"
 #include "ellipse.h"
 #include "text.h"
 #include "bitmap.h"
@@ -143,6 +144,12 @@ void AnimationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void AnimationScene::setEditMode(EditMode mode)
 {
     m_editMode = mode;
+}
+
+void AnimationScene::setEditMode(QString pluginName)
+{
+    m_editMode = EditMode::ModePlugin;
+    m_actPluginName = pluginName;
 }
 
 void AnimationScene::addBackgroundRect()
@@ -346,148 +353,8 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
     return dataStream;
 }
 
-void AnimationScene::writeKeyframes(QDataStream &dataStream, ResizeableItem *item) const
+void AnimationScene::importXml(QString fileName)
 {
-    dataStream << item->keyframes()->count();
-    QHash<QString, KeyFrame*>::iterator it;
-    for(it = item->keyframes()->begin(); it != item->keyframes()->end(); it++)
-    {
-        dataStream << it.key();
-        KeyFrame *first = it.value();
-        int count = 0;
-        for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
-            count++;
-
-        dataStream << count;
-        for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
-        {
-            dataStream << frame->time();
-            dataStream << frame->value();
-            dataStream << frame->easing();
-        }
-    }
-}
-
-QDataStream& AnimationScene::write(QDataStream &dataStream) const
-{
-    dataStream << width();
-    dataStream << height();
-    dataStream << fps();
-    dataStream << backgroundColor();
-
-    QList<QGraphicsItem*> itemList = items(Qt::AscendingOrder);
-    foreach (QGraphicsItem *item, itemList)
-    {
-        switch(item->type())
-        {
-            case Rectangle::Type:
-            {
-                Rectangle *r = dynamic_cast<Rectangle *>(item);
-                dataStream << Rectangle::Type;
-                dataStream << r->id();
-                dataStream << r->pos().x();
-                dataStream << r->pos().y();
-                dataStream << r->rect().width();
-                dataStream << r->rect().height();
-                dataStream << r->pen();
-                dataStream << r->brush();
-                dataStream << r->opacity();
-
-                writeKeyframes(dataStream, r);
-                break;
-            }
-            case Ellipse::Type:
-            {
-                Ellipse *e = dynamic_cast<Ellipse *>(item);
-                dataStream << Ellipse::Type;
-                dataStream << e->id();
-                dataStream << e->pos().x();
-                dataStream << e->pos().y();
-                dataStream << e->rect().width();
-                dataStream << e->rect().height();
-                dataStream << e->pen();
-                dataStream << e->brush();
-                dataStream << e->opacity();
-
-                writeKeyframes(dataStream, e);
-                break;
-            }
-            case Text::Type:
-            {
-                Text *t = dynamic_cast<Text *>(item);
-                dataStream << Text::Type;
-                dataStream << t->id();
-                dataStream << t->pos().x();
-                dataStream << t->pos().y();
-                dataStream << t->xscale();
-                dataStream << t->yscale();
-                dataStream << t->text();
-                dataStream << t->textcolor();
-                dataStream << t->opacity();
-                dataStream << t->font();
-
-                writeKeyframes(dataStream, t);
-                break;
-            }
-            case Bitmap::Type:
-            {
-                Bitmap *b = dynamic_cast<Bitmap *>(item);
-                dataStream << Bitmap::Type;
-                dataStream << b->id();
-                dataStream << b->pos().x();
-                dataStream << b->pos().y();
-                dataStream << b->rect().width();
-                dataStream << b->rect().height();
-                dataStream << b->getImage();
-                dataStream << b->opacity();
-
-                writeKeyframes(dataStream, b);
-                break;
-            }
-            case Vectorgraphic::Type:
-            {
-                Vectorgraphic *v = dynamic_cast<Vectorgraphic *>(item);
-                dataStream << Vectorgraphic::Type;
-                dataStream << v->id();
-                dataStream << v->pos().x();
-                dataStream << v->pos().y();
-                dataStream << v->xscale();
-                dataStream << v->yscale();
-                dataStream << v->opacity();
-                dataStream << v->getData();
-
-                dataStream << v->attributes().count();
-                foreach(QString key, v->attributes().keys())
-                {
-                    dataStream << key;
-                    dataStream << v->attributes().value(key);
-                }
-
-                writeKeyframes(dataStream, v);
-                break;
-            }
-            default:
-                break;
-        }
-    }
-    return dataStream;
-}
-
-void AnimationScene::importXml()
-{
-    QString fileName;
-    QFileDialog *dialog = new QFileDialog();
-    dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter("XML format (*.xml);;All Files (*)");
-    dialog->setWindowTitle("Import Animation from XML");
-    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
-    dialog->setAcceptMode(QFileDialog::AcceptOpen);
-    if(dialog->exec())
-        fileName = dialog->selectedFiles().first();
-    delete dialog;
-    if(fileName.isEmpty())
-        return;
-
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
     {
@@ -514,7 +381,7 @@ void AnimationScene::importXml()
     }
     for(int i=0; i < docElem.childNodes().count(); i++)
     {
-        QDomNode node =docElem.childNodes().at(i);
+        QDomNode node = docElem.childNodes().at(i);
         if(node.nodeName() == "Rectangle")
         {
             QDomElement ele = node.toElement();
@@ -615,26 +482,28 @@ void AnimationScene::importXml()
             readKeyframes(&ele, v);
             addItem(v);
         }
+        else
+        {
+            // found elememt from plugin
+            foreach(QString key, Plugins::itemPluginNames())
+            {
+                ItemInterface *item = Plugins::getItemPlugin(key);
+                if(node.nodeName() == item->tagName())
+                {
+                    QDomElement ele = node.toElement();
+                    ResizeableItem *i = item->getInstanceFromXml(this, ele);
+                    i->setFlag(QGraphicsItem::ItemIsMovable, true);
+                    i->setFlag(QGraphicsItem::ItemIsSelectable, true);
+                    readKeyframes(&ele, i);
+                    addItem(i);
+                }
+            }
+        }
     }
 }
 
-void AnimationScene::exportXml()
-{
-    QString fileName;
-    QFileDialog *dialog = new QFileDialog();
-    dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter("XML format (*.xml);;All Files (*)");
-    dialog->setWindowTitle("Export Animation to XML");
-    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
-    dialog->setAcceptMode(QFileDialog::AcceptSave);
-    if(dialog->exec())
-        fileName = dialog->selectedFiles().first();
-    delete dialog;
-    if(fileName.isEmpty())
-        return;
-
-    bool exportAll = selectedItems().count() == 0;
-
+void AnimationScene::exportXml(QString fileName, bool exportAll)
+{   
     QDomDocument doc;
     QDomElement root;
     QFile file(fileName);
@@ -660,95 +529,12 @@ void AnimationScene::exportXml()
 
     for(int i=0; i < items().count(); i++)
     {
-        QGraphicsItem *item = items().at(i);
-        Rectangle *r = dynamic_cast<Rectangle*>(item);
-        if(r)
+        ResizeableItem *item = dynamic_cast<ResizeableItem*>(items().at(i));
+        if(item)
         {
-            QDomElement rect = doc.createElement("Rectangle");
-            rect.setAttribute("id", r->id());
-            rect.setAttribute("left", QVariant(r->left()).toString());
-            rect.setAttribute("top", QVariant(r->top()).toString());
-            rect.setAttribute("width", QVariant(r->rect().width()).toString());
-            rect.setAttribute("height", QVariant(r->rect().height()).toString());
-            rect.setAttribute("pen", r->pen().color().name());
-            rect.setAttribute("brush", r->brush().color().name());
-            rect.setAttribute("opacity", r->opacity());
-            writeKeyframes(&doc, &rect, r);
-            root.appendChild(rect);
-        }
-        Ellipse *e = dynamic_cast<Ellipse*>(item);
-        if(e)
-        {
-            QDomElement ellipse = doc.createElement("Ellipse");
-            ellipse.setAttribute("id", e->id());
-            ellipse.setAttribute("left", QVariant(e->left()).toString());
-            ellipse.setAttribute("top", QVariant(e->top()).toString());
-            ellipse.setAttribute("width", QVariant(e->rect().width()).toString());
-            ellipse.setAttribute("height", QVariant(e->rect().height()).toString());
-            ellipse.setAttribute("pen", e->pen().color().name());
-            ellipse.setAttribute("brush", e->brush().color().name());
-            ellipse.setAttribute("opacity", e->opacity());
-            writeKeyframes(&doc, &ellipse, e);
-            root.appendChild(ellipse);
-        }
-        Text *t = dynamic_cast<Text*>(item);
-        if(t)
-        {
-            QDomElement text = doc.createElement("Text");
-            text.setAttribute("id", t->id());
-            text.setAttribute("left", QVariant(t->left()).toString());
-            text.setAttribute("top", QVariant(t->top()).toString());
-            text.setAttribute("xscale", QVariant(t->xscale()).toString());
-            text.setAttribute("yscale", QVariant(t->yscale()).toString());
-            text.setAttribute("text", t->text());
-            text.setAttribute("textcolor", t->textcolor().name());
-            text.setAttribute("opacity", t->opacity());
-            text.setAttribute("font-family", t->font().family());
-            text.setAttribute("font-size", t->font().pointSize());
-            text.setAttribute("font-style", t->font().styleName());
-            writeKeyframes(&doc, &text, t);
-            root.appendChild(text);
-        }
-        Bitmap *b = dynamic_cast<Bitmap*>(item);
-        if(b)
-        {
-            QByteArray byteArray;
-            QBuffer buffer(&byteArray);
-            b->getImage().save(&buffer, "PNG");
-            QDomElement bitmap = doc.createElement("Bitmap");
-            bitmap.setAttribute("id", b->id());
-            bitmap.setAttribute("left", QVariant(b->left()).toString());
-            bitmap.setAttribute("top", QVariant(b->top()).toString());
-            bitmap.setAttribute("width", QVariant(b->rect().width()).toString());
-            bitmap.setAttribute("height", QVariant(b->rect().height()).toString());
-            bitmap.setAttribute("opacity", b->opacity());
-            bitmap.appendChild(doc.createCDATASection(QString::fromLatin1(byteArray.toBase64().data())));
-            writeKeyframes(&doc, &bitmap, b);
-            root.appendChild(bitmap);
-        }
-        Vectorgraphic *v = dynamic_cast<Vectorgraphic*>(item);
-        if(v)
-        {
-            QDomElement vectorgraphic = doc.createElement("Vectorgraphic");
-            vectorgraphic.setAttribute("id", v->id());
-            vectorgraphic.setAttribute("left", QVariant(v->left()).toString());
-            vectorgraphic.setAttribute("top", QVariant(v->top()).toString());
-            vectorgraphic.setAttribute("xscale", QVariant(v->xscale()).toString());
-            vectorgraphic.setAttribute("yscale", QVariant(v->yscale()).toString());
-            vectorgraphic.setAttribute("opacity", v->opacity());
-            vectorgraphic.appendChild(doc.createCDATASection(QString::fromLatin1(v->getData())));
-            QDomElement attributes = doc.createElement("Attributes");
-            for(int i = 0; i < v->attributes().count(); i++)
-            {
-                QString key = v->attributes().keys().at(i);
-                QDomElement attribute = doc.createElement("Attribute");
-                attribute.setAttribute("attributeName", key);
-                attribute.setAttribute("value", v->attributes().value(key));
-                attributes.appendChild(attribute);
-            }
-            vectorgraphic.appendChild(attributes);
-            writeKeyframes(&doc, &vectorgraphic, v);
-            root.appendChild(vectorgraphic);
+            QDomElement ele = item->getXml(doc);
+            writeKeyframes(&doc, &ele, item);
+            root.appendChild(ele);
         }
     }
     QTextStream stream(&file);
@@ -1036,57 +822,7 @@ void AnimationScene::setPlayheadPosition(int val)
     }
 }
 
-QDataStream& operator <<(QDataStream &out, const AnimationScene *s)
-{
-    return s->write(out);
-}
-
 QDataStream& operator >>(QDataStream &in, AnimationScene *s)
 {
     return s->read(in);
-}
-
-QString getItemTypeName(ResizeableItem *item)
-{
-    switch(item->type())
-    {
-        case Rectangle::Type:
-        {
-            return QString("Rectangle");
-        }
-        case Ellipse::Type:
-        {
-            return QString("Ellipse");
-        }
-        case Text::Type:
-        {
-            return QString("Text");
-        }
-        case Bitmap::Type:
-        {
-            return QString("Bitmap");
-        }
-        case Vectorgraphic::Type:
-        {
-            return QString("Vectorgraphic");
-        }
-        default:
-            qWarning() << "unknown item type: " << item->type();
-            break;
-    }
-    return QString();
-}
-
-bool isAnimationMakerItem(QGraphicsItem *item)
-{
-    switch(item->type())
-    {
-        case Rectangle::Type:
-        case Ellipse::Type:
-        case Text::Type:
-        case Bitmap::Type:
-        case Vectorgraphic::Type:
-            return true;
-    }
-    return false;
 }

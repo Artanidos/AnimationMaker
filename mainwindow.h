@@ -62,6 +62,7 @@ private:
     void createActions();
     void createStatusBar();
     void createGui();
+    void loadPlugins();
     void writeSettings();
     void readSettings();
     void writeFile(QString fileName);
@@ -92,6 +93,7 @@ private:
     QAction *newAct;
     QAction *saveAct;
     QAction *saveAsAct;
+    QAction *saveItemAsAct;
     QAction *exitAct;
     QAction *aboutAct;
     QAction *selectAct;
@@ -104,8 +106,6 @@ private:
     QAction *showToolPanelAct;
     QAction *showNewsPanelAct;
     QAction *showElementsAct;
-    QAction *importXmlAct;
-    QAction *exportXmlAct;
     QAction *exportMovieAct;
     QAction *undoAct;
     QAction *redoAct;
@@ -124,11 +124,10 @@ private:
 public slots:
     void reset();
     void exportMovie();
-    void importXml();
-    void exportXml();
     void about();
     void save();
     void saveAs();
+    void saveItemAs();
     void open();
     void newfile();
     void setSelectMode();
@@ -137,6 +136,7 @@ public slots:
     void setTextMode();
     void setBitmapMode();
     void setSvgMode();
+    void setPluginMode();
     void elementTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*);
     void sceneItemAdded(QGraphicsItem *);
     void showPropertyPanel();

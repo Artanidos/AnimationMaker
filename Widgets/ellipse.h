@@ -18,53 +18,27 @@
 **
 ****************************************************************************/
 
-#include "bitmap.h"
+#ifndef ELLIPSE_H
+#define ELLIPSE_H
 
-#include <QtTest/QTest>
-#include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
+#include <QObject>
+#include "resizeableitem.h"
+#include "widgets_global.h"
 
-Bitmap::Bitmap()
-    : ResizeableItem(NULL)
+class AnimationScene;
+class WIDGETSSHARED_EXPORT Ellipse : public ResizeableItem
 {
+    Q_OBJECT
+public:
+    Ellipse(qreal width, qreal height, AnimationScene *scene);
 
-}
+    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 
-Bitmap::Bitmap(QString filename, AnimationScene *scene)
-    : ResizeableItem(scene)
-{
-    m_image.load(filename);
-    setRect(0, 0, m_image.width(), m_image.height());
-}
+    enum { Type = UserType + 2 };
+    int type() const Q_DECL_OVERRIDE;
+    QString typeName() {return "Ellipse";}
+    QDomElement getXml(QDomDocument);
+};
 
-Bitmap::Bitmap(QImage image, qreal width, qreal height, AnimationScene *scene)
-    :ResizeableItem(scene)
-{
-    m_image = image;
-    setRect(0, 0, width, height);
-}
-
-void Bitmap::setImage(QImage image)
-{
-    m_image = image;
-}
-
-int Bitmap::type() const
-{
-    return Bitmap::Type;
-}
-
-void Bitmap::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    Q_UNUSED(widget);
-
-    paint->drawImage(0, 0, m_image.scaled(rect().width(), rect().height()));
-
-    if (option->state & QStyle::State_Selected)
-        drawHighlightSelected(paint, option);
-}
-
-QImage Bitmap::getImage()
-{
-    return m_image;
-}
+#endif // ELLIPSE_H

@@ -18,47 +18,26 @@
 **
 ****************************************************************************/
 
-#ifndef TEXT_H
-#define TEXT_H
+#ifndef RECTANGLE_H
+#define RECTANGLE_H
 
 #include <QGraphicsItem>
-#include <QGraphicsRectItem>
-#include <QColor>
-#include <QFont>
+#include <QObject>
 #include "resizeableitem.h"
+#include "widgets_global.h"
 
-class AnimationScene;
-class Text : public ResizeableItem
+class WIDGETSSHARED_EXPORT Rectangle : public ResizeableItem
 {
     Q_OBJECT
 public:
-    Text(QString text, AnimationScene *scene);
+    Rectangle(qreal width, qreal height, AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
-    void scaleObjects();
-    void setScale(qreal x, qreal y);
-    QString text();
-    void setText(QString text);
 
-    QColor textcolor();
-    void setTextcolor(QColor textcolor);
-
-    inline QFont font() {return m_font;}
-    void setFont(QFont font);
-
-    enum { Type = UserType + 3 };
+    enum { Type = UserType + 1 };
     int type() const Q_DECL_OVERRIDE;
-
-signals:
-    void textcolorChanged(QColor);
-
-private:
-    QFont m_font;
-    QString m_text;
-    QGraphicsSimpleTextItem *m_textitem;
-    QColor m_textcolor;
-    qreal m_width;
-    qreal m_height;
+    QString typeName() {return "Rectangle";}
+    QDomElement getXml(QDomDocument);
 };
 
-#endif // TEXT_H
+#endif // RECTANGLE_H

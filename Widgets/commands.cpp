@@ -24,6 +24,8 @@
 #include "text.h"
 #include "bitmap.h"
 #include "vectorgraphic.h"
+#include "../interfaces.h"
+#include "plugins.h"
 
 AddItemCommand::AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, QString fileName, AnimationScene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
@@ -88,6 +90,17 @@ AddItemCommand::AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, 
             setText(QObject::tr("Add Vectorgraphic"));
             break;
         }
+        case AnimationScene::EditMode::ModePlugin:
+        {
+            ItemInterface *item = Plugins::getItemPlugin(m_scene->actPluginName());
+            m_item = item->getInstance(m_scene);
+            m_item->setId(item->displayName());
+            m_item->setFlag(QGraphicsItem::ItemIsMovable, true);
+            m_item->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            m_item->setPos(x, y);
+            setText("Add " + item->displayName());
+            break;
+        }
     }
 }
 
@@ -118,7 +131,7 @@ DeleteItemCommand::DeleteItemCommand(ResizeableItem *item, AnimationScene *scene
 {
     m_scene = scene;
     m_item = item;
-    setText("Delete " + getItemTypeName(item));
+    setText("Delete " + item->typeName());
 }
 
 DeleteItemCommand::~DeleteItemCommand()
@@ -152,7 +165,7 @@ MoveItemCommand::MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, Anima
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_item = item;
-    setText("Move " + getItemTypeName(item));
+    setText("Move " + item->typeName());
 }
 
 void MoveItemCommand::undo()
@@ -181,7 +194,7 @@ ResizeItemCommand::ResizeItemCommand(qreal width, qreal height, qreal oldwidth, 
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_item = item;
-    setText("Resize " + getItemTypeName(item));
+    setText("Resize " + item->typeName());
 }
 
 void ResizeItemCommand::undo()
@@ -216,7 +229,7 @@ ScaleItemCommand::ScaleItemCommand(qreal x, qreal y, qreal width, qreal height, 
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_item = item;
-    setText("Scale " + getItemTypeName(item));
+    setText("Scale " + item->typeName());
 }
 
 void ScaleItemCommand::undo()
@@ -251,7 +264,7 @@ ChangeIdCommand::ChangeIdCommand(QString id, QString oldid, ResizeableItem *item
     m_id = id;
     m_oldid = oldid;
     m_item = item;
-    setText("Change " + getItemTypeName(item) + " Id");
+    setText("Change " + item->typeName() + " Id");
 }
 
 void ChangeIdCommand::undo()
@@ -270,7 +283,7 @@ ChangeColorCommand::ChangeColorCommand(QColor color, QColor oldcolor, Resizeable
     m_color = color;
     m_oldcolor = oldcolor;
     m_item = item;
-    setText("Change " + getItemTypeName(item) + " Color");
+    setText("Change " + item->typeName() + " Color");
 }
 
 void ChangeColorCommand::undo()
@@ -289,7 +302,7 @@ ChangePenCommand::ChangePenCommand(QColor color, QColor oldcolor, ResizeableItem
     m_color = color;
     m_oldcolor = oldcolor;
     m_item = item;
-    setText("Change " + getItemTypeName(item) + " Pen");
+    setText("Change " + item->typeName() + " Pen");
 }
 
 void ChangePenCommand::undo()
@@ -308,7 +321,7 @@ ChangeTextcolorCommand::ChangeTextcolorCommand(QColor color, QColor oldcolor, Te
     m_color = color;
     m_oldcolor = oldcolor;
     m_item = item;
-    setText("Change " + getItemTypeName(item) + " Textcolor");
+    setText("Change " + item->typeName() + " Textcolor");
 }
 
 void ChangeTextcolorCommand::undo()
@@ -349,7 +362,7 @@ ChangeOpacityCommand::ChangeOpacityCommand(int opacity, int oldopacity, Animatio
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_item = item;
-    setText("Change " + getItemTypeName(item) + " Opacity");
+    setText("Change " + item->typeName() + " Opacity");
 }
 
 void ChangeOpacityCommand::undo()
@@ -371,7 +384,7 @@ AddKeyframeCommand::AddKeyframeCommand(QString propertyName, KeyFrame *frame, Re
     m_frame = frame;
     m_item = item;
     m_timeline = timeline;
-    setText("Add " + getItemTypeName(item) + " Keyframe");
+    setText("Add " + item->typeName() + " Keyframe");
 }
 
 void AddKeyframeCommand::undo()
@@ -391,7 +404,7 @@ DeleteKeyframeCommand::DeleteKeyframeCommand(QString propertyName, KeyFrame *fra
     m_frame = frame;
     m_item = item;
     m_timeline = timeline;
-    setText("Delete " + getItemTypeName(item) + " Keyframe");
+    setText("Delete " + item->typeName() + " Keyframe");
 }
 
 void DeleteKeyframeCommand::undo()
@@ -411,7 +424,7 @@ AddTransitionCommand::AddTransitionCommand(QString propertyName, KeyFrame *frame
     m_frame = frame;
     m_item = item;
     m_timeline = timeline;
-    setText("Add " + getItemTypeName(item) + " Transition");
+    setText("Add " + item->typeName() + " Transition");
 }
 
 void AddTransitionCommand::undo()
@@ -431,7 +444,7 @@ DeleteTransitionCommand::DeleteTransitionCommand(QString propertyName, KeyFrame 
     m_frame = frame;
     m_item = item;
     m_timeline = timeline;
-    setText("Delete " + getItemTypeName(item) + " Transition");
+    setText("Delete " + item->typeName() + " Transition");
 }
 
 void DeleteTransitionCommand::undo()
@@ -486,7 +499,7 @@ RaiseItemCommand::RaiseItemCommand(ResizeableItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_item = item;
-    setText("Raise " + getItemTypeName(item));
+    setText("Raise " + item->typeName());
 }
 
 void RaiseItemCommand::undo()
@@ -503,7 +516,7 @@ LowerItemCommand::LowerItemCommand(ResizeableItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_item = item;
-    setText("Lower " + getItemTypeName(item));
+    setText("Lower " + item->typeName());
 }
 
 void LowerItemCommand::undo()
@@ -520,7 +533,7 @@ BringItemToFrontCommand::BringItemToFrontCommand(ResizeableItem *item, QUndoComm
     : QUndoCommand(parent)
 {
     m_item = item;
-    setText("Bring " + getItemTypeName(item) + " to front");
+    setText("Bring " + item->typeName() + " to front");
 }
 
 void BringItemToFrontCommand::undo()
@@ -537,7 +550,7 @@ SendItemToBackCommand::SendItemToBackCommand(ResizeableItem *item, QUndoCommand 
     : QUndoCommand(parent)
 {
     m_item = item;
-    setText("Send " + getItemTypeName(item) + " to back");
+    setText("Send " + item->typeName() + " to back");
 }
 
 void SendItemToBackCommand::undo()

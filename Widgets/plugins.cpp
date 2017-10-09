@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2016 Olaf Japp
+** Copyright (C) 2017 Olaf Japp
 **
 ** This file is part of AnimationMaker.
 **
@@ -18,36 +18,26 @@
 **
 ****************************************************************************/
 
-#ifndef PLAYHEAD_H
-#define PLAYHEAD_H
+#include "plugins.h"
 
-#include <QWidget>
+QMap<QString, ItemInterface*> Plugins::itemPlugins;
 
-class PlayHead : public QWidget
+ItemInterface *Plugins::getItemPlugin(QString name)
 {
-    Q_OBJECT
-public:
-    PlayHead();
+    return itemPlugins[name];
+}
 
-    void paintEvent(QPaintEvent *ev);
-    void mousePressEvent(QMouseEvent *ev);
-    void mouseMoveEvent(QMouseEvent *ev);
-    void mouseReleaseEvent(QMouseEvent *ev);
+bool Plugins::hasItemPlugin(QString name)
+{
+    return itemPlugins.contains(name);
+}
 
-    inline void setValue(int value) {m_value = value; update(); emit valueChanged(value);}
-    inline int value() {return m_value;}
+QList<QString> Plugins::itemPluginNames()
+{
+    return itemPlugins.keys();
+}
 
-public slots:
-    void scrollValueChanged(int pos);
-
-signals:
-    void valueChanged(int val);
-
-private:
-    QImage m_image;
-    bool m_pressed;
-    int m_value;
-    int m_horizontalScrollPos;
-};
-
-#endif // PLAYHEAD_H
+void Plugins::insert(QString name, ItemInterface *plugin)
+{
+    itemPlugins.insert(name, plugin);
+}

@@ -25,11 +25,13 @@
 #include <QPropertyAnimation>
 #include <QAction>
 #include <QList>
+#include <QDomElement>
 #include "itemhandle.h"
 #include "keyframe.h"
+#include "widgets_global.h"
 
 class AnimationScene;
-class ResizeableItem : public QObject, public QGraphicsItem
+class WIDGETSSHARED_EXPORT ResizeableItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal top READ top)
@@ -39,6 +41,9 @@ public:
     ResizeableItem() {}
     ResizeableItem(AnimationScene *scene);
     ~ResizeableItem();
+
+    virtual QString typeName() = 0;
+    virtual QDomElement getXml(QDomDocument) = 0;
 
     void setScene(AnimationScene *scene);
     void drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option);
@@ -89,7 +94,10 @@ public:
     void raise();
     void bringToFront();
     void sendToBack();
+    void readAttributes(QDomElement);
 
+protected:
+    void writeAttributes(QDomElement);
 
 private:
     bool m_deleted;
