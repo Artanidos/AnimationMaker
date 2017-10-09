@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>sample.png</file>
         <file>cursor.png</file>
+        <file>pie.png</file>
     </qresource>
 </RCC>

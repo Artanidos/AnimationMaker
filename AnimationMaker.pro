@@ -20,5 +20,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     Widgets \
-    plugins/FirstItem \
+    plugins/Pie \
     App.pro \

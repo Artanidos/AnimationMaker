@@ -18,8 +18,8 @@
 **
 ****************************************************************************/
 
-#ifndef FIRSTITEM_H
-#define FIRSTITEM_H
+#ifndef PIEITEM_H
+#define PIEITEM_H
 
 #include <QtPlugin>
 #include <QObject>
@@ -30,35 +30,33 @@
 #include "interfaces.h"
 #include "resizeableitem.h"
 
-class FirstItem : public ItemInterface
+class PieItem : public ItemInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "com.github.Artanidos.AnimationMaker.ItemInterface")
     Q_INTERFACES(ItemInterface)
 
 public:
-    FirstItem() {}
-    QString tagName() override {return "First";}
-    QString className() override {return "FirstItem";}
-    QString displayName() override {return "First Item";}
-    QIcon icon() override {return QIcon(":/sample.png");}
+    PieItem() {}
+    QString tagName() override {return "Pie";}
+    QString className() override {return "PieItem";}
+    QString displayName() override {return "Pie Item";}
+    QIcon icon() override {return QIcon(":/pie.png");}
     QCursor getCursor() override {return QCursor(QPixmap::fromImage(QImage(":/cursor.png")));}
     ResizeableItem *getInstance(AnimationScene *scene) override;
     ResizeableItem *getInstanceFromXml(AnimationScene *scene, QDomElement ele) override;
  };
 
-class First : public ResizeableItem
+class Pie : public ResizeableItem
 {
     Q_OBJECT
 public:
-    First(AnimationScene *scene);
+    Pie(AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 
-    //enum { Type = UserType + 2 };
-    //int type() const Q_DECL_OVERRIDE;
-    QString typeName() {return "First";}
+    QString typeName() {return "Pie";}
     QDomElement getXml(QDomDocument);
 };
 
-#endif // FIRSTITEM_H
+#endif // PIEITEM_H

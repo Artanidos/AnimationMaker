@@ -18,38 +18,38 @@
 **
 ****************************************************************************/
 
-#include "firstitem.h"
+#include "pieitem.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-ResizeableItem *FirstItem::getInstance(AnimationScene *scene)
+ResizeableItem *PieItem::getInstance(AnimationScene *scene)
 {
-    return new First(scene);
+    return new Pie(scene);
 }
 
-ResizeableItem *FirstItem::getInstanceFromXml(AnimationScene *scene, QDomElement ele)
+ResizeableItem *PieItem::getInstanceFromXml(AnimationScene *scene, QDomElement ele)
 {
-    First *first = new First(scene);
+    Pie *first = new Pie(scene);
     first->readAttributes(ele);
     return first;
 }
 
-First::First(AnimationScene *scene)
+Pie::Pie(AnimationScene *scene)
     : ResizeableItem(scene)
 {
     setRect(0, 0, 200, 200);
 }
 
-QDomElement First::getXml(QDomDocument doc)
+QDomElement Pie::getXml(QDomDocument doc)
 {
-    QDomElement ele = doc.createElement("First");
+    QDomElement ele = doc.createElement("Pie");
     writeAttributes(ele);
     return ele;
 }
 
-void First::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Pie::paint(QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget);
     paint->setPen(pen());

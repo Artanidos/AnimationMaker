@@ -19,11 +19,13 @@
 QT           += widgets gui core testlib xml
 TEMPLATE      = lib
 CONFIG       += plugin
-TARGET		  = FirstItem
+TARGET		  = Pie
 INCLUDEPATH  += ../../
-SOURCES		 += firstitem.cpp
-HEADERS		 += firstitem.h \
-    ../../interfaces.h
+SOURCES		 += \
+    pieitem.cpp
+HEADERS		 += \
+    ../../interfaces.h \
+    pieitem.h
 DESTDIR       = ~/AnimationMaker/plugins
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
