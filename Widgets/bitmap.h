@@ -42,6 +42,7 @@ public:
     int type() const Q_DECL_OVERRIDE;
     QString typeName() {return "Bitmap";}
     QDomElement getXml(QDomDocument);
+    bool hasBrushAndPen() {return false;}
 
 private:
     QImage m_image;

@@ -30,6 +30,12 @@
 #include <QGraphicsScene>
 #include <QMenu>
 
+ResizeableItem::ResizeableItem()
+{
+    m_deleted = false;
+    m_hasHandles = false;
+}
+
 ResizeableItem::ResizeableItem(AnimationScene *scene)
 {
     m_scene = scene;
@@ -258,6 +264,7 @@ QBrush ResizeableItem::brush() const
 {
     return m_brush;
 }
+
 void ResizeableItem::setBrush(const QBrush &brush)
 {
     m_brush = brush;

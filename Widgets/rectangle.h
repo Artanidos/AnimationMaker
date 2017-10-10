@@ -38,6 +38,7 @@ public:
     int type() const Q_DECL_OVERRIDE;
     QString typeName() {return "Rectangle";}
     QDomElement getXml(QDomDocument);
+    bool hasBrushAndPen() {return true;}
 };
 
 #endif // RECTANGLE_H

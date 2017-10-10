@@ -22,10 +22,14 @@ CONFIG       += plugin
 TARGET		  = Pie
 INCLUDEPATH  += ../../
 SOURCES		 += \
-    pieitem.cpp
+    pieitem.cpp \
+    propertyeditor.cpp \
+    commands.cpp
 HEADERS		 += \
     ../../interfaces.h \
-    pieitem.h
+    pieitem.h \
+    propertyeditor.h \
+    commands.h
 DESTDIR       = ~/AnimationMaker/plugins
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets

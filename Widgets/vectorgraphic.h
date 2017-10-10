@@ -51,6 +51,7 @@ public:
     int type() const Q_DECL_OVERRIDE;
     QString typeName() {return "Vectorgraphic";}
     QDomElement getXml(QDomDocument);
+    bool hasBrushAndPen() {return false;}
 
 signals:
     void attributeAdded();

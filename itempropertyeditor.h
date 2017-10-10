@@ -117,6 +117,7 @@ private:
     Expander *expSvg;
     ResizeableItem *m_item;
     Text *m_textitem;
+    QVBoxLayout *m_additionalPropertyBox;
 
     Ellipse *m_ellipse;
     QSlider *m_opacity;

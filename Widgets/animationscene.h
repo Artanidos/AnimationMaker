@@ -40,6 +40,7 @@ class WIDGETSSHARED_EXPORT AnimationScene : public QGraphicsScene
     Q_PROPERTY(int fps READ fps)
     Q_PROPERTY(int width READ width)
     Q_PROPERTY(int height READ height)
+
 public:
     AnimationScene();
 

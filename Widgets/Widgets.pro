@@ -39,7 +39,8 @@ SOURCES += \
     text.cpp \
     vectorgraphic.cpp \
     bitmap.cpp \
-    plugins.cpp
+    plugins.cpp \
+    expander.cpp
     
 
 HEADERS +=\
@@ -60,7 +61,9 @@ HEADERS +=\
     vectorgraphic.h \
     bitmap.h \
     plugins.h \
-    ../interfaces.h
+    ../interfaces.h \
+    expander.h \
+    propertyeditorinterface.h
     
 unix {
     target.path = /usr/lib

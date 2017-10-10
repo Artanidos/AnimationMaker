@@ -1,20 +1,20 @@
 /****************************************************************************
 ** Copyright (C) 2017 Olaf Japp
 **
-** This file is part of FlatSiteBuilder.
+** This file is part of AnimationMaker.
 **
-**  FlatSiteBuilder is free software: you can redistribute it and/or modify
+**  AnimationMaker is free software: you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
 **  (at your option) any later version.
 **
-**  FlatSiteBuilder is distributed in the hope that it will be useful,
+**  AnimationMaker is distributed in the hope that it will be useful,
 **  but WITHOUT ANY WARRANTY; without even the implied warranty of
 **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 **  GNU General Public License for more details.
 **
 **  You should have received a copy of the GNU General Public License
-**  along with FlatSiteBuilder.  If not, see <http://www.gnu.org/licenses/>.
+**  along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 **
 ****************************************************************************/
 
@@ -51,12 +51,28 @@ class Pie : public ResizeableItem
 {
     Q_OBJECT
 public:
-    Pie(AnimationScene *scene);
+    Pie(AnimationScene *scene, QString typeName);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 
-    QString typeName() {return "Pie";}
+    QString typeName() {return m_typeName;}
     QDomElement getXml(QDomDocument);
+    bool hasBrushAndPen() {return true;}
+    QList<PropertyEditorInterface*> *getPropertyEditors() override;
+
+    void setStartAngle(int angle);
+    int startAngle() {return m_startAngle;}
+    void setSpanAngle(int angle);
+    int spanAngle() {return m_spanAngle;}
+
+signals:
+    void startAngleChanged(int angle);
+    void spanAngleChanged(int angle);
+
+private:
+    int m_startAngle;
+    int m_spanAngle;
+    QString m_typeName;
 };
 
 #endif // PIEITEM_H

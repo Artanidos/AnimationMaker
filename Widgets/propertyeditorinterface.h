@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2016 Olaf Japp
+** Copyright (C) 2017 Olaf Japp
 **
 ** This file is part of AnimationMaker.
 **
@@ -18,28 +18,21 @@
 **
 ****************************************************************************/
 
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef PROPERTYEDITORINTERFACE_H
+#define PROPERTYEDITORINTERFACE_H
 
-#include <QGraphicsItem>
-#include <QObject>
+#include <QWidget>
 #include "resizeableitem.h"
 #include "widgets_global.h"
 
-class AnimationScene;
-class WIDGETSSHARED_EXPORT Ellipse : public ResizeableItem
+class WIDGETSSHARED_EXPORT PropertyEditorInterface : public QWidget
 {
     Q_OBJECT
+
 public:
-    Ellipse(qreal width, qreal height, AnimationScene *scene);
+    ~PropertyEditorInterface() {}
 
-    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
-
-    enum { Type = UserType + 2 };
-    int type() const Q_DECL_OVERRIDE;
-    QString typeName() {return "Ellipse";}
-    QDomElement getXml(QDomDocument);
-    bool hasBrushAndPen() {return true;}
+    virtual void setItem(ResizeableItem *item) = 0;
 };
 
-#endif // ELLIPSE_H
+#endif // PROPERTYEDITORINTERFACE_H

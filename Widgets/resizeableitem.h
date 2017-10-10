@@ -26,11 +26,13 @@
 #include <QAction>
 #include <QList>
 #include <QDomElement>
+#include <QTest>
 #include "itemhandle.h"
 #include "keyframe.h"
 #include "widgets_global.h"
 
 class AnimationScene;
+class PropertyEditorInterface;
 class WIDGETSSHARED_EXPORT ResizeableItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
@@ -38,12 +40,14 @@ class WIDGETSSHARED_EXPORT ResizeableItem : public QObject, public QGraphicsItem
     Q_INTERFACES(QGraphicsItem)
 
 public:
-    ResizeableItem() {}
+    ResizeableItem();
     ResizeableItem(AnimationScene *scene);
     ~ResizeableItem();
 
     virtual QString typeName() = 0;
     virtual QDomElement getXml(QDomDocument) = 0;
+    virtual bool hasBrushAndPen() = 0;
+    virtual QList<PropertyEditorInterface*> *getPropertyEditors() {return NULL;}
 
     void setScene(AnimationScene *scene);
     void drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option);

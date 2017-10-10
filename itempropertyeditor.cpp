@@ -22,6 +22,7 @@
 #include "resizeableitem.h"
 #include "animationscene.h"
 #include "xmlhighlighter.h"
+#include "propertyeditorinterface.h"
 #include "text.h"
 #include "rectangle.h"
 #include "ellipse.h"
@@ -126,6 +127,8 @@ ItemPropertyEditor::ItemPropertyEditor()
     m_vector = NULL;
     m_initializing = false;
 
+    m_additionalPropertyBox = new QVBoxLayout();
+    QVBoxLayout *scrollbox = new QVBoxLayout();
     QVBoxLayout *vbox = new QVBoxLayout();
     Expander *expTyp = new Expander("Typ");
     QGridLayout *layoutTyp = new QGridLayout();
@@ -273,10 +276,12 @@ ItemPropertyEditor::ItemPropertyEditor()
     vboxSvg->addWidget(plus, 0, Qt::AlignLeft);
     expSvg->addLayout(vboxSvg);
     vbox->addWidget(expSvg);
-    vbox->addStretch();
 
+    scrollbox->addLayout(vbox);
+    scrollbox->addLayout(m_additionalPropertyBox);
+    scrollbox->addStretch();
     QWidget *scrollContent = new QWidget();
-    scrollContent->setLayout(vbox);
+    scrollContent->setLayout(scrollbox);
     QScrollArea *scroll = new QScrollArea();
     scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -550,6 +555,33 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     m_opacity->setValue(item->opacity());
     m_opacityText->setValue(item->opacity());
 
+    // delete all additional properties from prior usage
+    QLayoutItem *litem;
+    while((litem = m_additionalPropertyBox->takeAt(0)) != NULL)
+    {
+        delete litem->widget();
+        delete litem;
+    }
+    // then fill in the additional properties
+    QList<PropertyEditorInterface*> *list = item->getPropertyEditors();
+    if(list)
+    {
+        for(int i = 0; i < list->count(); i++)
+        {
+            PropertyEditorInterface *pei = list->at(i);
+            pei->setItem(item);
+            m_additionalPropertyBox->addWidget(pei);
+        }
+        delete list;
+    }
+
+    if(item->hasBrushAndPen())
+    {
+        expColor->setVisible(true);
+        colorEditor->setColor(item->brush().color());
+        borderColorEditor->setColor(item->pen().color());
+    }
+
     m_textitem = dynamic_cast<Text*>(item);
     if(m_textitem)
     {
@@ -563,20 +595,7 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     }
 
     m_rectangle = dynamic_cast<Rectangle*>(item);
-    if(m_rectangle)
-    {
-        expColor->setVisible(true);
-        colorEditor->setColor(m_rectangle->brush().color());
-        borderColorEditor->setColor(m_rectangle->pen().color());
-    }
-
     m_ellipse = dynamic_cast<Ellipse*>(item);
-    if(m_ellipse)
-    {
-        expColor->setVisible(true);
-        colorEditor->setColor(m_ellipse->brush().color());
-        borderColorEditor->setColor(m_ellipse->pen().color());
-    }
 
     m_vector = dynamic_cast<Vectorgraphic*>(item);
     if(m_vector)

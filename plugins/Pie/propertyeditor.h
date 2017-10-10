@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2016 Olaf Japp
+** Copyright (C) 2017 Olaf Japp
 **
 ** This file is part of AnimationMaker.
 **
@@ -18,28 +18,33 @@
 **
 ****************************************************************************/
 
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef PROPERTYEDITOR_H
+#define PROPERTYEDITOR_H
 
-#include <QGraphicsItem>
-#include <QObject>
-#include "resizeableitem.h"
-#include "widgets_global.h"
+#include <QWidget>
+#include <QSpinBox>
+#include "pieitem.h"
+#include "propertyeditorinterface.h"
 
-class AnimationScene;
-class WIDGETSSHARED_EXPORT Ellipse : public ResizeableItem
+class PropertyEditor : public PropertyEditorInterface
 {
     Q_OBJECT
 public:
-    Ellipse(qreal width, qreal height, AnimationScene *scene);
+    explicit PropertyEditor();
 
-    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
+    void setItem(ResizeableItem *item) override;
 
-    enum { Type = UserType + 2 };
-    int type() const Q_DECL_OVERRIDE;
-    QString typeName() {return "Ellipse";}
-    QDomElement getXml(QDomDocument);
-    bool hasBrushAndPen() {return true;}
+public slots:
+    void startAngleChanged();
+    void spanAngleChanged();
+    void startAngleChanged(int angle);
+    void spanAngleChanged(int angle);
+
+private:
+    QSpinBox *m_startAngle;
+    QSpinBox *m_spanAngle;
+    bool m_initializing;
+    Pie *m_item;
 };
 
-#endif // ELLIPSE_H
+#endif // PROPERTYEDITOR_H

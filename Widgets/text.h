@@ -51,6 +51,7 @@ public:
     int type() const Q_DECL_OVERRIDE;
     QString typeName() {return "Text";}
     QDomElement getXml(QDomDocument);
+    bool hasBrushAndPen() {return false;}
 
 signals:
     void textcolorChanged(QColor);

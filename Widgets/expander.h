@@ -18,28 +18,31 @@
 **
 ****************************************************************************/
 
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef EXPANDER_H
+#define EXPANDER_H
 
-#include <QGraphicsItem>
-#include <QObject>
-#include "resizeableitem.h"
+#include <QLayout>
+#include <QVBoxLayout>
+#include <QToolButton>
+#include <QScrollArea>
 #include "widgets_global.h"
 
-class AnimationScene;
-class WIDGETSSHARED_EXPORT Ellipse : public ResizeableItem
+class WIDGETSSHARED_EXPORT Expander : public QWidget
 {
     Q_OBJECT
 public:
-    Ellipse(qreal width, qreal height, AnimationScene *scene);
+    Expander(QString header);
 
-    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
+    void addLayout(QLayout *l);
 
-    enum { Type = UserType + 2 };
-    int type() const Q_DECL_OVERRIDE;
-    QString typeName() {return "Ellipse";}
-    QDomElement getXml(QDomDocument);
-    bool hasBrushAndPen() {return true;}
+public slots:
+    void buttonClicked();
+
+private :
+    QVBoxLayout *m_contentLayout;
+    QWidget *m_content;
+    QToolButton *m_button;
+    bool m_isExpanded;
 };
 
-#endif // ELLIPSE_H
+#endif // EXPANDER_H

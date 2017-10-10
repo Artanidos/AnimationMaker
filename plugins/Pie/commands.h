@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2016 Olaf Japp
+** Copyright (C) 2017 Olaf Japp
 **
 ** This file is part of AnimationMaker.
 **
@@ -18,28 +18,39 @@
 **
 ****************************************************************************/
 
-#ifndef ELLIPSE_H
-#define ELLIPSE_H
+#ifndef COMMANDS_H
+#define COMMANDS_H
 
-#include <QGraphicsItem>
-#include <QObject>
-#include "resizeableitem.h"
+#include <QUndoCommand>
+#include "pieitem.h"
 #include "widgets_global.h"
 
-class AnimationScene;
-class WIDGETSSHARED_EXPORT Ellipse : public ResizeableItem
+class WIDGETSSHARED_EXPORT ChangeStartAngleCommand : public QUndoCommand
 {
-    Q_OBJECT
 public:
-    Ellipse(qreal width, qreal height, AnimationScene *scene);
+    ChangeStartAngleCommand(int oldValue, int newValue, Pie *pie, QUndoCommand *parent = 0);
 
-    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
+    void undo() override;
+    void redo() override;
 
-    enum { Type = UserType + 2 };
-    int type() const Q_DECL_OVERRIDE;
-    QString typeName() {return "Ellipse";}
-    QDomElement getXml(QDomDocument);
-    bool hasBrushAndPen() {return true;}
+private:
+   int m_oldValue;
+   int m_newValue;
+   Pie *m_pie;
 };
 
-#endif // ELLIPSE_H
+class WIDGETSSHARED_EXPORT ChangeSpanAngleCommand : public QUndoCommand
+{
+public:
+    ChangeSpanAngleCommand(int newValue, int oldValue, Pie *pie, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+   int m_oldValue;
+   int m_newValue;
+   Pie *m_pie;
+};
+
+#endif // COMMANDS_H
