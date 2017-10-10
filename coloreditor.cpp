@@ -78,7 +78,9 @@ ColorEditor::ColorEditor(QString label)
     m_labelRed->setFixedWidth(15);
     m_labelGreen->setFixedWidth(15);
     m_labelBlue->setFixedWidth(15);
-    layout->addWidget(new QLabel(label), 0, 0);
+    QLabel *l = new QLabel(label);
+    l->setMinimumWidth(100);
+    layout->addWidget(l, 0, 0);
     layout->addWidget(m_rect, 0, 1);
     layout->addWidget(m_color, 0, 2, 1, 4);
     layout->addWidget(m_colorPicker, 1, 0, 3, 1);
