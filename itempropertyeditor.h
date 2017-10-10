@@ -35,6 +35,7 @@ class Expander;
 class Rectangle;
 class Ellipse;
 class Vectorgraphic;
+class Timeline;
 class QVBoxLayout;
 
 class XmlEditor : public QTextEdit
@@ -84,7 +85,7 @@ class ItemPropertyEditor : public QWidget
 {
     Q_OBJECT
 public:
-    ItemPropertyEditor();
+    ItemPropertyEditor(Timeline *timeline);
 
     void setItem(ResizeableItem *item);
 
@@ -93,6 +94,7 @@ signals:
 
 private:
     bool m_initializing;
+    Timeline *m_timeline;
     QFontDatabase m_fontdatabase;
     ColorEditor *colorEditor;
     ColorEditor *borderColorEditor;

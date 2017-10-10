@@ -38,8 +38,8 @@ TransitionLine::TransitionLine(ResizeableItem *item, QString propertyName)
 
     setMouseTracking(true);
 
-    setMaximumHeight(17);
-    setMinimumHeight(17);
+    setMaximumHeight(18);
+    setMinimumHeight(18);
 
     m_imageRaute = QImage(":/images/raute-weiss.png");
     m_imageRauteHohl = QImage(":/images/raute-hohl.png");

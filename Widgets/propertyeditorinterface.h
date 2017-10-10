@@ -33,6 +33,9 @@ public:
     ~PropertyEditorInterface() {}
 
     virtual void setItem(ResizeableItem *item) = 0;
+
+signals:
+    void addKeyFrame(ResizeableItem*, QString, QVariant);
 };
 
 #endif // PROPERTYEDITORINTERFACE_H

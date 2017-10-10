@@ -55,6 +55,8 @@ PropertyEditor::PropertyEditor()
 
     connect(m_startAngle, SIGNAL(valueChanged(int)), this, SLOT(startAngleChanged()));
     connect(m_spanAngle, SIGNAL(valueChanged(int)), this, SLOT(spanAngleChanged()));
+    connect(addStartAngleKeyframe, SIGNAL(clicked()), this, SLOT(addStartKeyFrame()));
+    connect(addSpanAngleKeyframe, SIGNAL(clicked()), this, SLOT(addSpanKeyFrame()));
 }
 
 void PropertyEditor::setItem(ResizeableItem *item)
@@ -77,7 +79,7 @@ void PropertyEditor::startAngleChanged()
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeStartAngleCommand(m_startAngle->value(), m_item->startAngle(), m_item);
+        QUndoCommand *cmd = new ChangeStartAngleCommand(m_startAngle->value(), m_item->startAngle(), as, m_item);
         undoStack->push(cmd);
     }
 }
@@ -90,7 +92,7 @@ void PropertyEditor::spanAngleChanged()
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeSpanAngleCommand(m_spanAngle->value(), m_item->spanAngle(), m_item);
+        QUndoCommand *cmd = new ChangeSpanAngleCommand(m_spanAngle->value(), m_item->spanAngle(), as, m_item);
         undoStack->push(cmd);
     }
 }
@@ -107,5 +109,15 @@ void PropertyEditor::spanAngleChanged(int angle)
     m_initializing = true;
     m_spanAngle->setValue(angle);
     m_initializing = false;
+}
+
+void PropertyEditor::addStartKeyFrame()
+{
+    emit addKeyFrame(m_item, "startAngle", QVariant(m_startAngle->value()));
+}
+
+void PropertyEditor::addSpanKeyFrame()
+{
+    emit addKeyFrame(m_item, "spanAngle", QVariant(m_spanAngle->value()));
 }
 

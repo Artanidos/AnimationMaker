@@ -50,6 +50,9 @@ public:
 class Pie : public ResizeableItem
 {
     Q_OBJECT
+    Q_PROPERTY(int startAngle READ startAngle WRITE setStartAngle)
+    Q_PROPERTY(int spanAngle READ spanAngle WRITE setSpanAngle)
+
 public:
     Pie(AnimationScene *scene, QString typeName);
 

@@ -19,46 +19,56 @@
 ****************************************************************************/
 
 #include "commands.h"
+#include "animationscene.h"
 
-
-ChangeStartAngleCommand::ChangeStartAngleCommand(int newValue, int oldValue, Pie *pie, QUndoCommand *parent)
+ChangeStartAngleCommand::ChangeStartAngleCommand(int newValue, int oldValue, AnimationScene *scene, Pie *pie, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_oldValue = oldValue;
     m_newValue = newValue;
     m_pie = pie;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
     setText("Change Pie Start Angle");
 }
 
 void ChangeStartAngleCommand::undo()
 {
     m_pie->setStartAngle(m_oldValue);
+    m_pie->adjustKeyframes("startAngle", QVariant(m_oldValue), m_time, m_autokeyframes, m_autotransition);
     emit m_pie->startAngleChanged(m_oldValue);
 }
 
 void ChangeStartAngleCommand::redo()
 {
     m_pie->setStartAngle(m_newValue);
+    m_pie->adjustKeyframes("startAngle", QVariant(m_newValue), m_time, m_autokeyframes, m_autotransition);
     emit m_pie->startAngleChanged(m_newValue);
 }
 
-ChangeSpanAngleCommand::ChangeSpanAngleCommand(int newValue, int oldValue, Pie *pie, QUndoCommand *parent)
+ChangeSpanAngleCommand::ChangeSpanAngleCommand(int newValue, int oldValue, AnimationScene *scene, Pie *pie, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_oldValue = oldValue;
     m_newValue = newValue;
     m_pie = pie;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
     setText("Change Pie Span Angle");
 }
 
 void ChangeSpanAngleCommand::undo()
 {
     m_pie->setSpanAngle(m_oldValue);
+    m_pie->adjustKeyframes("spanAngle", QVariant(m_oldValue), m_time, m_autokeyframes, m_autotransition);
     emit m_pie->spanAngleChanged(m_oldValue);
 }
 
 void ChangeSpanAngleCommand::redo()
 {
     m_pie->setSpanAngle(m_newValue);
+    m_pie->adjustKeyframes("spanAngle", QVariant(m_newValue), m_time, m_autokeyframes, m_autotransition);
     emit m_pie->spanAngleChanged(m_newValue);
 }

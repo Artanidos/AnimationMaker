@@ -353,13 +353,14 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
     return dataStream;
 }
 
-void AnimationScene::importXml(QString fileName)
+bool AnimationScene::importXml(QString fileName)
 {
+    bool fullyLoaded = false;
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
     {
         QMessageBox::warning(0, "Error", "Unable to open file " + fileName);
-        return;
+        return false;
     }
 
     QDomDocument doc;
@@ -367,7 +368,7 @@ void AnimationScene::importXml(QString fileName)
     {
         file.close();
         QMessageBox::warning(0, "Error", "Unable to read file " + fileName);
-        return;
+        return false;
     }
     file.close();
 
@@ -378,6 +379,7 @@ void AnimationScene::importXml(QString fileName)
         setFps(docElem.attribute("fps", "24").toInt());
         setWidth(docElem.attribute("width", "1200").toInt());
         setHeight(docElem.attribute("height", "720").toInt());
+        fullyLoaded = true;
     }
     for(int i=0; i < docElem.childNodes().count(); i++)
     {
@@ -500,6 +502,7 @@ void AnimationScene::importXml(QString fileName)
             }
         }
     }
+    return fullyLoaded;
 }
 
 void AnimationScene::exportXml(QString fileName, bool exportAll)
@@ -542,6 +545,29 @@ void AnimationScene::exportXml(QString fileName, bool exportAll)
     file.close();
 }
 
+QString simpleTypeName(QVariant value)
+{
+    switch(value.type())
+    {
+        case QVariant::Type::Double:
+            return "double";
+            break;
+        case QVariant::Type::Int:
+            return "int";
+            break;
+        case QVariant::Type::Color:
+            return "color";
+            break;
+        case QVariant::Type::String:
+            return "string";
+            break;
+        default:
+            qDebug() << "undefined simpleType" << value.typeName();
+            return "string";
+            break;
+    }
+}
+
 void AnimationScene::writeKeyframes(QDomDocument *doc, QDomElement *element, ResizeableItem *item)
 {
     QHash<QString, KeyFrame*>::iterator it;
@@ -555,6 +581,7 @@ void AnimationScene::writeKeyframes(QDomDocument *doc, QDomElement *element, Res
             f.setAttribute("time", frame->time());
             f.setAttribute("value", frame->value().toString());
             f.setAttribute("easing", frame->easing());
+            f.setAttribute("type", simpleTypeName(frame->value()));
             frames.appendChild(f);
         }
         element->appendChild(frames);
@@ -577,8 +604,30 @@ void AnimationScene::readKeyframes(QDomElement *element, ResizeableItem *item)
                 {
                     QDomElement keyframe = frameNode.toElement();
                     KeyFrame *key = new KeyFrame();
+                    QString type = keyframe.attribute("type", "string");
+                    QString value = keyframe.attribute("value");
                     key->setTime(keyframe.attribute("time", "0").toInt());
-                    key->setValue(keyframe.attribute("value"));
+                    if(type == "double")
+                    {
+                        key->setValue(QVariant(value.toDouble()));
+                    }
+                    else if(type == "int")
+                    {
+                        key->setValue(QVariant(value.toInt()));
+                    }
+                    else if(type == "color")
+                    {
+                        key->setValue(QVariant(value));
+                    }
+                    else if(type == "string")
+                    {
+                        key->setValue(QVariant(value));
+                    }
+                    else
+                    {
+                        qDebug() << "type not implemented" << type;
+                        key->setValue(value);
+                    }
                     key->setEasing(keyframe.attribute("easing", "-1").toInt());
                     // set double linked list
                     if(m_tempKeyFrame)
@@ -720,15 +769,16 @@ void AnimationScene::pasteItem()
     }
 }
 
-void AnimationScene::setPlayheadPosition(int val)
+void AnimationScene::setPlayheadPosition(int playheadPosition)
 {
-    m_playheadPosition = val;
+    m_playheadPosition = playheadPosition;
 
     for(int i=0; i < items().count(); i++)
     {
         ResizeableItem *item = dynamic_cast<ResizeableItem *>(items().at(i));
         if(item)
         {
+            item->setPlayheadPosition(m_playheadPosition);
             QHash<QString, KeyFrame*>::iterator it;
             for (it = item->keyframes()->begin(); it != item->keyframes()->end(); ++it)
             {
@@ -736,7 +786,7 @@ void AnimationScene::setPlayheadPosition(int val)
                 KeyFrame *first = it.value();
                 for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
                 {
-                    if((frame == first && val < first->time()) || frame->time() <= val)
+                    if((frame == first && m_playheadPosition < first->time()) || frame->time() <= m_playheadPosition)
                         found = frame;
                 }
                 if(found)
@@ -751,9 +801,7 @@ void AnimationScene::setPlayheadPosition(int val)
                             QString value;
                             if(found->easing() >= 0)
                             {
-                                QEasingCurve easing((QEasingCurve::Type)found->easing());
-                                qreal progress = 1.0 / (found->next()->time() - found->time()) * (val - found->time());
-                                qreal progressValue = easing.valueForProgress(progress);
+                                qreal progressValue = getProgressValue(found, playheadPosition);
                                 QString foundValue = found->value().toString();
                                 bool isInteger;
                                 int intVal = foundValue.toInt(&isInteger);
@@ -767,24 +815,8 @@ void AnimationScene::setPlayheadPosition(int val)
                                     bool isColor;
                                     foundValue.mid(1).toInt(&isColor, 16);
                                     if(foundValue.startsWith("#") && isColor)
-                                    {
-                                        QColor fromColor(foundValue);
-                                        QColor toColor(found->next()->value().toString());
-                                        int fromRed = fromColor.red();
-                                        int fromBlue = fromColor.blue();
-                                        int fromGreen = fromColor.green();
-
-                                        int toRed = toColor.red();
-                                        int toBlue = toColor.blue();
-                                        int toGreen = toColor.green();
-
-                                        int newRed = fromRed + (toRed - fromRed) / 1.0 * progressValue;
-                                        int newBlue = fromBlue + (toBlue - fromBlue) / 1.0 * progressValue;
-                                        int newGreen = fromGreen + (toGreen - fromGreen) / 1.0 * progressValue;
-
-                                        value = QColor(newRed, newGreen, newBlue).name();
-                                    }
-                                    else // no animation for strings yet ;-)
+                                        value = calculateColorValue(found, playheadPosition).name();
+                                    else
                                         value = found->value().toString();
                                 }
                             }
@@ -795,31 +827,86 @@ void AnimationScene::setPlayheadPosition(int val)
                     }
                     else
                     {
-                        qreal value;
-                        if(found->easing() >= 0)
+                        switch(found->value().type())
                         {
-                            QEasingCurve easing((QEasingCurve::Type)found->easing());
-                            qreal progress = 1.0 / (found->next()->time() - found->time()) * (val - found->time());
-                            qreal progressValue = easing.valueForProgress(progress);
-                            value = found->value().toReal() + (found->next()->value().toReal() - found->value().toReal()) / 1.0 * progressValue;
+                            case QVariant::Type::Double:
+                            {
+                                qreal value;
+                                if(found->easing() >= 0)
+                                    value = calculateRealValue(found, m_playheadPosition);
+                                else
+                                    value = found->value().toReal();
+                                item->setProperty(propertyName.toLatin1(), value);
+                                break;
+                            }
+                            case QVariant::Type::Int:
+                            {
+                                int value;
+                                if(found->easing() >= 0)
+                                    value = calculateIntValue(found, m_playheadPosition);
+                                else
+                                    value = found->value().toInt();
+                                item->setProperty(propertyName.toLatin1(), value);
+                                break;
+                            }
+                            case QVariant::Type::Color:
+                            {
+                                QColor value;
+                                if(found->easing() >= 0)
+                                    value = calculateColorValue(found, m_playheadPosition);
+                                else
+                                    value = QColor(found->value().toString());
+                                item->setProperty(propertyName.toLatin1(), value);
+                                break;
+                            }
+                            default:
+                                qDebug() << propertyName << found->value().type() << "not implemented yet";
+                                break;
                         }
-                        else
-                            value = found->value().toReal();
-                        if(propertyName == "left")
-                            item->setX(value);
-                        else if(propertyName == "top")
-                            item->setY(value);
-                        else if(propertyName == "width")
-                            item->setWidth(value);
-                        else if(propertyName == "height")
-                            item->setHeight(value);
-                        else if(propertyName == "opacity")
-                            item->setOpacity(value);
+
                     }
                 }
             }
         }
     }
+}
+
+qreal getProgressValue(KeyFrame *found, int playheadPosition)
+{
+    QEasingCurve easing((QEasingCurve::Type)found->easing());
+    qreal progress = 1.0 / (found->next()->time() - found->time()) * (playheadPosition - found->time());
+    return easing.valueForProgress(progress);
+}
+
+qreal calculateRealValue(KeyFrame *found, int playheadPosition)
+{
+    return found->value().toReal() + (found->next()->value().toReal() - found->value().toReal()) / 1.0 * getProgressValue(found, playheadPosition);
+}
+
+int calculateIntValue(KeyFrame *found, int playheadPosition)
+{
+    return (int)found->value().toInt() + (found->next()->value().toInt() - found->value().toInt()) / 1.0 * getProgressValue(found, playheadPosition);
+}
+
+QColor calculateColorValue(KeyFrame *found, int playheadPosition)
+{
+    qreal progressValue = getProgressValue(found, playheadPosition);
+
+    QColor fromColor(found->value().toString());
+    QColor toColor(found->next()->value().toString());
+    int fromRed = fromColor.red();
+    int fromBlue = fromColor.blue();
+    int fromGreen = fromColor.green();
+
+    int toRed = toColor.red();
+    int toBlue = toColor.blue();
+    int toGreen = toColor.green();
+
+    int newRed = fromRed + (toRed - fromRed) / 1.0 * progressValue;
+    int newBlue = fromBlue + (toBlue - fromBlue) / 1.0 * progressValue;
+    int newGreen = fromGreen + (toGreen - fromGreen) / 1.0 * progressValue;
+
+    return QColor(newRed, newGreen, newBlue);
 }
 
 QDataStream& operator >>(QDataStream &in, AnimationScene *s)

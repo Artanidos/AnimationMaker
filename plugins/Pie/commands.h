@@ -28,7 +28,7 @@
 class WIDGETSSHARED_EXPORT ChangeStartAngleCommand : public QUndoCommand
 {
 public:
-    ChangeStartAngleCommand(int oldValue, int newValue, Pie *pie, QUndoCommand *parent = 0);
+    ChangeStartAngleCommand(int oldValue, int newValue, AnimationScene *scene, Pie *pie, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -37,12 +37,15 @@ private:
    int m_oldValue;
    int m_newValue;
    Pie *m_pie;
+   int m_time;
+   bool m_autokeyframes;
+   bool m_autotransition;
 };
 
 class WIDGETSSHARED_EXPORT ChangeSpanAngleCommand : public QUndoCommand
 {
 public:
-    ChangeSpanAngleCommand(int newValue, int oldValue, Pie *pie, QUndoCommand *parent = 0);
+    ChangeSpanAngleCommand(int newValue, int oldValue, AnimationScene *scene, Pie *pie, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -51,6 +54,9 @@ private:
    int m_oldValue;
    int m_newValue;
    Pie *m_pie;
+   int m_time;
+   bool m_autokeyframes;
+   bool m_autotransition;
 };
 
 #endif // COMMANDS_H

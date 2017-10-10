@@ -88,7 +88,7 @@ public:
     QString actPluginName() {return m_actPluginName;}
 
     void exportXml(QString fileName, bool exportAll = true);
-    void importXml(QString fileName);
+    bool importXml(QString fileName);
         
 signals:
     void itemAdded(QGraphicsItem *item);
@@ -129,6 +129,10 @@ private:
     void readKeyframes(QDomElement *element, ResizeableItem *item);
 };
 
+qreal getProgressValue(KeyFrame *found, int playheadPosition);
+qreal calculateRealValue(KeyFrame *found, int playheadPosition);
+QColor calculateColorValue(KeyFrame *found, int playheadPosition);
+int calculateIntValue(KeyFrame *found, int playheadPosition);
 QDataStream &operator>>(QDataStream &, AnimationScene *);
 
 #endif // ANIMATIONSCENE_H

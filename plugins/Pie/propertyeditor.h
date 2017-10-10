@@ -39,6 +39,8 @@ public slots:
     void spanAngleChanged();
     void startAngleChanged(int angle);
     void spanAngleChanged(int angle);
+    void addStartKeyFrame();
+    void addSpanKeyFrame();
 
 private:
     QSpinBox *m_startAngle;

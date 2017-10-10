@@ -36,7 +36,11 @@ class PropertyEditorInterface;
 class WIDGETSSHARED_EXPORT ResizeableItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
-    Q_PROPERTY(qreal top READ top)
+    Q_PROPERTY(qreal left READ left WRITE setX)
+    Q_PROPERTY(qreal top READ top WRITE setY)
+    Q_PROPERTY(qreal width READ top WRITE setWidth)
+    Q_PROPERTY(qreal height READ top WRITE setHeight)
+    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
     Q_INTERFACES(QGraphicsItem)
 
 public:
@@ -49,6 +53,8 @@ public:
     virtual bool hasBrushAndPen() = 0;
     virtual QList<PropertyEditorInterface*> *getPropertyEditors() {return NULL;}
 
+    void setPlayheadPosition(int pos) {m_playheadPosition = pos; update();}
+    int playheadPosition() {return m_playheadPosition;}
     void setScene(AnimationScene *scene);
     void drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option);
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
@@ -83,6 +89,8 @@ public:
 
     void setWidth(qreal value);
     void setHeight(qreal value);
+    qreal width() {return rect().width();}
+    qreal height() {return rect().height();}
 
     void addKeyframe(QString propertyName, KeyFrame *frame);
     bool deleteKeyframe(QString propertyName, KeyFrame *frame);
@@ -105,6 +113,7 @@ protected:
 
 private:
     bool m_deleted;
+    int m_playheadPosition;
     AnimationScene *m_scene;
     ItemHandle*  m_handles[8];
     bool m_hasHandles;

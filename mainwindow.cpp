@@ -202,6 +202,7 @@ void MainWindow::open()
     if (fileName.isEmpty())
         return;
 
+    bool fullyLoaded = true;
     if(fileName.endsWith(".amb"))
     {
         // read binary version for backwards compability
@@ -250,16 +251,20 @@ void MainWindow::open()
     else
     {
         // read xml version
-        scene->importXml(fileName);
+        fullyLoaded = scene->importXml(fileName);
     }
 
     fillTree();
     elementTree->expandAll();
     m_scenePropertyEditor->setScene(scene);
     timeline->expandTree();
-    loadedFile.setFile(fileName);
-    saveAct->setEnabled(true);
-    setTitle();
+
+    if(fullyLoaded)
+    {
+        loadedFile.setFile(fileName);
+        saveAct->setEnabled(true);
+        setTitle();
+    }
 }
 
 void MainWindow::fillTree()
@@ -371,7 +376,10 @@ void MainWindow::createGui()
     scene = new AnimationScene();
     scene->registerUndoStack(undoStack);
 
-    m_itemPropertyEditor = new ItemPropertyEditor();
+    timeline = new Timeline(scene);
+    timeline->setMinimumHeight(110);
+
+    m_itemPropertyEditor = new ItemPropertyEditor(timeline);
     m_scenePropertyEditor = new ScenePropertyEditor();
     m_transitionEditor = new TransitionEditor();
     m_transitionEditor->setUndoStack(undoStack);
@@ -408,9 +416,6 @@ void MainWindow::createGui()
     elementsdock->setObjectName("Elements");
     addDockWidget(Qt::LeftDockWidgetArea, elementsdock);
     splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
-
-    timeline = new Timeline(scene);
-    timeline->setMinimumHeight(110);
 
     connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(timelineSelectionChanged(ResizeableItem*)));
     connect(timeline, SIGNAL(transitionSelectionChanged(KeyFrame*)), this, SLOT(transitionSelectionChanged(KeyFrame*)));

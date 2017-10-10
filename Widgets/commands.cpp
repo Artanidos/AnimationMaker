@@ -98,6 +98,7 @@ AddItemCommand::AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, 
             m_item->setFlag(QGraphicsItem::ItemIsMovable, true);
             m_item->setFlag(QGraphicsItem::ItemIsSelectable, true);
             m_item->setPos(x, y);
+            m_item->setPlayheadPosition(m_scene->playheadPosition());
             setText("Add " + item->displayName());
             break;
         }

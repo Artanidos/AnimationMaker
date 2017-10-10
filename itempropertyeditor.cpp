@@ -25,6 +25,7 @@
 #include "propertyeditorinterface.h"
 #include "text.h"
 #include "rectangle.h"
+#include "timeline.h"
 #include "ellipse.h"
 #include "flatbutton.h"
 #include "expander.h"
@@ -120,8 +121,9 @@ void SvgAttributeEditor::addKeyframeClicked()
     emit addKeyframeClicked(this);
 }
 
-ItemPropertyEditor::ItemPropertyEditor()
+ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
 {
+    m_timeline = timeline;
     m_rectangle = NULL;
     m_ellipse = NULL;
     m_vector = NULL;
@@ -497,22 +499,22 @@ void ItemPropertyEditor::textColorChanged(QColor color)
 
 void ItemPropertyEditor::addLeftKeyFrame()
 {
-    emit addKeyFrame(m_item, "left", QVariant(m_x->value()));
+    emit addKeyFrame(m_item, "left", QVariant((double)m_x->value()));
 }
 
 void ItemPropertyEditor::addTopKeyFrame()
 {
-    emit addKeyFrame(m_item, "top", QVariant(m_y->value()));
+    emit addKeyFrame(m_item, "top", QVariant((double)m_y->value()));
 }
 
 void ItemPropertyEditor::addWidthKeyFrame()
 {
-    emit addKeyFrame(m_item, "width", QVariant(m_width->value()));
+    emit addKeyFrame(m_item, "width", QVariant((double)m_width->value()));
 }
 
 void ItemPropertyEditor::addHeightKeyFrame()
 {
-    emit addKeyFrame(m_item, "height", QVariant(m_height->value()));
+    emit addKeyFrame(m_item, "height", QVariant((double)m_height->value()));
 }
 
 void ItemPropertyEditor::addOpacityKeyFrame()
@@ -570,6 +572,7 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
         {
             PropertyEditorInterface *pei = list->at(i);
             pei->setItem(item);
+            connect(pei, SIGNAL(addKeyFrame(ResizeableItem*,QString,QVariant)), m_timeline, SLOT(addKeyFrame(ResizeableItem*,QString,QVariant)));
             m_additionalPropertyBox->addWidget(pei);
         }
         delete list;
