@@ -32,6 +32,8 @@ class AnimationScene;
 class WIDGETSSHARED_EXPORT Text : public AnimationItem
 {
     Q_OBJECT
+    Q_PROPERTY(QColor textColor READ textColor WRITE setTextColor)
+
 public:
     Text(QString text, AnimationScene *scene);
 
@@ -41,8 +43,8 @@ public:
     QString text();
     void setText(QString text);
 
-    QColor textcolor();
-    void setTextcolor(QColor textcolor);
+    QColor textColor();
+    void setTextColor(QColor textColor);
 
     inline QFont font() {return m_font;}
     void setFont(QFont font);

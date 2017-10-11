@@ -356,6 +356,7 @@ void Timeline::addKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *
 {
     QTreeWidgetItem *treeChildItem = NULL;
 
+
     QTreeWidgetItem *treeItem = search(item);
     if(treeItem)
     {

@@ -24,8 +24,8 @@
 #include <QGraphicsItem>
 #include "animationscene.h"
 
-Rectangle::Rectangle(qreal width, qreal height, AnimationScene *scene)
-    : AnimationItem(scene)
+Rectangle::Rectangle(qreal width, qreal height, AnimationScene *scene, bool isSceneRect)
+    : AnimationItem(scene, isSceneRect)
 {
     setRect(0, 0, width, height);
 }

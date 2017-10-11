@@ -33,6 +33,7 @@
 
 AnimationScene::AnimationScene()
 {
+    m_rect = NULL;
     m_autokeyframes = false;
     m_autotransitions = false;
     initialize();
@@ -153,10 +154,11 @@ void AnimationScene::setEditMode(QString pluginName)
 
 void AnimationScene::addBackgroundRect()
 {
-    m_rect = new Rectangle(width(), height(), this);
+    m_rect = new Rectangle(width(), height(), this, true);
+    m_rect->setId("Scene");
+    m_rect->setPos(0,0);
     m_backgroundColor = QColor("#404244");
     m_rect->setBrush(QBrush(QColor(m_backgroundColor)));
-    m_rect->setPos(0,0);
     addItem(m_rect);
 }
 
@@ -282,7 +284,7 @@ QDataStream& AnimationScene::read(QDataStream &dataStream)
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
             t->setScale(xscale, yscale);
-            t->setTextcolor(color);
+            t->setTextColor(color);
             t->setOpacity(opacity);
             t->setFont(font);
 
@@ -378,6 +380,8 @@ bool AnimationScene::importXml(QString fileName)
         setFps(docElem.attribute("fps", "24").toInt());
         setWidth(docElem.attribute("width", "1200").toInt());
         setHeight(docElem.attribute("height", "720").toInt());
+        m_rect->setBrushColor(QColor(docElem.attribute("brushColor","#404244")));
+        readKeyframes(&docElem, m_rect);
         fullyLoaded = true;
     }
     for(int i=0; i < docElem.childNodes().count(); i++)
@@ -422,7 +426,7 @@ bool AnimationScene::importXml(QString fileName)
             t->setLeft(ele.attribute("left", "0").toDouble());
             t->setTop(ele.attribute("top", "0").toDouble());
             t->setScale(ele.attribute("xscale", "1").toDouble(), ele.attribute("yscale", "1").toDouble());
-            t->setTextcolor(QColor(ele.attribute("textcolor", "#000000")));
+            t->setTextColor(QColor(ele.attribute("textcolor", "#000000")));
             t->setOpacity(ele.attribute("opacity", "100").toInt());
             QFont font;
             font.setFamily(ele.attribute("font-family"));
@@ -521,6 +525,7 @@ void AnimationScene::exportXml(QString fileName, bool exportAll)
         root.setAttribute("fps", fps());
         root.setAttribute("width", width());
         root.setAttribute("height", height());
+        root.setAttribute("brushColor", this->backgroundRect()->brushColor().name());
         doc.appendChild(root);
     }
     else
@@ -534,9 +539,20 @@ void AnimationScene::exportXml(QString fileName, bool exportAll)
         AnimationItem *item = dynamic_cast<AnimationItem*>(items().at(i));
         if(item)
         {
-            QDomElement ele = item->getXml(doc);
-            writeKeyframes(&doc, &ele, item);
-            root.appendChild(ele);
+            if(item->isSceneRect())
+            {
+                if(exportAll)
+                    writeKeyframes(&doc, &root, item);
+            }
+            else
+            {
+                if(item->isSelected() || exportAll)
+                {
+                    QDomElement ele = item->getXml(doc);
+                    writeKeyframes(&doc, &ele, item);
+                    root.appendChild(ele);
+                }
+            }
         }
     }
     QTextStream stream(&file);
@@ -714,7 +730,7 @@ void AnimationScene::pasteItem()
             t->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            t->setTextcolor(cpy->textcolor());
+            t->setTextColor(cpy->textColor());
             t->setFont(cpy->font());
             t->setScale(cpy->xscale(), cpy->yscale());
             copyKeyframes(t);

@@ -269,9 +269,9 @@ void MainWindow::open()
 
 void MainWindow::fillTree()
 {
-    for(int i=root->childCount() - 1; i >= 0; i--)
+    for(int i = root->childCount() - 1; i >= 0; i--)
     {
-        QTreeWidgetItem *treeItem= root->child(i);
+        QTreeWidgetItem *treeItem = root->child(i);
         root->removeChild(treeItem);
         delete treeItem;
     }
@@ -280,7 +280,7 @@ void MainWindow::fillTree()
     foreach (QGraphicsItem *item, itemList)
     {
         AnimationItem *ri = dynamic_cast<AnimationItem*>(item);
-        if(ri)
+        if(ri && !ri->isSceneRect())
         {
             QTreeWidgetItem *treeItem = new QTreeWidgetItem();
             treeItem->setText(0, ri->id());
@@ -420,6 +420,7 @@ void MainWindow::createGui()
     connect(timeline, SIGNAL(itemSelectionChanged(AnimationItem *)), this, SLOT(timelineSelectionChanged(AnimationItem*)));
     connect(timeline, SIGNAL(transitionSelectionChanged(KeyFrame*)), this, SLOT(transitionSelectionChanged(KeyFrame*)));
     connect(m_itemPropertyEditor, SIGNAL(addKeyFrame(AnimationItem*,QString,QVariant)), timeline, SLOT(addKeyFrame(AnimationItem*,QString,QVariant)));
+    connect(m_scenePropertyEditor, SIGNAL(addKeyFrame(AnimationItem*,QString,QVariant)), timeline, SLOT(addKeyFrame(AnimationItem*,QString,QVariant)));
 
     splitter = new QSplitter(Qt::Vertical);
     splitter->addWidget(view);

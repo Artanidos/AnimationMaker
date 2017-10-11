@@ -30,7 +30,7 @@ class WIDGETSSHARED_EXPORT Rectangle : public AnimationItem
 {
     Q_OBJECT
 public:
-    Rectangle(qreal width, qreal height, AnimationScene *scene);
+    Rectangle(qreal width, qreal height, AnimationScene *scene, bool isSceneRect = false);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 

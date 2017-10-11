@@ -225,8 +225,11 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
     connect(m_opacityText, SIGNAL(valueChanged(int)), this, SLOT(opacityTextChanged(int)));
     connect(addOpacityKeyframe, SIGNAL(clicked()), this, SLOT(addOpacityKeyFrame()));
     connect(colorEditor, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
+    connect(colorEditor, SIGNAL(addKeyframe()), this, SLOT(addBrushKeyFrame()));
     connect(borderColorEditor, SIGNAL(colorChanged(QColor)), this, SLOT(borderColorChanged(QColor)));
+    connect(borderColorEditor, SIGNAL(addKeyframe()), this, SLOT(addPenKeyFrame()));
     connect(textcolorEditor, SIGNAL(colorChanged(QColor)), this, SLOT(textColorChanged(QColor)));
+    connect(textcolorEditor, SIGNAL(addKeyframe()), this, SLOT(addTextColorKeyFrame()));
     connect(m_font, SIGNAL(currentIndexChanged(int)), this, SLOT(fontFamilyChanged(int)));
     connect(m_style, SIGNAL(currentIndexChanged(int)), this, SLOT(fontStyleChanged(int)));
     connect(m_fontSize, SIGNAL(currentTextChanged(QString)), this, SLOT(fontSizeChanged()));
@@ -374,6 +377,21 @@ void ItemPropertyEditor::svgDataChanged()
     m_svgText->setPlainText(QString::fromUtf8(m_vector->getData()));
 }
 
+void ItemPropertyEditor::addBrushKeyFrame()
+{
+    emit addKeyFrame(m_item, "brushColor", QVariant(colorEditor->color()));
+}
+
+void ItemPropertyEditor::addPenKeyFrame()
+{
+    emit addKeyFrame(m_item, "penColor", QVariant(borderColorEditor->color()));
+}
+
+void ItemPropertyEditor::addTextColorKeyFrame()
+{
+    emit addKeyFrame(m_item, "textColor", QVariant(textcolorEditor->color()));
+}
+
 void ItemPropertyEditor::svgAttributeNameChanged(QString oldName, QString newName)
 {
     if(m_initializing)
@@ -387,7 +405,7 @@ void ItemPropertyEditor::colorChanged(QColor color)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeColorCommand(color, m_item->brush().color(), m_item);
+        QUndoCommand *cmd = new ChangeColorCommand(color, m_item->brush().color(), as, m_item);
         undoStack->push(cmd);
     }
 }
@@ -398,7 +416,7 @@ void ItemPropertyEditor::borderColorChanged(QColor color)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangePenCommand(color, m_item->pen().color(), m_item);
+        QUndoCommand *cmd = new ChangePenCommand(color, m_item->pen().color(), as, m_item);
         undoStack->push(cmd);
     }
 }
@@ -409,7 +427,7 @@ void ItemPropertyEditor::textColorChanged(QColor color)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeTextcolorCommand(color, m_textitem->textcolor(), m_textitem);
+        QUndoCommand *cmd = new ChangeTextcolorCommand(color, m_textitem->textColor(), as, m_textitem);
         undoStack->push(cmd);
     }
 }
@@ -506,7 +524,7 @@ void ItemPropertyEditor::setItem(AnimationItem *item)
     if(m_textitem)
     {
         m_text->setText(m_textitem->text());
-        textcolorEditor->setColor(m_textitem->textcolor());
+        textcolorEditor->setColor(m_textitem->textColor());
         QFont f = m_textitem->font();
         m_font->setCurrentText(f.family());
         m_style->setCurrentText(f.styleName());
@@ -658,7 +676,7 @@ void ItemPropertyEditor::changeBrush(QColor color)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeColorCommand(color, m_item->brush().color(), m_item);
+        QUndoCommand *cmd = new ChangeColorCommand(color, m_item->brush().color(), as, m_item);
         undoStack->push(cmd);
     }
 }

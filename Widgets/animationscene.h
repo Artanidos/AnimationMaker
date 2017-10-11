@@ -69,6 +69,7 @@ public:
         m_rect->setBrush(QBrush(QColor(m_backgroundColor)));
         emit backgroundColorChanged(value);
     }
+    Rectangle *backgroundRect() {return m_rect;}
 
     inline int playheadPosition() {return m_playheadPosition;}
 

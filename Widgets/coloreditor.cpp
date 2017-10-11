@@ -128,6 +128,7 @@ void ColorEditor::disconnectControls()
     disconnect(m_red, SIGNAL(valueChanged(int)), this, SLOT(redValueChanged(int)));
     disconnect(m_green, SIGNAL(valueChanged(int)), this, SLOT(greenValueChanged(int)));
     disconnect(m_blue, SIGNAL(valueChanged(int)), this, SLOT(blueValueChanged(int)));
+    disconnect(m_addKeyframe, SIGNAL(clicked()), this, SLOT(addKeyframeClicked()));
 }
 
 void ColorEditor::connectControls()

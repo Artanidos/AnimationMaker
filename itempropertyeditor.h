@@ -123,6 +123,9 @@ private slots:
     void svgEditorAddKeyframeClicked(SvgAttributeEditor *editor);
     void svgAttributeAdded();
     void svgDataChanged();
+    void addBrushKeyFrame();
+    void addPenKeyFrame();
+    void addTextColorKeyFrame();
  };
 
 #endif // ITEMPROPERTYEDITOR_H

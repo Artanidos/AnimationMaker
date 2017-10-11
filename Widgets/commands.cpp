@@ -278,80 +278,76 @@ void ChangeIdCommand::redo()
     m_item->setId(m_id);
 }
 
-ChangeColorCommand::ChangeColorCommand(QColor color, QColor oldcolor, AnimationItem *item, QUndoCommand *parent)
+ChangeColorCommand::ChangeColorCommand(QColor color, QColor oldcolor, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_color = color;
     m_oldcolor = oldcolor;
     m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
     setText("Change " + item->typeName() + " Color");
 }
 
 void ChangeColorCommand::undo()
 {
     m_item->setBrush(QBrush(m_oldcolor));
+    m_item->adjustKeyframes("brushColor", QVariant(m_oldcolor), m_time, m_autokeyframes, m_autotransition);
 }
 
 void ChangeColorCommand::redo()
 {
     m_item->setBrush(QBrush(m_color));
+    m_item->adjustKeyframes("brushColor", QVariant(m_color), m_time, m_autokeyframes, m_autotransition);
 }
 
-ChangePenCommand::ChangePenCommand(QColor color, QColor oldcolor, AnimationItem *item, QUndoCommand *parent)
+ChangePenCommand::ChangePenCommand(QColor color, QColor oldcolor, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_color = color;
     m_oldcolor = oldcolor;
     m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
     setText("Change " + item->typeName() + " Pen");
 }
 
 void ChangePenCommand::undo()
 {
     m_item->setPen(QPen(m_oldcolor));
+    m_item->adjustKeyframes("penColor", QVariant(m_oldcolor), m_time, m_autokeyframes, m_autotransition);
 }
 
 void ChangePenCommand::redo()
 {
     m_item->setPen(QPen(m_color));
+    m_item->adjustKeyframes("penColor", QVariant(m_color), m_time, m_autokeyframes, m_autotransition);
 }
 
-ChangeTextcolorCommand::ChangeTextcolorCommand(QColor color, QColor oldcolor, Text *item, QUndoCommand *parent)
+ChangeTextcolorCommand::ChangeTextcolorCommand(QColor color, QColor oldcolor, AnimationScene *scene, Text *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_color = color;
     m_oldcolor = oldcolor;
     m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
     setText("Change " + item->typeName() + " Textcolor");
 }
 
 void ChangeTextcolorCommand::undo()
 {
-    m_item->setTextcolor(m_oldcolor);
+    m_item->setTextColor(m_oldcolor);
+    m_item->adjustKeyframes("textColor", QVariant(m_oldcolor), m_time, m_autokeyframes, m_autotransition);
 }
 
 void ChangeTextcolorCommand::redo()
 {
-    m_item->setTextcolor(m_color);
-}
-
-ChangeSceneColorCommand::ChangeSceneColorCommand(QColor color, QColor oldcolor, AnimationScene *scene, QUndoCommand *parent)
-    : QUndoCommand(parent)
-{
-    m_color = color;
-    m_oldcolor = oldcolor;
-    m_scene = scene;
-    setText("Change Scene Color");
-}
-
-void ChangeSceneColorCommand::undo()
-{
-    m_scene->setBackgroundColor(m_oldcolor);
-}
-
-void ChangeSceneColorCommand::redo()
-{
-    m_scene->setBackgroundColor(m_color);
+    m_item->setTextColor(m_color);
+    m_item->adjustKeyframes("textColor", QVariant(m_color), m_time, m_autokeyframes, m_autotransition);
 }
 
 ChangeOpacityCommand::ChangeOpacityCommand(int opacity, int oldopacity, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)

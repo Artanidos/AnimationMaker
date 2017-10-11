@@ -39,6 +39,7 @@ public:
     void setExpanded(bool value);
     bool isExpanded();
     void setColor(QColor color);
+    QColor color() {return QColor(m_color->text());}
 
 signals:
     void colorChanged(QColor value);

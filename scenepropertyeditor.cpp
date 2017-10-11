@@ -93,11 +93,11 @@ void ScenePropertyEditor::fpsChanged(int value)
 
 void ScenePropertyEditor::colorChanged(QColor color)
 {
-    QUndoCommand *cmd = new ChangeSceneColorCommand(color, m_scene->backgroundColor(), m_scene);
+    QUndoCommand *cmd = new ChangeColorCommand(color, m_scene->backgroundColor(), m_scene, m_scene->backgroundRect());
     m_scene->undoStack()->push(cmd);
 }
 
 void ScenePropertyEditor::addKeyFrame()
 {
-
+    emit addKeyFrame(m_scene->backgroundRect(), "brushColor", QVariant(m_colorEditor->color()));
 }

@@ -124,7 +124,7 @@ private:
 class WIDGETSSHARED_EXPORT ChangeColorCommand : public QUndoCommand
 {
 public:
-    ChangeColorCommand(QColor color, QColor oldcolor, AnimationItem *item, QUndoCommand *parent = 0);
+    ChangeColorCommand(QColor color, QColor oldcolor, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -132,12 +132,15 @@ public:
 private:
     AnimationItem *m_item;
     QColor m_color, m_oldcolor;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
 };
 
 class WIDGETSSHARED_EXPORT ChangePenCommand : public QUndoCommand
 {
 public:
-    ChangePenCommand(QColor color, QColor oldcolor, AnimationItem *item, QUndoCommand *parent = 0);
+    ChangePenCommand(QColor color, QColor oldcolor, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -145,12 +148,15 @@ public:
 private:
     AnimationItem *m_item;
     QColor m_color, m_oldcolor;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
 };
 
 class WIDGETSSHARED_EXPORT ChangeTextcolorCommand : public QUndoCommand
 {
 public:
-    ChangeTextcolorCommand(QColor color, QColor oldcolor, Text *item, QUndoCommand *parent = 0);
+    ChangeTextcolorCommand(QColor color, QColor oldcolor, AnimationScene *scene, Text *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
@@ -158,19 +164,9 @@ public:
 private:
     Text *m_item;
     QColor m_color, m_oldcolor;
-};
-
-class WIDGETSSHARED_EXPORT ChangeSceneColorCommand : public QUndoCommand
-{
-public:
-    ChangeSceneColorCommand(QColor color, QColor oldcolor, AnimationScene *scene, QUndoCommand *parent = 0);
-
-    void undo() override;
-    void redo() override;
-
-private:
-    AnimationScene *m_scene;
-    QColor m_color, m_oldcolor;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
 };
 
 class WIDGETSSHARED_EXPORT ChangeOpacityCommand : public QUndoCommand

@@ -41,11 +41,12 @@ class WIDGETSSHARED_EXPORT AnimationItem : public QObject, public QGraphicsItem
     Q_PROPERTY(qreal width READ top WRITE setWidth)
     Q_PROPERTY(qreal height READ top WRITE setHeight)
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
+    Q_PROPERTY(QColor brushColor READ brushColor WRITE setBrushColor)
+    Q_PROPERTY(QColor penColor READ penColor WRITE setPenColor)
     Q_INTERFACES(QGraphicsItem)
 
 public:
-    AnimationItem();
-    AnimationItem(AnimationScene *scene);
+    AnimationItem(AnimationScene *scene, bool isSceneRect = false);
     ~AnimationItem();
 
     virtual QString typeName() = 0;
@@ -78,6 +79,12 @@ public:
     QBrush brush() const;
     void setBrush(const QBrush &brush);
 
+    QColor brushColor() const;
+    void setBrushColor(const QColor &color);
+
+    QColor penColor() const;
+    void setPenColor(const QColor &color);
+
     inline int opacity() {return m_opacity;}
     void setOpacity(int opacity);
     inline qreal left() {return x();}
@@ -107,12 +114,14 @@ public:
     void bringToFront();
     void sendToBack();
     void readAttributes(QDomElement);
+    bool isSceneRect() {return m_isSceneRect;}
 
 protected:
     void writeAttributes(QDomElement);
 
 private:
     bool m_deleted;
+    bool m_isSceneRect;
     int m_playheadPosition;
     AnimationScene *m_scene;
     ItemHandle*  m_handles[8];

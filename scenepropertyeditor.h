@@ -37,6 +37,10 @@ public:
     ScenePropertyEditor();
 
     void setScene(AnimationScene *scene);
+
+signals:
+    void addKeyFrame(AnimationItem*, QString, QVariant);
+
 private:
     bool m_initializing;
     ColorEditor *m_colorEditor;

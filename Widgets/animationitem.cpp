@@ -30,15 +30,10 @@
 #include <QGraphicsScene>
 #include <QMenu>
 
-AnimationItem::AnimationItem()
-{
-    m_deleted = false;
-    m_hasHandles = false;
-}
-
-AnimationItem::AnimationItem(AnimationScene *scene)
+AnimationItem::AnimationItem(AnimationScene *scene, bool isSceneRect)
 {
     m_scene = scene;
+    m_isSceneRect = isSceneRect;
     m_deleted = false;
     m_hasHandles = false;
     m_xscale = 1;
@@ -269,7 +264,31 @@ void AnimationItem::setBrush(const QBrush &brush)
 {
     m_brush = brush;
     update();
+    //emit brushChanged(m_brush.color());
+}
+
+QColor AnimationItem::brushColor() const
+{
+    return m_brush.color();
+}
+
+void AnimationItem::setBrushColor(const QColor &color)
+{
+    m_brush.setColor(color);
+    update();
     emit brushChanged(m_brush.color());
+}
+
+QColor AnimationItem::penColor() const
+{
+    return m_pen.color();
+}
+
+void AnimationItem::setPenColor(const QColor &color)
+{
+    m_pen.setColor(color);
+    update();
+    emit penChanged(m_pen.color());
 }
 
 void AnimationItem::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)

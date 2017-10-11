@@ -56,7 +56,7 @@ QDomElement Text::getXml(QDomDocument doc)
     ele.setAttribute("xscale", QVariant(xscale()).toString());
     ele.setAttribute("yscale", QVariant(yscale()).toString());
     ele.setAttribute("text", text());
-    ele.setAttribute("textcolor", textcolor().name());
+    ele.setAttribute("textcolor", textColor().name());
     ele.setAttribute("opacity", opacity());
     ele.setAttribute("font-family", font().family());
     ele.setAttribute("font-size", font().pointSize());
@@ -98,12 +98,12 @@ void Text::setText(QString text)
     setHandlePositions();
 }
 
-QColor Text::textcolor()
+QColor Text::textColor()
 {
     return m_textcolor;
 }
 
-void Text::setTextcolor(QColor color)
+void Text::setTextColor(QColor color)
 {
    m_textcolor = color;
    m_textitem->setBrush(QBrush(m_textcolor));

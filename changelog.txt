@@ -2,6 +2,7 @@
 ---
 - Saving files is done in XML now only. Binary files can still be readed.
 - New plugin technology for items added.
+- Animation of scene.brushColor, brushColor, penColor and textColor is now possible
 
 1.5
 ---
