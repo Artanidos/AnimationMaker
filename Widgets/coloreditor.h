@@ -27,8 +27,9 @@
 #include <QLineEdit>
 #include "colorpicker.h"
 #include "colorrect.h"
+#include "widgets_global.h"
 
-class ColorEditor : public QWidget
+class WIDGETSSHARED_EXPORT ColorEditor : public QWidget
 {
     Q_OBJECT
 public:

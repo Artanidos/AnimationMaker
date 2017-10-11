@@ -40,7 +40,10 @@ SOURCES += \
     bitmap.cpp \
     plugins.cpp \
     expander.cpp \
-    animationitem.cpp
+    animationitem.cpp \
+    coloreditor.cpp \
+    colorpicker.cpp \
+    colorrect.cpp
     
 
 HEADERS +=\
@@ -63,7 +66,10 @@ HEADERS +=\
     ../interfaces.h \
     expander.h \
     propertyeditorinterface.h \
-    animationitem.h
+    animationitem.h \
+    coloreditor.h \
+    colorpicker.h \
+    colorrect.h
     
 unix {
     target.path = /usr/lib

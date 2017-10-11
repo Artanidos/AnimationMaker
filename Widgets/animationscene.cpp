@@ -19,7 +19,6 @@
 ****************************************************************************/
 
 #include "animationscene.h"
-#include "rectangle.h"
 #include "animationitem.h"
 #include "plugins.h"
 #include "ellipse.h"
@@ -154,7 +153,7 @@ void AnimationScene::setEditMode(QString pluginName)
 
 void AnimationScene::addBackgroundRect()
 {
-    m_rect = new QGraphicsRectItem(0, 0, width(), height());
+    m_rect = new Rectangle(width(), height(), this);
     m_backgroundColor = QColor("#404244");
     m_rect->setBrush(QBrush(QColor(m_backgroundColor)));
     m_rect->setPos(0,0);

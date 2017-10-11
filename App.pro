@@ -37,23 +37,15 @@ INSTALLS += target
 
 SOURCES += main.cpp\
     mainwindow.cpp \
-    expander.cpp \
     itempropertyeditor.cpp \
     scenepropertyeditor.cpp \
-    colorpicker.cpp \
-    colorrect.cpp \
-    coloreditor.cpp \
     transitioneditor.cpp \
     news.cpp \
     xmlhighlighter.cpp
 
 HEADERS  += mainwindow.h \
-    expander.h \
     itempropertyeditor.h \
     scenepropertyeditor.h \
-    colorpicker.h \
-    colorrect.h \
-    coloreditor.h \
     transitioneditor.h \
     news.h \
     xmlhighlighter.h \

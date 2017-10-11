@@ -18,27 +18,37 @@
 **
 ****************************************************************************/
 
-#ifndef COLORRECT_H
-#define COLORRECT_H
+#ifndef COLORPICKER_H
+#define COLORPICKER_H
 
 #include <QWidget>
+#include <QSlider>
+#include "widgets_global.h"
 
-class ColorRect : public QWidget
+class WIDGETSSHARED_EXPORT ColorPicker : public QWidget
 {
     Q_OBJECT
 public:
-    ColorRect();
+    ColorPicker();
 
     void paintEvent(QPaintEvent *ev);
-    void mousePressEvent(QMouseEvent *ev);
+    virtual void mousePressEvent(QMouseEvent * event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
 
-    inline void setColor(QColor color) {m_color = color; update();}
+    QSize sizeHint() const;
+
+    qreal hue();
+    void setHue(qreal value);
 
 signals:
-    void mouseClicked();
+    void colorChanged(QColor color);
+    void colorPicked(QColor color);
 
 private:
-    QColor m_color;
+    qreal m_hue;
+    bool m_lpressed;
+    QColor getColor(QMouseEvent *event);
 };
 
-#endif // COLORRECT_H
+#endif // COLORPICKER_H

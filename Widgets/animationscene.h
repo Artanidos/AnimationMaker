@@ -30,6 +30,7 @@
 #include <QFileDialog>
 #include <QUndoStack>
 #include <QDomDocument>
+#include "rectangle.h"
 #include "widgets_global.h"
 
 class AnimationItem;
@@ -111,7 +112,7 @@ private:
     int m_fps;
     AnimationItem *m_copy;
     QColor m_backgroundColor;
-    QGraphicsRectItem *m_rect;
+    Rectangle *m_rect;
     int m_playheadPosition;
     bool m_autokeyframes;
     bool m_autotransitions;
