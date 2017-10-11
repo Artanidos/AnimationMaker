@@ -137,7 +137,6 @@ void MainWindow::saveItemAs()
     if(fileName.isEmpty())
         return;
 
-    timeline->setPlayheadPosition(0);
     scene->exportXml(fileName, false);
     statusBar()->showMessage(QString("Item saved as " + fileName));
 }
@@ -265,6 +264,7 @@ void MainWindow::open()
         saveAct->setEnabled(true);
         setTitle();
     }
+    timeline->setPlayheadPosition(0);
 }
 
 void MainWindow::fillTree()

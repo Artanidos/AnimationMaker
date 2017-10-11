@@ -601,7 +601,7 @@ QVariant AnimationItem::itemChange(GraphicsItemChange change, const QVariant &va
                     m_handles[i]->installSceneEventFilter(this);
                 }
                 m_hasHandles = true;
-                setHandlePositions();            
+                setHandlePositions();
             }
         }
         else

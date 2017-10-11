@@ -518,6 +518,7 @@ void AnimationScene::exportXml(QString fileName, bool exportAll)
         QMessageBox::warning(0, "Error", "Unable to open file " + fileName);
         return;
     }
+    QList<QGraphicsItem*> itemList;
 
     if(exportAll)
     {
@@ -527,31 +528,27 @@ void AnimationScene::exportXml(QString fileName, bool exportAll)
         root.setAttribute("height", height());
         root.setAttribute("brushColor", this->backgroundRect()->brushColor().name());
         doc.appendChild(root);
+        itemList = items(Qt::AscendingOrder);
     }
     else
     {
         root = doc.createElement("AnimationItems");
         doc.appendChild(root);
+        itemList = selectedItems();
     }
 
-    for(int i=0; i < items().count(); i++)
+    for(int i = 0; i < itemList.count(); i++)
     {
-        AnimationItem *item = dynamic_cast<AnimationItem*>(items().at(i));
+        AnimationItem *item = dynamic_cast<AnimationItem*>(itemList.at(i));
         if(item)
         {
             if(item->isSceneRect())
-            {
-                if(exportAll)
-                    writeKeyframes(&doc, &root, item);
-            }
+                writeKeyframes(&doc, &root, item);
             else
             {
-                if(item->isSelected() || exportAll)
-                {
-                    QDomElement ele = item->getXml(doc);
-                    writeKeyframes(&doc, &ele, item);
-                    root.appendChild(ele);
-                }
+                QDomElement ele = item->getXml(doc);
+                writeKeyframes(&doc, &ele, item);
+                root.appendChild(ele);
             }
         }
     }
