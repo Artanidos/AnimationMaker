@@ -89,7 +89,6 @@ void Pie::paint(QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget
     paint->setPen(pen());
     paint->setBrush(brush());
     paint->drawPie(rect(), m_startAngle * 16, m_spanAngle * 16);
-    paint->drawText(rect(), QString::number(playheadPosition()), QTextOption(Qt::AlignCenter));
 
     if (option->state & QStyle::State_Selected)
         drawHighlightSelected(paint, option);
