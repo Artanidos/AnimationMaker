@@ -30,7 +30,7 @@ HEADERS		 += \
     pieitem.h \
     propertyeditor.h \
     commands.h
-DESTDIR       = ~/AnimationMaker/plugins
+#DESTDIR       = ~/AnimationMaker/plugins
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/../../Widgets
