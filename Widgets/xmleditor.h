@@ -18,42 +18,23 @@
 **
 ****************************************************************************/
 
-#ifndef SCENEPROPERTYEDITOR_H
-#define SCENEPROPERTYEDITOR_H
+#ifndef XMLEDITOR_H
+#define XMLEDITOR_H
 
-#include <QSpinBox>
-#include <QLineEdit>
-#include <QLabel>
+#include <QTextEdit>
+#include "widgets_global.h"
 
-#include "animationscene.h"
-#include "colorpicker.h"
-#include "colorrect.h"
-#include "coloreditor.h"
-
-class ScenePropertyEditor : public QWidget
+class WIDGETSSHARED_EXPORT XmlEditor : public QTextEdit
 {
     Q_OBJECT
+
 public:
-    ScenePropertyEditor();
+    XmlEditor();
 
-    void setScene(AnimationScene *scene);
-private:
-    bool m_initializing;
-    ColorEditor *m_colorEditor;
-    QSpinBox *m_width;
-    QSpinBox *m_height;
-    QSpinBox *m_fps;
-    AnimationScene *m_scene;
+    void focusOutEvent(QFocusEvent *e) {QTextEdit::focusOutEvent(e); emit editingFinished();}
 
-    void setColorParts(QColor value);
-
-private slots:
-    void widthChanged(int value);
-    void heightChanged(int value);
-    void fpsChanged(int value);
-    void backgroundColorChanged(QColor color);
-    void colorChanged(QColor color);
-    void addKeyFrame();
+signals:
+    void editingFinished();
 };
 
-#endif // SCENEPROPERTYEDITOR_H
+#endif // XMLEDITOR_H

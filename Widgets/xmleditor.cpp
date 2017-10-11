@@ -18,42 +18,22 @@
 **
 ****************************************************************************/
 
-#ifndef SCENEPROPERTYEDITOR_H
-#define SCENEPROPERTYEDITOR_H
+#include "xmleditor.h"
+#include "xmlhighlighter.h"
 
-#include <QSpinBox>
-#include <QLineEdit>
-#include <QLabel>
-
-#include "animationscene.h"
-#include "colorpicker.h"
-#include "colorrect.h"
-#include "coloreditor.h"
-
-class ScenePropertyEditor : public QWidget
+XmlEditor::XmlEditor()
 {
-    Q_OBJECT
-public:
-    ScenePropertyEditor();
+    QFont font;
+    font.setFamily("Courier");
+    font.setFixedPitch(true);
+    font.setPointSize(13);
 
-    void setScene(AnimationScene *scene);
-private:
-    bool m_initializing;
-    ColorEditor *m_colorEditor;
-    QSpinBox *m_width;
-    QSpinBox *m_height;
-    QSpinBox *m_fps;
-    AnimationScene *m_scene;
+    setFont(font);
+    setAcceptRichText(false);
+    setLineWrapMode(QTextEdit::NoWrap);
+    setMinimumHeight(200);
+    QFontMetrics metrics(font);
+    setTabStopWidth(4 * metrics.width(' '));
+    new XmlHighlighter(document());
+}
 
-    void setColorParts(QColor value);
-
-private slots:
-    void widthChanged(int value);
-    void heightChanged(int value);
-    void fpsChanged(int value);
-    void backgroundColorChanged(QColor color);
-    void colorChanged(QColor color);
-    void addKeyFrame();
-};
-
-#endif // SCENEPROPERTYEDITOR_H

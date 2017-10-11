@@ -41,15 +41,15 @@ SOURCES += main.cpp\
     scenepropertyeditor.cpp \
     transitioneditor.cpp \
     news.cpp \
-    xmlhighlighter.cpp
+    svgattributeeditor.cpp
 
 HEADERS  += mainwindow.h \
     itempropertyeditor.h \
     scenepropertyeditor.h \
     transitioneditor.h \
     news.h \
-    xmlhighlighter.h \
-    interfaces.h
+    interfaces.h \
+    svgattributeeditor.h
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

@@ -19,7 +19,7 @@
 ****************************************************************************/
 
 #include "coloreditor.h"
-
+#include "flatbutton.h"
 #include <QGridLayout>
 #include <QTest>
 
@@ -80,23 +80,30 @@ ColorEditor::ColorEditor(QString label)
     m_labelBlue->setFixedWidth(15);
     QLabel *l = new QLabel(label);
     l->setMinimumWidth(100);
+    m_addKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    m_addKeyframe->setMaximumWidth(9);
+    m_addKeyframe->setToolTip("Add keyframe for Left");
+
     layout->addWidget(l, 0, 0);
-    layout->addWidget(m_rect, 0, 1);
-    layout->addWidget(m_color, 0, 2, 1, 4);
-    layout->addWidget(m_colorPicker, 1, 0, 3, 1);
-    layout->addWidget(m_hueSlider, 1, 1, 3, 1);
-    layout->addWidget(m_labelHue, 1, 2);
-    layout->addWidget(m_hue, 1, 3);
-    layout->addWidget(m_labelSaturation, 2, 2);
-    layout->addWidget(m_saturation, 2, 3);
-    layout->addWidget(m_labelLightness, 3, 2);
-    layout->addWidget(m_lightness, 3, 3);
-    layout->addWidget(m_labelRed, 1, 4);
-    layout->addWidget(m_red, 1, 5);
-    layout->addWidget(m_labelGreen, 2, 4);
-    layout->addWidget(m_green, 2, 5);
-    layout->addWidget(m_labelBlue, 3, 4);
-    layout->addWidget(m_blue, 3, 5);
+    layout->addWidget(m_addKeyframe, 0, 1);
+    layout->addWidget(m_rect, 0, 2);
+    layout->addWidget(m_color, 0, 3, 1, 4);
+
+    layout->addWidget(m_colorPicker, 1, 0, 3, 2);
+    layout->addWidget(m_hueSlider, 1, 2, 3, 1);
+    layout->addWidget(m_labelHue, 1, 3);
+    layout->addWidget(m_hue, 1, 4);
+    layout->addWidget(m_labelSaturation, 2, 3);
+    layout->addWidget(m_saturation, 2, 4);
+    layout->addWidget(m_labelLightness, 3, 3);
+    layout->addWidget(m_lightness, 3, 4);
+    layout->addWidget(m_labelRed, 1, 5);
+    layout->addWidget(m_red, 1, 6);
+    layout->addWidget(m_labelGreen, 2, 5);
+    layout->addWidget(m_green, 2, 6);
+    layout->addWidget(m_labelBlue, 3, 5);
+    layout->addWidget(m_blue, 3, 6);
+
     setLayout(layout);
 
     connectControls();
@@ -137,6 +144,7 @@ void ColorEditor::connectControls()
     connect(m_red, SIGNAL(valueChanged(int)), this, SLOT(redValueChanged(int)));
     connect(m_green, SIGNAL(valueChanged(int)), this, SLOT(greenValueChanged(int)));
     connect(m_blue, SIGNAL(valueChanged(int)), this, SLOT(blueValueChanged(int)));
+    connect(m_addKeyframe, SIGNAL(clicked()), this, SLOT(addKeyframeClicked()));
 }
 
 void ColorEditor::rectClicked()
@@ -223,6 +231,11 @@ void ColorEditor::huePicked()
     QColor color = QColor::fromHslF((qreal)value / 100, (qreal)m_saturation->value() / 100, (qreal)m_lightness->value() / 100, 1.0);
     setColorParts(color);
     emit colorChanged(color);
+}
+
+void ColorEditor::addKeyframeClicked()
+{
+    emit addKeyframe();
 }
 
 void ColorEditor::saturationValueChanged(int value)

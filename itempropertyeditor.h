@@ -26,7 +26,6 @@
 #include <QLabel>
 #include <QFontDatabase>
 #include <QComboBox>
-#include <QTextEdit>
 
 class AnimationItem;
 class Text;
@@ -37,50 +36,8 @@ class Ellipse;
 class Vectorgraphic;
 class Timeline;
 class QVBoxLayout;
-
-class XmlEditor : public QTextEdit
-{
-    Q_OBJECT
-public:
-    XmlEditor();
-
-    void focusOutEvent(QFocusEvent *e) {QTextEdit::focusOutEvent(e); emit editingFinished();}
-
-signals:
-    void editingFinished();
-};
-
-class SvgAttributeEditor : public QWidget
-{
-    Q_OBJECT
-public:
-    SvgAttributeEditor();
-
-    bool isValid() {return !m_element->text().isEmpty() && !m_attribute->text().isEmpty();}
-    QString attributeName() {return m_element->text() + "." + m_attribute->text();}
-    void setAttributeName(QString name);
-    QString value() {return m_value->text();}
-    void setValue(QString val) {m_value->setText(val);}
-
-signals:
-    void attributeNameChanged(QString oldName, QString newName);
-    void attributeValueChanged(QString name, QString value);
-    void removeClicked(SvgAttributeEditor *editor);
-    void addKeyframeClicked(SvgAttributeEditor *editor);
-
-private slots:
-    void attributeNameChanged();
-    void valueChanged();
-    void minusClicked();
-    void addKeyframeClicked();
-
-private:
-    QLineEdit *m_element;
-    QLineEdit *m_attribute;
-    QLineEdit *m_value;
-    QString m_attributeName;
-};
-
+class XmlEditor;
+class SvgAttributeEditor;
 class ItemPropertyEditor : public QWidget
 {
     Q_OBJECT

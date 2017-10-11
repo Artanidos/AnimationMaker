@@ -29,6 +29,7 @@
 #include "colorrect.h"
 #include "widgets_global.h"
 
+class FlatButton;
 class WIDGETSSHARED_EXPORT ColorEditor : public QWidget
 {
     Q_OBJECT
@@ -41,6 +42,7 @@ public:
 
 signals:
     void colorChanged(QColor value);
+    void addKeyframe();
 
 private:
     ColorPicker *m_colorPicker;
@@ -59,6 +61,7 @@ private:
     QLabel *m_labelRed;
     QLabel *m_labelGreen;
     QLabel *m_labelBlue;
+    FlatButton *m_addKeyframe;
 
     void setColorParts(QColor value);
     void connectControls();
@@ -77,6 +80,7 @@ private slots:
     void blueValueChanged(int value);
     void hueChanged(int);
     void huePicked();
+    void addKeyframeClicked();
 };
 
 #endif // COLOREDITOR_H

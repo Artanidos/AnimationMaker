@@ -58,6 +58,7 @@ ScenePropertyEditor::ScenePropertyEditor()
     connect(m_height, SIGNAL(valueChanged(int)), this, SLOT(heightChanged(int)));
     connect(m_fps, SIGNAL(valueChanged(int)), this, SLOT(fpsChanged(int)));
     connect(m_colorEditor, SIGNAL(colorChanged(QColor)), this, SLOT(colorChanged(QColor)));
+    connect(m_colorEditor, SIGNAL(addKeyframe()), this, SLOT(addKeyFrame()));
  }
 
 void ScenePropertyEditor::setScene(AnimationScene *scene)
@@ -94,4 +95,9 @@ void ScenePropertyEditor::colorChanged(QColor color)
 {
     QUndoCommand *cmd = new ChangeSceneColorCommand(color, m_scene->backgroundColor(), m_scene);
     m_scene->undoStack()->push(cmd);
+}
+
+void ScenePropertyEditor::addKeyFrame()
+{
+
 }

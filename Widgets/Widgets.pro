@@ -43,7 +43,9 @@ SOURCES += \
     animationitem.cpp \
     coloreditor.cpp \
     colorpicker.cpp \
-    colorrect.cpp
+    colorrect.cpp \
+    xmleditor.cpp \
+    xmlhighlighter.cpp
     
 
 HEADERS +=\
@@ -69,7 +71,9 @@ HEADERS +=\
     animationitem.h \
     coloreditor.h \
     colorpicker.h \
-    colorrect.h
+    colorrect.h \
+    xmleditor.h \
+    xmlhighlighter.h
     
 unix {
     target.path = /usr/lib
