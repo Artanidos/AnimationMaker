@@ -545,29 +545,6 @@ void AnimationScene::exportXml(QString fileName, bool exportAll)
     file.close();
 }
 
-QString simpleTypeName(QVariant value)
-{
-    switch(value.type())
-    {
-        case QVariant::Type::Double:
-            return "double";
-            break;
-        case QVariant::Type::Int:
-            return "int";
-            break;
-        case QVariant::Type::Color:
-            return "color";
-            break;
-        case QVariant::Type::String:
-            return "string";
-            break;
-        default:
-            qDebug() << "undefined simpleType" << value.typeName();
-            return "string";
-            break;
-    }
-}
-
 void AnimationScene::writeKeyframes(QDomDocument *doc, QDomElement *element, ResizeableItem *item)
 {
     QHash<QString, KeyFrame*>::iterator it;
@@ -581,7 +558,7 @@ void AnimationScene::writeKeyframes(QDomDocument *doc, QDomElement *element, Res
             f.setAttribute("time", frame->time());
             f.setAttribute("value", frame->value().toString());
             f.setAttribute("easing", frame->easing());
-            f.setAttribute("type", simpleTypeName(frame->value()));
+            f.setAttribute("type", frame->value().typeName());
             frames.appendChild(f);
         }
         element->appendChild(frames);
@@ -597,35 +574,43 @@ void AnimationScene::readKeyframes(QDomElement *element, ResizeableItem *item)
         if(node.nodeName() == "Keyframes")
         {
             QDomElement keyframes = node.toElement();
+            QString property = keyframes.attribute("property");
             for(int j=0; j < node.childNodes().count(); j++)
             {
                 QDomNode frameNode = node.childNodes().at(j);
                 if(frameNode.nodeName() == "Keyframe")
                 {
+                    QString defaultType = QVariant::typeToName(QVariant::Type::Double);
+                    // in version 1.5 we introduced svg attribute animation without declaring a type
+                    // all these properties have got a dot in its name like "element.attribute"
+                    // all of these attributes where handled as strings because we don't know there real type
+                    // also the fill attribute in svg for example can contain a color string like "#00ffbb" or "none"
+                    if(property.contains("."))
+                        defaultType = QVariant::typeToName(QVariant::Type::String);
                     QDomElement keyframe = frameNode.toElement();
                     KeyFrame *key = new KeyFrame();
-                    QString type = keyframe.attribute("type", "string");
+                    QString type = keyframe.attribute("type", defaultType);
                     QString value = keyframe.attribute("value");
                     key->setTime(keyframe.attribute("time", "0").toInt());
-                    if(type == "double")
+                    if(type == QVariant::typeToName(QVariant::Type::Double))
                     {
                         key->setValue(QVariant(value.toDouble()));
                     }
-                    else if(type == "int")
+                    else if(type == QVariant::typeToName(QVariant::Type::Int))
                     {
                         key->setValue(QVariant(value.toInt()));
                     }
-                    else if(type == "color")
+                    else if(type == QVariant::typeToName(QVariant::Type::Color))
                     {
-                        key->setValue(QVariant(value));
+                        key->setValue(QVariant(QColor(value)));
                     }
-                    else if(type == "string")
+                    else if(type == QVariant::typeToName(QVariant::Type::String))
                     {
                         key->setValue(QVariant(value));
                     }
                     else
                     {
-                        qDebug() << "type not implemented" << type;
+                        qDebug() << "keyframe type not implemented" << type;
                         key->setValue(value);
                     }
                     key->setEasing(keyframe.attribute("easing", "-1").toInt());
@@ -637,8 +622,8 @@ void AnimationScene::readKeyframes(QDomElement *element, ResizeableItem *item)
                     }
                     else
                     {
-                        item->addKeyframe(keyframes.attribute("property"), key);
-                        emit keyframeAdded(item, keyframes.attribute("property"), key);
+                        item->addKeyframe(property, key);
+                        emit keyframeAdded(item, property, key);
                     }
                     m_tempKeyFrame = key;
                 }
@@ -855,7 +840,7 @@ void AnimationScene::setPlayheadPosition(int playheadPosition)
                                 if(found->easing() >= 0)
                                     value = calculateColorValue(found, m_playheadPosition);
                                 else
-                                    value = QColor(found->value().toString());
+                                    value = found->value().value<QColor>();
                                 item->setProperty(propertyName.toLatin1(), value);
                                 break;
                             }
@@ -892,8 +877,10 @@ QColor calculateColorValue(KeyFrame *found, int playheadPosition)
 {
     qreal progressValue = getProgressValue(found, playheadPosition);
 
-    QColor fromColor(found->value().toString());
-    QColor toColor(found->next()->value().toString());
+    QColor fromColor = found->value().value<QColor>();
+    QColor toColor = found->next()->value().value<QColor>();
+    //QColor fromColor(found->value().toString());
+    //QColor toColor(found->next()->value().toString());
     int fromRed = fromColor.red();
     int fromBlue = fromColor.blue();
     int fromGreen = fromColor.green();
