@@ -59,7 +59,7 @@ PropertyEditor::PropertyEditor()
     connect(addSpanAngleKeyframe, SIGNAL(clicked()), this, SLOT(addSpanKeyFrame()));
 }
 
-void PropertyEditor::setItem(ResizeableItem *item)
+void PropertyEditor::setItem(AnimationItem *item)
 {
     m_initializing = true;
     m_item = dynamic_cast<Pie*>(item);

@@ -23,12 +23,12 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 #include <QGraphicsView>
-#include "resizeableitem.h"
+#include "animationitem.h"
 
 #define EXTRA_HEIGHT 4
 
 Text::Text(QString text, AnimationScene *scene)
-    : ResizeableItem(scene)
+    : AnimationItem(scene)
 {
    m_font = QFont("Arial", 14);
    m_font.setStyleName("Standard");

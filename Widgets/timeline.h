@@ -26,7 +26,7 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QPropertyAnimation>
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "animationscene.h"
 #include "transitionpanel.h"
 #include "playhead.h"
@@ -42,12 +42,12 @@ public:
     inline void setPlayheadPosition(int value) {m_playhead->setValue(value);}
     inline void expandTree() {m_tree->expandAll();}
     int lastKeyframe();
-    void removeItem(ResizeableItem *item);
-    void selectItem(ResizeableItem *item);
-    void addKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame);
-    void deleteKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame);
-    void addTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame);
-    void deleteTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame);
+    void removeItem(AnimationItem *item);
+    void selectItem(AnimationItem *item);
+    void addKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *frame);
+    void deleteKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *frame);
+    void addTransition(AnimationItem *item, QString propertyName, KeyFrame *frame);
+    void deleteTransition(AnimationItem *item, QString propertyName, KeyFrame *frame);
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
@@ -56,24 +56,24 @@ public slots:
     void revertAnimation();
     void forwardAnimation();
     void playheadValueChanged(int val);
-    void addKeyFrame(ResizeableItem *item,QString property, QVariant value);
+    void addKeyFrame(AnimationItem *item,QString property, QVariant value);
     void autokeyframes(bool value);
     void autotransitions(bool value);
-    void idChanged(ResizeableItem *item, QString value);
+    void idChanged(AnimationItem *item, QString value);
     void treeCurrentItemChanged(QTreeWidgetItem *currentItem, QTreeWidgetItem*);
-    void keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key);
-    void deleteKeyFrameSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
-    void deleteTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
-    void addTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame);
+    void keyframeAdded(AnimationItem * item, QString propertyName, KeyFrame *key);
+    void deleteKeyFrameSlot(AnimationItem *item, QString propertyName, KeyFrame *frame);
+    void deleteTransitionSlot(AnimationItem *item, QString propertyName, KeyFrame *frame);
+    void addTransitionSlot(AnimationItem *item, QString propertyName, KeyFrame *frame);
     void transitionSelected(KeyFrame *frame);
     void transitionDeselected();
     void scrollValueChanged(int value);
 
 signals:
-    void itemSelectionChanged(ResizeableItem *item);
-    void keyframeAdded(ResizeableItem *item, QString propertyName);
-    void keyframeDeleted(ResizeableItem *item, QString propertyName);
-    void transitionDeleted(ResizeableItem *item, QString propertyName);
+    void itemSelectionChanged(AnimationItem *item);
+    void keyframeAdded(AnimationItem *item, QString propertyName);
+    void keyframeDeleted(AnimationItem *item, QString propertyName);
+    void transitionDeleted(AnimationItem *item, QString propertyName);
     void transitionSelectionChanged(KeyFrame *frame);
 
 private:
@@ -91,7 +91,7 @@ private:
 
     void addProperty(const QString name);
     void createAnimationGroup();
-    QTreeWidgetItem *search(ResizeableItem *item);
+    QTreeWidgetItem *search(AnimationItem *item);
     QTreeWidgetItem *search(QTreeWidgetItem *treeItem, QString propertyName);
 };
 QString timeString(int milliseconds, bool showMinutes = true);

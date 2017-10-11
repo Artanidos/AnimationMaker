@@ -24,7 +24,7 @@
 #include <QGraphicsItem>
 
 Ellipse::Ellipse(qreal width, qreal height, AnimationScene *scene)
-    : ResizeableItem(scene)
+    : AnimationItem(scene)
 {
     setRect(0, 0, width, height);
 }

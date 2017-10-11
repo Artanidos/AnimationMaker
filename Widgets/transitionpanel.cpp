@@ -99,7 +99,7 @@ void TransitionPanel::enableDisableLines()
     for(int i = 0; i < rows; i++)
     {
         QTreeWidgetItem *treeItem = m_tree->topLevelItem(i);
-        ResizeableItem *item = (ResizeableItem *) treeItem->data(0, 1).value<void *>();
+        AnimationItem *item = (AnimationItem *) treeItem->data(0, 1).value<void *>();
         TransitionLine *line = getTransitionLine(item, "");
         if(line)
         {
@@ -128,7 +128,7 @@ void TransitionPanel::enableDisableLines()
     }
 }
 
-TransitionLine *TransitionPanel::getTransitionLine(ResizeableItem *item, QString propertyName)
+TransitionLine *TransitionPanel::getTransitionLine(AnimationItem *item, QString propertyName)
 {
     for(int i = 0; i < m_layout->count(); i++)
     {
@@ -167,16 +167,16 @@ void TransitionPanel::scrollValueChanged(int pos)
    update();
 }
 
-void TransitionPanel::keyframeAdded(ResizeableItem *item, QString propertyName)
+void TransitionPanel::keyframeAdded(AnimationItem *item, QString propertyName)
 {
     if(item)
     {
         TransitionLine *line = new TransitionLine(item, propertyName);
         line->setScrollValue(m_horizontalScrollPos);
         m_layout->insertWidget(m_layout->count() - 1, line);
-        connect(line, SIGNAL(deleteKeyframe(ResizeableItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteKeyFrameSlot(ResizeableItem*,QString,KeyFrame*)));
-        connect(line, SIGNAL(deleteTransition(ResizeableItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteTransitionSlot(ResizeableItem*,QString,KeyFrame*)));
-        connect(line, SIGNAL(addTransition(ResizeableItem*,QString,KeyFrame*)), m_timeline, SLOT(addTransitionSlot(ResizeableItem*,QString,KeyFrame*)));
+        connect(line, SIGNAL(deleteKeyframe(AnimationItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteKeyFrameSlot(AnimationItem*,QString,KeyFrame*)));
+        connect(line, SIGNAL(deleteTransition(AnimationItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteTransitionSlot(AnimationItem*,QString,KeyFrame*)));
+        connect(line, SIGNAL(addTransition(AnimationItem*,QString,KeyFrame*)), m_timeline, SLOT(addTransitionSlot(AnimationItem*,QString,KeyFrame*)));
         connect(line, SIGNAL(transitionSelected(KeyFrame*)), m_timeline, SLOT(transitionSelected(KeyFrame*)));   
         connect(line, SIGNAL(transitionSelected(KeyFrame*)), this, SLOT(transitionSelected(KeyFrame*)));
 
@@ -198,7 +198,7 @@ void TransitionPanel::transitionSelected(KeyFrame *frame)
     }
 }
 
-void TransitionPanel::transitionAdded(ResizeableItem *item, QString propertyName)
+void TransitionPanel::transitionAdded(AnimationItem *item, QString propertyName)
 {
     for(int i = 0; i < m_layout->count(); i++)
     {
@@ -212,7 +212,7 @@ void TransitionPanel::transitionAdded(ResizeableItem *item, QString propertyName
 }
 
 
-void TransitionPanel::transitionDeleted(ResizeableItem *item, QString propertyName)
+void TransitionPanel::transitionDeleted(AnimationItem *item, QString propertyName)
 {
     for(int i = 0; i < m_layout->count(); i++)
     {
@@ -225,7 +225,7 @@ void TransitionPanel::transitionDeleted(ResizeableItem *item, QString propertyNa
     }
 }
 
-void TransitionPanel::keyframeDeleted(ResizeableItem *item, QString propertyName)
+void TransitionPanel::keyframeDeleted(AnimationItem *item, QString propertyName)
 {
     if(!item->keyframes()->value(propertyName))
     {
@@ -263,7 +263,7 @@ void TransitionPanel::setPlayheadPosition(int value)
     update();
 }
 
-void TransitionPanel::removeItem(ResizeableItem *item)
+void TransitionPanel::removeItem(AnimationItem *item)
 {
     for(int i = m_layout->count() - 1; i >= 0; i--)
     {

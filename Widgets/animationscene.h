@@ -32,7 +32,7 @@
 #include <QDomDocument>
 #include "widgets_global.h"
 
-class ResizeableItem;
+class AnimationItem;
 class KeyFrame;
 class WIDGETSSHARED_EXPORT AnimationScene : public QGraphicsScene
 {
@@ -75,7 +75,7 @@ public:
     void copyItem();
     void pasteItem();
 
-    void deleteItem(ResizeableItem *item);
+    void deleteItem(AnimationItem *item);
     inline bool autokeyframes() {return m_autokeyframes;}
     inline void setAutokeyframes(bool value) {m_autokeyframes = value;}
 
@@ -93,8 +93,8 @@ public:
 signals:
     void itemAdded(QGraphicsItem *item);
     void sizeChanged(int width, int height);
-    void keyframeAdded(ResizeableItem *item, QString propertyName, KeyFrame *key);
-    void itemRemoved(ResizeableItem *item);
+    void keyframeAdded(AnimationItem *item, QString propertyName, KeyFrame *key);
+    void itemRemoved(AnimationItem *item);
     void backgroundColorChanged(QColor color);
     void animationResetted();
 
@@ -109,24 +109,24 @@ protected:
 private:
     EditMode m_editMode;
     int m_fps;
-    ResizeableItem *m_copy;
+    AnimationItem *m_copy;
     QColor m_backgroundColor;
     QGraphicsRectItem *m_rect;
     int m_playheadPosition;
     bool m_autokeyframes;
     bool m_autotransitions;
     QUndoStack *m_undoStack;
-    ResizeableItem *m_movingItem;
+    AnimationItem *m_movingItem;
     QPointF m_oldPos;
     int m_fileVersion;
     QString m_actPluginName;
 
     void initialize();
     void addBackgroundRect();
-    void readKeyframes(QDataStream &dataStream, ResizeableItem *item);
-    void copyKeyframes(ResizeableItem *item);
-    void writeKeyframes(QDomDocument *doc, QDomElement *element, ResizeableItem *item);
-    void readKeyframes(QDomElement *element, ResizeableItem *item);
+    void readKeyframes(QDataStream &dataStream, AnimationItem *item);
+    void copyKeyframes(AnimationItem *item);
+    void writeKeyframes(QDomDocument *doc, QDomElement *element, AnimationItem *item);
+    void readKeyframes(QDomElement *element, AnimationItem *item);
 };
 
 qreal getProgressValue(KeyFrame *found, int playheadPosition);

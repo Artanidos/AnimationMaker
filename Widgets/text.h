@@ -25,11 +25,11 @@
 #include <QGraphicsRectItem>
 #include <QColor>
 #include <QFont>
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "widgets_global.h"
 
 class AnimationScene;
-class WIDGETSSHARED_EXPORT Text : public ResizeableItem
+class WIDGETSSHARED_EXPORT Text : public AnimationItem
 {
     Q_OBJECT
 public:

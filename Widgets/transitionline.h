@@ -22,14 +22,14 @@
 #define TRANSITION_H
 
 #include <QWidget>
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "widgets_global.h"
 
 class WIDGETSSHARED_EXPORT TransitionLine : public QWidget
 {
     Q_OBJECT
 public:
-    TransitionLine(ResizeableItem *item, QString propertyName);
+    TransitionLine(AnimationItem *item, QString propertyName);
 
     void paintEvent(QPaintEvent *ev);
     void mousePressEvent(QMouseEvent *ev);
@@ -37,7 +37,7 @@ public:
     void mouseReleaseEvent(QMouseEvent *ev);
 
     inline QString propertyName() {return m_propertyName;}
-    inline ResizeableItem *item() {return m_item;}
+    inline AnimationItem *item() {return m_item;}
     inline void setPlayheadPosition(int value) {m_playheadPosition = value; update();}
     inline void setScrollValue(int value) {m_horizontalScrollValue = value; update();}
     inline KeyFrame *selectedFrame() {return m_selectedFrame;}
@@ -50,9 +50,9 @@ private slots:
     void deleteTransition();
 
 signals:
-    void deleteKeyframe(ResizeableItem *item, QString propertyName, KeyFrame *frame);
-    void deleteTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame);
-    void addTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame);
+    void deleteKeyframe(AnimationItem *item, QString propertyName, KeyFrame *frame);
+    void deleteTransition(AnimationItem *item, QString propertyName, KeyFrame *frame);
+    void addTransition(AnimationItem *item, QString propertyName, KeyFrame *frame);
     void transitionSelected(KeyFrame *frame);
 
 private:
@@ -60,7 +60,7 @@ private:
     QImage m_imageRauteHohl;
     QImage m_imageLeft;
     QImage m_imageRight;
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     QString m_propertyName;
     KeyFrame *m_frame;
     KeyFrame *m_selectedFrame;

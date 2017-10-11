@@ -40,17 +40,17 @@ public:
     void setTreeWidget(QTreeWidget *tv);
     void reset();
     void setPlayheadPosition(int value);
-    void removeItem(ResizeableItem *item);
+    void removeItem(AnimationItem *item);
     inline void registerTimeline(Timeline *timeline) {m_timeline = timeline;}
-    void transitionAdded(ResizeableItem *item, QString propertyName);
-    void transitionDeleted(ResizeableItem *item, QString propertyName);
+    void transitionAdded(AnimationItem *item, QString propertyName);
+    void transitionDeleted(AnimationItem *item, QString propertyName);
 
 public slots:
     void treeExpanded(QModelIndex);
     void treeCollapsed(QModelIndex);
     void treeScrollValueChanged(int);
-    void keyframeAdded(ResizeableItem *item, QString propertyName);
-    void keyframeDeleted(ResizeableItem *item, QString propertyName);
+    void keyframeAdded(AnimationItem *item, QString propertyName);
+    void keyframeDeleted(AnimationItem *item, QString propertyName);
     void scrollValueChanged(int pos);
     void transitionSelected(KeyFrame *frame);
 
@@ -63,7 +63,7 @@ private:
     int m_playheadPosition;
 
     void enableDisableLines();
-    TransitionLine *getTransitionLine(ResizeableItem *item, QString propertyName);
+    TransitionLine *getTransitionLine(AnimationItem *item, QString propertyName);
 };
 
 #endif // TRANSITIONPANEL_H

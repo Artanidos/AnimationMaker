@@ -25,7 +25,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     flatbutton.cpp \
-    resizeableitem.cpp \
     itemhandle.cpp \
     keyframe.cpp \
     animationscene.cpp \
@@ -40,13 +39,13 @@ SOURCES += \
     vectorgraphic.cpp \
     bitmap.cpp \
     plugins.cpp \
-    expander.cpp
+    expander.cpp \
+    animationitem.cpp
     
 
 HEADERS +=\
     widgets_global.h \
     flatbutton.h \
-    resizeableitem.h \
     itemhandle.h \
     keyframe.h \
     animationscene.h \
@@ -63,7 +62,8 @@ HEADERS +=\
     plugins.h \
     ../interfaces.h \
     expander.h \
-    propertyeditorinterface.h
+    propertyeditorinterface.h \
+    animationitem.h
     
 unix {
     target.path = /usr/lib

@@ -26,20 +26,20 @@
 #include <QBuffer>
 
 Bitmap::Bitmap()
-    : ResizeableItem(NULL)
+    : AnimationItem(NULL)
 {
 
 }
 
 Bitmap::Bitmap(QString filename, AnimationScene *scene)
-    : ResizeableItem(scene)
+    : AnimationItem(scene)
 {
     m_image.load(filename);
     setRect(0, 0, m_image.width(), m_image.height());
 }
 
 Bitmap::Bitmap(QImage image, qreal width, qreal height, AnimationScene *scene)
-    :ResizeableItem(scene)
+    :AnimationItem(scene)
 {
     m_image = image;
     setRect(0, 0, width, height);

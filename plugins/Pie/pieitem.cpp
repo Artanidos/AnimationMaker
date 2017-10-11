@@ -25,7 +25,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-ResizeableItem *PieItem::getInstance(AnimationScene *scene)
+AnimationItem *PieItem::getInstance(AnimationScene *scene)
 {
     Pie *p = new Pie(scene, className());
     p->setPen(QPen(Qt::black));
@@ -33,7 +33,7 @@ ResizeableItem *PieItem::getInstance(AnimationScene *scene)
     return p;
 }
 
-ResizeableItem *PieItem::getInstanceFromXml(AnimationScene *scene, QDomElement ele)
+AnimationItem *PieItem::getInstanceFromXml(AnimationScene *scene, QDomElement ele)
 {
     Pie *p = new Pie(scene, className());
     p->readAttributes(ele);
@@ -45,7 +45,7 @@ ResizeableItem *PieItem::getInstanceFromXml(AnimationScene *scene, QDomElement e
 }
 
 Pie::Pie(AnimationScene *scene, QString typeName)
-    : ResizeableItem(scene)
+    : AnimationItem(scene)
 {
     setRect(0, 0, 200, 200);
     m_startAngle = 45;

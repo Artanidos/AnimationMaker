@@ -32,7 +32,7 @@ class PropertyEditor : public PropertyEditorInterface
 public:
     explicit PropertyEditor();
 
-    void setItem(ResizeableItem *item) override;
+    void setItem(AnimationItem *item) override;
 
 public slots:
     void startAngleChanged();

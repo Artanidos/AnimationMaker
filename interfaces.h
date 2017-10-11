@@ -26,7 +26,7 @@
 QT_BEGIN_NAMESPACE
 class QString;
 class QIcon;
-class ResizeableItem;
+class AnimationItem;
 class AnimationScene;
 class QDomElement;
 QT_END_NAMESPACE
@@ -42,8 +42,8 @@ public:
     virtual QString displayName() = 0;
     virtual QIcon icon() = 0;
     virtual QCursor getCursor() = 0;
-    virtual ResizeableItem *getInstance(AnimationScene *) = 0;
-    virtual ResizeableItem *getInstanceFromXml(AnimationScene *, QDomElement) = 0;
+    virtual AnimationItem *getInstance(AnimationScene *) = 0;
+    virtual AnimationItem *getInstanceFromXml(AnimationScene *, QDomElement) = 0;
 };
 
 QT_BEGIN_NAMESPACE

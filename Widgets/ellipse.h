@@ -23,11 +23,11 @@
 
 #include <QGraphicsItem>
 #include <QObject>
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "widgets_global.h"
 
 class AnimationScene;
-class WIDGETSSHARED_EXPORT Ellipse : public ResizeableItem
+class WIDGETSSHARED_EXPORT Ellipse : public AnimationItem
 {
     Q_OBJECT
 public:

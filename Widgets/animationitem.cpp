@@ -18,7 +18,7 @@
 **
 ****************************************************************************/
 
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "animationscene.h"
 #include "keyframe.h"
 #include "commands.h"
@@ -30,13 +30,13 @@
 #include <QGraphicsScene>
 #include <QMenu>
 
-ResizeableItem::ResizeableItem()
+AnimationItem::AnimationItem()
 {
     m_deleted = false;
     m_hasHandles = false;
 }
 
-ResizeableItem::ResizeableItem(AnimationScene *scene)
+AnimationItem::AnimationItem(AnimationScene *scene)
 {
     m_scene = scene;
     m_deleted = false;
@@ -74,7 +74,7 @@ ResizeableItem::ResizeableItem(AnimationScene *scene)
     m_contextMenu->addSeparator();
 }
 
-ResizeableItem::~ResizeableItem()
+AnimationItem::~AnimationItem()
 {
     QHash<QString, KeyFrame*>::iterator it;
     for(it = m_keyframes->begin(); it != m_keyframes->end(); it++)
@@ -102,12 +102,12 @@ ResizeableItem::~ResizeableItem()
     }
 }
 
-void ResizeableItem::setScene(AnimationScene *scene)
+void AnimationItem::setScene(AnimationScene *scene)
 {
     m_scene = scene;
 }
 
-void ResizeableItem::addKeyframe(QString propertyName, KeyFrame *frame)
+void AnimationItem::addKeyframe(QString propertyName, KeyFrame *frame)
 {
     if(m_keyframes->contains(propertyName))
     {
@@ -146,7 +146,7 @@ void ResizeableItem::addKeyframe(QString propertyName, KeyFrame *frame)
         m_keyframes->insert(propertyName, frame);
 }
 
-bool ResizeableItem::deleteKeyframe(QString propertyName, KeyFrame *frame)
+bool AnimationItem::deleteKeyframe(QString propertyName, KeyFrame *frame)
 {
     if(frame->next())
         frame->next()->setPrev(frame->prev());
@@ -166,7 +166,7 @@ bool ResizeableItem::deleteKeyframe(QString propertyName, KeyFrame *frame)
     return false;
 }
 
-void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option)
+void AnimationItem::drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option)
 {
     qreal itemPenWidth = m_pen.widthF();
     const qreal pad = itemPenWidth / 2;
@@ -184,29 +184,29 @@ void ResizeableItem::drawHighlightSelected(QPainter *painter, const QStyleOption
     painter->drawRect(boundingRect().adjusted(pad, pad, -pad, -pad));
 }
 
-QRectF ResizeableItem::rect() const
+QRectF AnimationItem::rect() const
 {
     return m_rect;
 }
 
-void ResizeableItem::scaleObjects() {}
-void ResizeableItem::setScale(qreal x, qreal y)
+void AnimationItem::scaleObjects() {}
+void AnimationItem::setScale(qreal x, qreal y)
 {
     Q_UNUSED(x)
     Q_UNUSED(y)
 }
 
-qreal ResizeableItem::xscale()
+qreal AnimationItem::xscale()
 {
     return m_xscale;
 }
 
-qreal ResizeableItem::yscale()
+qreal AnimationItem::yscale()
 {
     return m_yscale;
 }
 
-void ResizeableItem::setRect(qreal x, qreal y, qreal w, qreal h)
+void AnimationItem::setRect(qreal x, qreal y, qreal w, qreal h)
 {
     prepareGeometryChange();
     m_rect = QRectF(x, y, w, h);
@@ -219,18 +219,18 @@ void ResizeableItem::setRect(qreal x, qreal y, qreal w, qreal h)
     }
 }
 
-QString ResizeableItem::id() const
+QString AnimationItem::id() const
 {
     return m_id;
 }
 
-void ResizeableItem::setId(const QString value)
+void AnimationItem::setId(const QString value)
 {
     m_id = value;
     emit idChanged(this, value);
 }
 
-void ResizeableItem::setWidth(qreal value)
+void AnimationItem::setWidth(qreal value)
 {
     prepareGeometryChange();
     m_rect.setWidth(value);
@@ -239,7 +239,7 @@ void ResizeableItem::setWidth(qreal value)
     emit sizeChanged(value, rect().height());
 }
 
-void ResizeableItem::setHeight(qreal value)
+void AnimationItem::setHeight(qreal value)
 {
     prepareGeometryChange();
     m_rect.setHeight(value);
@@ -248,43 +248,43 @@ void ResizeableItem::setHeight(qreal value)
     emit sizeChanged(rect().width(), value);
 }
 
-QPen ResizeableItem::pen() const
+QPen AnimationItem::pen() const
 {
     return m_pen;
 }
 
-void ResizeableItem::setPen(const QPen &pen)
+void AnimationItem::setPen(const QPen &pen)
 {
     m_pen = pen;
     update();
     emit penChanged(m_pen.color());
 }
 
-QBrush ResizeableItem::brush() const
+QBrush AnimationItem::brush() const
 {
     return m_brush;
 }
 
-void ResizeableItem::setBrush(const QBrush &brush)
+void AnimationItem::setBrush(const QBrush &brush)
 {
     m_brush = brush;
     update();
     emit brushChanged(m_brush.color());
 }
 
-void ResizeableItem::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void AnimationItem::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(paint);
     Q_UNUSED(option);
     Q_UNUSED(widget);
 }
 
-QRectF ResizeableItem::boundingRect() const
+QRectF AnimationItem::boundingRect() const
 {
     return rect();
 }
 
-bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
+bool AnimationItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 {
     ItemHandle * handle = dynamic_cast<ItemHandle *>(watched);
     if ( handle == NULL)
@@ -553,7 +553,7 @@ bool ResizeableItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
     return true;
 }
 
-void ResizeableItem::setHandlePositions()
+void AnimationItem::setHandlePositions()
 {
     if(!m_hasHandles)
         return;
@@ -567,7 +567,7 @@ void ResizeableItem::setHandlePositions()
     m_handles[7]->setPos(x() - 4, y() + rect().height() / 2 - 4);
 }
 
-QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &value)
+QVariant AnimationItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (change == QGraphicsItem::ItemSelectedChange)
     {
@@ -607,7 +607,7 @@ QVariant ResizeableItem::itemChange(GraphicsItemChange change, const QVariant &v
     return QGraphicsItem::itemChange(change, value);
 }
 
-void ResizeableItem::posChanged(qreal x, qreal y)
+void AnimationItem::posChanged(qreal x, qreal y)
 {
     adjustKeyframes("left", QVariant(x), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
     adjustKeyframes("top", QVariant(y), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
@@ -619,7 +619,7 @@ void ResizeableItem::posChanged(qreal x, qreal y)
  * and adjust its value.
  * If no keyframe will be found and autokeyframe is switched to on a new keyframe will be added
  */
-void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value, int time, bool autokeyframes, bool autotransition)
+void AnimationItem::adjustKeyframes(QString propertyName, QVariant value, int time, bool autokeyframes, bool autotransition)
 {
     if(m_keyframes->contains(propertyName))
     {
@@ -681,50 +681,50 @@ void ResizeableItem::adjustKeyframes(QString propertyName, QVariant value, int t
     }
 }
 
-void ResizeableItem::setOpacity(int opacity)
+void AnimationItem::setOpacity(int opacity)
 {
     m_opacity = opacity;
     QGraphicsItem::setOpacity((qreal)m_opacity / 100);
     emit opacityChanged(opacity);
 }
 
-void ResizeableItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+void AnimationItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
     scene()->clearSelection();
     setSelected(true);
     m_contextMenu->exec(event->screenPos());
 }
 
-void ResizeableItem::lowerAction()
+void AnimationItem::lowerAction()
 {
     QUndoCommand *cmd = new LowerItemCommand(this);
     m_scene->undoStack()->push(cmd);
 }
 
-void ResizeableItem::raiseAction()
+void AnimationItem::raiseAction()
 {
     QUndoCommand *cmd = new RaiseItemCommand(this);
     m_scene->undoStack()->push(cmd);
 }
 
-void ResizeableItem::sendToBackAction()
+void AnimationItem::sendToBackAction()
 {
     QUndoCommand *cmd = new SendItemToBackCommand(this);
     m_scene->undoStack()->push(cmd);
 }
 
-void ResizeableItem::bringToFrontAction()
+void AnimationItem::bringToFrontAction()
 {
     QUndoCommand *cmd = new BringItemToFrontCommand(this);
     m_scene->undoStack()->push(cmd);
 }
 
-void ResizeableItem::lower()
+void AnimationItem::lower()
 {
     int pos = scene()->items().indexOf(this);
     for(int i = pos + 1; i < scene()->items().count(); i++)
     {
-        ResizeableItem *item = dynamic_cast<ResizeableItem*>(scene()->items().at(i));
+        AnimationItem *item = dynamic_cast<AnimationItem*>(scene()->items().at(i));
         if(item)
         {
             this->stackBefore(item);
@@ -736,12 +736,12 @@ void ResizeableItem::lower()
     this->setSelected(true);
 }
 
-void ResizeableItem::raise()
+void AnimationItem::raise()
 {
     int pos = scene()->items().indexOf(this);
     for(int i = pos - 1; i >= 0; i--)
     {
-        ResizeableItem *item = dynamic_cast<ResizeableItem*>(scene()->items().at(i));
+        AnimationItem *item = dynamic_cast<AnimationItem*>(scene()->items().at(i));
         if(item)
         {
             item->stackBefore(this);
@@ -753,12 +753,12 @@ void ResizeableItem::raise()
     this->setSelected(true);
 }
 
-void ResizeableItem::bringToFront()
+void AnimationItem::bringToFront()
 {
     int pos = scene()->items().indexOf(this);
     for(int i = pos - 1; i >= 0; i--)
     {
-        ResizeableItem *item = dynamic_cast<ResizeableItem*>(scene()->items().at(i));
+        AnimationItem *item = dynamic_cast<AnimationItem*>(scene()->items().at(i));
         if(item)
         {
             item->stackBefore(this);
@@ -769,12 +769,12 @@ void ResizeableItem::bringToFront()
     this->setSelected(true);
 }
 
-void ResizeableItem::sendToBack()
+void AnimationItem::sendToBack()
 {
     int pos = scene()->items().indexOf(this);
     for(int i = pos + 1; i < scene()->items().count(); i++)
     {
-        ResizeableItem *item = dynamic_cast<ResizeableItem*>(scene()->items().at(i));
+        AnimationItem *item = dynamic_cast<AnimationItem*>(scene()->items().at(i));
         if(item)
         {
             this->stackBefore(item);
@@ -785,7 +785,7 @@ void ResizeableItem::sendToBack()
     this->setSelected(true);
 }
 
-void ResizeableItem::writeAttributes(QDomElement ele)
+void AnimationItem::writeAttributes(QDomElement ele)
 {
     ele.setAttribute("id", id());
     ele.setAttribute("left", QVariant(left()).toString());
@@ -795,7 +795,7 @@ void ResizeableItem::writeAttributes(QDomElement ele)
     ele.setAttribute("opacity", opacity());
 }
 
-void ResizeableItem::readAttributes(QDomElement ele)
+void AnimationItem::readAttributes(QDomElement ele)
 {
     setId(ele.attribute("id"));
     setLeft(ele.attribute("left", "0").toDouble());
@@ -805,7 +805,7 @@ void ResizeableItem::readAttributes(QDomElement ele)
     setOpacity(ele.attribute("opacity", "100").toInt());
 }
 
-void ResizeableItem::deleteItem()
+void AnimationItem::deleteItem()
 {
     m_scene->deleteItem(this);
 }

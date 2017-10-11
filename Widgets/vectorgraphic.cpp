@@ -27,7 +27,7 @@
 #include <QDomComment>
 
 Vectorgraphic::Vectorgraphic()
-    : ResizeableItem(NULL)
+    : AnimationItem(NULL)
 {
     m_renderer = new QSvgRenderer();
     m_svg = new QGraphicsSvgItem(this);
@@ -35,7 +35,7 @@ Vectorgraphic::Vectorgraphic()
 }
 
 Vectorgraphic::Vectorgraphic(QString filename, AnimationScene *scene)
-    : ResizeableItem(scene)
+    : AnimationItem(scene)
 {
     QFile file(filename);
     file.open(QIODevice::ReadOnly);
@@ -50,7 +50,7 @@ Vectorgraphic::Vectorgraphic(QString filename, AnimationScene *scene)
 }
 
 Vectorgraphic::Vectorgraphic(QByteArray arr, AnimationScene *scene)
-    : ResizeableItem(scene)
+    : AnimationItem(scene)
 {
     m_data = arr;
     m_changedData = m_data;

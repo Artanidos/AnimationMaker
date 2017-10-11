@@ -25,7 +25,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDomDocument>
-#include "resizeableitem.h"
+#include "animationitem.h"
 
 class AnimationScene;
 class Timeline;
@@ -144,13 +144,13 @@ public slots:
     void showNewsPanel();
     void showElementsPanel();
     void sceneSelectionChanged();
-    void timelineSelectionChanged(ResizeableItem*);
+    void timelineSelectionChanged(AnimationItem*);
     void copy();
     void paste();
     void del();
     void sceneSizeChanged(int width, int height);
-    void sceneItemRemoved(ResizeableItem *item);
-    void idChanged(ResizeableItem *, QString);
+    void sceneItemRemoved(AnimationItem *item);
+    void idChanged(AnimationItem *, QString);
     void transitionSelectionChanged(KeyFrame *frame);
 };
 

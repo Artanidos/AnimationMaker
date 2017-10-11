@@ -22,7 +22,7 @@
 #define PROPERTYEDITORINTERFACE_H
 
 #include <QWidget>
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "widgets_global.h"
 
 class WIDGETSSHARED_EXPORT PropertyEditorInterface : public QWidget
@@ -32,10 +32,10 @@ class WIDGETSSHARED_EXPORT PropertyEditorInterface : public QWidget
 public:
     ~PropertyEditorInterface() {}
 
-    virtual void setItem(ResizeableItem *item) = 0;
+    virtual void setItem(AnimationItem *item) = 0;
 
 signals:
-    void addKeyFrame(ResizeableItem*, QString, QVariant);
+    void addKeyFrame(AnimationItem*, QString, QVariant);
 };
 
 #endif // PROPERTYEDITORINTERFACE_H

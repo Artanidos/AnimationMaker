@@ -23,12 +23,12 @@
 
 #include <QGraphicsItem>
 #include <QGraphicsSvgItem>
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "widgets_global.h"
 
 class AnimationScene;
 class QDomElement;
-class WIDGETSSHARED_EXPORT Vectorgraphic : public ResizeableItem
+class WIDGETSSHARED_EXPORT Vectorgraphic : public AnimationItem
 {
     Q_OBJECT
 public:

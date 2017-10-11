@@ -23,7 +23,7 @@
 
 #include <QUndoCommand>
 #include "animationscene.h"
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "vectorgraphic.h"
 #include "timeline.h"
 #include "text.h"
@@ -38,7 +38,7 @@ public:
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     AnimationScene *m_scene;
 };
 
@@ -46,13 +46,13 @@ private:
 class WIDGETSSHARED_EXPORT DeleteItemCommand : public QUndoCommand
 {
 public:
-    DeleteItemCommand(ResizeableItem *item, AnimationScene *scene, QUndoCommand *parent = 0);
+    DeleteItemCommand(AnimationItem *item, AnimationScene *scene, QUndoCommand *parent = 0);
     ~DeleteItemCommand();
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     AnimationScene *m_scene;
 };
 
@@ -60,13 +60,13 @@ private:
 class WIDGETSSHARED_EXPORT MoveItemCommand : public QUndoCommand
 {
 public:
-    MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
+    MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     qreal m_x, m_y, m_oldx, m_oldy;
     int m_time;
     bool m_autokeyframes;
@@ -77,13 +77,13 @@ private:
 class WIDGETSSHARED_EXPORT ResizeItemCommand : public QUndoCommand
 {
 public:
-    ResizeItemCommand(qreal width, qreal height, qreal oldwidth, qreal oldheight, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
+    ResizeItemCommand(qreal width, qreal height, qreal oldwidth, qreal oldheight, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     qreal m_width, m_height, m_oldwidth, m_oldheight;
     int m_time;
     bool m_autokeyframes;
@@ -94,13 +94,13 @@ private:
 class WIDGETSSHARED_EXPORT ScaleItemCommand : public QUndoCommand
 {
 public:
-    ScaleItemCommand(qreal x, qreal y, qreal width, qreal height, qreal oldx, qreal oldy, qreal oldwidth, qreal oldheight, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
+    ScaleItemCommand(qreal x, qreal y, qreal width, qreal height, qreal oldx, qreal oldy, qreal oldwidth, qreal oldheight, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     qreal m_x, m_y, m_width, m_height, m_oldx, m_oldy, m_oldwidth, m_oldheight;
     int m_time;
     bool m_autokeyframes;
@@ -111,39 +111,39 @@ private:
 class WIDGETSSHARED_EXPORT ChangeIdCommand : public QUndoCommand
 {
 public:
-    ChangeIdCommand(QString id, QString oldid, ResizeableItem *item, QUndoCommand *parent = 0);
+    ChangeIdCommand(QString id, QString oldid, AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     QString m_id, m_oldid;
 };
 
 class WIDGETSSHARED_EXPORT ChangeColorCommand : public QUndoCommand
 {
 public:
-    ChangeColorCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent = 0);
+    ChangeColorCommand(QColor color, QColor oldcolor, AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     QColor m_color, m_oldcolor;
 };
 
 class WIDGETSSHARED_EXPORT ChangePenCommand : public QUndoCommand
 {
 public:
-    ChangePenCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent = 0);
+    ChangePenCommand(QColor color, QColor oldcolor, AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     QColor m_color, m_oldcolor;
 };
 
@@ -176,13 +176,13 @@ private:
 class WIDGETSSHARED_EXPORT ChangeOpacityCommand : public QUndoCommand
 {
 public:
-    ChangeOpacityCommand(int opacity, int oldopacity, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent = 0);
+    ChangeOpacityCommand(int opacity, int oldopacity, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     int m_opacity, m_oldopacity;
     int m_time;
     bool m_autokeyframes;
@@ -192,13 +192,13 @@ private:
 class WIDGETSSHARED_EXPORT AddKeyframeCommand : public QUndoCommand
 {
 public:
-    AddKeyframeCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent = 0);
+    AddKeyframeCommand(QString propertyname, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     QString m_propertyName;
     KeyFrame *m_frame;
     Timeline *m_timeline;
@@ -207,13 +207,13 @@ private:
 class WIDGETSSHARED_EXPORT DeleteKeyframeCommand : public QUndoCommand
 {
 public:
-    DeleteKeyframeCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent = 0);
+    DeleteKeyframeCommand(QString propertyname, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     QString m_propertyName;
     KeyFrame *m_frame;
     Timeline *m_timeline;
@@ -222,13 +222,13 @@ private:
 class WIDGETSSHARED_EXPORT AddTransitionCommand : public QUndoCommand
 {
 public:
-    AddTransitionCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent = 0);
+    AddTransitionCommand(QString propertyname, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     QString m_propertyName;
     KeyFrame *m_frame;
     Timeline *m_timeline;
@@ -237,13 +237,13 @@ private:
 class WIDGETSSHARED_EXPORT DeleteTransitionCommand : public QUndoCommand
 {
 public:
-    DeleteTransitionCommand(QString propertyname, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent = 0);
+    DeleteTransitionCommand(QString propertyname, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     QString m_propertyName;
     KeyFrame *m_frame;
     Timeline *m_timeline;
@@ -278,49 +278,49 @@ private:
 class WIDGETSSHARED_EXPORT RaiseItemCommand : public QUndoCommand
 {
 public:
-    RaiseItemCommand(ResizeableItem *item, QUndoCommand *parent = 0);
+    RaiseItemCommand(AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
 };
 
 class WIDGETSSHARED_EXPORT LowerItemCommand : public QUndoCommand
 {
 public:
-    LowerItemCommand(ResizeableItem *item, QUndoCommand *parent = 0);
+    LowerItemCommand(AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
 };
 
 class WIDGETSSHARED_EXPORT BringItemToFrontCommand : public QUndoCommand
 {
 public:
-    BringItemToFrontCommand(ResizeableItem *item, QUndoCommand *parent = 0);
+    BringItemToFrontCommand(AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
 };
 
 class WIDGETSSHARED_EXPORT SendItemToBackCommand : public QUndoCommand
 {
 public:
-    SendItemToBackCommand(ResizeableItem *item, QUndoCommand *parent = 0);
+    SendItemToBackCommand(AnimationItem *item, QUndoCommand *parent = 0);
 
     void undo() override;
     void redo() override;
 
 private:
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
 };
 
 class WIDGETSSHARED_EXPORT ChangeAttributeCommand : public QUndoCommand

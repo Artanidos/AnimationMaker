@@ -28,7 +28,7 @@
 #include <QPixmap>
 #include <QCursor>
 #include "interfaces.h"
-#include "resizeableitem.h"
+#include "animationitem.h"
 
 class PieItem : public ItemInterface
 {
@@ -43,11 +43,11 @@ public:
     QString displayName() override {return "Pie Item";}
     QIcon icon() override {return QIcon(":/pie.png");}
     QCursor getCursor() override {return QCursor(QPixmap::fromImage(QImage(":/cursor.png")));}
-    ResizeableItem *getInstance(AnimationScene *scene) override;
-    ResizeableItem *getInstanceFromXml(AnimationScene *scene, QDomElement ele) override;
+    AnimationItem *getInstance(AnimationScene *scene) override;
+    AnimationItem *getInstanceFromXml(AnimationScene *scene, QDomElement ele) override;
  };
 
-class Pie : public ResizeableItem
+class Pie : public AnimationItem
 {
     Q_OBJECT
     Q_PROPERTY(int startAngle READ startAngle WRITE setStartAngle)

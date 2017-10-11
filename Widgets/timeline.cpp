@@ -19,7 +19,7 @@
 ****************************************************************************/
 
 #include "timeline.h"
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "keyframe.h"
 #include "commands.h"
 
@@ -118,8 +118,8 @@ Timeline::Timeline(AnimationScene *scene)
     connect(m_tree, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
     connect(m_tree, SIGNAL(expanded(QModelIndex)), m_transitionPanel, SLOT(treeExpanded(QModelIndex)));
     connect(m_tree, SIGNAL(collapsed(QModelIndex)), m_transitionPanel, SLOT(treeCollapsed(QModelIndex)));
-    connect(this, SIGNAL(keyframeAdded(ResizeableItem*,QString)), m_transitionPanel, SLOT(keyframeAdded(ResizeableItem *, QString)));
-    connect(this, SIGNAL(keyframeDeleted(ResizeableItem*,QString)), m_transitionPanel, SLOT(keyframeDeleted(ResizeableItem*,QString)));
+    connect(this, SIGNAL(keyframeAdded(AnimationItem*,QString)), m_transitionPanel, SLOT(keyframeAdded(AnimationItem *, QString)));
+    connect(this, SIGNAL(keyframeDeleted(AnimationItem*,QString)), m_transitionPanel, SLOT(keyframeDeleted(AnimationItem*,QString)));
 
     connect(m_tree->verticalScrollBar(), SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(treeScrollValueChanged(int)));
 
@@ -130,7 +130,7 @@ Timeline::Timeline(AnimationScene *scene)
 
     connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(treeCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
     connect(m_playhead, SIGNAL(valueChanged(int)), scene, SLOT(setPlayheadPosition(int)));
-    connect(m_scene, SIGNAL(keyframeAdded(ResizeableItem*, QString, KeyFrame*)), this, SLOT(keyframeAdded(ResizeableItem*, QString, KeyFrame*)));
+    connect(m_scene, SIGNAL(keyframeAdded(AnimationItem*, QString, KeyFrame*)), this, SLOT(keyframeAdded(AnimationItem*, QString, KeyFrame*)));
 }
 
 void Timeline::scrollValueChanged(int value)
@@ -249,14 +249,14 @@ void Timeline::treeCurrentItemChanged(QTreeWidgetItem *currentItem, QTreeWidgetI
         QVariant level = currentItem->data(1,0);
         if(level == 1)
         {
-            ResizeableItem *item = (ResizeableItem *)currentItem->data(0,1).value<void *>();
+            AnimationItem *item = (AnimationItem *)currentItem->data(0,1).value<void *>();
             if(item)
                 emit itemSelectionChanged(item);
         }
     }
 }
 
-QTreeWidgetItem *Timeline::search(ResizeableItem *item)
+QTreeWidgetItem *Timeline::search(AnimationItem *item)
 {
     for(int i=0; i < m_tree->topLevelItemCount(); i++)
     {
@@ -278,7 +278,7 @@ QTreeWidgetItem *Timeline::search(QTreeWidgetItem *treeItem, QString propertyNam
     return NULL;
 }
 
-void Timeline::idChanged(ResizeableItem *item, QString value)
+void Timeline::idChanged(AnimationItem *item, QString value)
 {
     QTreeWidgetItem *treeItem = search(item);
     if(treeItem)
@@ -287,37 +287,37 @@ void Timeline::idChanged(ResizeableItem *item, QString value)
     }
 }
 
-void Timeline::deleteKeyFrameSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+void Timeline::deleteKeyFrameSlot(AnimationItem *item, QString propertyName, KeyFrame *frame)
 {
     QUndoCommand *cmd = new DeleteKeyframeCommand(propertyName, frame, item, this);
     m_scene->undoStack()->push(cmd);
 }
 
-void Timeline::deleteTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+void Timeline::deleteTransitionSlot(AnimationItem *item, QString propertyName, KeyFrame *frame)
 {
     QUndoCommand *cmd = new DeleteTransitionCommand(propertyName, frame, item, this);
     m_scene->undoStack()->push(cmd);
 }
 
-void Timeline::addTransitionSlot(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+void Timeline::addTransitionSlot(AnimationItem *item, QString propertyName, KeyFrame *frame)
 {
     QUndoCommand *cmd = new AddTransitionCommand(propertyName, frame, item, this);
     m_scene->undoStack()->push(cmd);
 }
 
-void Timeline::deleteTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+void Timeline::deleteTransition(AnimationItem *item, QString propertyName, KeyFrame *frame)
 {
     frame->setEasing(-1);
     m_transitionPanel->transitionDeleted(item, propertyName);
 }
 
-void Timeline::addTransition(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+void Timeline::addTransition(AnimationItem *item, QString propertyName, KeyFrame *frame)
 {
     frame->setEasing((int)QEasingCurve::Linear);
     m_transitionPanel->transitionAdded(item, propertyName);
 }
 
-void Timeline::deleteKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+void Timeline::deleteKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *frame)
 {
     if(item->deleteKeyframe(propertyName, frame))
     {
@@ -342,7 +342,7 @@ void Timeline::deleteKeyFrame(ResizeableItem *item, QString propertyName, KeyFra
     emit keyframeDeleted(item, propertyName);
 }
 
-void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, QVariant value)
+void Timeline::addKeyFrame(AnimationItem *item, QString propertyName, QVariant value)
 {
     KeyFrame *keyframe = new KeyFrame();
     keyframe->setValue(value);
@@ -352,7 +352,7 @@ void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, QVariant 
     item->scene()->undoStack()->push(cmd);
 }
 
-void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame *frame)
+void Timeline::addKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *frame)
 {
     QTreeWidgetItem *treeChildItem = NULL;
 
@@ -367,7 +367,7 @@ void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame 
         treeItem->setText(0, item->id());
         treeItem->setData(0, 1, qVariantFromValue((void *) item));
         treeItem->setData(1, 0, 1);
-        connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+        connect(item, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
         m_tree->addTopLevelItem(treeItem);
         emit keyframeAdded(item, NULL);
     }
@@ -394,7 +394,7 @@ void Timeline::addKeyFrame(ResizeableItem *item, QString propertyName, KeyFrame 
     treeItem->setExpanded(true);
 }
 
-void Timeline::keyframeAdded(ResizeableItem * item, QString propertyName, KeyFrame *key)
+void Timeline::keyframeAdded(AnimationItem * item, QString propertyName, KeyFrame *key)
 {
     QTreeWidgetItem *treeChildItem = NULL;
 
@@ -409,7 +409,7 @@ void Timeline::keyframeAdded(ResizeableItem * item, QString propertyName, KeyFra
         treeItem->setText(0, item->id());
         treeItem->setData(0, 1, qVariantFromValue((void *) item));
         treeItem->setData(1, 0, 1);
-        connect(item, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+        connect(item, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
         m_tree->addTopLevelItem(treeItem);
         emit keyframeAdded(item, NULL);
     }
@@ -446,7 +446,7 @@ void Timeline::autotransitions(bool value)
     m_scene->setAutotransition(value);
 }
 
-void Timeline::removeItem(ResizeableItem *item)
+void Timeline::removeItem(AnimationItem *item)
 {
     for(int i=0; i < m_tree->topLevelItemCount(); i++)
     {
@@ -460,7 +460,7 @@ void Timeline::removeItem(ResizeableItem *item)
     m_transitionPanel->removeItem(item);
 }
 
-void Timeline::selectItem(ResizeableItem *item)
+void Timeline::selectItem(AnimationItem *item)
 {
     for(int i=0; i < m_tree->topLevelItemCount(); i++)
     {
@@ -478,7 +478,7 @@ int Timeline::lastKeyframe()
     for(int i = 0; i < m_tree->topLevelItemCount(); i++)
     {
         QTreeWidgetItem *treeItem = m_tree->topLevelItem(i);
-        ResizeableItem *item = (ResizeableItem *) treeItem->data(0, 1).value<void *>();
+        AnimationItem *item = (AnimationItem *) treeItem->data(0, 1).value<void *>();
 
         QHash<QString, KeyFrame*>::iterator it;
         for (it = item->keyframes()->begin(); it != item->keyframes()->end(); it++)

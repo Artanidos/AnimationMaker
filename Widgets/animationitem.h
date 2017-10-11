@@ -33,7 +33,7 @@
 
 class AnimationScene;
 class PropertyEditorInterface;
-class WIDGETSSHARED_EXPORT ResizeableItem : public QObject, public QGraphicsItem
+class WIDGETSSHARED_EXPORT AnimationItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal left READ left WRITE setX)
@@ -44,9 +44,9 @@ class WIDGETSSHARED_EXPORT ResizeableItem : public QObject, public QGraphicsItem
     Q_INTERFACES(QGraphicsItem)
 
 public:
-    ResizeableItem();
-    ResizeableItem(AnimationScene *scene);
-    ~ResizeableItem();
+    AnimationItem();
+    AnimationItem(AnimationScene *scene);
+    ~AnimationItem();
 
     virtual QString typeName() = 0;
     virtual QDomElement getXml(QDomDocument) = 0;
@@ -139,11 +139,11 @@ private slots:
     void raiseAction();
 
 signals:
-    void addPropertyAnimation(ResizeableItem *item, const QString propertyName, qreal value, int min, int max);
-    void idChanged(ResizeableItem *item, QString value);
+    void addPropertyAnimation(AnimationItem *item, const QString propertyName, qreal value, int min, int max);
+    void idChanged(AnimationItem *item, QString value);
     void sizeChanged(qreal width, qreal height);
     void positionChanged(qreal x, qreal y);
-    void itemRemoved(ResizeableItem *item);
+    void itemRemoved(AnimationItem *item);
     void brushChanged(QColor);
     void penChanged(QColor);
     void opacityChanged(int opacity);

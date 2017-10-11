@@ -51,7 +51,6 @@ HEADERS  += mainwindow.h \
     expander.h \
     itempropertyeditor.h \
     scenepropertyeditor.h \
-    transitionpanel.h \
     colorpicker.h \
     colorrect.h \
     coloreditor.h \

@@ -19,7 +19,7 @@
 ****************************************************************************/
 
 #include "itempropertyeditor.h"
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "animationscene.h"
 #include "xmlhighlighter.h"
 #include "propertyeditorinterface.h"
@@ -542,7 +542,7 @@ void ItemPropertyEditor::reloadAttributes()
     }
 }
 
-void ItemPropertyEditor::setItem(ResizeableItem *item)
+void ItemPropertyEditor::setItem(AnimationItem *item)
 {
     m_initializing = true;
     m_item = item;
@@ -572,7 +572,7 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
         {
             PropertyEditorInterface *pei = list->at(i);
             pei->setItem(item);
-            connect(pei, SIGNAL(addKeyFrame(ResizeableItem*,QString,QVariant)), m_timeline, SLOT(addKeyFrame(ResizeableItem*,QString,QVariant)));
+            connect(pei, SIGNAL(addKeyFrame(AnimationItem*,QString,QVariant)), m_timeline, SLOT(addKeyFrame(AnimationItem*,QString,QVariant)));
             m_additionalPropertyBox->addWidget(pei);
         }
         delete list;
@@ -617,7 +617,7 @@ void ItemPropertyEditor::setItem(ResizeableItem *item)
     expTextcolor->setVisible(m_textitem);
     m_initializing = false;
 
-    connect(item, SIGNAL(idChanged(ResizeableItem*,QString)), this, SLOT(idChanged(ResizeableItem*,QString)));
+    connect(item, SIGNAL(idChanged(AnimationItem*,QString)), this, SLOT(idChanged(AnimationItem*,QString)));
     connect(item, SIGNAL(sizeChanged(qreal,qreal)), this, SLOT(itemSizeChanged(qreal, qreal)));
     connect(item, SIGNAL(positionChanged(qreal,qreal)), this, SLOT(itemPositionChanged(qreal, qreal)));
     connect(item, SIGNAL(brushChanged(QColor)), this, SLOT(brushChanged(QColor)));
@@ -656,7 +656,7 @@ void ItemPropertyEditor::itemPositionChanged(qreal x, qreal y)
     m_initializing = false;
 }
 
-void ItemPropertyEditor::idChanged(ResizeableItem*, QString id)
+void ItemPropertyEditor::idChanged(AnimationItem*, QString id)
 {
     m_initializing = true;
     m_id->setText(id);

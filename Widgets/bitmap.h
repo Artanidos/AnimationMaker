@@ -22,10 +22,10 @@
 #define BITMAP_H
 
 #include <QGraphicsItem>
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "widgets_global.h"
 
-class WIDGETSSHARED_EXPORT Bitmap : public ResizeableItem
+class WIDGETSSHARED_EXPORT Bitmap : public AnimationItem
 {
     Q_OBJECT
 public:

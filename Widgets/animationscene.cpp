@@ -20,7 +20,7 @@
 
 #include "animationscene.h"
 #include "rectangle.h"
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "plugins.h"
 #include "ellipse.h"
 #include "text.h"
@@ -62,7 +62,7 @@ int AnimationScene::fps() const
     return m_fps;
 }
 
-void AnimationScene::deleteItem(ResizeableItem *item)
+void AnimationScene::deleteItem(AnimationItem *item)
 {
     QUndoCommand *deleteCommand = new DeleteItemCommand(item, this);
     m_undoStack->push(deleteCommand);
@@ -79,7 +79,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         const QList<QGraphicsItem *> itemList = items(mousePos);
         for(int i=0; i < itemList.count(); i++)
         {
-            m_movingItem = dynamic_cast<ResizeableItem*>(itemList.at(i));
+            m_movingItem = dynamic_cast<AnimationItem*>(itemList.at(i));
             if(m_movingItem)
             {
                 m_oldPos = m_movingItem->pos();
@@ -161,7 +161,7 @@ void AnimationScene::addBackgroundRect()
     addItem(m_rect);
 }
 
-void AnimationScene::readKeyframes(QDataStream &dataStream, ResizeableItem *item)
+void AnimationScene::readKeyframes(QDataStream &dataStream, AnimationItem *item)
 {
     int vars, easing, time, keyframes;
     QVariant value;
@@ -493,7 +493,7 @@ bool AnimationScene::importXml(QString fileName)
                 if(node.nodeName() == item->tagName())
                 {
                     QDomElement ele = node.toElement();
-                    ResizeableItem *i = item->getInstanceFromXml(this, ele);
+                    AnimationItem *i = item->getInstanceFromXml(this, ele);
                     i->setFlag(QGraphicsItem::ItemIsMovable, true);
                     i->setFlag(QGraphicsItem::ItemIsSelectable, true);
                     readKeyframes(&ele, i);
@@ -532,7 +532,7 @@ void AnimationScene::exportXml(QString fileName, bool exportAll)
 
     for(int i=0; i < items().count(); i++)
     {
-        ResizeableItem *item = dynamic_cast<ResizeableItem*>(items().at(i));
+        AnimationItem *item = dynamic_cast<AnimationItem*>(items().at(i));
         if(item)
         {
             QDomElement ele = item->getXml(doc);
@@ -545,7 +545,7 @@ void AnimationScene::exportXml(QString fileName, bool exportAll)
     file.close();
 }
 
-void AnimationScene::writeKeyframes(QDomDocument *doc, QDomElement *element, ResizeableItem *item)
+void AnimationScene::writeKeyframes(QDomDocument *doc, QDomElement *element, AnimationItem *item)
 {
     QHash<QString, KeyFrame*>::iterator it;
     for(it = item->keyframes()->begin(); it != item->keyframes()->end(); it++)
@@ -565,7 +565,7 @@ void AnimationScene::writeKeyframes(QDomDocument *doc, QDomElement *element, Res
     }
 }
 
-void AnimationScene::readKeyframes(QDomElement *element, ResizeableItem *item)
+void AnimationScene::readKeyframes(QDomElement *element, AnimationItem *item)
 {
     KeyFrame *m_tempKeyFrame = NULL;
     for(int i=0; i < element->childNodes().count(); i++)
@@ -639,10 +639,10 @@ void AnimationScene::copyItem()
         return;
 
     QGraphicsItem *gi = selectedItems().first();
-    m_copy = dynamic_cast<ResizeableItem*>(gi);
+    m_copy = dynamic_cast<AnimationItem*>(gi);
 }
 
-void AnimationScene::copyKeyframes(ResizeableItem *item)
+void AnimationScene::copyKeyframes(AnimationItem *item)
 {
     QHash<QString, KeyFrame*>::iterator it;
     for (it = m_copy->keyframes()->begin(); it != m_copy->keyframes()->end(); ++it)
@@ -760,7 +760,7 @@ void AnimationScene::setPlayheadPosition(int playheadPosition)
 
     for(int i=0; i < items().count(); i++)
     {
-        ResizeableItem *item = dynamic_cast<ResizeableItem *>(items().at(i));
+        AnimationItem *item = dynamic_cast<AnimationItem *>(items().at(i));
         if(item)
         {
             item->setPlayheadPosition(m_playheadPosition);

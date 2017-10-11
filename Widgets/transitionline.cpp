@@ -27,7 +27,7 @@
 #include <QUndoCommand>
 #include <QTest>
 
-TransitionLine::TransitionLine(ResizeableItem *item, QString propertyName)
+TransitionLine::TransitionLine(AnimationItem *item, QString propertyName)
 {
     m_item = item;
     m_frame = NULL;

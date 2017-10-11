@@ -28,7 +28,7 @@
 #include <QComboBox>
 #include <QTextEdit>
 
-class ResizeableItem;
+class AnimationItem;
 class Text;
 class ColorEditor;
 class Expander;
@@ -87,10 +87,10 @@ class ItemPropertyEditor : public QWidget
 public:
     ItemPropertyEditor(Timeline *timeline);
 
-    void setItem(ResizeableItem *item);
+    void setItem(AnimationItem *item);
 
 signals:
-    void addKeyFrame(ResizeableItem*, QString, QVariant);
+    void addKeyFrame(AnimationItem*, QString, QVariant);
 
 private:
     bool m_initializing;
@@ -117,7 +117,7 @@ private:
     Expander *expTextcolor;
     Expander *expColor;
     Expander *expSvg;
-    ResizeableItem *m_item;
+    AnimationItem *m_item;
     Text *m_textitem;
     QVBoxLayout *m_additionalPropertyBox;
 
@@ -133,7 +133,7 @@ private:
 
 private slots:
     void idChanged();
-    void idChanged(ResizeableItem*,QString);
+    void idChanged(AnimationItem*,QString);
     void brushChanged(QColor color);
     void penChanged(QColor color);
     void textcolorChanged(QColor color);

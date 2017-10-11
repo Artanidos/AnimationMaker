@@ -127,7 +127,7 @@ void AddItemCommand::redo()
 }
 
 
-DeleteItemCommand::DeleteItemCommand(ResizeableItem *item, AnimationScene *scene, QUndoCommand *parent)
+DeleteItemCommand::DeleteItemCommand(AnimationItem *item, AnimationScene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_scene = scene;
@@ -155,7 +155,7 @@ void DeleteItemCommand::redo()
     emit m_scene->itemRemoved(m_item);
 }
 
-MoveItemCommand::MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent)
+MoveItemCommand::MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_x = x;
@@ -184,7 +184,7 @@ void MoveItemCommand::redo()
 }
 
 
-ResizeItemCommand::ResizeItemCommand(qreal width, qreal height, qreal oldwidth, qreal oldheight, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent)
+ResizeItemCommand::ResizeItemCommand(qreal width, qreal height, qreal oldwidth, qreal oldheight, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_width = width;
@@ -215,7 +215,7 @@ void ResizeItemCommand::redo()
     m_item->adjustKeyframes("height", QVariant(m_height), m_time, m_autokeyframes, m_autotransition);
 }
 
-ScaleItemCommand::ScaleItemCommand(qreal x, qreal y, qreal width, qreal height, qreal oldx, qreal oldy, qreal oldwidth, qreal oldheight, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent)
+ScaleItemCommand::ScaleItemCommand(qreal x, qreal y, qreal width, qreal height, qreal oldx, qreal oldy, qreal oldwidth, qreal oldheight, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_x = x;
@@ -259,7 +259,7 @@ void ScaleItemCommand::redo()
     m_item->posChanged(m_x, m_y);
 }
 
-ChangeIdCommand::ChangeIdCommand(QString id, QString oldid, ResizeableItem *item, QUndoCommand *parent)
+ChangeIdCommand::ChangeIdCommand(QString id, QString oldid, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_id = id;
@@ -278,7 +278,7 @@ void ChangeIdCommand::redo()
     m_item->setId(m_id);
 }
 
-ChangeColorCommand::ChangeColorCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent)
+ChangeColorCommand::ChangeColorCommand(QColor color, QColor oldcolor, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_color = color;
@@ -297,7 +297,7 @@ void ChangeColorCommand::redo()
     m_item->setBrush(QBrush(m_color));
 }
 
-ChangePenCommand::ChangePenCommand(QColor color, QColor oldcolor, ResizeableItem *item, QUndoCommand *parent)
+ChangePenCommand::ChangePenCommand(QColor color, QColor oldcolor, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_color = color;
@@ -354,7 +354,7 @@ void ChangeSceneColorCommand::redo()
     m_scene->setBackgroundColor(m_color);
 }
 
-ChangeOpacityCommand::ChangeOpacityCommand(int opacity, int oldopacity, AnimationScene *scene, ResizeableItem *item, QUndoCommand *parent)
+ChangeOpacityCommand::ChangeOpacityCommand(int opacity, int oldopacity, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_opacity = opacity;
@@ -378,7 +378,7 @@ void ChangeOpacityCommand::redo()
     m_item->adjustKeyframes("opacity", QVariant(m_opacity), m_time, m_autokeyframes, m_autotransition);
 }
 
-AddKeyframeCommand::AddKeyframeCommand(QString propertyName, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent)
+AddKeyframeCommand::AddKeyframeCommand(QString propertyName, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_propertyName = propertyName;
@@ -398,7 +398,7 @@ void AddKeyframeCommand::redo()
     m_timeline->addKeyFrame(m_item, m_propertyName, m_frame);
 }
 
-DeleteKeyframeCommand::DeleteKeyframeCommand(QString propertyName, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent)
+DeleteKeyframeCommand::DeleteKeyframeCommand(QString propertyName, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_propertyName = propertyName;
@@ -418,7 +418,7 @@ void DeleteKeyframeCommand::redo()
     m_timeline->deleteKeyFrame(m_item, m_propertyName, m_frame);
 }
 
-AddTransitionCommand::AddTransitionCommand(QString propertyName, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent)
+AddTransitionCommand::AddTransitionCommand(QString propertyName, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_propertyName = propertyName;
@@ -438,7 +438,7 @@ void AddTransitionCommand::redo()
     m_timeline->addTransition(m_item, m_propertyName, m_frame);
 }
 
-DeleteTransitionCommand::DeleteTransitionCommand(QString propertyName, KeyFrame *frame, ResizeableItem *item, Timeline *timeline, QUndoCommand *parent)
+DeleteTransitionCommand::DeleteTransitionCommand(QString propertyName, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_propertyName = propertyName;
@@ -496,7 +496,7 @@ void ChangeFontCommand::redo()
     m_textitem->setFont(m_font);
 }
 
-RaiseItemCommand::RaiseItemCommand(ResizeableItem *item, QUndoCommand *parent)
+RaiseItemCommand::RaiseItemCommand(AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_item = item;
@@ -513,7 +513,7 @@ void RaiseItemCommand::redo()
     m_item->raise();
 }
 
-LowerItemCommand::LowerItemCommand(ResizeableItem *item, QUndoCommand *parent)
+LowerItemCommand::LowerItemCommand(AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_item = item;
@@ -530,7 +530,7 @@ void LowerItemCommand::redo()
     m_item->lower();
 }
 
-BringItemToFrontCommand::BringItemToFrontCommand(ResizeableItem *item, QUndoCommand *parent)
+BringItemToFrontCommand::BringItemToFrontCommand(AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_item = item;
@@ -547,7 +547,7 @@ void BringItemToFrontCommand::redo()
     m_item->bringToFront();
 }
 
-SendItemToBackCommand::SendItemToBackCommand(ResizeableItem *item, QUndoCommand *parent)
+SendItemToBackCommand::SendItemToBackCommand(AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_item = item;

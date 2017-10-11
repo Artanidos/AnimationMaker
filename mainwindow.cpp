@@ -279,7 +279,7 @@ void MainWindow::fillTree()
     QList<QGraphicsItem*> itemList = scene->items(Qt::AscendingOrder);
     foreach (QGraphicsItem *item, itemList)
     {
-        ResizeableItem *ri = dynamic_cast<ResizeableItem*>(item);
+        AnimationItem *ri = dynamic_cast<AnimationItem*>(item);
         if(ri)
         {
             QTreeWidgetItem *treeItem = new QTreeWidgetItem();
@@ -287,12 +287,12 @@ void MainWindow::fillTree()
             treeItem->setIcon(0, QIcon(":/images/rect.png"));
             treeItem->setData(0, 3, qVariantFromValue((void *) ri));
             root->addChild(treeItem);
-            connect(ri, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+            connect(ri, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
         }
     }
 }
 
-void MainWindow::idChanged(ResizeableItem *item, QString id)
+void MainWindow::idChanged(AnimationItem *item, QString id)
 {
     for(int i=0; i < root->childCount(); i++)
     {
@@ -399,7 +399,7 @@ void MainWindow::createGui()
     connect(scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
     connect(scene, SIGNAL(itemAdded(QGraphicsItem*)), this, SLOT(sceneItemAdded(QGraphicsItem*)));
     connect(scene, SIGNAL(sizeChanged(int,int)), this, SLOT(sceneSizeChanged(int, int)));
-    connect(scene, SIGNAL(itemRemoved(ResizeableItem*)), this, SLOT(sceneItemRemoved(ResizeableItem*)));
+    connect(scene, SIGNAL(itemRemoved(AnimationItem*)), this, SLOT(sceneItemRemoved(AnimationItem*)));
     connect(scene, SIGNAL(animationResetted()), this, SLOT(reset()));
 
     elementTree = new QTreeWidget();
@@ -417,9 +417,9 @@ void MainWindow::createGui()
     addDockWidget(Qt::LeftDockWidgetArea, elementsdock);
     splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
 
-    connect(timeline, SIGNAL(itemSelectionChanged(ResizeableItem *)), this, SLOT(timelineSelectionChanged(ResizeableItem*)));
+    connect(timeline, SIGNAL(itemSelectionChanged(AnimationItem *)), this, SLOT(timelineSelectionChanged(AnimationItem*)));
     connect(timeline, SIGNAL(transitionSelectionChanged(KeyFrame*)), this, SLOT(transitionSelectionChanged(KeyFrame*)));
-    connect(m_itemPropertyEditor, SIGNAL(addKeyFrame(ResizeableItem*,QString,QVariant)), timeline, SLOT(addKeyFrame(ResizeableItem*,QString,QVariant)));
+    connect(m_itemPropertyEditor, SIGNAL(addKeyFrame(AnimationItem*,QString,QVariant)), timeline, SLOT(addKeyFrame(AnimationItem*,QString,QVariant)));
 
     splitter = new QSplitter(Qt::Vertical);
     splitter->addWidget(view);
@@ -431,7 +431,7 @@ void MainWindow::createGui()
 void MainWindow::elementTreeItemChanged(QTreeWidgetItem *newItem, QTreeWidgetItem *)
 {
     scene->clearSelection();
-    ResizeableItem *item = (ResizeableItem *)  newItem->data(0, 3).value<void *>();
+    AnimationItem *item = (AnimationItem *)  newItem->data(0, 3).value<void *>();
     if(item)
     {
         item->setSelected(true);
@@ -658,11 +658,11 @@ void MainWindow::setPluginMode()
 
 void MainWindow::sceneSelectionChanged()
 {
-    ResizeableItem *item = NULL;
+    AnimationItem *item = NULL;
 
     if(scene->selectedItems().count())
     {
-        item = dynamic_cast<ResizeableItem*>(scene->selectedItems().first());
+        item = dynamic_cast<AnimationItem*>(scene->selectedItems().first());
         saveItemAsAct->setEnabled(true);
     }
     else
@@ -694,7 +694,7 @@ void MainWindow::sceneSelectionChanged()
     }
 }
 
-void MainWindow::timelineSelectionChanged(ResizeableItem* item)
+void MainWindow::timelineSelectionChanged(AnimationItem* item)
 {
     scene->clearSelection();
     item->setSelected(true);
@@ -705,12 +705,12 @@ void MainWindow::timelineSelectionChanged(ResizeableItem* item)
 
 void MainWindow::sceneItemAdded(QGraphicsItem *item)
 {
-    ResizeableItem *ri = dynamic_cast<ResizeableItem*>(item);
+    AnimationItem *ri = dynamic_cast<AnimationItem*>(item);
     QTreeWidgetItem *treeItem = new QTreeWidgetItem();
     treeItem->setText(0, ri->id());
     treeItem->setIcon(0, QIcon(":/images/rect.png"));
     treeItem->setData(0, 3, qVariantFromValue((void *) ri));
-    connect(ri, SIGNAL(idChanged(ResizeableItem *, QString)), this, SLOT(idChanged(ResizeableItem *, QString)));
+    connect(ri, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
 
     root->addChild(treeItem);
     root->setExpanded(true);
@@ -759,13 +759,13 @@ void MainWindow::del()
 {
     while(scene->selectedItems().count())
     {
-        ResizeableItem *item = dynamic_cast<ResizeableItem*>(scene->selectedItems().first());
+        AnimationItem *item = dynamic_cast<AnimationItem*>(scene->selectedItems().first());
         if(item)
             scene->deleteItem(item);
     }
 }
 
-void MainWindow::sceneItemRemoved(ResizeableItem *item)
+void MainWindow::sceneItemRemoved(AnimationItem *item)
 {
     for(int i=0; i<root->childCount(); i++)
     {

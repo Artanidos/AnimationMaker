@@ -23,10 +23,10 @@
 
 #include <QGraphicsItem>
 #include <QObject>
-#include "resizeableitem.h"
+#include "animationitem.h"
 #include "widgets_global.h"
 
-class WIDGETSSHARED_EXPORT Rectangle : public ResizeableItem
+class WIDGETSSHARED_EXPORT Rectangle : public AnimationItem
 {
     Q_OBJECT
 public:
