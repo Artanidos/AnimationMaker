@@ -16,10 +16,25 @@
 #    You should have received a copy of the GNU General Public License
 #    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
-TEMPLATE = subdirs
+QT           += widgets gui core testlib xml svg
+TEMPLATE      = lib
+CONFIG       += plugin
+TARGET		  = Html
+INCLUDEPATH  += ../../
+SOURCES		 += \
+    htmlexport.cpp \
+    propertyeditor.cpp
+HEADERS		 += \
+    ../../interfaces.h \
+    htmlexport.h \
+    propertyeditor.h
+DESTDIR       = ~/AnimationMaker/plugins
 
-SUBDIRS += \
-    Widgets \
-    plugins/Pie \
-    plugins/Html \
-    App.pro \
+LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
+INCLUDEPATH += $$PWD/../../Widgets
+DEPENDPATH += $$PWD/../../Widgets
+
+DISTFILES += \
+    todo.txt
+
+

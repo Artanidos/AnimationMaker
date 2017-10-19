@@ -29,6 +29,7 @@ class QIcon;
 class AnimationItem;
 class AnimationScene;
 class QDomElement;
+class QStatusBar;
 QT_END_NAMESPACE
 
 class ItemInterface : public QObject
@@ -50,6 +51,23 @@ QT_BEGIN_NAMESPACE
 #define ItemInterface_iid "com.github.Artanidos.AnimationMaker.ItemInterface"
 
 Q_DECLARE_INTERFACE(ItemInterface, ItemInterface_iid)
+QT_END_NAMESPACE
+
+class ExportInterface : public QObject
+{
+    Q_OBJECT
+
+public:
+    virtual ~ExportInterface() {}
+    virtual QString className() = 0;
+    virtual QString displayName() = 0;
+    virtual void exportAnimation(AnimationScene *scene, QStatusBar *bar) = 0;
+};
+
+QT_BEGIN_NAMESPACE
+#define ExportInterface_iid "com.github.Artanidos.AnimationMaker.ExportInterface"
+
+Q_DECLARE_INTERFACE(ExportInterface, ExportInterface_iid)
 QT_END_NAMESPACE
 
 #endif // INTERFACES_H

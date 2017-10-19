@@ -18,27 +18,29 @@
 **
 ****************************************************************************/
 
-#ifndef PLUGINS_H
-#define PLUGINS_H
+#ifndef HTMLEXPORT_H
+#define HTMLEXPORT_H
 
-#include <QMap>
-#include "../interfaces.h"
-#include "widgets_global.h"
+#include <QtPlugin>
+#include <QObject>
+#include <QIcon>
+#include <QImage>
+#include <QPixmap>
+#include <QCursor>
+#include "interfaces.h"
+#include "animationitem.h"
 
-class WIDGETSSHARED_EXPORT Plugins
+class HtmlExport : public ExportInterface
 {
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "com.github.Artanidos.AnimationMaker.ExportInterface")
+    Q_INTERFACES(ExportInterface)
+
 public:
-    static ItemInterface *getItemPlugin(QString name);
-    static ExportInterface *getExportPlugin(QString name);
-    static bool hasItemPlugin(QString name);
-    static QList<QString> itemPluginNames();
-    static QList<QString> exportPluginNames();
-    static void insert(QString name, ItemInterface* plugin);
-    static void insert(QString name, ExportInterface* plugin);
+    HtmlExport() {}
+    QString className() override {return "HtmlExport";}
+    QString displayName() override {return "Html Export";}
+    void exportAnimation(AnimationScene *scene, QStatusBar *) override;
+ };
 
-private:
-    static QMap<QString, ItemInterface*> itemPlugins;
-    static QMap<QString, ExportInterface*> exportPlugins;
-};
-
-#endif // PLUGINS_H
+#endif // HTMLEXPORT_H

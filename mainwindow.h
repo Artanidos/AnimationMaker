@@ -127,6 +127,7 @@ private:
 public slots:
     void reset();
     void exportMovie();
+    void pluginExport();
     void about();
     void save();
     void saveAs();

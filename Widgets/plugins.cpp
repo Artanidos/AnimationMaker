@@ -21,10 +21,16 @@
 #include "plugins.h"
 
 QMap<QString, ItemInterface*> Plugins::itemPlugins;
+QMap<QString, ExportInterface*> Plugins::exportPlugins;
 
 ItemInterface *Plugins::getItemPlugin(QString name)
 {
     return itemPlugins[name];
+}
+
+ExportInterface *Plugins::getExportPlugin(QString name)
+{
+    return exportPlugins[name];
 }
 
 bool Plugins::hasItemPlugin(QString name)
@@ -37,7 +43,17 @@ QList<QString> Plugins::itemPluginNames()
     return itemPlugins.keys();
 }
 
+QList<QString> Plugins::exportPluginNames()
+{
+    return exportPlugins.keys();
+}
+
 void Plugins::insert(QString name, ItemInterface *plugin)
 {
     itemPlugins.insert(name, plugin);
+}
+
+void Plugins::insert(QString name, ExportInterface *plugin)
+{
+    exportPlugins.insert(name, plugin);
 }

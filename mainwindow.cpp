@@ -87,6 +87,12 @@ void MainWindow::loadPlugins()
                 Plugins::insert(item->className(), item);
                 qDebug() << "Plugin loaded" << fileName;
             }
+            ExportInterface *ei = qobject_cast<ExportInterface*>(plugin);
+            if(ei)
+            {
+                Plugins::insert(ei->className(), ei);
+                qDebug() << "Plugin loaded" << fileName;
+            }
         }
         else
         {
@@ -644,6 +650,13 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveItemAsAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exportMovieAct);
+    foreach(QString pluginName, Plugins::exportPluginNames())
+    {
+        ExportInterface *ei = Plugins::getExportPlugin(pluginName);
+        QAction *exportAct = new QAction(ei->displayName(), ei);
+        connect(exportAct, SIGNAL(triggered()), this, SLOT(pluginExport()));
+        fileMenu->addAction(exportAct);
+    }
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
@@ -945,6 +958,16 @@ void MainWindow::exportMovie()
     view->setUpdatesEnabled(true);
     statusBar()->showMessage("Ready");
     delete exportView;
+}
+
+void MainWindow::pluginExport()
+{
+    QAction *act = qobject_cast<QAction*>(sender());
+    if(act)
+    {
+        ExportInterface *ei = qobject_cast<ExportInterface *>(act->parent());
+        ei->exportAnimation(scene, statusBar());
+    }
 }
 
 void MainWindow::runCommand(QString cmd, QString path)

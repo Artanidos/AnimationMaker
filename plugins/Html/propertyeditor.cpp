@@ -18,27 +18,21 @@
 **
 ****************************************************************************/
 
-#ifndef PLUGINS_H
-#define PLUGINS_H
+#include "propertyeditor.h"
+#include "expander.h"
+#include "commands.h"
+#include "QLabel"
 
-#include <QMap>
-#include "../interfaces.h"
-#include "widgets_global.h"
-
-class WIDGETSSHARED_EXPORT Plugins
+PropertyEditor::PropertyEditor()
 {
-public:
-    static ItemInterface *getItemPlugin(QString name);
-    static ExportInterface *getExportPlugin(QString name);
-    static bool hasItemPlugin(QString name);
-    static QList<QString> itemPluginNames();
-    static QList<QString> exportPluginNames();
-    static void insert(QString name, ItemInterface* plugin);
-    static void insert(QString name, ExportInterface* plugin);
+    QVBoxLayout *layout = new QVBoxLayout;
+    QGridLayout *grid = new QGridLayout;
+    Expander *exp = new Expander("Sample");
 
-private:
-    static QMap<QString, ItemInterface*> itemPlugins;
-    static QMap<QString, ExportInterface*> exportPlugins;
-};
+    grid->addWidget(new QLabel("Sample"), 0, 0);
+    exp->addLayout(grid);
+    layout->addWidget(exp);
+    setLayout(layout);
 
-#endif // PLUGINS_H
+    //connect(m_startAngle, SIGNAL(valueChanged(int)), this, SLOT(startAngleChanged()));
+}

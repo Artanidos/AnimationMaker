@@ -18,27 +18,24 @@
 **
 ****************************************************************************/
 
-#ifndef PLUGINS_H
-#define PLUGINS_H
+#ifndef PROPERTYEDITOR_H
+#define PROPERTYEDITOR_H
 
-#include <QMap>
-#include "../interfaces.h"
-#include "widgets_global.h"
+#include <QWidget>
+#include <QSpinBox>
+#include "htmlexport.h"
+#include "propertyeditorinterface.h"
 
-class WIDGETSSHARED_EXPORT Plugins
+class PropertyEditor : public PropertyEditorInterface
 {
+    Q_OBJECT
 public:
-    static ItemInterface *getItemPlugin(QString name);
-    static ExportInterface *getExportPlugin(QString name);
-    static bool hasItemPlugin(QString name);
-    static QList<QString> itemPluginNames();
-    static QList<QString> exportPluginNames();
-    static void insert(QString name, ItemInterface* plugin);
-    static void insert(QString name, ExportInterface* plugin);
+    explicit PropertyEditor();
+
+public slots:
 
 private:
-    static QMap<QString, ItemInterface*> itemPlugins;
-    static QMap<QString, ExportInterface*> exportPlugins;
+    bool m_initializing;
 };
 
-#endif // PLUGINS_H
+#endif // PROPERTYEDITOR_H
