@@ -21,10 +21,12 @@
 #include "htmlexport.h"
 #include "animationitem.h"
 #include "animationscene.h"
+#include "bitmap.h"
 #include <QStatusBar>
 #include <QFileDialog>
 #include <QTest>
 #include <QMessageBox>
+#include <QBuffer>
 
 QString getEaseString(int easing)
 {
@@ -272,6 +274,23 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                             frameNumber++;
                         }
                     }
+                }
+                Bitmap *bitmap = dynamic_cast<Bitmap*>(item);
+                if(bitmap)
+                {
+                    QByteArray byteArray;
+                    QBuffer buffer(&byteArray);
+                    bitmap->getImage().save(&buffer, "PNG");
+
+                    html << "<image ";
+                    html << "id=\"" + bitmap->id() + QString::number(i) + "\" ";
+                    html << "x=\"" + QString::number(bitmap->x()) + "\" ";
+                    html << "y=\"" + QString::number(bitmap->y()) + "\" ";
+                    html << "width=\"" + QString::number(bitmap->width()) + "\" ";
+                    html << "height=\"" + QString::number(bitmap->height()) + "\" ";
+                    html << "xlink:href=\"data:image/png;base64," + QString::fromLatin1(byteArray.toBase64().data()) + "\"";
+                    html << "opacity=\"" + QString::number((qreal)bitmap->opacity() / 100.0) + "\" ";
+                    html << "/>\n";
                 }
             }
         }
