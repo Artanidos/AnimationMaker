@@ -26,9 +26,100 @@
 #include <QTest>
 #include <QMessageBox>
 
+QString getEaseString(int easing)
+{
+    switch(easing)
+    {
+        default:
+        case QEasingCurve::Linear:
+            return "ease:Linear.easeNone";
+        case QEasingCurve::InQuad:
+            return "ease:Quad.easeIn";
+        case QEasingCurve::OutQuad:
+            return "ease:Quad.easeOut";
+        case QEasingCurve::InOutQuad:
+            return "ease:Quad.easeInOut";
+        case QEasingCurve::OutInQuad:
+            return "ease:Quad.easeOutIn";
+        case QEasingCurve::InCubic:
+            return "ease:Cubic.easeIn";
+        case QEasingCurve::OutCubic:
+            return "ease:Cubic.easeOut";
+        case QEasingCurve::InOutCubic:
+            return "ease:Cubic.easeInOut";
+        case QEasingCurve::OutInCubic:
+            return "ease:Cubic.easeOutIn";
+        case QEasingCurve::InQuart:
+            return "ease:Quart.easeIn";
+        case QEasingCurve::OutQuart:
+            return "ease:Quart.easeOut";
+        case QEasingCurve::InOutQuart:
+            return "ease:Quart.easeInOut";
+        case QEasingCurve::OutInQuart:
+            return "ease:Quart.easeOutIn";
+        case QEasingCurve::InQuint:
+            return "ease:Quint.easeIn";
+        case QEasingCurve::OutQuint:
+            return "ease:Quint.easeOut";
+        case QEasingCurve::InOutQuint:
+            return "ease:Quint.easeInOut";
+        case QEasingCurve::OutInQuint:
+            return "ease:Quint.easeOutIn";
+        case QEasingCurve::InSine:
+            return "ease:Sine.easeIn";
+        case QEasingCurve::OutSine:
+            return "ease:Sine.easeOut";
+        case QEasingCurve::InOutSine:
+            return "ease:Sine.easeInOut";
+        case QEasingCurve::OutInSine:
+            return "ease:Sine.easeOutIn";
+        case QEasingCurve::InExpo:
+            return "ease:Expo.easeIn";
+        case QEasingCurve::OutExpo:
+            return "ease:Expo.easeOut";
+        case QEasingCurve::InOutExpo:
+            return "ease:Expo.easeInOut";
+        case QEasingCurve::OutInExpo:
+            return "ease:Expo.easeOutIn";
+        case QEasingCurve::InCirc:
+            return "ease:Circ.easeIn";
+        case QEasingCurve::OutCirc:
+            return "ease:Circ.easeOut";
+        case QEasingCurve::InOutCirc:
+            return "ease:Circ.easeInOut";
+        case QEasingCurve::OutInCirc:
+            return "ease:Circ.easeOutIn";
+        case QEasingCurve::InBack:
+            return "ease:Back.easeIn";
+        case QEasingCurve::OutBack:
+            return "ease:Back.easeOut";
+        case QEasingCurve::InOutBack:
+            return "ease:Back.easeInOut";
+        case QEasingCurve::OutInBack:
+            return "ease:Back.easeOutIn";
+        case QEasingCurve::InElastic:
+            return "ease:Elastic.easeIn";
+        case QEasingCurve::OutElastic:
+            return "ease:Elastic.easeOut";
+        case QEasingCurve::InOutElastic:
+            return "ease:Elastic.easeInOut";
+        case QEasingCurve::OutInElastic:
+            return "ease:Elastic.easeOutIn";
+        case QEasingCurve::InBounce:
+            return "ease:Bounce.easeIn";
+        case QEasingCurve::OutBounce:
+            return "ease:Bounce.easeOut";
+        case QEasingCurve::InOutBounce:
+            return "ease:Bounce.easeInOut";
+        case QEasingCurve::OutInBounce:
+            return "ease:Bounce.easeOutIn";
+    }
+}
+
 void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
 {
     QList<QGraphicsItem*> itemList;
+    scene->setPlayheadPosition(0);
 
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
@@ -86,6 +177,7 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
     js.setCodec("UTF-8");
     js << "window.onload = function(){\n";
 
+    QString tweenArray = "";
     for(int i = 0; i < itemList.count(); i++)
     {
         AnimationItem *item = dynamic_cast<AnimationItem*>(itemList.at(i));
@@ -98,10 +190,16 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                 {
                     int x = rect->x();
                     int y = rect->y();
+                    int width = rect->width();
+                    int height = rect->height();
+                    qreal opacity = (qreal)rect->opacity() / 100.0;
+                    QString brushColor = rect->brushColor().name();
+
                     html << "<rect ";
                     html << "id=\"" + rect->id() + QString::number(i) + "\" ";
                     QString var = "";
-
+                    QString toValue = "";
+                    int frameNumber = 0;
                     foreach(QString property, rect->keyframes()->keys())
                     {
                         KeyFrame *from = rect->keyframes()->value(property);
@@ -110,53 +208,92 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                         {
                             x = from->value().toInt();
                             var = "x";
+                            if(from->easing() >= 0)
+                                toValue = QString::number(from->next()->value().toInt());
                         }
                         else if(property == "top")
                         {
                             y = from->value().toInt();
                             var = "y";
+                            if(from->easing() >= 0)
+                                toValue = QString::number(from->next()->value().toInt());
                         }
+                        else if(property == "width")
+                        {
+                            width = from->value().toInt();
+                            var = "width";
+                            if(from->easing() >= 0)
+                                toValue = QString::number(from->next()->value().toInt());
+                        }
+                        else if(property == "height")
+                        {
+                            height = from->value().toInt();
+                            var = "height";
+                            if(from->easing() >= 0)
+                                toValue = QString::number(from->next()->value().toInt());
+                        }
+                        else if(property == "opacity")
+                        {
+                            opacity = (qreal)from->value().toInt() / 100.0;
+                            var = "opacity";
+                            if(from->easing() >= 0)
+                                toValue = QString::number((qreal)from->next()->value().toInt() / 100.0);
+                        }
+                        else if(property == "brushColor")
+                        {
+                            brushColor = from->value().toString();
+                            var = "fill";
+                            if(from->easing() >= 0)
+                                toValue = '"' + from->next()->value().toString() + '"';
+                        }
+                        else if(property == "penColor")
+                        {
+                            brushColor = from->value().toString();
+                            var = "stroke";
+                            if(from->easing() >= 0)
+                                toValue = '"' + from->next()->value().toString() + '"';
+                        }
+                        else
+                            qDebug() << "animation for attribute " + property + " not yet implemented";
+
 
                         if(from->easing() >= 0)
                         {
+                            QString obj = "tween" + QString::number(i) + "_" + QString::number(frameNumber);
+                            if(!tweenArray.isEmpty())
+                                tweenArray += ", ";
+                            tweenArray += obj;
                             KeyFrame *to = from->next();
-                            js << "TweenLite.to(\"#" + rect->id() + QString::number(i) + "\", ";
+                            js << "var " + obj + " = TweenLite.to(\"#" + rect->id() + QString::number(i) + "\", ";
                             js << QString::number(double(to->time() - from->time())/1000.0);
                             js << ", {attr:{";
                             js << var;
                             js << ":";
-                            js << QString::number(to->value().toInt());
+                            js << toValue;
                             js << "}, delay: ";
                             js << QString::number((double)from->time() / 1000.0);
-                            switch(from->easing())
-                            {
-                                default:
-                                case 0:
-                                    js << ", ease:Linear.easeNone";
-                                    break;
-                                case 1:
-                                    js << ", ease:Quad.easeIn";
-                                    break;
-                                    // TODO EASING
-                            }
+                            js << ", " + getEaseString(from->easing());
                             js << "});\n";
                         }
+                        frameNumber++;
                     }
-                    //TweenLite.to("#logo", 2, {left:600, ease:Bounce.easeOut, delay: 1});
-                    //TweenLite.to("#circle", 2, {x:700, attr:{r:10}, delay: 1});
 
                     html << "x=\"" + QString::number(x) + "\" ";
                     html << "y=\"" + QString::number(y) + "\" ";
-                    html << "width=\"" + QString::number(rect->width()) + "\" ";
-                    html << "height=\"" + QString::number(rect->height()) + "\" ";
+                    html << "width=\"" + QString::number(width) + "\" ";
+                    html << "height=\"" + QString::number(height) + "\" ";
                     html << "fill=\"" + rect->brushColor().name() + "\" ";
                     html << "stroke=\"" + rect->penColor().name() + "\" ";
                     html << "stroke-width=\"1\" ";
+                    html << "opacity=\"" + QString::number((qreal)rect->opacity() / 100.0) + "\" ";
                     html << "/>\n";
                 }
             }
         }
     }
+    js << "var tl = new TimelineLite();\n";
+    js << "tl.add([" + tweenArray + "]);\n";
+    js << "tl.play();\n";
     js << "}\n";
     jsFile.close();
 
@@ -164,6 +301,7 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
     html << "<script src='assets/js/CSSPlugin.min.js'></script>\n";
     html << "<script src='assets/js/EasePack.min.js'></script>\n";
     html << "<script src='assets/js/TweenLite.min.js'></script>\n";
+    html << "<script src='assets/js/TimelineLite.min.js'></script>\n";
     html << "<script src='assets/js/AttrPlugin.min.js'></script>\n";
     html << "<script  src='assets/js/animationmaker.js'></script>\n";
     html << "</body>\n";
@@ -172,3 +310,5 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
 
     bar->showMessage("Animation has been exported to HTML");
 }
+
+

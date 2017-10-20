@@ -22,12 +22,10 @@ CONFIG       += plugin
 TARGET		  = Html
 INCLUDEPATH  += ../../
 SOURCES		 += \
-    htmlexport.cpp \
-    propertyeditor.cpp
+    htmlexport.cpp
 HEADERS		 += \
     ../../interfaces.h \
-    htmlexport.h \
-    propertyeditor.h
+    htmlexport.h
 DESTDIR       = ~/AnimationMaker/plugins
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
