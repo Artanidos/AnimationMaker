@@ -188,112 +188,100 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                 Rectangle *rect = dynamic_cast<Rectangle*>(item);
                 if(rect)
                 {
-                    int x = rect->x();
-                    int y = rect->y();
-                    int width = rect->width();
-                    int height = rect->height();
-                    qreal opacity = (qreal)rect->opacity() / 100.0;
-                    QString brushColor = rect->brushColor().name();
-
                     html << "<rect ";
                     html << "id=\"" + rect->id() + QString::number(i) + "\" ";
-                    QString var = "";
-                    QString toValue = "";
-                    int frameNumber = 0;
-                    foreach(QString property, rect->keyframes()->keys())
-                    {
-                        KeyFrame *from = rect->keyframes()->value(property);
-
-                        if(property == "left")
-                        {
-                            x = from->value().toInt();
-                            var = "x";
-                            if(from->easing() >= 0)
-                                toValue = QString::number(from->next()->value().toInt());
-                        }
-                        else if(property == "top")
-                        {
-                            y = from->value().toInt();
-                            var = "y";
-                            if(from->easing() >= 0)
-                                toValue = QString::number(from->next()->value().toInt());
-                        }
-                        else if(property == "width")
-                        {
-                            width = from->value().toInt();
-                            var = "width";
-                            if(from->easing() >= 0)
-                                toValue = QString::number(from->next()->value().toInt());
-                        }
-                        else if(property == "height")
-                        {
-                            height = from->value().toInt();
-                            var = "height";
-                            if(from->easing() >= 0)
-                                toValue = QString::number(from->next()->value().toInt());
-                        }
-                        else if(property == "opacity")
-                        {
-                            opacity = (qreal)from->value().toInt() / 100.0;
-                            var = "opacity";
-                            if(from->easing() >= 0)
-                                toValue = QString::number((qreal)from->next()->value().toInt() / 100.0);
-                        }
-                        else if(property == "brushColor")
-                        {
-                            brushColor = from->value().toString();
-                            var = "fill";
-                            if(from->easing() >= 0)
-                                toValue = '"' + from->next()->value().toString() + '"';
-                        }
-                        else if(property == "penColor")
-                        {
-                            brushColor = from->value().toString();
-                            var = "stroke";
-                            if(from->easing() >= 0)
-                                toValue = '"' + from->next()->value().toString() + '"';
-                        }
-                        else
-                            qDebug() << "animation for attribute " + property + " not yet implemented";
-
-
-                        if(from->easing() >= 0)
-                        {
-                            QString obj = "tween" + QString::number(i) + "_" + QString::number(frameNumber);
-                            if(!tweenArray.isEmpty())
-                                tweenArray += ", ";
-                            tweenArray += obj;
-                            KeyFrame *to = from->next();
-                            js << "var " + obj + " = TweenLite.to(\"#" + rect->id() + QString::number(i) + "\", ";
-                            js << QString::number(double(to->time() - from->time())/1000.0);
-                            js << ", {attr:{";
-                            js << var;
-                            js << ":";
-                            js << toValue;
-                            js << "}, delay: ";
-                            js << QString::number((double)from->time() / 1000.0);
-                            js << ", " + getEaseString(from->easing());
-                            js << "});\n";
-                        }
-                        frameNumber++;
-                    }
-
-                    html << "x=\"" + QString::number(x) + "\" ";
-                    html << "y=\"" + QString::number(y) + "\" ";
-                    html << "width=\"" + QString::number(width) + "\" ";
-                    html << "height=\"" + QString::number(height) + "\" ";
+                    html << "x=\"" + QString::number(rect->x()) + "\" ";
+                    html << "y=\"" + QString::number(rect->y()) + "\" ";
+                    html << "width=\"" + QString::number(rect->width()) + "\" ";
+                    html << "height=\"" + QString::number(rect->height()) + "\" ";
                     html << "fill=\"" + rect->brushColor().name() + "\" ";
                     html << "stroke=\"" + rect->penColor().name() + "\" ";
                     html << "stroke-width=\"1\" ";
                     html << "opacity=\"" + QString::number((qreal)rect->opacity() / 100.0) + "\" ";
                     html << "/>\n";
+
+                    QString var = "";
+                    QString value = "";
+                    int frameNumber = 0;
+                    foreach(QString property, rect->keyframes()->keys())
+                    {
+                        for(KeyFrame *from = rect->keyframes()->value(property); from != NULL; from = from->next())
+                        {
+                            if(property == "left")
+                            {
+                                value = QString::number(from->value().toInt());
+                                var = "x";
+                            }
+                            else if(property == "top")
+                            {
+                                value = QString::number(from->value().toInt());
+                                var = "y";
+                            }
+                            else if(property == "width")
+                            {
+                                value = QString::number(from->value().toInt());
+                                var = "width";
+                            }
+                            else if(property == "height")
+                            {
+                                value = QString::number(from->value().toInt());
+                                var = "height";
+                            }
+                            else if(property == "opacity")
+                            {
+                                value = QString::number((qreal)from->value().toInt() / 100.0);
+                                var = "opacity";
+                            }
+                            else if(property == "brushColor")
+                            {
+                                value = '"' + from->value().toString() +'"';
+                                var = "fill";
+                            }
+                            else if(property == "penColor")
+                            {
+                                value = '"' + from->value().toString() + '"';
+                                var = "stroke";
+                            }
+                            else
+                                qDebug() << "animation for attribute " + property + " not yet implemented";
+
+
+                            QString obj = "tween" + QString::number(i) + "_" + QString::number(frameNumber);
+                            if(!tweenArray.isEmpty())
+                                tweenArray += ", ";
+                            tweenArray += obj;
+                            js << "var " + obj + " = TweenLite.to(\"#" + rect->id() + QString::number(i) + "\", ";
+                            if(from->prev() && from->prev()->easing() >= 0)
+                                js << QString::number(double(from->time() - from->prev()->time())/1000.0);
+                            else
+                                js << "0";
+                            js << ", {attr:{";
+                            js << var;
+                            js << ":";
+                            js << value;
+                            js << "}, delay: ";
+                            if(from->prev() && from->prev()->easing() >= 0)
+                            {
+                                js << QString::number((double)(from->prev()->time() / 1000.0));
+                                js << ", " + getEaseString(from->easing());
+                            }
+                            else
+                                js << QString::number((double)from->time() / 1000.0);
+                            js << "});\n";
+
+                            frameNumber++;
+                        }
+                    }
                 }
             }
         }
     }
-    js << "var tl = new TimelineLite();\n";
-    js << "tl.add([" + tweenArray + "]);\n";
-    js << "tl.play();\n";
+    if(!tweenArray.isEmpty())
+    {
+        js << "var tl = new TimelineLite();\n";
+        js << "tl.add([" + tweenArray + "]);\n";
+        js << "tl.play();\n";
+    }
     js << "}\n";
     jsFile.close();
 
