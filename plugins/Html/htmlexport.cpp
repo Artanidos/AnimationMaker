@@ -22,6 +22,7 @@
 #include "animationitem.h"
 #include "animationscene.h"
 #include "bitmap.h"
+#include "ellipse.h"
 #include <QStatusBar>
 #include <QFileDialog>
 #include <QTest>
@@ -118,80 +119,134 @@ QString getEaseString(int easing)
     }
 }
 
-QString HtmlExport::getAnimations(QString tweenArray, AnimationItem *item, int i)
+QString HtmlExport::getTweens(QString tweenArray, AnimationItem *item, int i)
 {
     QString rc = "";
     QTextStream js(&rc);
     QString var = "";
     QString value = "";
     int frameNumber = 0;
-    foreach(QString property, item->keyframes()->keys())
+    bool isEllipse = false;
+    QStringList properties;
+    Ellipse *ellipse = dynamic_cast<Ellipse*>(item);
+    if(ellipse)
+        isEllipse = true;
+
+    // fill in animateable properties in correct order (width before left, height before top)
+    properties.append("width");
+    properties.append("height");
+    properties.append("left");
+    properties.append("top");
+    properties.append("opacity");
+    properties.append("brushColor");
+    properties.append("penColor");
+
+    foreach(QString property, properties)
     {
-        for(KeyFrame *from = item->keyframes()->value(property); from != NULL; from = from->next())
+        if(item->keyframes()->contains(property))
         {
-            if(property == "left")
+            for(KeyFrame *from = item->keyframes()->value(property); from != NULL; from = from->next())
             {
-                value = QString::number(from->value().toInt());
-                var = "x";
-            }
-            else if(property == "top")
-            {
-                value = QString::number(from->value().toInt());
-                var = "y";
-            }
-            else if(property == "width")
-            {
-                value = QString::number(from->value().toInt());
-                var = "width";
-            }
-            else if(property == "height")
-            {
-                value = QString::number(from->value().toInt());
-                var = "height";
-            }
-            else if(property == "opacity")
-            {
-                value = QString::number((qreal)from->value().toInt() / 100.0);
-                var = "opacity";
-            }
-            else if(property == "brushColor")
-            {
-                value = '"' + from->value().toString() +'"';
-                var = "fill";
-            }
-            else if(property == "penColor")
-            {
-                value = '"' + from->value().toString() + '"';
-                var = "stroke";
-            }
-            else
-                qDebug() << "animation for attribute " + property + " not yet implemented";
+                if(property == "left")
+                {
+                    if(isEllipse)
+                    {
+                        value = QString::number((qreal)from->value().toReal() + item->width() / 2.0);
+                        var = "cx";
+                    }
+                    else
+                    {
+                        value = QString::number(from->value().toInt());
+                        var = "x";
+                    }
+                }
+                else if(property == "top")
+                {
+                    if(isEllipse)
+                    {
+                        value = QString::number((qreal)from->value().toReal() + item->height() / 2.0);
+                        var = "cy";
+                    }
+                    else
+                    {
+                        value = QString::number(from->value().toInt());
+                        var = "y";
+                    }
+                }
+                else if(property == "width")
+                {
+                    if(isEllipse)
+                    {
+                        value = QString::number(from->value().toReal() / 2.0);
+                        var = "rx";
+                        // save the actual width for cx calculation
+                        item->setWidth(from->value().toReal());
+                    }
+                    else
+                    {
+                        value = QString::number(from->value().toInt());
+                        var = "width";
+                    }
+                }
+                else if(property == "height")
+                {
+                    if(isEllipse)
+                    {
+                        value = QString::number(from->value().toReal() / 2.0);
+                        var = "ry";
+                        // save the actual height for cy calculation
+                        item->setHeight(from->value().toReal());
+                    }
+                    else
+                    {
+                        value = QString::number(from->value().toInt());
+                        var = "height";
+                    }
+                }
+                else if(property == "opacity")
+                {
+                    value = QString::number((qreal)from->value().toInt() / 100.0);
+                    var = "opacity";
+                }
+                else if(property == "brushColor")
+                {
+                    value = '"' + from->value().toString() +'"';
+                    var = "fill";
+                }
+                else if(property == "penColor")
+                {
+                    value = '"' + from->value().toString() + '"';
+                    var = "stroke";
+                }
+                else
+                    qDebug() << "animation for attribute " + property + " not yet implemented";
 
 
-            QString obj = "tween" + QString::number(i) + "_" + QString::number(frameNumber);
-            if(!tweenArray.isEmpty())
-                tweenArray += ", ";
-            tweenArray += obj;
-            js << "var " + obj + " = TweenLite.to(\"#" + item->id() + QString::number(i) + "\", ";
-            if(from->prev() && from->prev()->easing() >= 0)
-                js << QString::number(double(from->time() - from->prev()->time())/1000.0);
-            else
-                js << "0";
-            js << ", {attr:{";
-            js << var;
-            js << ":";
-            js << value;
-            js << "}, delay: ";
-            if(from->prev() && from->prev()->easing() >= 0)
-            {
-                js << QString::number((double)(from->prev()->time() / 1000.0));
-                js << ", " + getEaseString(from->easing());
-            }
-            else
-                js << QString::number((double)from->time() / 1000.0);
-            js << "});\n";
+                QString obj = "tween" + QString::number(i) + "_" + QString::number(frameNumber);
+                if(!tweenArray.isEmpty())
+                    tweenArray += ", ";
+                tweenArray += obj;
+                js << "var " + obj + " = TweenLite.to(\"#" + item->id() + QString::number(i) + "\", ";
+                if(from->prev() && from->prev()->easing() >= 0)
+                    js << QString::number(double(from->time() - from->prev()->time())/1000.0);
+                else
+                    js << "0";
+                js << ", {attr:{";
+                js << var;
+                js << ":";
+                js << value;
+                js << "}, delay: ";
+                if(from->prev() && from->prev()->easing() >= 0)
+                {
+                    js << QString::number((double)(from->prev()->time() / 1000.0));
+                    js << ", " + getEaseString(from->easing());
+                }
+                else
+                    js << QString::number((double)from->time() / 1000.0);
+                js << "});\n";
 
-            frameNumber++;
+                frameNumber++;
+            }
         }
     }
     return rc;
@@ -282,6 +337,22 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                     html << "/>\n";
                 }
 
+                Ellipse *ellipse = dynamic_cast<Ellipse*>(item);
+                if(ellipse)
+                {
+                    html << "<ellipse ";
+                    html << "id=\"" + ellipse->id() + QString::number(i) + "\" ";
+                    html << "cx=\"" + QString::number((qreal)ellipse->x() + ellipse->width() / 2.0) + "\" ";
+                    html << "cy=\"" + QString::number((qreal)ellipse->y() + ellipse->height() / 2.0) + "\" ";
+                    html << "rx=\"" + QString::number((qreal)ellipse->width() / 2.0) + "\" ";
+                    html << "ry=\"" + QString::number((qreal)ellipse->height() / 2.0) + "\" ";
+                    html << "fill=\"" + ellipse->brushColor().name() + "\" ";
+                    html << "stroke=\"" + ellipse->penColor().name() + "\" ";
+                    html << "stroke-width=\"1\" ";
+                    html << "opacity=\"" + QString::number((qreal)ellipse->opacity() / 100.0) + "\" ";
+                    html << "/>\n";
+                }
+
                 Bitmap *bitmap = dynamic_cast<Bitmap*>(item);
                 if(bitmap)
                 {
@@ -299,7 +370,7 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                     html << "opacity=\"" + QString::number((qreal)bitmap->opacity() / 100.0) + "\" ";
                     html << "/>\n";
                 }
-                js << getAnimations(tweenArray, item, i);
+                js << getTweens(tweenArray, item, i);
             }
         }
     }

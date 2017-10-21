@@ -1,5 +1,3 @@
 TODO
 ----
-- easing for rect
 - all other types should be also exported to html
-- support multiple transitions for one property
