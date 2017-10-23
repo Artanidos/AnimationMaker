@@ -23,6 +23,7 @@
 #include "animationscene.h"
 #include "bitmap.h"
 #include "ellipse.h"
+#include "text.h"
 #include <QStatusBar>
 #include <QFileDialog>
 #include <QTest>
@@ -140,6 +141,7 @@ QString HtmlExport::getTweens(QString tweenArray, AnimationItem *item, int i)
     properties.append("opacity");
     properties.append("brushColor");
     properties.append("penColor");
+    properties.append("textColor");
 
     foreach(QString property, properties)
     {
@@ -217,6 +219,11 @@ QString HtmlExport::getTweens(QString tweenArray, AnimationItem *item, int i)
                 {
                     value = '"' + from->value().toString() + '"';
                     var = "stroke";
+                }
+                else if(property == "textColor")
+                {
+                    value = '"' + from->value().toString() + '"';
+                    var = "fill";
                 }
                 else
                     qDebug() << "animation for attribute " + property + " not yet implemented";
@@ -351,6 +358,12 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                     html << "stroke-width=\"1\" ";
                     html << "opacity=\"" + QString::number((qreal)ellipse->opacity() / 100.0) + "\" ";
                     html << "/>\n";
+                }
+
+                Text *text = dynamic_cast<Text*>(item);
+                if(text)
+                {
+                    html << text->getTextTag(text->id() + QString::number(i));
                 }
 
                 Bitmap *bitmap = dynamic_cast<Bitmap*>(item);

@@ -23,25 +23,68 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 #include <QGraphicsView>
+#include <QSvgRenderer>
+#include <QGraphicsSvgItem>
+#include <QByteArray>
+#include <QScreen>
 #include "animationitem.h"
 
-#define EXTRA_HEIGHT 4
+
+QString Text::getTextTag(QString id)
+{
+    QFontMetrics fm(m_font);
+    QString svg = "<text ";
+    svg += "id=\"" + id + "\" ";
+    svg += "x=\"0\" y=\"" + QString::number(fm.ascent()) + "\" ";
+    svg += "font-family=\"" + m_font.family() + "\" ";
+    svg += "font-size=\"" + QString::number((double)m_font.pointSize() * 1.25) + "px\" ";
+    if(m_font.bold())
+        svg += "font-weight=\"bold\" ";
+    if(m_font.italic())
+        svg += "font-style=\"italic\" ";
+    svg += "fill=\"" + m_textcolor.name() + "\" ";
+    svg += "opacity=\"" + QString::number((qreal)opacity() / 100.0) + "\" ";
+    svg += ">";
+    svg += m_text;
+    svg += "</text>";
+
+    return svg;
+}
+
+QString Text::getSvg()
+{
+    QFont font(m_font.family());
+    font.setBold(m_font.bold());
+    font.setItalic(m_font.italic());
+    font.setPixelSize(m_font.pointSize() * 1.25);
+    QFontMetrics fm(font);
+    m_width = fm.width(m_text) + 2;
+    m_height = fm.height();
+
+    QString svg = "<svg width=\"" + QString::number(m_width) + "\" ";
+    svg += "height=\"" + QString::number(m_height) + "\" >";
+    svg += getTextTag(id());
+    svg += "</svg>";
+
+    return svg;
+}
 
 Text::Text(QString text, AnimationScene *scene)
     : AnimationItem(scene)
 {
-   m_font = QFont("Arial", 14);
+   m_font = QFont("Arial");
+   m_font.setPointSize(14);
    m_font.setStyleName("Standard");
    m_text = text;
    m_textcolor = QColor(Qt::black);
-   QFontMetrics m(m_font);
-   QRect r = m.boundingRect(QRect(0,0,0,0), Qt::AlignLeft|Qt::AlignBottom, m_text);
-   m_width = r.width();
-   m_height = r.height();
-   setRect(0, 0, m_width, m_height + EXTRA_HEIGHT);
-   m_textitem = new QGraphicsSimpleTextItem(m_text, this);
-   m_textitem->setFont(m_font);
-   m_textitem->setBrush(QBrush(m_textcolor));
+
+   m_data = getSvg().toUtf8();
+   m_renderer = new QSvgRenderer();
+   m_renderer->load(m_data);
+   m_svg = new QGraphicsSvgItem(this);
+   m_svg->setSharedRenderer(m_renderer);
+
+   setRect(0, 0, m_svg->boundingRect().width(), m_svg->boundingRect().height());
 }
 
 int Text::type() const
@@ -75,7 +118,9 @@ void Text::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWidg
 void Text::setFont(QFont font)
 {
     m_font = font;
-    m_textitem->setFont(m_font);
+    m_data = getSvg().toUtf8();
+    m_renderer->load(m_data);
+    m_svg->setSharedRenderer(m_renderer);
     setScale(1, 1);
     setHandlePositions();
 }
@@ -88,13 +133,9 @@ QString Text::text()
 void Text::setText(QString text)
 {
     m_text = text;
-    m_textitem->setText(text);
-
-    QFontMetrics m(m_font);
-    QRect r = m.boundingRect(QRect(0,0,0,0), Qt::AlignLeft|Qt::AlignBottom, m_text);
-    m_width = r.width();
-    m_height = r.height();
-    setRect(0, 0, m_width * m_xscale, (m_height + EXTRA_HEIGHT) * m_yscale);
+    m_data = getSvg().toUtf8();
+    m_renderer->load(m_data);
+    m_svg->setSharedRenderer(m_renderer);
     setHandlePositions();
 }
 
@@ -106,7 +147,9 @@ QColor Text::textColor()
 void Text::setTextColor(QColor color)
 {
    m_textcolor = color;
-   m_textitem->setBrush(QBrush(m_textcolor));
+   m_data = getSvg().toUtf8();
+   m_renderer->load(m_data);
+   m_svg->setSharedRenderer(m_renderer);
    emit textcolorChanged(color);
 }
 
@@ -116,27 +159,15 @@ void Text::setScale(qreal x, qreal y)
     m_yscale = y;
     QTransform trans;
     trans.scale(m_xscale, m_yscale);
-    m_textitem->setTransform(trans);
-
-    QFontMetrics m(m_font);
-    QRect r = m.boundingRect(QRect(0,0,0,0), Qt::AlignLeft|Qt::AlignBottom, m_text);
-    m_width = r.width();
-    m_height = r.height();
-    setRect(0, 0, m_width * m_xscale, (m_height + EXTRA_HEIGHT) * m_yscale);
+    m_svg->setTransform(trans);
+    setRect(0, 0, m_svg->boundingRect().width() * x, m_svg->boundingRect().height() * y);
 }
 
 void Text::scaleObjects()
 {
-    QFontMetrics m(m_font);
-    QRect r = m.boundingRect(QRect(0,0,0,0), Qt::AlignLeft|Qt::AlignBottom, m_text);
-    m_xscale = rect().width() / r.width();
-    m_yscale = rect().height() / (r.height() + EXTRA_HEIGHT);
-
+    m_xscale = rect().width() / m_svg->boundingRect().width();
+    m_yscale = rect().height() / m_svg->boundingRect().height();
     QTransform trans;
     trans.scale(m_xscale, m_yscale);
-    m_textitem->setTransform(trans);
-
-    m_width = r.width();
-    m_height = r.height();
-    setRect(0, 0, m_width * m_xscale, (m_height + EXTRA_HEIGHT) * m_yscale);
+    m_svg->setTransform(trans);
 }

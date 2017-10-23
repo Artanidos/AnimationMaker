@@ -29,6 +29,8 @@
 #include "widgets_global.h"
 
 class AnimationScene;
+class QGraphicsSvgItem;
+class QSvgRenderer;
 class WIDGETSSHARED_EXPORT Text : public AnimationItem
 {
     Q_OBJECT
@@ -55,16 +57,22 @@ public:
     QDomElement getXml(QDomDocument);
     bool hasBrushAndPen() {return false;}
 
+    QString getTextTag(QString id);
+    
 signals:
     void textcolorChanged(QColor);
 
 private:
+    QGraphicsSvgItem *m_svg;
+    QSvgRenderer *m_renderer;
+    QByteArray m_data;
     QFont m_font;
     QString m_text;
     QGraphicsSimpleTextItem *m_textitem;
     QColor m_textcolor;
     qreal m_width;
     qreal m_height;
+    QString getSvg();
 };
 
 #endif // TEXT_H

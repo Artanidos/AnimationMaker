@@ -425,7 +425,6 @@ bool AnimationScene::importXml(QString fileName)
             t->setId(ele.attribute("id", "Text"));
             t->setLeft(ele.attribute("left", "0").toDouble());
             t->setTop(ele.attribute("top", "0").toDouble());
-            t->setScale(ele.attribute("xscale", "1").toDouble(), ele.attribute("yscale", "1").toDouble());
             t->setTextColor(QColor(ele.attribute("textcolor", "#000000")));
             t->setOpacity(ele.attribute("opacity", "100").toInt());
             QFont font;
@@ -433,6 +432,7 @@ bool AnimationScene::importXml(QString fileName)
             font.setPointSize(ele.attribute("font-size").toInt());
             font.setStyleName(ele.attribute("font-style"));
             t->setFont(font);
+            t->setScale(ele.attribute("xscale", "1").toDouble(), ele.attribute("yscale", "1").toDouble());
             t->setFlag(QGraphicsItem::ItemIsMovable, true);
             t->setFlag(QGraphicsItem::ItemIsSelectable, true);
             readKeyframes(&ele, t);
