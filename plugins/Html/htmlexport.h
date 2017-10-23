@@ -36,13 +36,14 @@ class HtmlExport : public ExportInterface
     Q_PLUGIN_METADATA(IID "com.github.Artanidos.AnimationMaker.ExportInterface")
     Q_INTERFACES(ExportInterface)
 
-    QString getTweens(QString tweenArray, AnimationItem *item, int i);
-    
 public:
     HtmlExport() {}
     QString className() override {return "HtmlExport";}
     QString displayName() override {return "Html Export";}
     void exportAnimation(AnimationScene *scene, QStatusBar *) override;
+
+private:
+    QString getTweens(QString &tweenArray, AnimationItem *item, int i, QStringList properties);
  };
 
 #endif // HTMLEXPORT_H

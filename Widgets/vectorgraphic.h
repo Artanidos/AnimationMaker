@@ -54,6 +54,7 @@ public:
     bool hasBrushAndPen() {return false;}
 
     QString getInnerSvg();
+    QStringList getPropertyList();
 
 signals:
     void attributeAdded();

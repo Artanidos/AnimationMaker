@@ -90,6 +90,16 @@ QString Vectorgraphic::getInnerSvg()
     return "<g transform=\"scale(" + QString::number(xscale()) +"," + QString::number(yscale()) + ")\">" + svg.mid(start, end - start) + "</g>";
 }
 
+QStringList Vectorgraphic::getPropertyList()
+{
+    QStringList list;
+    foreach(QString key, m_attributes.keys())
+    {
+        list << key;
+    }
+    return list;
+}
+
 void Vectorgraphic::setData(QByteArray data)
 {
     m_data = data;

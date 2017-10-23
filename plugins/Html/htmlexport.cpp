@@ -121,35 +121,27 @@ QString getEaseString(int easing)
     }
 }
 
-QString HtmlExport::getTweens(QString tweenArray, AnimationItem *item, int i)
+QString HtmlExport::getTweens(QString &tweenArray, AnimationItem *item, int i, QStringList properties)
 {
     QString rc = "";
     QTextStream js(&rc);
     QString var = "";
     QString value = "";
-    int frameNumber = 0;
+    QString id = "";
+
     bool isEllipse = false;
-    QStringList properties;
     Ellipse *ellipse = dynamic_cast<Ellipse*>(item);
     if(ellipse)
         isEllipse = true;
-
-    // fill in animateable properties in correct order (width before left, height before top)
-    properties.append("width");
-    properties.append("height");
-    properties.append("left");
-    properties.append("top");
-    properties.append("opacity");
-    properties.append("brushColor");
-    properties.append("penColor");
-    properties.append("textColor");
 
     foreach(QString property, properties)
     {
         if(item->keyframes()->contains(property))
         {
+            int frameNumber = 0;
             for(KeyFrame *from = item->keyframes()->value(property); from != NULL; from = from->next())
             {
+                id = item->id() + QString::number(i);
                 if(property == "left")
                 {
                     if(isEllipse)
@@ -226,6 +218,13 @@ QString HtmlExport::getTweens(QString tweenArray, AnimationItem *item, int i)
                     value = '"' + from->value().toString() + '"';
                     var = "fill";
                 }
+                else if(property.contains(".")) // svg animation like path.fill
+                {
+                    int dot = property.indexOf(".");
+                    id = property.left(dot);
+                    value = '"' + from->value().toString() + '"';
+                    var = '"' + property.mid(dot + 1) + '"';
+                }
                 else
                     qDebug() << "animation for attribute " + property + " not yet implemented";
 
@@ -234,7 +233,7 @@ QString HtmlExport::getTweens(QString tweenArray, AnimationItem *item, int i)
                 if(!tweenArray.isEmpty())
                     tweenArray += ", ";
                 tweenArray += obj;
-                js << "var " + obj + " = TweenLite.to(\"#" + item->id() + QString::number(i) + "\", ";
+                js << "var " + obj + " = TweenLite.to(\"#" + id + "\", ";
                 if(from->prev() && from->prev()->easing() >= 0)
                     js << QString::number(double(from->time() - from->prev()->time())/1000.0);
                 else
@@ -250,7 +249,10 @@ QString HtmlExport::getTweens(QString tweenArray, AnimationItem *item, int i)
                     js << ", " + getEaseString(from->easing());
                 }
                 else
-                    js << QString::number((double)from->time() / 1000.0);
+                    if(frameNumber == 0)
+                        js << "0";
+                    else
+                        js << QString::number((double)from->time() / 1000.0);
                 js << "});\n";
 
                 frameNumber++;
@@ -327,6 +329,17 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
         AnimationItem *item = dynamic_cast<AnimationItem*>(itemList.at(i));
         if(item)
         {
+            QStringList properties;
+            // fill in properties in correct order (width before left and height before top)
+            properties << "width";
+            properties << "height";
+            properties << "left";
+            properties << "top";
+            properties << "opacity";
+            properties << "brushColor";
+            properties << "penColor";
+            properties << "textColor";
+
             if(!item->isSceneRect())
             {
                 Rectangle *rect = dynamic_cast<Rectangle*>(item);
@@ -401,8 +414,9 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                     html << ">";
                     html << vg->getInnerSvg();
                     html << "</svg>";
+                    properties.append(vg->getPropertyList());
                 }
-                js << getTweens(tweenArray, item, i);
+                js << getTweens(tweenArray, item, i, properties);
             }
         }
     }
