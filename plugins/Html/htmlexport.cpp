@@ -24,6 +24,7 @@
 #include "bitmap.h"
 #include "ellipse.h"
 #include "text.h"
+#include "vectorgraphic.h"
 #include <QStatusBar>
 #include <QFileDialog>
 #include <QTest>
@@ -363,7 +364,13 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                 Text *text = dynamic_cast<Text*>(item);
                 if(text)
                 {
-                    html << text->getTextTag(text->id() + QString::number(i));
+                    html << "<svg id=\"" + text->id() + QString::number(i) + "\" ";
+                    html << "x=\"" + QString::number(text->x()) + "\" ";
+                    html << "y=\"" + QString::number(text->y()) + "\" ";
+                    html << "opacity=\"" + QString::number((double)text->opacity() / 100.0) + "\" ";
+                    html << ">";
+                    html << text->getTextTag();
+                    html << "</svg>";
                 }
 
                 Bitmap *bitmap = dynamic_cast<Bitmap*>(item);
@@ -382,6 +389,18 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                     html << "xlink:href=\"data:image/png;base64," + QString::fromLatin1(byteArray.toBase64().data()) + "\"";
                     html << "opacity=\"" + QString::number((qreal)bitmap->opacity() / 100.0) + "\" ";
                     html << "/>\n";
+                }
+
+                Vectorgraphic *vg = dynamic_cast<Vectorgraphic*>(item);
+                if(vg)
+                {
+                    html << "<svg id=\"" + vg->id() + QString::number(i) + "\" ";
+                    html << "x=\"" + QString::number(vg->x()) + "\" ";
+                    html << "y=\"" + QString::number(vg->y()) + "\" ";
+                    html << "opacity=\"" + QString::number((double)vg->opacity() / 100.0) + "\" ";
+                    html << ">";
+                    html << vg->getInnerSvg();
+                    html << "</svg>";
                 }
                 js << getTweens(tweenArray, item, i);
             }

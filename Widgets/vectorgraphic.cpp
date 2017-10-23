@@ -82,6 +82,14 @@ QDomElement Vectorgraphic::getXml(QDomDocument doc)
     return ele;
 }
 
+QString Vectorgraphic::getInnerSvg()
+{
+    QString svg = QString(m_data);
+    int start = svg.indexOf("<", svg.indexOf("<svg") + 1);
+    int end = svg.lastIndexOf("</svg>");
+    return "<g transform=\"scale(" + QString::number(xscale()) +"," + QString::number(yscale()) + ")\">" + svg.mid(start, end - start) + "</g>";
+}
+
 void Vectorgraphic::setData(QByteArray data)
 {
     m_data = data;
