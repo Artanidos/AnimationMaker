@@ -16,10 +16,4 @@
 
 - Plugin for animated objects (tweens, videoscribe)
 
-- select with mouse rectangle
-
 - animationScene paste should also copy plugin items and vector attributes
-
-- load xml should be done in items itself
-
-- serialize scene background keyframes

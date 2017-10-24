@@ -122,6 +122,8 @@ private:
     QPointF m_oldPos;
     int m_fileVersion;
     QString m_actPluginName;
+    QGraphicsRectItem *m_blackSelectionRect;
+    QGraphicsRectItem *m_whiteSelectionRect;
 
     void initialize();
     void addBackgroundRect();

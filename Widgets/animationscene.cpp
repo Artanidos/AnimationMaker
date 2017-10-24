@@ -34,6 +34,8 @@
 AnimationScene::AnimationScene()
 {
     m_rect = NULL;
+    m_blackSelectionRect = NULL;
+    m_whiteSelectionRect = NULL;
     m_autokeyframes = false;
     m_autotransitions = false;
     initialize();
@@ -75,16 +77,26 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
     if(m_editMode == EditMode::ModeSelect)
     {
+        m_movingItem = NULL;
         QPointF mousePos(mouseEvent->buttonDownScenePos(Qt::LeftButton).x(), mouseEvent->buttonDownScenePos(Qt::LeftButton).y());
         const QList<QGraphicsItem *> itemList = items(mousePos);
         for(int i=0; i < itemList.count(); i++)
         {
             m_movingItem = dynamic_cast<AnimationItem*>(itemList.at(i));
+            if(m_movingItem->isSceneRect())
+                m_movingItem = NULL;
             if(m_movingItem)
             {
                 m_oldPos = m_movingItem->pos();
                 break;
             }
+        }
+        if(!m_movingItem)
+        {
+            m_blackSelectionRect = addRect(0, 0, 1, 1, QPen(QColor("#000000")));
+            m_blackSelectionRect->setPos(mousePos);
+            m_whiteSelectionRect = addRect(1, 1, 1, 1, QPen(QColor("#ffffff")));
+            m_whiteSelectionRect->setPos(mousePos);
         }
         QGraphicsScene::mousePressEvent(mouseEvent);
     }
@@ -124,11 +136,30 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void AnimationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    if(m_editMode == EditMode::ModeSelect && m_blackSelectionRect)
+    {
+        m_blackSelectionRect->setRect(0, 0, mouseEvent->lastScenePos().x() - m_blackSelectionRect->pos().x(), mouseEvent->lastScenePos().y() - m_blackSelectionRect->pos().y());
+        m_whiteSelectionRect->setRect(1, 1, mouseEvent->lastScenePos().x() - m_blackSelectionRect->pos().x(), mouseEvent->lastScenePos().y() - m_blackSelectionRect->pos().y());
+    }
     QGraphicsScene::mouseMoveEvent(mouseEvent);
 }
 
 void AnimationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    if(m_editMode == EditMode::ModeSelect && m_blackSelectionRect)
+    {
+        const QList<QGraphicsItem *> itemList = items(m_blackSelectionRect->pos().x(), m_blackSelectionRect->pos().y(), m_blackSelectionRect->rect().width(), m_blackSelectionRect->rect().height(), Qt::ContainsItemShape, Qt::AscendingOrder);
+        for(int i = 0; i < itemList.count(); i++)
+        {
+            itemList.at(i)->setSelected(true);
+        }
+        removeItem(m_blackSelectionRect);
+        removeItem(m_whiteSelectionRect);
+        delete m_blackSelectionRect;
+        delete m_whiteSelectionRect;
+        m_blackSelectionRect = NULL;
+        m_whiteSelectionRect = NULL;
+    }
     if(m_movingItem && mouseEvent->button() == Qt::LeftButton)
     {
         if(m_oldPos != m_movingItem->pos())

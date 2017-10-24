@@ -3,6 +3,7 @@
 - Rendering text as SVG now
 - New plugin technology for export added.
 - New Plugin -> Export HTML
+- Selection rectangle added
 
 1.6
 ---
