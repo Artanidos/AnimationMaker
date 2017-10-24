@@ -28,6 +28,7 @@ HEADERS		 += \
     htmlexport.h
 CONFIG(debug, debug|release) {
     DESTDIR = ~/AnimationMaker/plugins
+    DEFINES += DEBUG
 }
 
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets

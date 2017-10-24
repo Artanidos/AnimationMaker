@@ -57,7 +57,7 @@ public:
     QDomElement getXml(QDomDocument);
     bool hasBrushAndPen() {return false;}
 
-    QString getTextTag();
+    QString getTextTag(QString id);
     
 signals:
     void textcolorChanged(QColor);

@@ -31,6 +31,7 @@
 #include <QTest>
 #include <QMessageBox>
 #include <QBuffer>
+#include <QDesktopServices>
 
 QString getEaseString(int easing)
 {
@@ -216,6 +217,7 @@ QString HtmlExport::getTweens(QString &tweenArray, AnimationItem *item, int i, Q
                 }
                 else if(property == "textColor")
                 {
+                    id = item->id() + QString::number(i) + "t";
                     value = '"' + from->value().toString() + '"';
                     var = "fill";
                 }
@@ -286,8 +288,11 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
     dir.mkdir("js");
     dir.cdUp();
 
+#ifdef DEBUG
+    Installer::installFiles("/home/olaf/SourceCode/AnimationMaker/plugins/Html/gsap", dir.absolutePath() + "/assets/js", true, false);
+#else
     Installer::installFiles(QCoreApplication::applicationDirPath() + "/../../plugins/gsap", dir.absolutePath() + "/assets/js", true, false);
-
+#endif
     itemList = scene->items(Qt::AscendingOrder);
     bar->showMessage("Exporting animation to " + fileName);
 
@@ -383,7 +388,7 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                     html << "y=\"" + QString::number(text->y()) + "\" ";
                     html << "opacity=\"" + QString::number((double)text->opacity() / 100.0) + "\" ";
                     html << ">";
-                    html << text->getTextTag();
+                    html << text->getTextTag(text->id() + QString::number(i) + "t");
                     html << "</svg>";
                 }
 
@@ -441,7 +446,8 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
     html << "</html>\n";
     htmlFile.close();
 
-    bar->showMessage("Animation has been exported to HTML");
+    bar->showMessage("Animation has been exported to " + dir.absoluteFilePath("index.html"));
+    QDesktopServices::openUrl(QUrl(dir.absoluteFilePath("index.html")));
 }
 
 

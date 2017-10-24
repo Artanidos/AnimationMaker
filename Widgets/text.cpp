@@ -30,11 +30,12 @@
 #include "animationitem.h"
 
 
-QString Text::getTextTag()
+QString Text::getTextTag(QString id)
 {
     QFontMetrics fm(m_font);
     QString svg = "<text ";
-    //svg += "id=\"" + id + "\" ";
+    if(!id.isEmpty())
+        svg += "id=\"" + id + "\" ";
     svg += "x=\"0\" y=\"" + QString::number(fm.ascent()) + "\" ";
     svg += "font-family=\"" + m_font.family() + "\" ";
     svg += "font-size=\"" + QString::number((double)m_font.pointSize() * 1.25) + "px\" ";
@@ -62,7 +63,7 @@ QString Text::getSvg()
 
     QString svg = "<svg width=\"" + QString::number(m_width) + "\" ";
     svg += "height=\"" + QString::number(m_height) + "\" >";
-    svg += getTextTag();
+    svg += getTextTag("");
     svg += "</svg>";
 
     return svg;
