@@ -22,6 +22,7 @@
 #include "animationscene.h"
 #include "vectorgraphic.h"
 #include "interfaces.h"
+#include "installer.h"
 #include "plugins.h"
 #include "bitmap.h"
 #include "news.h"
@@ -112,70 +113,8 @@ void MainWindow::install()
         installDir.cd("AnimationMaker");
     }
 
-    installFiles(QCoreApplication::applicationDirPath() + "/../../plugins", installDir.absolutePath() + "/plugins", true, false);
+    Installer::installFiles(QCoreApplication::applicationDirPath() + "/../../plugins", installDir.absolutePath() + "/plugins", true, false);
 }
-
-void MainWindow::installFiles(QString sourceDir, QString targetDir, bool readOnly, bool recursive)
-{
-    QDir dir(sourceDir);
-    dir.mkpath(targetDir);
-    if(recursive)
-    {
-        foreach (QString d, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
-        {
-            QString dst_path = targetDir + QDir::separator() + d;
-            dir.mkpath(dst_path);
-            installFiles(sourceDir + QDir::separator() + d, dst_path, readOnly, recursive);
-        }
-    }
-    foreach(QString source, dir.entryList(QDir::NoDotAndDotDot | QDir::Files))
-    {
-        QFile target(targetDir + QDir::separator() + source);
-        // only override readonly files like plugins or themes
-
-        if(target.exists())
-        {
-            if(readOnly)
-            {
-                QCryptographicHash md5genTarget(QCryptographicHash::Md5);
-                if(target.open(QFile::ReadOnly))
-                {
-                    md5genTarget.addData(target.readAll());
-                    target.close();
-                }
-                QFile sourceFile(sourceDir + QDir::separator() + source);
-                QCryptographicHash md5genSource(QCryptographicHash::Md5);
-                if(sourceFile.open(QFile::ReadOnly))
-                {
-                    md5genSource.addData(sourceFile.readAll());
-                    sourceFile.close();
-                }
-
-                if(md5genTarget.result() != md5genSource.result())
-                {
-                    target.remove();
-                    installFile(sourceDir + QDir::separator() + source, targetDir + QDir::separator() + source, readOnly);
-                }
-            }
-        }
-        else
-        {
-            installFile(sourceDir + QDir::separator() + source, targetDir + QDir::separator() + source, readOnly);
-        }
-    }
-}
-
-void MainWindow::installFile(QString sourceFile, QString targetFile, bool readOnly)
-{
-    qDebug() << "installing file" << targetFile;
-    QFile::copy(sourceFile, targetFile);
-    QFile target(targetFile);
-    if(readOnly)
-        target.setPermissions(QFileDevice::ReadOwner);
-    else
-        target.setPermissions(QFileDevice::WriteOwner | QFileDevice::ReadOwner);
-}
-
 
 void MainWindow::save()
 {

@@ -45,7 +45,8 @@ SOURCES += \
     colorpicker.cpp \
     colorrect.cpp \
     xmleditor.cpp \
-    xmlhighlighter.cpp
+    xmlhighlighter.cpp \
+    installer.cpp
     
 
 HEADERS +=\
@@ -73,7 +74,8 @@ HEADERS +=\
     colorpicker.h \
     colorrect.h \
     xmleditor.h \
-    xmlhighlighter.h
+    xmlhighlighter.h \
+    installer.h
     
 unix {
     target.path = /usr/lib

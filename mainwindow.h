@@ -63,8 +63,6 @@ private:
     void createStatusBar();
     void createGui();
     void install();
-    void installFiles(QString sourceDir, QString targetDir, bool readOnly = true, bool recursive = true);
-    void installFile(QString sourceFile, QString targetFile, bool readOnly);
     void loadPlugins();
     void writeSettings();
     void readSettings();

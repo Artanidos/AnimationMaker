@@ -24,6 +24,7 @@
 #include "bitmap.h"
 #include "ellipse.h"
 #include "text.h"
+#include "installer.h"
 #include "vectorgraphic.h"
 #include <QStatusBar>
 #include <QFileDialog>
@@ -282,10 +283,10 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
     QDir dir(fileName);
     dir.mkdir("assets");
     dir.cd("assets");
-    dir.mkdir("css");
-    dir.mkdir("images");
     dir.mkdir("js");
     dir.cdUp();
+
+    Installer::installFiles(QCoreApplication::applicationDirPath() + "/../../plugins/gsap", dir.absolutePath() + "/assets/js", true, false);
 
     itemList = scene->items(Qt::AscendingOrder);
     bar->showMessage("Exporting animation to " + fileName);
