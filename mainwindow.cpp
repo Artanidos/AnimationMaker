@@ -588,13 +588,14 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAsAct);
     fileMenu->addAction(saveItemAsAct);
     fileMenu->addSeparator();
-    fileMenu->addAction(exportMovieAct);
+    QMenu *exportMenu = fileMenu->addMenu("Export");
+    exportMenu->addAction(exportMovieAct);
     foreach(QString pluginName, Plugins::exportPluginNames())
     {
         ExportInterface *ei = Plugins::getExportPlugin(pluginName);
         QAction *exportAct = new QAction(ei->displayName(), ei);
         connect(exportAct, SIGNAL(triggered()), this, SLOT(pluginExport()));
-        fileMenu->addAction(exportAct);
+        exportMenu->addAction(exportAct);
     }
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);

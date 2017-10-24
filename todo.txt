@@ -11,9 +11,6 @@
 
 - Add the ability to add sound and voices.
 
-- Plugin for export / import xml
-    Export animation to html/css like revolution slider
-
 - Plugin for animated objects (tweens, videoscribe)
 
 - animationScene paste should also copy plugin items and vector attributes
