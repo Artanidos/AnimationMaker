@@ -83,7 +83,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         for(int i=0; i < itemList.count(); i++)
         {
             m_movingItem = dynamic_cast<AnimationItem*>(itemList.at(i));
-            if(m_movingItem->isSceneRect())
+            if(m_movingItem && m_movingItem->isSceneRect())
                 m_movingItem = NULL;
             if(m_movingItem)
             {
@@ -148,7 +148,7 @@ void AnimationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if(m_editMode == EditMode::ModeSelect && m_blackSelectionRect)
     {
-        const QList<QGraphicsItem *> itemList = items(m_blackSelectionRect->pos().x(), m_blackSelectionRect->pos().y(), m_blackSelectionRect->rect().width(), m_blackSelectionRect->rect().height(), Qt::ContainsItemShape, Qt::AscendingOrder);
+        const QList<QGraphicsItem *> itemList = items(m_blackSelectionRect->pos().x(), m_blackSelectionRect->pos().y(), m_blackSelectionRect->rect().width(), m_blackSelectionRect->rect().height(), Qt::IntersectsItemShape, Qt::AscendingOrder);
         for(int i = 0; i < itemList.count(); i++)
         {
             itemList.at(i)->setSelected(true);
