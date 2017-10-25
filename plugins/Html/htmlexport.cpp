@@ -33,6 +33,11 @@
 #include <QBuffer>
 #include <QDesktopServices>
 
+QString cleanId(QString id)
+{
+    return id.replace(" ", "_").replace("!","_").replace(".", "_");
+}
+
 QString getEaseString(int easing)
 {
     switch(easing)
@@ -236,7 +241,7 @@ QString HtmlExport::getTweens(QString &tweenArray, AnimationItem *item, int i, Q
                 if(!tweenArray.isEmpty())
                     tweenArray += ", ";
                 tweenArray += obj;
-                js << "var " + obj + " = TweenLite.to(\"#" + id + "\", ";
+                js << "var " + obj + " = TweenLite.to(\"#" + cleanId(id) + "\", ";
                 if(from->prev() && from->prev()->easing() >= 0)
                     js << QString::number(double(from->time() - from->prev()->time())/1000.0);
                 else
@@ -352,7 +357,7 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                 if(rect)
                 {
                     html << "<rect ";
-                    html << "id=\"" + rect->id() + QString::number(i) + "\" ";
+                    html << "id=\"" + cleanId(rect->id() + QString::number(i)) + "\" ";
                     html << "x=\"" + QString::number(rect->x()) + "\" ";
                     html << "y=\"" + QString::number(rect->y()) + "\" ";
                     html << "width=\"" + QString::number(rect->width()) + "\" ";
@@ -368,7 +373,7 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                 if(ellipse)
                 {
                     html << "<ellipse ";
-                    html << "id=\"" + ellipse->id() + QString::number(i) + "\" ";
+                    html << "id=\"" + cleanId(ellipse->id() + QString::number(i)) + "\" ";
                     html << "cx=\"" + QString::number((qreal)ellipse->x() + ellipse->width() / 2.0) + "\" ";
                     html << "cy=\"" + QString::number((qreal)ellipse->y() + ellipse->height() / 2.0) + "\" ";
                     html << "rx=\"" + QString::number((qreal)ellipse->width() / 2.0) + "\" ";
@@ -383,12 +388,12 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                 Text *text = dynamic_cast<Text*>(item);
                 if(text)
                 {
-                    html << "<svg id=\"" + text->id() + QString::number(i) + "\" ";
+                    html << "<svg id=\"" + cleanId(text->id() + QString::number(i)) + "\" ";
                     html << "x=\"" + QString::number(text->x()) + "\" ";
                     html << "y=\"" + QString::number(text->y()) + "\" ";
                     html << "opacity=\"" + QString::number((double)text->opacity() / 100.0) + "\" ";
                     html << ">";
-                    html << text->getTextTag(text->id() + QString::number(i) + "t");
+                    html << text->getTextTag(cleanId(text->id() + QString::number(i)) + "t");
                     html << "</svg>";
                 }
 
@@ -400,7 +405,7 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                     bitmap->getImage().save(&buffer, "PNG");
 
                     html << "<image ";
-                    html << "id=\"" + bitmap->id() + QString::number(i) + "\" ";
+                    html << "id=\"" + cleanId(bitmap->id() + QString::number(i)) + "\" ";
                     html << "x=\"" + QString::number(bitmap->x()) + "\" ";
                     html << "y=\"" + QString::number(bitmap->y()) + "\" ";
                     html << "width=\"" + QString::number(bitmap->width()) + "\" ";
@@ -413,7 +418,7 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                 Vectorgraphic *vg = dynamic_cast<Vectorgraphic*>(item);
                 if(vg)
                 {
-                    html << "<svg id=\"" + vg->id() + QString::number(i) + "\" ";
+                    html << "<svg id=\"" + cleanId(vg->id() + QString::number(i)) + "\" ";
                     html << "x=\"" + QString::number(vg->x()) + "\" ";
                     html << "y=\"" + QString::number(vg->y()) + "\" ";
                     html << "opacity=\"" + QString::number((double)vg->opacity() / 100.0) + "\" ";
@@ -449,5 +454,3 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
     bar->showMessage("Animation has been exported to " + dir.absoluteFilePath("index.html"));
     QDesktopServices::openUrl(QUrl(dir.absoluteFilePath("index.html")));
 }
-
-
