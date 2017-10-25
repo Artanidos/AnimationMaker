@@ -1,0 +1,82 @@
+/** HEADER AND FOOTER SAMPLE
+
+	This is from layout-dark.css
+	If you want to change colors of header / footer, use this file!
+**************************************************************** **/
+
+
+
+/* 
+	HEADER, NAVIGATION 
+*/
+header#topHead {
+	background-color:#111;
+	border-bottom:#333 1px solid;
+}
+header#topHead  .dropdown-menu {
+	background-color:#333;
+}
+	header#topHead  .dropdown-menu li:hover a {
+		background-color:#111;
+	}
+	#topHead .dropdown-menu hr {
+		border-top: #222 1px solid;
+		border-bottom: #444 1px solid;
+	}
+
+header#topNav {
+	background-color:#111;
+	border-bottom:#111 1px solid;
+	box-shadow: #111 0 0 8px;
+}
+header#topNav nav ul.nav-main > li:hover > a,
+header#topNav nav ul.nav-main > li.active > a,
+header#topNav nav ul.nav-main li a:hover {
+	color:#fff !important;
+}
+header#topNav nav ul.nav-main li.dropdown:hover > a:after {
+	border-bottom:#333 10px solid;
+}
+header#topNav nav div.mega-menu-content,
+header#topNav nav ul.nav-main ul.dropdown-menu {
+	background-color:#333 !important;
+}
+header#topNav li.divider {
+	border-top: #222 1px solid;
+	border-bottom: #444 1px solid;
+}
+header#topNav nav div.mega-menu-content li:hover > a,
+header#topNav nav ul.nav-main ul.dropdown-menu li:hover > a {
+	background-color:#222 !important;
+}
+header#topNav button.btn-mobile {
+	background-color:#444444;
+}	
+@media (max-width: 990px) {
+	header#topNav div.nav-main-collapse {
+		background-color:#333;
+	}
+}
+/* page title, pricetable and all other color1 elements */
+#slider h2, 
+#slider .image-caption .inner p.dark, 
+header#page-title, 
+div.price-table.popular, 
+.styleBackground {
+	background-color: #444; /* keep the contrast little bit brighten */
+}
+
+
+/* 
+	FOOTER 
+*/
+footer {
+	color:#fff;
+}
+footer .column.logo,
+footer .footer-bar {
+	background-color:#111;
+}
+footer .footer-content {
+	background: #222;
+}

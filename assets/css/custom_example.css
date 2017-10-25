@@ -1,0 +1,66 @@
+/*
+	This is an example custom file
+	If you use it, you will get a red header/footer.
+*/
+
+
+/*
+	@HEADER - red
+*/
+header#topNav nav ul.nav-main li a,
+header#topNav nav ul.nav-main > li:hover > a, 
+header#topNav nav ul.nav-main li.active > a, 
+header#topNav nav ul.nav-main li.active > a:hover, 
+header#topNav nav ul.nav-main li.active > a:focus, 
+header#topNav nav ul.nav-main li.active i.icon-caret-down {
+	color:#fff;
+}
+
+header#topNav {
+	color:#fff;
+	background:#AF1A1E;
+
+		border-bottom:0;
+		box-shadow:none;
+
+}
+
+header#topNav nav.mega-menu ul.nav-main li.mega-menu-item ul.dropdown-menu, 
+header#topNav nav ul.nav-main ul.dropdown-menu {
+	background-color: #7a0e11;
+}
+
+header#topNav nav.mega-menu ul.nav-main li.mega-menu-item:hover ul.sub-menu li:hover a:hover, 
+header#topNav nav ul.nav-main ul.dropdown-menu li:hover > a {
+	background-color: rgba(0,0,0,0.2);
+}
+
+header#topNav nav ul.nav-main li.dropdown:hover > a:after {
+	border-bottom: #7a0e11 10px solid;
+}
+
+
+
+/* 
+	@FOOTER - red
+*/
+footer .column.logo,
+footer .footer-bar {
+	background: #8B0F11;
+}
+
+footer .footer-content {
+	background: #981013;
+	border-top: #C52026 1px dashed;
+}
+footer .footer-bar .toTop {
+	border-left: #C52026 1px dashed;
+}
+
+footer p.contact-desc {
+	border-bottom: #C52026 1px dashed;
+}
+
+footer .post-item {
+	border-top: #C52026 1px dashed;
+}

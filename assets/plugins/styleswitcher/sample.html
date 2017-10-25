@@ -1,0 +1,46 @@
+		<!-- STYLESWITCHER -->
+		<link href="assets/plugins/styleswitcher/styleswitcher.css" rel="stylesheet" type="text/css"/>
+		<script async type="text/javascript" src="assets/plugins/styleswitcher/styleswitcher.js"></script>
+		
+
+		<!-- Switch Panel -->
+		<div id="switcher">
+			<div class="content-switcher" >        
+				<h4>STYLE OPTIONS</h4>
+
+				<p>Color Skin:</p>
+				<ul class="header">            
+					<li><a href="#" onClick="setActiveStyleSheet('blue'); return false;" class="color" style="background-color:#50657B"></a></li>
+					<li><a href="#" onClick="setActiveStyleSheet('orange'); return false;" class="color" style="background-color:#f54f36"></a></li>
+					<li><a href="#" onClick="setActiveStyleSheet('green'); return false;" class="color" style="background-color:#7cb91c"></a></li>
+					<li><a href="#" onClick="setActiveStyleSheet('red'); return false;" class="color" style="background-color:#e93735"></a></li>
+					<li><a href="#" onClick="setActiveStyleSheet('yellow'); return false;" class="color" style="background-color:#f1c40f"></a></li>
+					<li><a href="#" onClick="setActiveStyleSheet('gray'); return false;" class="color" style="background-color:#333333"></a></li>
+				</ul>         
+
+				<p>Header Layout:</p>
+				<div class="styled-select">
+					<select id="headerLayout">		  
+						<option value="1" selected="selected">Default</option>
+						<option value="2">Dark</option>
+						<option value="3">White</option>
+						<option value="4">Mixed</option>
+					</select>
+				</div>
+
+				<p>Home Page Template:</p>
+				<div class="styled-select">
+					<select onchange="window.document.location.href=this.options[this.selectedIndex].value;">  
+						<option value="index-2.html">Image Pattern</option>
+						<option selected="selected">Full Screen Slider</option>
+						<option value="index-3.html">Full Width Parallax Slider</option>
+						<option value="index-4.html" >Full Screen Image Parallax</option>
+					</select>
+				</div>
+
+				<br class="clr" />
+				<div id="hideSwitcher">&times;</div>
+			</div>
+		</div>
+		<div id="showSwitcher"><i class="fa fa-tint"></i></div>
+		<!-- Switch Panel -->

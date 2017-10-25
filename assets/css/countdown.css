@@ -1,0 +1,74 @@
+/**	Countdown
+*************************************************** **/
+
+.mbYTP_wrapper {
+	position:fixed !important;
+}
+	#video-volume {
+		top:15px;
+		z-index:99999;
+		background-color:rgba(255,255,255,0.3) !important;
+		border:rgba(255,255,255,0.3) 5px solid !important;
+		width:40px; height:40px;
+		font-size:24px; line-height:28px;
+
+		-webkit-border-radius:50%;
+		   -moz-border-radius:50%;
+				border-radius:50%;
+	}
+
+.countdown_rtl {
+	direction: rtl;
+}
+.countdown_section {
+	display: block;
+	float: left;
+	margin: 0;
+	text-transform: uppercase;
+	font-size:10px; /* info text: days/months/etc */
+	color:rgba(255,255,255,0.5); /* hide info text */
+}
+	.countdown_section .countdown_amount:before {
+		 content:':';  
+	}	
+	.countdown_section:first-child .countdown_amount:before {
+		 content:'';  
+	}
+
+.countdown_amount {
+	display:inline-block;
+	margin-top:40px;
+	font-size: 40px !important;
+	letter-spacing:0.1em;
+	font-weight:400;
+	color:#fff !important;
+	text-shadow:rgba(255,255,255,0.5) 0 0 15px;
+}
+.nopadding .countdown_amount  {
+	margin-top:16px;
+}
+
+#countdown {
+	display:inline-block !important;
+}
+
+.buttonBar {
+	display:none;
+}
+
+
+@media only screen and (max-width: 768px) {
+	.countdown_amount {
+		font-size: 40px !important;
+	}
+}
+
+@media only screen and (max-width: 479px) {
+	.countdown_amount {
+		margin-top:20px;
+		font-size: 26px !important;
+	}
+	#video-volume {
+		bottom:140px;
+	}
+}

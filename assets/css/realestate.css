@@ -1,0 +1,118 @@
+/** Real Estate
+ **************************************************************** **/
+/* slider caption */
+.realestate-caption {
+	background-color:rgba(255,255,255,0.9);
+	padding:20px;
+}
+.realestate-caption h4 {
+	color:#333 !important;
+	margin:0 !important;
+}
+.realestate-caption p {
+	background-color:transparent !important;
+	padding:10px 0 0 0 !important;
+	color:#888 !important;
+}
+.realestate-caption .price {
+	display:block;
+	color:#f07057 !important;
+	font-size:28px;
+	font-weight:bold;
+	padding:10px 0 0 0 !important;
+}
+.realestate-caption .price-old {
+	color:#999 !important;
+	text-decoration:line-through;
+	font-size:20px;
+	font-weight:300;
+}
+#slider .image-caption .inner .btn.view-more {
+	font-size:13px;
+	margin-top:0;
+}
+
+/*
+	@FILTER BOX
+	- search -
+*/
+.re-filterbox {
+	background-color:#fff;
+	padding:30px 20px;
+	display:block;
+	margin-bottom:60px;
+}
+.re-filterbox.no-top { 
+	margin-top:-100px;
+	position:relative;
+	z-index:150;
+	border:#F3F4F6 10px solid;
+
+	-webkit-border-radius: 16px;
+	   -moz-border-radius: 16px;
+			border-radius: 16px;
+}
+
+.item-box h4 {
+	font-size:18px;
+	line-height:23px;
+}
+.item-box small {
+	font-size:16px;
+	font-weight:800;
+}
+
+/* custom form */ 
+#re-filter .form-control {
+	height:40px;
+	line-height:40px;
+	padding:6px;
+}
+
+#re-filter select {
+	cursor:pointer;
+}
+
+/* icons */
+.bed-ico {
+	background:url('../images/icon/realestate/small/bed-ico.png') no-repeat;
+	display:inline-block;
+	width:16px; height:16px;
+}
+.furnished-ico {
+	background:url('../images/icon/realestate/small/furnished-ico.png') no-repeat;
+	display:inline-block;
+	width:16px; height:16px;
+}
+.garage-ico {
+	background:url('../images/icon/realestate/small/garage-ico.png') no-repeat;
+	display:inline-block;
+	width:16px; height:16px;
+}
+.home-ico {
+	background:url('../images/icon/realestate/small/home-ico.png') no-repeat;
+	display:inline-block;
+	width:16px; height:16px;
+}
+
+figure.agent-figure.pull-left {
+	margin-right:30px;
+}
+figure.agent-figure.pull-right {
+	margin-left:30px;
+}
+
+
+
+/** Responsive
+ **************************************************************** **/
+@media only screen and (max-width: 768px) {
+	#slider .image-caption .inner .btn.view-more {
+		float:none !important;
+		margin-top:10px;
+	}
+}
+
+@media only screen and (max-width: 479px) {
+
+}

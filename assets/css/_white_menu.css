@@ -1,0 +1,43 @@
+/* 
+	WHITE DROP DOWN 
+*/
+header#topNav nav ul.nav-main > li:hover > a,
+header#topNav nav ul.nav-main > li.active > a,
+header#topNav nav ul.nav-main li a:hover {
+	color:#333;
+}
+header#topNav nav ul.nav-main ul a,
+header#topNav nav ul.nav-main ul a.active,
+header#topNav nav ul.nav-main ul a em,
+header#topNav nav ul.nav-main ul a.active em,
+header#topNav nav ul.nav-main ul .mega-menu-sub-title {
+	color:#333 !important;
+}
+header#topNav nav ul.nav-main li > ul.dropdown-menu {
+	box-shadow: rgba(0,0,0,0.5) 0 0 6px !important;
+	-moz-box-shadow: rgba(0,0,0,0.5) 0 0 6px !important;
+}
+header#topNav nav ul.nav-main li.dropdown:hover > a:after {
+	border-bottom:#333 10px solid;
+}
+header#topNav nav div.mega-menu-content,
+header#topNav nav ul.nav-main ul.dropdown-menu {
+	background-color:#fff !important;
+	color:#333 !important;
+}
+header#topNav li.divider {
+	border:0;
+	border-bottom: #ccc 1px solid;
+}
+header#topNav nav div.mega-menu-content li:hover > a,
+header#topNav nav ul.nav-main ul.dropdown-menu li:hover > a {
+	background-color:#eee !important;
+}
+@media (max-width: 990px) {
+	header#topNav div.nav-main-collapse {
+		background-color:#333;
+	}
+	header#topNav nav.nav-main ul li {
+		border-bottom:#262626 1px solid;
+	}
+}
