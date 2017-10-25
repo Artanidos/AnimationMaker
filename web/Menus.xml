@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Menus>
+    <Menu name="default">
+        <Item title="Home" url="#wrapper" icon="" class="scrollTo"/>
+        <Item title="Preview" url="#preview" icon="" class="scrollTo"/>
+        <Item title="HTML" url="#html" icon="" class="scrollTo"/>
+        <Item title="GIF" url="#gif" icon="" class="scrollTo"/>
+        <Item title="Downloads" url="#downloads" icon="" class="scrollTo"/>
+        <Item title="Donations" url="#donations" icon="" class="scrollTo"/>
+        <Item title="Contact" url="#contact" icon="" class="scrollTo"/>
+    </Menu>
+</Menus>
