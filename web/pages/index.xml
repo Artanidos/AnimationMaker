@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Content title="AnimationMaker" menu="default" author="Olaf Japp" layout="default" keywords="animation, html, mp4, mpg, gif" date="25.10.2017" logo="weblogo.png">
+<Content title="AnimationMaker" menu="default" author="Olaf Japp" layout="default" keywords="animation, html, mp4, mpg, gif" date="26.10.2017" logo="weblogo.png">
     <Section fullwidth="true"><Slider adminlabel=""><Slide src="/home/olaf/FlatSiteBuilder/sources/animationmaker/assets/images/tagcloud.png" adminlabel=""><![CDATA[]]></Slide></Slider></Section>
     <Section><Row>
             <Column span="12"><Text adminlabel=""><![CDATA[<h1><strong>Welcome</strong> to AnimationMaker</h1> 

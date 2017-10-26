@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content title="news" menu="default" author="Artanidos" layout="simple" keywords="" date="26.10.2017">
+    <Section fullwidth="true"><Text adminlabel=""><![CDATA[<h1>Latest Releases</h1>
+<ul>
+	<li><a href="https://github.com/Artanidos/AnimationMaker/releases">AnimationMaker 1.7</a></li>
+	<li><a href="https://github.com/Artanidos/AnimationMaker/releases">AnimationMaker 1.6</a></li>
+</ul>]]></Text></Section>
+</Content>
