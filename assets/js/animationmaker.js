@@ -24,3 +24,5 @@ var tl = new TimelineLite();
 tl.add([tween1_0, tween1_0, tween1_1, tween2_0, tween2_1, tween3_0, tween3_1, tween5_0, tween5_1, tween7_0, tween7_1, tween9_0, tween9_1, tween11_0, tween11_1, tween13_0, tween13_1, tween15_0, tween15_1, tween17_0, tween17_1]);
 tl.play();
 }
+
+
