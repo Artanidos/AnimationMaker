@@ -36,21 +36,5 @@ void News::finished(int)
 
 void News::anchorClicked(QUrl url)
 {
-#ifdef Q_OS_LINUX
-    // When packaging with SNAP on linux the xdg-open will no function until snapd-xdg-open will be installed additionally
-    m_err = tr(qgetenv("SNAP_USER_DATA").constData()) + "/xdg-open.err";
-    QFile err(m_err);
-    if(err.exists())
-        err.remove();
-
-    m_url = url.toString();
-    m_proc = new QProcess();
-    QStringList arguments;
-    arguments << url.toString();
-    connect(m_proc, SIGNAL(finished(int)), this, SLOT(finished(int)));
-    m_proc->setStandardErrorFile("");
-    m_proc->start("xdg-open", arguments);
-#else
     QDesktopServices::openUrl(url);
-#endif
 }
