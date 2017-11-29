@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Content title="AnimationMaker" menu="default" author="Olaf Japp" layout="default" keywords="animation, html, mp4, mpg, gif" date="26.10.2017" logo="weblogo.png">
-    <Section fullwidth="true"><Slider adminlabel=""><Slide src="/home/olaf/FlatSiteBuilder/sources/animationmaker/assets/images/tagcloud.png" adminlabel=""><![CDATA[]]></Slide></Slider></Section>
+    <Section fullwidth="true"><RevolutionSlider adminlabel="" fullwidth="true" fullscreen="false"><Slide src="/home/olaf/FlatSiteBuilder/sources/animationmaker/assets/images/tagcloud.png" adminlabel=""><![CDATA[]]></Slide></RevolutionSlider></Section>
     <Section><Row>
             <Column span="12"><Text adminlabel=""><![CDATA[<h1><strong>Welcome</strong> to AnimationMaker</h1> 
 <p class="lead">
@@ -102,6 +102,19 @@ It took me about 15 minutes to create this animation.
 The animation is based on <a href="https://www.ffmpeg.org/">FFMPEG</a>.<br/>
 This animation is based on the above animation (same code base).
 </p>]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="12"><Text adminlabel="Trenner"><![CDATA[<div class="divider styleColor"/>
+</div>]]></Text></Column>
+        </Row>
+    </Section>
+    <Section><Row>
+            <Column span="12"><Text adminlabel="Video"><![CDATA[<h3 id="intro"><strong>Introduction</strong> Video</h3>]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="6"><Text adminlabel="Video Text"><![CDATA[<p class="lead">I have created a small intro video so that you are able to see how the AnimationMaker works.</p>
+]]></Text></Column>
+            <Column span="6"><Text adminlabel="Intro Video"><![CDATA[<iframe width="560" height="315" src="https://www.youtube.com/embed/Ir7Lvd-O2aE" frameborder="0" allowfullscreen></iframe>]]></Text></Column>
         </Row>
         <Row>
             <Column span="12"><Text adminlabel="Trenner"><![CDATA[<div class="divider styleColor"/>

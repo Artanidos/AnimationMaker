@@ -229,6 +229,7 @@ void AnimationItem::setWidth(qreal value)
 {
     prepareGeometryChange();
     m_rect.setWidth(value);
+    scaleObjects();
     update();
     setHandlePositions();
     emit sizeChanged(value, rect().height());
@@ -238,6 +239,7 @@ void AnimationItem::setHeight(qreal value)
 {
     prepareGeometryChange();
     m_rect.setHeight(value);
+    scaleObjects();
     update();
     setHandlePositions();
     emit sizeChanged(rect().width(), value);

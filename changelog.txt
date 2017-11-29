@@ -1,3 +1,7 @@
+1.7.1
+---
+- Bugfix: SVG and Text items now react on width and height keyframes
+
 1.7
 ---
 - New plugin technology for export added
