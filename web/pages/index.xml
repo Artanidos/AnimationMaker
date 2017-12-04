@@ -132,12 +132,15 @@ This animation is based on the above animation (same code base).
         </Row>
     </Section>
     <Section><Row>
-            <Column span="12"><Text adminlabel="Donations"><![CDATA[<h3 id="donations"><strong>Donations</strong></h3>
+            <Column span="8"><Text adminlabel="Donations"><![CDATA[<h3 id="donations"><strong>Donations</strong></h3>
 <p class="lead">
 	If you like to support my work on the AnimationMaker you are invited to make a 
 	donation.
+	You can also help me funding my company and get a commercial license for the AnimationMaker in the actual <a href="https://igg.me/at/ennoVvUc298/x/17781610">crowd funding</a>.
 </p>
 <p><a href="https://paypal.me/artanidos"><img src="https://img.shields.io/badge/Donate-PayPal-green.svg" alt="Donate" /></a></p>
+]]></Text></Column>
+            <Column span="4"><Text adminlabel=""><![CDATA[<iframe src="https://www.indiegogo.com/project/crowdware-open-source-software-for-the-crowd-animation/embedded" width="222px" height="445px" frameborder="0" scrolling="no"></iframe>
 ]]></Text></Column>
         </Row>
         <Row>

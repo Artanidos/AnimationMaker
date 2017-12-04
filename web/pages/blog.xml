@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content title="Blog" menu="blog" author="Olaf Japp" layout="default" keywords="" date="08.11.2017" logo="weblogo.png">
+    <Section fullwidth="true"><Text adminlabel=""><![CDATA[<header id="page-title">
+	<div class="container">
+		<h1>AnimationMaker Blog</h1>
+		<ul class="breadcrumb">
+			<li><a href="blog.html">Blog</a></li>
+			<li class="active">{{ page.title }}</li>
+		</ul>
+	</div>
+</header>]]></Text></Section>
+    <Section><Row>
+            <Column span="12"><Text adminlabel=""><![CDATA[{% for post in site.posts %}
+<!-- blog item -->
+<div class="item">
+	<!-- article title -->
+	<div class="item-title">
+	<h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+	<a href="#" class="scrollTo label label-default light"><i class="fa fa-user"></i> {{ post.author() }}</a>
+	<span class="label label-default light">{{ post.date }}</span> 
+</div>
+
+<!-- blog short preview -->
+<p>
+{{ post.excerpt }}.
+</p>
+
+<!-- read more button -->
+<a href="{{ post.url }}" class="btn btn-xs"><i class="fa fa-sign-out"></i> READ MORE</a>
+</div>
+<!-- /blog item -->
+{% endfor %}
+]]></Text></Column>
+        </Row>
+    </Section>
+</Content>

@@ -14,3 +14,5 @@
 - Plugin for animated objects (tweens, videoscribe)
 
 - animationScene paste should also copy plugin items and vector attributes
+
+- Sans Serif bold has no BOLD only Obliqe and Italic
