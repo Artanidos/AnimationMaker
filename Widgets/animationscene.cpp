@@ -78,20 +78,25 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if(m_editMode == EditMode::ModeSelect)
     {
         m_movingItem = NULL;
+        QGraphicsItem *handle = NULL;
         QPointF mousePos(mouseEvent->buttonDownScenePos(Qt::LeftButton).x(), mouseEvent->buttonDownScenePos(Qt::LeftButton).y());
         const QList<QGraphicsItem *> itemList = items(mousePos);
         for(int i=0; i < itemList.count(); i++)
         {
+            handle = dynamic_cast<ItemHandle*>(itemList.at(i));
+            if(handle)
+                break;
             m_movingItem = dynamic_cast<AnimationItem*>(itemList.at(i));
             if(m_movingItem && m_movingItem->isSceneRect())
                 m_movingItem = NULL;
+
             if(m_movingItem)
             {
                 m_oldPos = m_movingItem->pos();
                 break;
             }
         }
-        if(!m_movingItem)
+        if(!m_movingItem && !handle)
         {
             m_blackSelectionRect = addRect(0, 0, 1, 1, QPen(QColor("#000000")));
             m_blackSelectionRect->setPos(mousePos);
