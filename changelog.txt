@@ -1,5 +1,6 @@
 1.7.1
 ---
+- Added the ability to exchange the content of a bitmap
 - Bugfix: SVG and Text items now react on width and height keyframes
 
 1.7

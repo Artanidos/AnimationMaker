@@ -119,18 +119,19 @@ public:
 protected:
     void writeAttributes(QDomElement);
 
+    QMenu *m_contextMenu;
+    AnimationScene *m_scene;
+
 private:
     bool m_deleted;
     bool m_isSceneRect;
     int m_playheadPosition;
-    AnimationScene *m_scene;
     ItemHandle*  m_handles[8];
     bool m_hasHandles;
     QString m_id;
     QRectF m_rect;
     QPen m_pen;
     QBrush m_brush;
-    QMenu *m_contextMenu;
     QAction *delAct;
     QAction *bringToFrontAct;
     QAction *sendToBackAct;

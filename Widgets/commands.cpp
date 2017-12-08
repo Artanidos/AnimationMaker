@@ -23,6 +23,7 @@
 #include "ellipse.h"
 #include "text.h"
 #include "bitmap.h"
+#include <QException>
 #include "vectorgraphic.h"
 #include "../interfaces.h"
 #include "plugins.h"
@@ -138,7 +139,16 @@ DeleteItemCommand::DeleteItemCommand(AnimationItem *item, AnimationScene *scene,
 DeleteItemCommand::~DeleteItemCommand()
 {
     if(m_item->isDeleted())
-        delete m_item;
+    {
+        try
+        {
+            delete m_item;
+        }
+        catch(QException &e)
+        {
+            qDebug() << "Exception catch on delete item";
+        }
+    }
 }
 
 void DeleteItemCommand::undo()
@@ -625,4 +635,26 @@ void RemoveAttributeCommand::undo()
 void RemoveAttributeCommand::redo()
 {
     m_item->removeAttribute(m_attributeName);
+}
+
+ExchangeBitmapCommand::ExchangeBitmapCommand(Bitmap *item, QString fileName, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_item = item;
+    m_fileName = fileName;
+    m_originalImage = item->getImage();
+    m_newImage.load(fileName);
+    setText("Exchange Bitmap");
+}
+
+void ExchangeBitmapCommand::undo()
+{
+    m_item->setImage(m_originalImage);
+    m_item->update();
+}
+
+void ExchangeBitmapCommand::redo()
+{
+    m_item->setImage(m_newImage);
+    m_item->update();
 }

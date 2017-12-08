@@ -25,6 +25,7 @@
 #include "animationscene.h"
 #include "animationitem.h"
 #include "vectorgraphic.h"
+#include "bitmap.h"
 #include "timeline.h"
 #include "text.h"
 #include "widgets_global.h"
@@ -361,6 +362,21 @@ private:
     Vectorgraphic *m_item;
     QString m_attributeName;
     QString m_value;
+};
+
+class WIDGETSSHARED_EXPORT ExchangeBitmapCommand : public QUndoCommand
+{
+public:
+    ExchangeBitmapCommand(Bitmap *item, QString fileName, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    Bitmap *m_item;
+    QString m_fileName;
+    QImage m_originalImage;
+    QImage m_newImage;
 };
 
 #endif // COMMANDS_H

@@ -19,16 +19,19 @@
 ****************************************************************************/
 
 #include "bitmap.h"
-
+#include "commands.h"
 #include <QtTest/QTest>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 #include <QBuffer>
+#include <QUndoCommand>
+#include <QFileDialog>
+#include <QMenu>
 
 Bitmap::Bitmap()
     : AnimationItem(NULL)
 {
-
+    addMenu();
 }
 
 Bitmap::Bitmap(QString filename, AnimationScene *scene)
@@ -36,6 +39,7 @@ Bitmap::Bitmap(QString filename, AnimationScene *scene)
 {
     m_image.load(filename);
     setRect(0, 0, m_image.width(), m_image.height());
+    addMenu();
 }
 
 Bitmap::Bitmap(QImage image, qreal width, qreal height, AnimationScene *scene)
@@ -43,6 +47,33 @@ Bitmap::Bitmap(QImage image, qreal width, qreal height, AnimationScene *scene)
 {
     m_image = image;
     setRect(0, 0, width, height);
+    addMenu();
+}
+
+void Bitmap::addMenu()
+{
+    QAction *exchangeBitmapAct = new QAction("Exchange Bitmap");
+    connect(exchangeBitmapAct, SIGNAL(triggered()), this, SLOT(exchangeBitmapAction()));
+    m_contextMenu->addAction(exchangeBitmapAct);
+}
+
+void Bitmap::exchangeBitmapAction()
+{
+    QString fileName;
+    QFileDialog *dialog = new QFileDialog();
+    dialog->setFileMode(QFileDialog::AnyFile);
+    dialog->setNameFilter("Image Files (*.png *.jpeg *.jpg *.gif *.bmp);;All Files (*)");
+    dialog->setWindowTitle("Open Bitmap");
+    dialog->setOption(QFileDialog::DontUseNativeDialog, true);
+    dialog->setAcceptMode(QFileDialog::AcceptOpen);
+    if(dialog->exec())
+        fileName = dialog->selectedFiles().first();
+    delete dialog;
+    if(fileName.isEmpty())
+        return;
+
+    QUndoCommand *cmd = new ExchangeBitmapCommand(this, fileName);
+    m_scene->undoStack()->push(cmd);
 }
 
 QDomElement Bitmap::getXml(QDomDocument doc)

@@ -44,8 +44,13 @@ public:
     QDomElement getXml(QDomDocument);
     bool hasBrushAndPen() {return false;}
 
+private slots:
+    void exchangeBitmapAction();
+
 private:
     QImage m_image;
+
+    void addMenu();
 };
 
 #endif // BITMAP_H

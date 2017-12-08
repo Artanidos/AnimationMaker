@@ -2,6 +2,8 @@
     - Object make invisible
     - Object lock
 
+- Objekte spiegel, drehen
+
 - Rectangle new
     - create via mouse drag
 
@@ -16,3 +18,7 @@
 - animationScene paste should also copy plugin items and vector attributes
 
 - Sans Serif bold has no BOLD only Obliqe and Italic
+
+- Transition move
+
+- Select multiple transtions and move them
