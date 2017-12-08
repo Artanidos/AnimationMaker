@@ -5,13 +5,13 @@ mkdir -p AppImage/usr/share/applications
 mkdir -p AppImage/usr/share/icons/hicolor
 
 # App
-cp ../build-AnimationMaker-Desktop_Qt_5_9_1_GCC_64bit-Release/AnimationMaker AppImage/usr/bin
+cp ../build-AnimationMaker-Qt_5_9_1_in_PATH_gcc_64-Release/AnimationMaker AppImage/usr/bin
 cp binaries/* AppImage/usr/bin
 # Lib
-cp ../build-AnimationMaker-Desktop_Qt_5_9_1_GCC_64bit-Release/Widgets/libWidgets.so* AppImage/usr/lib
+cp ../build-AnimationMaker-Qt_5_9_1_in_PATH_gcc_64-Release/Widgets/libWidgets.so* AppImage/usr/lib
 # Plugins
-cp ../build-AnimationMaker-Desktop_Qt_5_9_1_GCC_64bit-Release/plugins/Pie/libPie.so AppImage/plugins
-cp ../build-AnimationMaker-Desktop_Qt_5_9_1_GCC_64bit-Release/plugins/Html/libHtml.so AppImage/plugins
+cp ../build-AnimationMaker-Qt_5_9_1_in_PATH_gcc_64-Release/plugins/Pie/libPie.so AppImage/plugins
+cp ../build-AnimationMaker-Qt_5_9_1_in_PATH_gcc_64-Release/plugins/Html/libHtml.so AppImage/plugins
 cp plugins/Html/gsap/* AppImage/plugins/gsap
 
 # Desktop, #Icon
