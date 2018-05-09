@@ -55,6 +55,7 @@ linux-g++ {
     LIBS += -L$$PWD/lib/
     LIBS += -lm
     LIBS += -ldl
+    DEFINES += LINUX
 }
 
 RESOURCES += \
@@ -81,6 +82,9 @@ DISTFILES += \
     README.md \
     docs/README.md
 
-LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/Widgets/release/ -lWidgets
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/Widgets/debug/ -lWidgets
+else:linux-g++: LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
+
 INCLUDEPATH += $$PWD/Widgets
 DEPENDPATH += $$PWD/Widgets

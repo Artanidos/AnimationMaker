@@ -1,3 +1,7 @@
+1.8
+---
+- Loading of binary files has been removed
+
 1.7.1
 ---
 - Added the ability to exchange the content of a bitmap

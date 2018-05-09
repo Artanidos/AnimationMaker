@@ -52,8 +52,6 @@ public:
 
     void setEditMode(EditMode mode);
     void setEditMode(QString pluginName);
-    QDataStream& read(QDataStream &dataStream);
-
     void setFileVersion(int version) {m_fileVersion = version;}
 
     int fps() const;
@@ -127,7 +125,6 @@ private:
 
     void initialize();
     void addBackgroundRect();
-    void readKeyframes(QDataStream &dataStream, AnimationItem *item);
     void copyKeyframes(AnimationItem *item);
     void writeKeyframes(QDomDocument *doc, QDomElement *element, AnimationItem *item);
     void readKeyframes(QDomElement *element, AnimationItem *item);
@@ -137,6 +134,5 @@ qreal getProgressValue(KeyFrame *found, int playheadPosition);
 qreal calculateRealValue(KeyFrame *found, int playheadPosition);
 QColor calculateColorValue(KeyFrame *found, int playheadPosition);
 int calculateIntValue(KeyFrame *found, int playheadPosition);
-QDataStream &operator>>(QDataStream &, AnimationScene *);
 
 #endif // ANIMATIONSCENE_H
