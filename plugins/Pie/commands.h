@@ -25,7 +25,7 @@
 #include "pieitem.h"
 #include "widgets_global.h"
 
-class WIDGETSSHARED_EXPORT ChangeStartAngleCommand : public QUndoCommand
+class ChangeStartAngleCommand : public QUndoCommand
 {
 public:
     ChangeStartAngleCommand(int oldValue, int newValue, AnimationScene *scene, Pie *pie, QUndoCommand *parent = 0);
@@ -42,7 +42,7 @@ private:
    bool m_autotransition;
 };
 
-class WIDGETSSHARED_EXPORT ChangeSpanAngleCommand : public QUndoCommand
+class ChangeSpanAngleCommand : public QUndoCommand
 {
 public:
     ChangeSpanAngleCommand(int newValue, int oldValue, AnimationScene *scene, Pie *pie, QUndoCommand *parent = 0);

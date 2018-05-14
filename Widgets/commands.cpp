@@ -144,7 +144,7 @@ DeleteItemCommand::~DeleteItemCommand()
         {
             delete m_item;
         }
-        catch(QException &e)
+        catch(QException)
         {
             qDebug() << "Exception catch on delete item";
         }

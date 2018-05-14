@@ -21,9 +21,10 @@
 #ifndef INSTALLER_H
 #define INSTALLER_H
 
+#include "widgets_global.h"
 #include <QString>
 
-class Installer
+class WIDGETSSHARED_EXPORT Installer
 {
 public:
     static void installFiles(QString sourceDir, QString targetDir, bool readOnly = true, bool recursive = true);

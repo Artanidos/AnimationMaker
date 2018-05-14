@@ -31,11 +31,12 @@ CONFIG(debug, debug|release) {
     DEFINES += DEBUG
 }
 
-LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
-INCLUDEPATH += $$PWD/../../Widgets
-DEPENDPATH += $$PWD/../../Widgets
-
 DISTFILES += \
     todo.txt
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../Widgets/release/ -lWidgets
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../Widgets/debug/ -lWidgets
+else:linux-g++: LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 
+INCLUDEPATH += $$PWD/../../Widgets
+DEPENDPATH += $$PWD/../../Widgets

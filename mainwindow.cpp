@@ -45,10 +45,6 @@
 #include <QtWidgets>
 #include <QTextBrowser>
 
-#define MAGIC 0x414D4200
-#define FIRST_FILE_VERSION 100
-#define FILE_VERSION 150
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
@@ -168,14 +164,6 @@ void MainWindow::writeFile(QString fileName)
     scene->clearSelection();
     timeline->setPlayheadPosition(0);
 
-    if(fileName.endsWith(".amb"))
-    {
-        // binary file format not supported anymore
-        // so we save as XML (.amx)
-        fileName = fileName.mid(0, fileName.indexOf(".amb")) + ".amx";
-        loadedFile.setFile(fileName);
-        setTitle();
-    }
     scene->exportXml(fileName);
     statusBar()->showMessage(QString("File saved as " + fileName));
 
@@ -213,7 +201,7 @@ void MainWindow::open()
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
     dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter(tr("AnimationMaker (*.amb *.amx);;All Files (*)"));
+    dialog->setNameFilter(tr("AnimationMaker (*.amx);;All Files (*)"));
     dialog->setWindowTitle(tr("Open Animation"));
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
@@ -224,56 +212,8 @@ void MainWindow::open()
         return;
 
     bool fullyLoaded = true;
-    if(fileName.endsWith(".amb"))
-    {
-        // read binary version for backwards compability
-        reset();
-
-        QFile file(fileName);
-        if(!file.open(QIODevice::ReadOnly))
-        {
-            QMessageBox::warning(this, "Error", "Unable to open file " + fileName);
-            return;
-        }
-
-        QDataStream in(&file);
-
-        // Read and check the header
-        quint32 magic;
-        in >> magic;
-        if (magic != MAGIC)
-        {
-            file.close();
-            QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
-            return;
-        }
-
-        // Read the version
-        qint32 version;
-        in >> version;
-        if (version < FIRST_FILE_VERSION)
-        {
-            file.close();
-            QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
-            return;
-        }
-        if (version > FILE_VERSION)
-        {
-            file.close();
-            QMessageBox::warning(this, "AnimationMaker", "This file is not a valid AnimationMaker file!");
-            return;
-        }
-        scene->setFileVersion(version);
-
-        // Read the data
-        in >> scene;
-        file.close();
-    }
-    else
-    {
-        // read xml version
-        fullyLoaded = scene->importXml(fileName);
-    }
+    // read xml version
+    fullyLoaded = scene->importXml(fileName);
 
     fillTree();
     elementTree->expandAll();
@@ -627,8 +567,12 @@ void MainWindow::createMenus()
 void MainWindow::about()
 {
     QMessageBox msg;
+#ifdef LINUX
     msg.setWindowTitle("About AnimationMaker (Community Edition)");
-    msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2017 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
+#else
+    msg.setWindowTitle("About AnimationMaker (Commercial Edition)");
+#endif
+    msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
     msg.setIconPixmap(QPixmap(":/images/logo.png"));
     msg.exec();
 }
