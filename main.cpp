@@ -1,8 +1,17 @@
 /****************************************************************************
-** Copyright (C) 2016 Olaf Japp
+**  Copyright (C) 2018 Olaf Japp and CrowdWare
 **
-** This file is part of AnimationMaker.
+**  This file is part of AnimationMaker.
 **
+**  Commercial License Usage
+**  Licensees holding valid commercial CrowdWare licenses may use this file in
+**  accordance with the commercial license agreement provided with the
+**  Software or, alternatively, in accordance with the terms contained in
+**  a written agreement between you and CrowdWare.
+**
+**  GNU General Public License Usage
+**  Alternatively, this file may be used under the terms of the GNU
+**  General Public License version 3
 **  AnimationMaker is free software: you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
@@ -29,7 +38,11 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("AnimationMaker");
     QCoreApplication::setApplicationVersion("1.8.0");
+#ifdef LINUX
     QCoreApplication::setOrganizationName("Artanidos");
+#else
+    QCoreApplication::setOrganizationName("CrowdWare");
+#endif
 
     QFont newFont("Sans Serif", 10);
     a.setFont(newFont);
