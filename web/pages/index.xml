@@ -123,8 +123,16 @@ This animation is based on the above animation (same code base).
     </Section>
     <Section><Row>
             <Column span="12"><Text adminlabel="Downloads"><![CDATA[<h3 id="downloads"><strong>Downloads</strong></h3>
-<p class="lead">Here you can download our latest release. <a href="https://github.com/Artanidos/AnimationMaker/releases"><img src="assets/images/download.png"></a></p>
 ]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="6"><Text adminlabel=""><![CDATA[<p class="lead">Here you can download our latest release for <strong>Linux</strong>.
+<a href="https://github.com/Artanidos/AnimationMaker/releases"><img src="assets/images/download.png"></a>
+</p>]]></Text></Column>
+            <Column span="6"><Text adminlabel=""><![CDATA[<script id='elopage-script' src='https://elopage.com/assets/badges.js'></script>
+<p class="lead">Here you can buy our latest release for <strong>Windows</strong>.
+<div class='elopage-badge-wrap' data-username='artanidos' data-btncmps='icon|text|price' data-product='16958' data-btnfontfamily='Open Sans' data-btncolor='#ffb900' data-btnfontcolor='#fff' data-btntext='null' data-locale='en' data-embedcheckout='off' data-badge='ElopageBadgeBtn'> </div>
+</p>]]></Text></Column>
         </Row>
         <Row>
             <Column span="12"><Text adminlabel="Trenner"><![CDATA[<div class="divider styleColor"/>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content title="CrowdFunding" menu="blog" author="Olaf Japp" layout="post" keywords="" excerpt="CrowdFunding my company" date="01.12.2017" logo="weblogo.png">
+    <Section><Row>
+            <Column span="4"><AdvancedImage src="/home/olaf/SourceCode/AnimationMaker/web/assets/images/campaign.png" alt="" title="" url="https://igg.me/at/ennoVvUc298/x/17781610" animation="bounceInLeft" adminlabel=""/></Column>
+            <Column span="8"><Text adminlabel=""><![CDATA[<h3>My newly created company <strong><a href="https://crowdware.github.io/web/">CrowdWare</a></strong> is collecting funds</h3>
+<p class="lead">I want to create a company to support the AnimationMaker and I need a small budget to make this happen.</p>
+<p class="lead">Here is a list of thing I need money for.</p>
+<ul>
+	<li>Registering a non profit company</li>
+	<li>Buying hardware to also port AnimationMaker to MacOS and Windows</li>
+	<li>Pay for Qt licenses</li>
+	<li>Pay for Appstore fees</li>
+</ul>
+]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="12"><Text adminlabel=""><![CDATA[<p>
+	A few month ago I raised a crowd funding campaign for the AnimationMaker but was not able to collect a cent.
+	Then I decided to continue without a budget.
+	To be able to support the AnimationMaker and to develop it further I need a budget, so I decided to also release
+	commercial licenses for Windows and MacOS.
+	And therefore I have to register my company and I also need a small budget to survive.
+</p>]]></Text></Column>
+        </Row>
+        <Row>
+            <Column span="12"><Text adminlabel=""><![CDATA[<!-- CALLOUT -->
+<div class="bs-callout text-center styleBackground">
+	<h3>Do you like to <strong>support</strong> my company.<a href="https://igg.me/at/ennoVvUc298/x/17781610" target="_self" class="btn btn-primary btn-lg">IndieGoGo</a></h3>
+</div>
+<!-- /CALLOUT -->]]></Text></Column>
+        </Row>
+    </Section>
+</Content>
