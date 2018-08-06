@@ -296,7 +296,11 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
 #ifdef DEBUG
     Installer::installFiles("/home/olaf/SourceCode/AnimationMaker/plugins/Html/gsap", dir.absolutePath() + "/assets/js", true, false);
 #else
+#ifdef LINUX
     Installer::installFiles(QCoreApplication::applicationDirPath() + "/../../plugins/gsap", dir.absolutePath() + "/assets/js", true, false);
+#else
+    Installer::installFiles(QCoreApplication::applicationDirPath() + "/plugins/gsap", dir.absolutePath() + "/assets/js", true, false);
+#endif
 #endif
     itemList = scene->items(Qt::AscendingOrder);
     bar->showMessage("Exporting animation to " + fileName);

@@ -1,8 +1,17 @@
 /****************************************************************************
-** Copyright (C) 2016 Olaf Japp
+**  Copyright (C) 2018 Olaf Japp and CrowdWare
 **
-** This file is part of AnimationMaker.
+**  This file is part of AnimationMaker.
 **
+**  Commercial License Usage
+**  Licensees holding valid commercial CrowdWare licenses may use this file in
+**  accordance with the commercial license agreement provided with the
+**  Software or, alternatively, in accordance with the terms contained in
+**  a written agreement between you and CrowdWare.
+**
+**  GNU General Public License Usage
+**  Alternatively, this file may be used under the terms of the GNU
+**  General Public License version 3
 **  AnimationMaker is free software: you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
@@ -321,14 +330,14 @@ void MainWindow::createGui()
         toolpanel->addAction(act);
     }
     selectAct->toggle();
-
+#ifdef LINUX
     News *news = new News("https://artanidos.github.io/AnimationMaker/news.html");
     newsdock = new QDockWidget(tr("News"), this);
     newsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     newsdock->setWidget(news);
     newsdock->setObjectName("News");
     addDockWidget(Qt::RightDockWidgetArea, newsdock);
-
+#endif
     tooldock = new QDockWidget(tr("Tools"), this);
     tooldock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     tooldock->setWidget(toolpanel);
@@ -569,10 +578,12 @@ void MainWindow::about()
     QMessageBox msg;
 #ifdef LINUX
     msg.setWindowTitle("About AnimationMaker (Community Edition)");
+    msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
+
 #else
     msg.setWindowTitle("About AnimationMaker (Commercial Edition)");
+    msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 CrowdWare. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
 #endif
-    msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
     msg.setIconPixmap(QPixmap(":/images/logo.png"));
     msg.exec();
 }
