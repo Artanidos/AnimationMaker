@@ -117,22 +117,20 @@ This animation is based on the above animation (same code base).
             <Column span="6"><Text adminlabel="Intro Video"><![CDATA[<iframe width="560" height="315" src="https://www.youtube.com/embed/Ir7Lvd-O2aE" frameborder="0" allowfullscreen></iframe>]]></Text></Column>
         </Row>
         <Row>
-            <Column span="12"><Text adminlabel="Trenner"><![CDATA[<div class="divider styleColor"/>
-</div>]]></Text></Column>
+            <Column span="12"><Text adminlabel="Buy now"><![CDATA[
+<!-- CALLOUT -->
+<div id="buy" class="bs-callout text-center">
+	<h3>Get your copy for <strong>Windows</strong> now.<a href="https://elopage.com/s/artanidos/animationmaker" target="_blank" class="btn btn-primary btn-lg">BUY NOW</a></h3>
+</div>
+<!-- /CALLOUT -->
+]]></Text></Column>
         </Row>
     </Section>
     <Section><Row>
             <Column span="12"><Text adminlabel="Downloads"><![CDATA[<h3 id="downloads"><strong>Downloads</strong></h3>
-]]></Text></Column>
-        </Row>
-        <Row>
-            <Column span="6"><Text adminlabel=""><![CDATA[<p class="lead">Here you can download our latest release for <strong>Linux</strong>.
+<p class="lead">Here you can download our latest release for <strong>Linux</strong>.</p>
 <a href="https://github.com/Artanidos/AnimationMaker/releases"><img src="assets/images/download.png"></a>
-</p>]]></Text></Column>
-            <Column span="6"><Text adminlabel=""><![CDATA[<script id='elopage-script' src='https://elopage.com/assets/badges.js'></script>
-<p class="lead">Here you can buy our latest release for <strong>Windows</strong>.
-<div class='elopage-badge-wrap' data-username='artanidos' data-btncmps='icon|text|price' data-product='16958' data-btnfontfamily='Open Sans' data-btncolor='#ffb900' data-btnfontcolor='#fff' data-btntext='null' data-locale='en' data-embedcheckout='off' data-badge='ElopageBadgeBtn'> </div>
-</p>]]></Text></Column>
+]]></Text></Column>
         </Row>
         <Row>
             <Column span="12"><Text adminlabel="Trenner"><![CDATA[<div class="divider styleColor"/>

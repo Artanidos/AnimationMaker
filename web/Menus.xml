@@ -6,20 +6,9 @@
         <Item title="HTML" url="#html" icon="" class="scrollTo"/>
         <Item title="GIF" url="#gif" icon="" class="scrollTo"/>
         <Item title="Intro" url="#intro" icon="" class="scrollTo"/>
+        <Item title="Buy" url="#buy" icon="" class="scrollTo"/>
         <Item title="Downloads" url="#downloads" icon="" class="scrollTo"/>
         <Item title="Donations" url="#donations" icon="" class="scrollTo"/>
-        <Item title="Blog" url="blog.html" icon=""/>
         <Item title="Contact" url="#contact" icon="" class="scrollTo"/>
-    </Menu>
-	<Menu name="blog">
-        <Item title="Home" url="index.html#wrapper" icon=""/>
-        <Item title="Preview" url="index.html#preview" icon=""/>
-        <Item title="HTML" url="index.html#html" icon=""/>
-        <Item title="GIF" url="index.html#gif" icon=""/>
-        <Item title="Intro" url="index.html#intro" icon=""/>
-        <Item title="Downloads" url="index.html#downloads" icon=""/>
-        <Item title="Donations" url="index.html#donations" icon=""/>
-        <Item title="Blog" url="#" icon="" class="scrollTo"/>
-        <Item title="Contact" url="#contact" icon=""/>
     </Menu>
 </Menus>
