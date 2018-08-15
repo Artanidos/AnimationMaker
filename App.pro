@@ -41,7 +41,8 @@ SOURCES += main.cpp\
     scenepropertyeditor.cpp \
     transitioneditor.cpp \
     news.cpp \
-    svgattributeeditor.cpp
+    svgattributeeditor.cpp \
+    licensedialog.cpp
 
 HEADERS  += mainwindow.h \
     itempropertyeditor.h \
@@ -49,7 +50,8 @@ HEADERS  += mainwindow.h \
     transitioneditor.h \
     news.h \
     interfaces.h \
-    svgattributeeditor.h
+    svgattributeeditor.h \
+    licensedialog.h
 
 linux-g++ {
     LIBS += -L$$PWD/lib/
@@ -88,3 +90,10 @@ else:linux-g++: LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
 
 INCLUDEPATH += $$PWD/Widgets
 DEPENDPATH += $$PWD/Widgets
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/license/release/ -llicense
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/license/debug/ -llicense
+else:unix: LIBS += -L$$OUT_PWD/license/ -llicense
+
+INCLUDEPATH += $$PWD/license
+DEPENDPATH += $$PWD/license
