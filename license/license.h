@@ -23,7 +23,7 @@
 
 #include <QString>
 
-bool checkLicense(QString, QString);
-bool isCommercialRelease();
+Q_DECL_EXPORT bool checkLicense(QString, QString);
+Q_DECL_EXPORT bool isCommercialRelease();
 
 #endif // LICENSE_H

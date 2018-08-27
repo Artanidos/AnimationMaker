@@ -84,16 +84,18 @@ DISTFILES += \
     README.md \
     docs/README.md
 
+
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/Widgets/release/ -lWidgets
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/Widgets/debug/ -lWidgets
-else:linux-g++: LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
+else:unix: LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
 
 INCLUDEPATH += $$PWD/Widgets
 DEPENDPATH += $$PWD/Widgets
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/license/release/ -llicense
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/license/debug/ -llicense
-else:unix: LIBS += -L$$OUT_PWD/license/ -llicense
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/License/release/ -lLicense
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/License/debug/ -lLicense
+else:unix: LIBS += -L$$OUT_PWD/License/ -lLicense
 
-INCLUDEPATH += $$PWD/license
-DEPENDPATH += $$PWD/license
+INCLUDEPATH += $$PWD/License
+DEPENDPATH += $$PWD/License
+
