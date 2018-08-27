@@ -698,7 +698,7 @@ void MainWindow::sceneSelectionChanged()
         for(int i=0; i<root->childCount(); i++)
             root->child(i)->setSelected(false);
         root->setSelected(true);
-        timeline->selectItem(NULL);
+        timeline->selectItem(nullptr);
     }
 }
 
@@ -831,7 +831,7 @@ void MainWindow::exportMovie()
     QGraphicsView *exportView = new QGraphicsView(scene);
     exportView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     exportView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    exportView->setGeometry(0,0,scene->width(), scene->height());
+    exportView->setGeometry(0, 0, scene->width(), scene->height());
 
     int delay = 1000 / scene->fps();
     int frames = timeline->lastKeyframe() / delay + 2;

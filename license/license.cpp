@@ -21,7 +21,7 @@
 #include "license.h"
 #include <QString>
 
-bool checkLicense(QString email, QString licenseKey)
+bool checkLicense(QString, QString)
 {
     return false;
 }

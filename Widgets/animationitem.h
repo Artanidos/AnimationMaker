@@ -18,8 +18,8 @@
 **
 ****************************************************************************/
 
-#ifndef RESIZEABLEITEM_H
-#define RESIZEABLEITEM_H
+#ifndef ANIMATIONITEM_H
+#define ANIMATIONITEM_H
 
 #include <QGraphicsItem>
 #include <QPropertyAnimation>
@@ -47,21 +47,21 @@ class WIDGETSSHARED_EXPORT AnimationItem : public QObject, public QGraphicsItem
 
 public:
     AnimationItem(AnimationScene *scene, bool isSceneRect = false);
-    ~AnimationItem();
+    virtual ~AnimationItem() override;
 
     virtual QString typeName() = 0;
     virtual QDomElement getXml(QDomDocument) = 0;
     virtual bool hasBrushAndPen() = 0;
-    virtual QList<PropertyEditorInterface*> *getPropertyEditors() {return NULL;}
+    virtual QList<PropertyEditorInterface*> *getPropertyEditors() {return nullptr;}
 
     void setPlayheadPosition(int pos) {m_playheadPosition = pos; update();}
     int playheadPosition() {return m_playheadPosition;}
     void setScene(AnimationScene *scene);
     void drawHighlightSelected(QPainter *painter, const QStyleOptionGraphicsItem *option);
-    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
-    QRectF boundingRect() const;
-    bool sceneEventFilter(QGraphicsItem * watched, QEvent * event);
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *) override;
+    QRectF boundingRect() const override;
+    bool sceneEventFilter(QGraphicsItem * watched, QEvent * event) override;
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     virtual void scaleObjects();
     virtual void setScale(qreal x, qreal y);
     qreal xscale();
@@ -166,4 +166,4 @@ protected:
 
 };
 
-#endif // RESIZEABLEITEM_H
+#endif // ANIMATIONITEM_H
