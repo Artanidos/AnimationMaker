@@ -123,58 +123,13 @@ The animation is based on SVG and <a href="https://greensock.com/gsap">GSAP</a>.
     </Section>
     <Section><Row>
             <Column span="12"><Text adminlabel="Downloads"><![CDATA[<h3 id="downloads"><strong>Downloads</strong></h3>
-				<!-- THREE COLUMNS PRICETABLE -->
-				<div class="row pricetable-container">
+<p class="lead">Here you can download our latest releases for <strong>Windows</strong> and <strong>Linux</strong>.
+<a href="https://github.com/Artanidos/AnimationMaker/releases"><img src="assets/images/download.png"></a></p>
 
-					<div class="col-md-4 price-table">
-						<h3>LINUX (Community)</h3>
-						<p>	
-							€0.00
-							<span>once</span>
-						</p>
-
-						<ul>
-							<li>Watermark</li>
-							<li>MPG Export</li>
-							<li>GIF Export</li>
-							<li>HTML Export</li>
-						</ul>
-						<a href="https://github.com/Artanidos/AnimationMaker/releases" class="btn btn-primary btn-sm">DOWNLOAD</a>
-					</div>
-
-					<div class="col-md-4 price-table popular">
-						<h3>WINDOWS (Community)</h3>
-						<p>	
-							€0.00
-							<span>once</span>
-						</p>
-						<ul>
-							<li>Watermark</li>
-							<li>MPG Export</li>
-							<li>GIF Export</li>
-							<li>HTML Export</li>
-						</ul>
-						<a href="#" class="btn btn-default btn-sm">DOWNLOAD</a>
-					</div>
-
-					<div class="col-md-4 price-table">
-						<h3>WINDOWS (Commercial)</h3>
-						<p>	
-							€94.00
-							<span>once</span>
-						</p>
-						<ul class="pricetable-items">
-							<li>Without watermark</li>
-							<li>MPG Export</li>
-							<li>GIF Export</li>
-							<li>HTML Export</li>
-						</ul>
-						<a href="https://www.digistore24.com/product/223175" class="btn btn-primary btn-sm">BUY NOW</a>
-					</div>
-
-				</div>
-				<!-- /THREE COLUMNS PRICETABLE -->
-]]></Text></Column>
+<p class="lead">These releases only have got one limitation.<br/>They print a "created by AnimationMaker" message onto each video output for marketing reasons.</p>
+<p class="lead">To get rid of this message you can buy a commercial license key for <a href="https://www.digistore24.com/product/223175">Windows</a> and for <a href="https://www.digistore24.com/product/236609">Linux</a> here.</p>
+<p class="lead">You can enter the license key after opening the dialog Help -> License in AimationMaker.</p>
+<p class="lead">If you like to support our work then please buy a license key.</p>]]></Text></Column>
         </Row>
         <Row>
             <Column span="12"><Text adminlabel="Trenner"><![CDATA[<div class="divider styleColor"/>

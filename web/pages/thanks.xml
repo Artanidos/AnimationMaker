@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content title="Thanks" menu="default" author="Artanidos" layout="default" keywords="" date="28.08.2018" logo="weblogo.png">
+    <Section fullwidth="true"><Text adminlabel=""><![CDATA[<header id="page-title">
+	<div class="container">
+		<h1>AnimationMaker Thanks</h1>
+		<ul class="breadcrumb">
+			<li><a href="index.html">Home</a></li>
+			<li class="active">{{ page.title }}</li>
+		</ul>
+	</div>
+</header>
+]]></Text></Section>
+    <Section><Row>
+            <Column span="12"><Text adminlabel=""><![CDATA[<h3>Thanks for buying <strong id="product_name"></strong>.</h3>
+<p>The charge is made by digistore24.com.</p>
+<p class="lead">Your license key is: </p><input type="text" id="license_key" size="32">
+
+
+<script>
+function getUrlVars() 
+{
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+var key = getUrlVars()["license_key"];
+var name = getUrlVars()["product_name"];
+var input = document.getElementById("license_key");
+var product_name = document.getElementById("product_name");
+input.value = key;
+product_name.innerText = decodeURI(name).replace(/\+/g, " ");
+</script>
+]]></Text></Column>
+        </Row>
+    </Section>
+</Content>
