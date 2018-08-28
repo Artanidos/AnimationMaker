@@ -131,7 +131,7 @@ var name = getUrlVars()["product_name"];
 var input = document.getElementById("license_key");
 var product_name = document.getElementById("product_name");
 input.value = key;
-product_name.innerText = unescape(name);
+product_name.innerText = decodeURI(name).replace(/\+/g, " ");
 </script>
 
 </div>
