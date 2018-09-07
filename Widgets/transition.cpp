@@ -57,15 +57,46 @@ void Transition::paintEvent(QPaintEvent *)
     painter.drawImage(width - 5, 2, m_imageRight);
 }
 
+void Transition::mousePressEvent(QMouseEvent *ev)
+{
+    if(ev->button() == Qt::LeftButton)
+    {
+        m_pressed = true;
+    }
+}
+
+void Transition::mouseMoveEvent(QMouseEvent *ev)
+{
+    if(m_pressed)
+    {
+        int p = x() + ev->x();
+        int newVal = qRound((qreal)p * 5 / 100) * 100;
+        move(newVal / 5 - 6, y());
+    }
+}
+
+void Transition::mouseReleaseEvent(QMouseEvent *ev)
+{
+    if(m_pressed)
+    {
+        m_pressed = false;
+        int p = x() + ev->x();
+        int newVal = qRound((qreal)p * 5 / 100) * 100;
+        emit transitionMoved(this, newVal);
+    }
+}
+
+
+
 void Transition::keyPressEvent(QKeyEvent *e)
 {
     switch(e->key())
     {
         case Qt::Key_Left:
-            emit transitionMoved(this, -1);
+            emit transitionMoved(this, m_key->time() - 100);
             break;
         case Qt::Key_Right:
-            emit transitionMoved(this, 1);
+            emit transitionMoved(this, m_key->time() + 100);
             break;
     }
 }

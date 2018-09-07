@@ -2,7 +2,7 @@
 ---
 - Possibility to buy license keys
 - Move object using cursor keys
-- Keyframes and transitions are now selectable and can be moved using cursor keys
+- Keyframes and transitions are now selectable and can be moved using cursor keys and by dragging with the mouse
 
 1.8
 ---

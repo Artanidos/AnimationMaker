@@ -42,6 +42,7 @@ private:
     QAction *m_transitionAct;
     QAction *m_delKeyframeAct;
     KeyFrame *m_key;
+    bool m_pressed;
 };
 
 #endif // KEYFRAMEHANDLE_H

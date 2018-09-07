@@ -33,6 +33,9 @@ public:
     Transition(TransitionLine *parent, KeyFrame *key);
 
     void paintEvent(QPaintEvent *ev) Q_DECL_OVERRIDE;
+    void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
+    void mouseReleaseEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
 
     KeyFrame *key() {return m_key;}
 

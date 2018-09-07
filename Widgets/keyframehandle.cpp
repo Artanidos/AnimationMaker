@@ -7,6 +7,7 @@
 KeyframeHandle::KeyframeHandle(TransitionLine *parent, KeyFrame *key)
 {
     m_key = key;
+    m_pressed = false;
 
     setMouseTracking(true);
     setParent(parent);
@@ -67,17 +68,31 @@ void KeyframeHandle::deleteKeyframe()
 
 void KeyframeHandle::mousePressEvent(QMouseEvent *ev)
 {
-
+    if(ev->button() == Qt::LeftButton)
+    {
+        m_pressed = true;
+    }
 }
 
 void KeyframeHandle::mouseMoveEvent(QMouseEvent *ev)
 {
-
+    if(m_pressed)
+    {
+        int p = x() + ev->x();
+        int newVal = qRound((qreal)p * 5 / 100) * 100;
+        move(newVal / 5 - 6, y());
+    }
 }
 
-void KeyframeHandle::mouseReleaseEvent(QMouseEvent *)
+void KeyframeHandle::mouseReleaseEvent(QMouseEvent *ev)
 {
-
+    if(m_pressed)
+    {
+        m_pressed = false;
+        int p = x() + ev->x();
+        int newVal = qRound((qreal)p * 5 / 100) * 100;
+        emit keyframeMoved(this, newVal);
+    }
 }
 
 void KeyframeHandle::keyPressEvent(QKeyEvent *e)
@@ -85,10 +100,10 @@ void KeyframeHandle::keyPressEvent(QKeyEvent *e)
     switch(e->key())
     {
         case Qt::Key_Left:
-            emit keyframeMoved(this, -1);
+            emit keyframeMoved(this, m_key->time() - 100);
             break;
         case Qt::Key_Right:
-            emit keyframeMoved(this, 1);
+            emit keyframeMoved(this, m_key->time() + 100);
             break;
     }
 }

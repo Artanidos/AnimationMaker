@@ -135,21 +135,21 @@ void TransitionLine::addTransition(KeyFrame *key)
     }
 }
 
-void TransitionLine::moveKeyframe(KeyframeHandle *handle, int dist)
+void TransitionLine::moveKeyframe(KeyframeHandle *handle, int time)
 {
-    if(handle->key()->time() > 0 || dist > 0)
+    if(handle->key()->time() > 0 || time > 0)
     {
-        handle->key()->setTime(handle->key()->time() + dist * 100);
+        handle->key()->setTime(time);
         handle->move(handle->key()->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
     }
 }
 
-void TransitionLine::moveTransition(Transition *transition, int dist)
+void TransitionLine::moveTransition(Transition *transition, int time)
 {
-    if(transition->key()->time() > 0 || dist > 0)
+    if(transition->key()->time() > 0 || time > 0)
     {
-        transition->key()->setTime(transition->key()->time() + dist * 100);
-        transition->key()->next()->setTime(transition->key()->next()->time() + dist * 100);
+        transition->key()->next()->setTime(transition->key()->next()->time() - transition->key()->time() + time);
+        transition->key()->setTime(time);
         transition->move(transition->key()->time() / 5 - m_horizontalScrollValue * 20,0);
     }
 }
