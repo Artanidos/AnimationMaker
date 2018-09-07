@@ -33,9 +33,9 @@
 
 AnimationScene::AnimationScene()
 {
-    m_rect = NULL;
-    m_blackSelectionRect = NULL;
-    m_whiteSelectionRect = NULL;
+    m_rect = nullptr;
+    m_blackSelectionRect = nullptr;
+    m_whiteSelectionRect = nullptr;
     m_autokeyframes = false;
     m_autotransitions = false;
     initialize();
@@ -46,9 +46,9 @@ void AnimationScene::initialize()
     setSceneRect(0, 0, 1200, 720);
     m_editMode = EditMode::ModeSelect;
     m_fps = 24;
-    m_copy = NULL;
+    m_copy = nullptr;
     m_playheadPosition = 0;
-    m_movingItem = NULL;
+    m_movingItem = nullptr;
     addBackgroundRect();
 }
 
@@ -77,8 +77,8 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
     if(m_editMode == EditMode::ModeSelect)
     {
-        m_movingItem = NULL;
-        QGraphicsItem *handle = NULL;
+        m_movingItem = nullptr;
+        QGraphicsItem *handle = nullptr;
         QPointF mousePos(mouseEvent->buttonDownScenePos(Qt::LeftButton).x(), mouseEvent->buttonDownScenePos(Qt::LeftButton).y());
         const QList<QGraphicsItem *> itemList = items(mousePos);
         for(int i=0; i < itemList.count(); i++)
@@ -88,7 +88,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 break;
             m_movingItem = dynamic_cast<AnimationItem*>(itemList.at(i));
             if(m_movingItem && m_movingItem->isSceneRect())
-                m_movingItem = NULL;
+                m_movingItem = nullptr;
 
             if(m_movingItem)
             {
@@ -162,8 +162,8 @@ void AnimationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         removeItem(m_whiteSelectionRect);
         delete m_blackSelectionRect;
         delete m_whiteSelectionRect;
-        m_blackSelectionRect = NULL;
-        m_whiteSelectionRect = NULL;
+        m_blackSelectionRect = nullptr;
+        m_whiteSelectionRect = nullptr;
     }
     if(m_movingItem && mouseEvent->button() == Qt::LeftButton)
     {
@@ -172,9 +172,56 @@ void AnimationScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             QUndoCommand *cmd = new MoveItemCommand(m_movingItem->x(), m_movingItem->y(), m_oldPos.x(), m_oldPos.y(), this, m_movingItem);
             m_undoStack->push(cmd);
         }
-        m_movingItem = NULL;
+        m_movingItem = nullptr;
     }
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
+}
+
+void AnimationScene::keyPressEvent(QKeyEvent *e)
+{
+    QList<QGraphicsItem*> itemList;
+
+    if(selectedItems().count() == 0)
+        return;
+
+    itemList = selectedItems();
+    for(int i = 0; i < itemList.count(); i++)
+    {
+        AnimationItem *item = dynamic_cast<AnimationItem*>(itemList.at(i));
+        if(item)
+        {
+            if(!item->isSceneRect())
+            {
+                switch(e->key())
+                {
+                    case Qt::Key_Left:
+                    {
+                        QUndoCommand *cmd = new MoveItemCommand(item->x() - 1, item->y(), item->x(), item->y(), this, item);
+                        m_undoStack->push(cmd);
+                        break;
+                    }
+                    case Qt::Key_Right:
+                    {
+                        QUndoCommand *cmd = new MoveItemCommand(item->x() + 1, item->y(), item->x(), item->y(), this, item);
+                        m_undoStack->push(cmd);
+                        break;
+                    }
+                    case Qt::Key_Up:
+                    {
+                        QUndoCommand *cmd = new MoveItemCommand(item->x(), item->y() - 1, item->x(), item->y(), this, item);
+                        m_undoStack->push(cmd);
+                        break;
+                    }
+                    case Qt::Key_Down:
+                    {
+                        QUndoCommand *cmd = new MoveItemCommand(item->x(), item->y() + 1, item->x(), item->y(), this, item);
+                        m_undoStack->push(cmd);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void AnimationScene::setEditMode(EditMode mode)
@@ -204,7 +251,7 @@ bool AnimationScene::importXml(QString fileName)
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
     {
-        QMessageBox::warning(0, "Error", "Unable to open file " + fileName);
+        QMessageBox::warning(nullptr, "Error", "Unable to open file " + fileName);
         return false;
     }
 
@@ -212,7 +259,7 @@ bool AnimationScene::importXml(QString fileName)
     if (!doc.setContent(&file))
     {
         file.close();
-        QMessageBox::warning(0, "Error", "Unable to read file " + fileName);
+        QMessageBox::warning(nullptr, "Error", "Unable to read file " + fileName);
         return false;
     }
     file.close();
@@ -359,7 +406,7 @@ void AnimationScene::exportXml(QString fileName, bool exportAll)
     QFile file(fileName);
     if(!file.open(QIODevice::WriteOnly))
     {
-        QMessageBox::warning(0, "Error", "Unable to open file " + fileName);
+        QMessageBox::warning(nullptr, "Error", "Unable to open file " + fileName);
         return;
     }
     QList<QGraphicsItem*> itemList;
@@ -408,7 +455,7 @@ void AnimationScene::writeKeyframes(QDomDocument *doc, QDomElement *element, Ani
     {
         QDomElement frames = doc->createElement("Keyframes");
         frames.setAttribute("property", it.key());
-        for(KeyFrame *frame = it.value(); frame != NULL; frame = frame->next())
+        for(KeyFrame *frame = it.value(); frame != nullptr; frame = frame->next())
         {
             QDomElement f = doc->createElement("Keyframe");
             f.setAttribute("time", frame->time());
@@ -423,7 +470,7 @@ void AnimationScene::writeKeyframes(QDomDocument *doc, QDomElement *element, Ani
 
 void AnimationScene::readKeyframes(QDomElement *element, AnimationItem *item)
 {
-    KeyFrame *m_tempKeyFrame = NULL;
+    KeyFrame *m_tempKeyFrame = nullptr;
     for(int i=0; i < element->childNodes().count(); i++)
     {
         QDomNode node = element->childNodes().at(i);
@@ -475,6 +522,7 @@ void AnimationScene::readKeyframes(QDomElement *element, AnimationItem *item)
                     {
                         m_tempKeyFrame->setNext(key);
                         key->setPrev(m_tempKeyFrame);
+                        emit keyframeAdded(item, property, key);
                     }
                     else
                     {
@@ -484,7 +532,7 @@ void AnimationScene::readKeyframes(QDomElement *element, AnimationItem *item)
                     m_tempKeyFrame = key;
                 }
             }
-            m_tempKeyFrame = NULL;
+            m_tempKeyFrame = nullptr;
         }
     }
 }
@@ -508,8 +556,8 @@ void AnimationScene::copyKeyframes(AnimationItem *item)
         firstFrame->setEasing(first->easing());
         firstFrame->setTime(first->time());
         firstFrame->setValue(first->value());
-        firstFrame->setNext(NULL);
-        firstFrame->setPrev(NULL);
+        firstFrame->setNext(nullptr);
+        firstFrame->setPrev(nullptr);
         item->addKeyframe(it.key(), firstFrame);
         KeyFrame *last = firstFrame;
         for(KeyFrame *frame = first->next(); frame != NULL; frame = frame->next())
@@ -518,7 +566,7 @@ void AnimationScene::copyKeyframes(AnimationItem *item)
             nextFrame->setEasing(frame->easing());
             nextFrame->setTime(frame->time());
             nextFrame->setValue(frame->value());
-            nextFrame->setNext(NULL);
+            nextFrame->setNext(nullptr);
             nextFrame->setPrev(last);
             last->setNext(nextFrame);
             last = nextFrame;
@@ -529,7 +577,7 @@ void AnimationScene::copyKeyframes(AnimationItem *item)
 
 void AnimationScene::pasteItem()
 {
-    if(m_copy == NULL)
+    if(m_copy == nullptr)
         return;
 
     m_copy->setSelected(false);
@@ -623,7 +671,7 @@ void AnimationScene::setPlayheadPosition(int playheadPosition)
             QHash<QString, KeyFrame*>::iterator it;
             for (it = item->keyframes()->begin(); it != item->keyframes()->end(); ++it)
             {
-                KeyFrame *found = NULL;
+                KeyFrame *found = nullptr;
                 KeyFrame *first = it.value();
                 for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
                 {

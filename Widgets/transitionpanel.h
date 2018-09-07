@@ -49,8 +49,10 @@ public slots:
     void treeExpanded(QModelIndex);
     void treeCollapsed(QModelIndex);
     void treeScrollValueChanged(int);
-    void keyframeAdded(AnimationItem *item, QString propertyName);
-    void keyframeDeleted(AnimationItem *item, QString propertyName);
+    void lineAdded(AnimationItem *item);
+    void propertyAdded(AnimationItem *item, QString propertyName);
+    void propertyKeyAdded(AnimationItem *item, QString propertyName, KeyFrame *key);
+    void deleteKeyframe(AnimationItem *item, QString propertyName);
     void scrollValueChanged(int pos);
     void transitionSelected(KeyFrame *frame);
 

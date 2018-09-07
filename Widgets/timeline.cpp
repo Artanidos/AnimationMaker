@@ -31,7 +31,7 @@
 #include <QScrollBar>
 
 Timeline::Timeline(AnimationScene *scene)
-    : QWidget(0)
+    : QWidget(nullptr)
 {
     m_scene = scene;
 
@@ -118,8 +118,10 @@ Timeline::Timeline(AnimationScene *scene)
     connect(m_tree, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
     connect(m_tree, SIGNAL(expanded(QModelIndex)), m_transitionPanel, SLOT(treeExpanded(QModelIndex)));
     connect(m_tree, SIGNAL(collapsed(QModelIndex)), m_transitionPanel, SLOT(treeCollapsed(QModelIndex)));
-    connect(this, SIGNAL(keyframeAdded(AnimationItem*,QString)), m_transitionPanel, SLOT(keyframeAdded(AnimationItem *, QString)));
-    connect(this, SIGNAL(keyframeDeleted(AnimationItem*,QString)), m_transitionPanel, SLOT(keyframeDeleted(AnimationItem*,QString)));
+    connect(this, SIGNAL(lineAdded(AnimationItem*)), m_transitionPanel, SLOT(lineAdded(AnimationItem *)));
+    connect(this, SIGNAL(propertyAdded(AnimationItem*,QString)), m_transitionPanel, SLOT(propertyAdded(AnimationItem *, QString)));
+    connect(this, SIGNAL(propertyKeyAdded(AnimationItem*,QString,KeyFrame*)), m_transitionPanel, SLOT(propertyKeyAdded(AnimationItem*, QString, KeyFrame*)));
+	connect(this, SIGNAL(keyframeDeleted(AnimationItem*,QString)), m_transitionPanel, SLOT(deleteKeyframe(AnimationItem*,QString)));
 
     connect(m_tree->verticalScrollBar(), SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(treeScrollValueChanged(int)));
 
@@ -264,7 +266,7 @@ QTreeWidgetItem *Timeline::search(AnimationItem *item)
         if(twi->data(0, 1).value<void *>() == item)
             return twi;
     }
-    return NULL;
+    return nullptr;
 }
 
 QTreeWidgetItem *Timeline::search(QTreeWidgetItem *treeItem, QString propertyName)
@@ -275,7 +277,7 @@ QTreeWidgetItem *Timeline::search(QTreeWidgetItem *treeItem, QString propertyNam
         if(twi->text(0) == propertyName)
             return twi;
     }
-    return NULL;
+    return nullptr;
 }
 
 void Timeline::idChanged(AnimationItem *item, QString value)
@@ -354,7 +356,7 @@ void Timeline::addKeyFrame(AnimationItem *item, QString propertyName, QVariant v
 
 void Timeline::addKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *frame)
 {
-    QTreeWidgetItem *treeChildItem = NULL;
+    QTreeWidgetItem *treeChildItem = nullptr;
 
 
     QTreeWidgetItem *treeItem = search(item);
@@ -370,7 +372,7 @@ void Timeline::addKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *
         treeItem->setData(1, 0, 1);
         connect(item, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
         m_tree->addTopLevelItem(treeItem);
-        emit keyframeAdded(item, NULL);
+        emit lineAdded(item);
     }
 
     item->addKeyframe(propertyName, frame);
@@ -379,7 +381,7 @@ void Timeline::addKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *
         QVariant var = treeChildItem->data(0, 1);
         QList<KeyFrame*> *list = (QList<KeyFrame*>*) var.value<void *>();
         list->append(frame);
-        emit keyframeAdded(NULL, NULL);
+        emit propertyKeyAdded(item, propertyName, frame);
     }
     else
     {
@@ -390,14 +392,15 @@ void Timeline::addKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *
         treeChildItem->setData(0, 1, qVariantFromValue((void *) list));
         treeChildItem->setData(1, 0, 2);
         treeItem->addChild(treeChildItem);
-        emit keyframeAdded(item, propertyName);
+        emit propertyAdded(item, propertyName);
+        emit propertyKeyAdded(item, propertyName, frame);
     }
     treeItem->setExpanded(true);
 }
 
 void Timeline::keyframeAdded(AnimationItem * item, QString propertyName, KeyFrame *key)
 {
-    QTreeWidgetItem *treeChildItem = NULL;
+    QTreeWidgetItem *treeChildItem = nullptr;
 
     QTreeWidgetItem *treeItem = search(item);
     if(treeItem)
@@ -412,7 +415,7 @@ void Timeline::keyframeAdded(AnimationItem * item, QString propertyName, KeyFram
         treeItem->setData(1, 0, 1);
         connect(item, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
         m_tree->addTopLevelItem(treeItem);
-        emit keyframeAdded(item, NULL);
+        emit lineAdded(item);
     }
 
     if(treeChildItem)
@@ -420,7 +423,7 @@ void Timeline::keyframeAdded(AnimationItem * item, QString propertyName, KeyFram
         QVariant var = treeChildItem->data(0, 1);
         QList<KeyFrame*> *list = (QList<KeyFrame*>*) var.value<void *>();
         list->append(key);
-        emit keyframeAdded(NULL, NULL);
+        emit propertyKeyAdded(item, propertyName, key);
     }
     else
     {
@@ -431,7 +434,8 @@ void Timeline::keyframeAdded(AnimationItem * item, QString propertyName, KeyFram
         treeChildItem->setData(0, 1, qVariantFromValue((void *) list));
         treeChildItem->setData(1, 0, 2);
         treeItem->addChild(treeChildItem);
-        emit keyframeAdded(item, propertyName);
+        emit propertyAdded(item, propertyName);
+        emit propertyKeyAdded(item, propertyName, key);
     }
     treeItem->setExpanded(true);
 }

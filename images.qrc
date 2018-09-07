@@ -76,5 +76,11 @@
         <file>images/minus_normal.png</file>
         <file>images/plus_hover.png</file>
         <file>images/plus_normal.png</file>
+        <file>images/community.png</file>
+        <file>images/community-hover.png</file>
+        <file>images/commercial-linux.png</file>
+        <file>images/commercial-linux-hover.png</file>
+        <file>images/commercial-windows.png</file>
+        <file>images/commercial-windows-hover.png</file>
     </qresource>
 </RCC>

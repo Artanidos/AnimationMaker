@@ -46,7 +46,9 @@ SOURCES += \
     colorrect.cpp \
     xmleditor.cpp \
     xmlhighlighter.cpp \
-    installer.cpp
+    installer.cpp \
+    transition.cpp \
+    keyframehandle.cpp
     
 
 HEADERS +=\
@@ -75,7 +77,9 @@ HEADERS +=\
     colorrect.h \
     xmleditor.h \
     xmlhighlighter.h \
-    installer.h
+    installer.h \
+    transition.h \
+    keyframehandle.h
     
 unix {
     target.path = /usr/lib

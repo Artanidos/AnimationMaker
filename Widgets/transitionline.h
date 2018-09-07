@@ -18,60 +18,50 @@
 **
 ****************************************************************************/
 
-#ifndef TRANSITION_H
-#define TRANSITION_H
+#ifndef TRANSITIONLINE_H
+#define TRANSITIONLINE_H
 
 #include <QWidget>
 #include "animationitem.h"
 #include "widgets_global.h"
 
+class KeyframeHandle;
 class WIDGETSSHARED_EXPORT TransitionLine : public QWidget
 {
     Q_OBJECT
 public:
     TransitionLine(AnimationItem *item, QString propertyName);
 
-    void paintEvent(QPaintEvent *ev);
-    void mousePressEvent(QMouseEvent *ev);
-    void mouseMoveEvent(QMouseEvent *ev);
-    void mouseReleaseEvent(QMouseEvent *ev);
+    void paintEvent(QPaintEvent *ev) Q_DECL_OVERRIDE;
 
     inline QString propertyName() {return m_propertyName;}
     inline AnimationItem *item() {return m_item;}
     inline void setPlayheadPosition(int value) {m_playheadPosition = value; update();}
-    inline void setScrollValue(int value) {m_horizontalScrollValue = value; update();}
     inline KeyFrame *selectedFrame() {return m_selectedFrame;}
-    inline void deselectFrame() {m_selectedFrame = NULL; update();}
+    inline void deselectFrame() {m_selectedFrame = nullptr; update();}
 
-private slots:
-    void onCustomContextMenu(const QPoint &point);
-    void addTransition();
-    void deleteKeyframe();
-    void deleteTransition();
+    void addKeyframe(KeyFrame *key);
+    void setScrollValue(int value);
 
 signals:
-    void deleteKeyframe(AnimationItem *item, QString propertyName, KeyFrame *frame);
+    void keyframeDeleted(AnimationItem *item, QString propertyName, KeyFrame *frame);
     void deleteTransition(AnimationItem *item, QString propertyName, KeyFrame *frame);
-    void addTransition(AnimationItem *item, QString propertyName, KeyFrame *frame);
+    void transitionAdded(AnimationItem *item, QString propertyName, KeyFrame *frame);
     void transitionSelected(KeyFrame *frame);
 
 private:
-    QImage m_imageRaute;
-    QImage m_imageRauteHohl;
-    QImage m_imageLeft;
-    QImage m_imageRight;
     AnimationItem *m_item;
     QString m_propertyName;
     KeyFrame *m_frame;
     KeyFrame *m_selectedFrame;
     int m_oldx;
     int m_playheadPosition;
-    QMenu *m_contextMenu;
-    QAction *m_transitionAct;
-    QAction *m_delKeyframeAct;
-    QAction *m_delTransitionAct;
-    bool m_pressed;
     int m_horizontalScrollValue;
+
+private slots:
+    void deleteKeyframe(KeyframeHandle *handle);
+    void addTransition(KeyFrame *key);
+    void moveKeyframe(KeyframeHandle *handle, int pos);
 };
 
-#endif // TRANSITION_H
+#endif // TRANSITIONLINE_H

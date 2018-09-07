@@ -15,7 +15,6 @@
 <p>The charge is made by digistore24.com.</p>
 <p class="lead">Your license key is: </p><input type="text" id="license_key" size="32">
 
-
 <script>
 function getUrlVars() 
 {
@@ -31,8 +30,7 @@ var input = document.getElementById("license_key");
 var product_name = document.getElementById("product_name");
 input.value = key;
 product_name.innerText = decodeURI(name).replace(/\+/g, " ");
-</script>
-]]></Text></Column>
+</script>]]></Text></Column>
         </Row>
     </Section>
 </Content>

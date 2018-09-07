@@ -18,17 +18,29 @@
 **
 ****************************************************************************/
 
-#include "license.h"
-#include <QString>
-#include <QCryptographicHash>
-#include <QCoreApplication>
+#ifndef TRANSITION_H
+#define TRANSITION_H
 
-bool checkLicense(QString email, QString licenseKey, int type)
-{
-    return false;
-}
+#include <QWidget>
+#include "widgets_global.h"
 
-bool isCommercialRelease()
+class TransitionLine;
+class KeyFrame;
+class WIDGETSSHARED_EXPORT Transition : public QWidget
 {
-    return false;
-}
+    Q_OBJECT
+public:
+    Transition(TransitionLine *parent, KeyFrame *key);
+
+    void paintEvent(QPaintEvent *ev) Q_DECL_OVERRIDE;
+
+    KeyFrame *key() {return m_key;}
+
+private:
+    bool m_pressed;
+    QImage m_imageLeft;
+    QImage m_imageRight;
+    KeyFrame *m_key;
+};
+
+#endif // TRANSITION_H

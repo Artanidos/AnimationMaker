@@ -20,7 +20,8 @@
 
 #include "transitionline.h"
 #include "commands.h"
-
+#include "keyframehandle.h"
+#include "transition.h"
 #include <QPainter>
 #include <QMouseEvent>
 #include <QMenu>
@@ -30,33 +31,14 @@
 TransitionLine::TransitionLine(AnimationItem *item, QString propertyName)
 {
     m_item = item;
-    m_frame = NULL;
-    m_selectedFrame = NULL;
+    m_frame = nullptr;
+    m_selectedFrame = nullptr;
     m_propertyName = propertyName;
     m_playheadPosition = 0;
-    m_pressed = false;
-
-    setMouseTracking(true);
 
     setMaximumHeight(18);
     setMinimumHeight(18);
 
-    m_imageRaute = QImage(":/images/raute-weiss.png");
-    m_imageRauteHohl = QImage(":/images/raute-hohl.png");
-    m_imageLeft = QImage(":/images/trans-left.png");
-    m_imageRight = QImage(":/images/trans-right.png");
-
-    m_contextMenu = new QMenu();
-    m_transitionAct = new QAction("Create transition");
-    m_delKeyframeAct = new QAction("Delete keyframe");
-    m_delTransitionAct = new QAction("Delete transition");
-
-    connect(m_transitionAct, SIGNAL(triggered(bool)), this, SLOT(addTransition()));
-    connect(m_delKeyframeAct, SIGNAL(triggered(bool)), this, SLOT(deleteKeyframe()));
-    connect(m_delTransitionAct, SIGNAL(triggered(bool)), this, SLOT(deleteTransition()));
-
-    setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
     connect(item, SIGNAL(positionChanged(qreal,qreal)), this, SLOT(update()));
     connect(item, SIGNAL(sizeChanged(qreal,qreal)), this, SLOT(update()));
     connect(item, SIGNAL(opacityChanged(int)), this, SLOT(update()));
@@ -85,155 +67,70 @@ void TransitionLine::paintEvent(QPaintEvent *)
         painter.drawLine(k, 0, k, height);
     }
 
-    if(!m_propertyName.isEmpty())
-    {
-        KeyFrame *first = m_item->keyframes()->value(m_propertyName);
-        for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
-        {
-            if(frame->easing() >= 0)
-            {
-                if(m_selectedFrame == frame)
-                    color = orangeSelected;
-                else
-                    color = orange;
-                painter.fillRect(frame->time() / 5 - offset, 1, (frame->next()->time() - frame->time()) / 5, height - 1, color);
-                painter.drawImage(frame->time() / 5 - offset, 1, m_imageLeft);
-                painter.drawImage(frame->next()->time() / 5 - 5 - offset, 1, m_imageRight);
-            }
-            else if(frame->prev() == NULL || frame->prev()->easing() < 0)
-            {
-                if(frame->prev() == NULL || frame->prev()->value() == frame->value())
-                    painter.drawImage(frame->time() / 5 - 6 - offset, 2, m_imageRaute);
-                else
-                    painter.drawImage(frame->time() / 5 - 6 - offset, 2, m_imageRauteHohl);
-            }
-        }
-    }
-
     painter.setPen(Qt::red);
     painter.drawLine(m_playheadPosition / 5 - 1 - offset, 0, m_playheadPosition / 5 - 1 - offset, height);
 }
 
-void TransitionLine::mousePressEvent(QMouseEvent *ev)
+void TransitionLine::addKeyframe(KeyFrame *key)
 {
-    if(ev->button() == Qt::LeftButton)
+    KeyframeHandle *handle = new KeyframeHandle(this, key);
+	connect(handle, SIGNAL(keyframeDeleted(KeyframeHandle*)), this, SLOT(deleteKeyframe(KeyframeHandle*)));
+    connect(handle, SIGNAL(transitionAdded(KeyFrame*)), this, SLOT(addTransition(KeyFrame*)));
+    connect(handle, SIGNAL(keyframeMoved(KeyframeHandle*,int)), this, SLOT(moveKeyframe(KeyframeHandle*,int)));
+    handle->move(key->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
+
+    if(key->prev() && key->prev()->easing() > -1)
     {
-        if(!m_propertyName.isEmpty())
-        {
-            int offset = m_horizontalScrollValue * 20;
-            KeyFrame *first = m_item->keyframes()->value(m_propertyName);
-            for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
-            {
-                int pos = frame->time() / 5 - 6;
-                if(ev->pos().x() + offset >= pos && ev->pos().x() + offset <= pos + 11)
-                {
-                    m_oldx = ev->pos().x();
-                    m_frame = frame;
-                    m_pressed = true;
-                    m_selectedFrame = NULL;
-                    update();
-                    emit transitionSelected(NULL);
-                    break;
-                }
-                else if(ev->pos().x() + offset > pos + 11 && frame->next() && frame->easing() >= 0 && ev->pos().x() + offset < frame->next()->time() / 5 - 6)
-                {
-                    m_selectedFrame = frame;
-                    update();
-                    emit transitionSelected(frame);
-                    break;
-                }
-            }
-        }
+        Transition *trans = new Transition(this, key->prev());
+        trans->move(key->prev()->time() / 5 - m_horizontalScrollValue * 20,0);
     }
 }
 
-void TransitionLine::mouseMoveEvent(QMouseEvent *ev)
+void TransitionLine::setScrollValue(int value)
 {
-    bool isOverKeyframe = false;
-
-    if(m_pressed)
-    {   
-        int x = ev->x();
-        if(x < 0)
-            x = 0;
-        if(x >= width())
-            x = width() - 1;
-        x += m_horizontalScrollValue * 20;
-        int time = qRound((qreal)x * 5 / 100) * 100;
-        if(time / 5 > width())
-            time -= 100;
-        m_frame->setTime(time);
-        m_oldx = ev->pos().x();
-        update();
-    }
-
-    if(!m_propertyName.isEmpty())
+    m_horizontalScrollValue = value;
+    QList<KeyframeHandle*> handles = findChildren<KeyframeHandle*>();
+    foreach(KeyframeHandle *handle, handles)
     {
-        int offset = m_horizontalScrollValue * 20;
-        KeyFrame *first = m_item->keyframes()->value(m_propertyName);
-        for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
-        {
-            int pos = frame->time() / 5 - 6;
-            if(ev->pos().x() + offset >= pos && ev->pos().x() + offset <= pos + 11)
-            {
-                isOverKeyframe = true;
-                break;
-            }
-        }
+        handle->move(handle->key()->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
     }
-    if(isOverKeyframe)
-        setCursor(Qt::SizeHorCursor);
-    else
-        setCursor(Qt::ArrowCursor);
-}
-
-void TransitionLine::mouseReleaseEvent(QMouseEvent *)
-{
-    m_pressed = false;
-}
-
-void TransitionLine::onCustomContextMenu(const QPoint &point)
-{
-    KeyFrame *first = m_item->keyframes()->value(m_propertyName);
-    for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
+    QList<Transition*> transitions = findChildren<Transition*>();
+    foreach(Transition *trans, transitions)
     {
-        int pos = frame->time() / 5 - 6;
-        if(point.x() + m_horizontalScrollValue * 20 >= pos && point.x() + m_horizontalScrollValue * 20 <= pos + 11)
-        {
-            m_frame = frame;
-            m_contextMenu->clear();
-            m_contextMenu->addAction(m_delKeyframeAct);
-            if(frame->prev() && frame->prev()->easing() < 0)
-                m_contextMenu->addAction(m_transitionAct);
-            m_contextMenu->exec(this->mapToGlobal(point));
-            break;
-        }
-        if(point.x() + m_horizontalScrollValue * 20 > pos + 11 && frame->next() && frame->easing() >=0 && point.x() + m_horizontalScrollValue * 20 < frame->next()->time() / 5 - 6)
-        {
-            m_frame = frame;
-            m_contextMenu->clear();
-            m_contextMenu->addAction(m_delTransitionAct);
-            m_contextMenu->exec(this->mapToGlobal(point));
-            break;
-        }
+        trans->move(trans->key()->time() / 5 - m_horizontalScrollValue * 20, 0);
     }
-}
-
-void TransitionLine::addTransition()
-{
-    emit addTransition(m_item, m_propertyName, m_frame->prev());
     update();
 }
 
-void TransitionLine::deleteKeyframe()
+void TransitionLine::deleteKeyframe(KeyframeHandle *handle)
 {
-    emit deleteKeyframe(m_item, m_propertyName, m_frame);
-    update();
+    emit keyframeDeleted(m_item, m_propertyName, handle->key());
+    delete handle;
 }
 
-void TransitionLine::deleteTransition()
+void TransitionLine::addTransition(KeyFrame *key)
 {
-    //m_frame->setEasing(-1);
-    emit deleteTransition(m_item, m_propertyName, m_frame);
-    update();
+    emit transitionAdded(m_item, m_propertyName, key);
+    Transition *trans = new Transition(this, key);
+    trans->move(key->time() / 5 - m_horizontalScrollValue * 20,0);
+
+    // remove keyframe handles
+    QList<KeyframeHandle*> handles = findChildren<KeyframeHandle*>();
+    for (auto it = handles.rbegin(); it != handles.rend(); ++it)
+    {
+        KeyframeHandle *hand = *it;
+        if(hand->key() == key || hand->key()->prev() == key)
+        {
+            delete hand;
+        }
+    }
+}
+
+void TransitionLine::moveKeyframe(KeyframeHandle *handle, int pos)
+{
+    if(handle->key()->time() > 0 || pos > 0)
+    {
+        handle->key()->setTime(handle->key()->time() + pos * 100);
+        handle->move(handle->key()->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
+    }
 }

@@ -34,7 +34,6 @@
 #include "installer.h"
 #include "plugins.h"
 #include "bitmap.h"
-#include "news.h"
 #include "itempropertyeditor.h"
 #include "timeline.h"
 #include "scenepropertyeditor.h"
@@ -69,6 +68,8 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenus();
     createGui();
     readSettings();
+    if(!m_licensed)
+        QTimer::singleShot(0, this, SLOT(license()));
 }
 
 MainWindow::~MainWindow()
@@ -332,14 +333,7 @@ void MainWindow::createGui()
         toolpanel->addAction(act);
     }
     selectAct->toggle();
-#ifdef LINUX
-    News *news = new News("https://artanidos.github.io/AnimationMaker/news.html");
-    newsdock = new QDockWidget(tr("News"), this);
-    newsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    newsdock->setWidget(news);
-    newsdock->setObjectName("News");
-    addDockWidget(Qt::RightDockWidgetArea, newsdock);
-#endif
+
     tooldock = new QDockWidget(tr("Tools"), this);
     tooldock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     tooldock->setWidget(toolpanel);
@@ -458,11 +452,28 @@ void MainWindow::readSettings()
         restoreGeometry(geometry);
         restoreState(settings.value("state").toByteArray());
     }
+    m_commercial = false;
     m_licensed = false;
     m_email = settings.value("email", "").toString();
     m_licenseKey = settings.value("licenseKey", "").toString();
-    if(checkLicense(m_email, m_licenseKey))
+    if(checkLicense(m_email, m_licenseKey, 0)) // Community
+    {
+        m_commercial = false;
         m_licensed = true;
+    }
+#ifdef LINUX
+    else if(checkLicense(m_email, m_licenseKey, 1)) // Linux
+    {
+        m_commercial = true;
+        m_licensed = true;
+    }
+#else
+    else if(checkLicense(m_email, m_licenseKey, 2)) // Windows
+    {
+        m_commercial = true;
+        m_licensed = true;
+    }
+#endif
 }
 
 void MainWindow::createActions()
@@ -519,9 +530,6 @@ void MainWindow::createActions()
     showToolPanelAct = new QAction("Tools");
     connect(showToolPanelAct, SIGNAL(triggered()), this, SLOT(showToolPanel()));
 
-    showNewsPanelAct = new QAction("News");
-    connect(showNewsPanelAct, SIGNAL(triggered()), this, SLOT(showNewsPanel()));
-
     aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
@@ -572,7 +580,6 @@ void MainWindow::createMenus()
     viewMenu->addAction(showToolPanelAct);
     viewMenu->addAction(showElementsAct);
     viewMenu->addAction(showPropertyPanelAct);
-    viewMenu->addAction(showNewsPanelAct);
 
     menuBar()->addSeparator();
 
@@ -590,7 +597,7 @@ void MainWindow::createMenus()
 void MainWindow::about()
 {
     QMessageBox msg;
-    if(m_licensed)
+    if(m_commercial)
     {
         msg.setWindowTitle("About AnimationMaker (Commercial Edition)");
         msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 CrowdWare. All rights reserved.\n\nLicensed to: " + m_email + "\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
@@ -598,7 +605,10 @@ void MainWindow::about()
     else
     {
         msg.setWindowTitle("About AnimationMaker (Community Edition)");
-        msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
+        if(m_email.length() > 0)
+            msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 Olaf Japp. All rights reserved.\n\nLicensed to: " + m_email + "\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
+        else
+            msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
     }
     msg.setIconPixmap(QPixmap(":/images/logo.png"));
     msg.exec();
@@ -608,6 +618,9 @@ void MainWindow::license()
 {
     LicenseDialog dlg(this);
     dlg.exec();
+
+    if(!m_licensed)
+        close();
 }
 
 void MainWindow::setSelectMode()
@@ -748,11 +761,6 @@ void MainWindow::showElementsPanel()
     elementsdock->setVisible(true);
 }
 
-void MainWindow::showNewsPanel()
-{
-    newsdock->setVisible(true);
-}
-
 void MainWindow::copy()
 {
     scene->copyItem();
@@ -816,9 +824,9 @@ void MainWindow::exportMovie()
         return;
 
     QGraphicsSimpleTextItem *watermark;
-    if(!m_licensed)
+    if(!m_commercial)
     {
-        // watermark here if not licensed
+        // watermark here if not licensed commercial
         QFont font("Arial");
         font.setPixelSize(13);
         watermark = scene->addSimpleText("Created with AnimationMaker (https://artanidos.github.io/AnimationMaker/)", font);
@@ -887,7 +895,7 @@ void MainWindow::exportMovie()
     view->setUpdatesEnabled(true);
     statusBar()->showMessage("Ready");
     delete exportView;
-    if(!m_licensed)
+    if(!m_commercial)
         scene->removeItem(watermark);
 }
 

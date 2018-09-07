@@ -7,6 +7,7 @@
         <Item title="GIF" url="#gif" icon="" class="scrollTo"/>
         <Item title="HTML" url="#html" icon="" class="scrollTo"/>
         <Item title="Downloads" url="#downloads" icon="" class="scrollTo"/>
+        <Item title="Newsletter" url="#newsletter" icon="" class="scrollTo"/>
         <Item title="Contact" url="#contact" icon="" class="scrollTo"/>
     </Menu>
 </Menus>

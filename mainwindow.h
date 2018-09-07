@@ -50,12 +50,13 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
 
     void setTitle();
     void setEmail(QString email) {m_email = email;}
     void setLicenseKey(QString licenseKey) {m_licenseKey = licenseKey;}
+    void setCommercial(bool value) {m_commercial = value;}
     void setLicensed(bool value) {m_licensed = value;}
     QString email() {return m_email;}
     QString licenseKey() {return m_licenseKey;}
@@ -91,12 +92,12 @@ private:
     TransitionEditor *m_transitionEditor;
     QDockWidget *propertiesdock;
     QDockWidget *tooldock;
-    QDockWidget *newsdock;
     QDockWidget *elementsdock;
     QTreeWidgetItem *root;
     QTextBrowser *browser;
     QString m_email;
     QString m_licenseKey;
+    bool m_commercial;
     bool m_licensed;
 
     QAction *openAct;
@@ -114,7 +115,6 @@ private:
     QAction *bitmapAct;
     QAction *showPropertyPanelAct;
     QAction *showToolPanelAct;
-    QAction *showNewsPanelAct;
     QAction *showElementsAct;
     QAction *exportMovieAct;
     QAction *undoAct;
@@ -154,7 +154,6 @@ public slots:
     void sceneItemAdded(QGraphicsItem *);
     void showPropertyPanel();
     void showToolPanel();
-    void showNewsPanel();
     void showElementsPanel();
     void sceneSelectionChanged();
     void timelineSelectionChanged(AnimationItem*);

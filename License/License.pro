@@ -22,7 +22,7 @@
 
 QT       -= gui
 
-TARGET = license
+TARGET = License
 TEMPLATE = lib
 
 DEFINES += LICENSE_LIBRARY
@@ -43,10 +43,6 @@ SOURCES += \
 
 HEADERS += \
         license.h
-
-linux-g++ {
-    DEFINES += LINUX
-}
 
 unix {
     target.path = /usr/lib

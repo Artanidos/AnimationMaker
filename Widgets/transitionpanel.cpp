@@ -33,6 +33,7 @@ TransitionPanel::TransitionPanel()
 {
     m_verticalScrollPos = 0;
     m_horizontalScrollPos = 0;
+
     setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
     setMinimumWidth(100);
     setMinimumHeight(50);
@@ -136,7 +137,7 @@ TransitionLine *TransitionPanel::getTransitionLine(AnimationItem *item, QString 
         if(line && line->propertyName() == propertyName && line->item() == item)
             return line;
     }
-    return NULL;
+    return nullptr;
 }
 
 void TransitionPanel::treeExpanded(QModelIndex)
@@ -167,23 +168,38 @@ void TransitionPanel::scrollValueChanged(int pos)
    update();
 }
 
-void TransitionPanel::keyframeAdded(AnimationItem *item, QString propertyName)
+void TransitionPanel::lineAdded(AnimationItem *item)
 {
-    if(item)
-    {
-        TransitionLine *line = new TransitionLine(item, propertyName);
-        line->setScrollValue(m_horizontalScrollPos);
-        m_layout->insertWidget(m_layout->count() - 1, line);
-        connect(line, SIGNAL(deleteKeyframe(AnimationItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteKeyFrameSlot(AnimationItem*,QString,KeyFrame*)));
-        connect(line, SIGNAL(deleteTransition(AnimationItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteTransitionSlot(AnimationItem*,QString,KeyFrame*)));
-        connect(line, SIGNAL(addTransition(AnimationItem*,QString,KeyFrame*)), m_timeline, SLOT(addTransitionSlot(AnimationItem*,QString,KeyFrame*)));
-        connect(line, SIGNAL(transitionSelected(KeyFrame*)), m_timeline, SLOT(transitionSelected(KeyFrame*)));   
-        connect(line, SIGNAL(transitionSelected(KeyFrame*)), this, SLOT(transitionSelected(KeyFrame*)));
+    TransitionLine *line = new TransitionLine(item, "");
+    line->setScrollValue(m_horizontalScrollPos);
+    m_layout->insertWidget(m_layout->count() - 1, line);
+    enableDisableLines();
+}
 
-        enableDisableLines();
+void TransitionPanel::propertyAdded(AnimationItem *item, QString propertyName)
+{
+    TransitionLine *line = new TransitionLine(item, propertyName);
+    line->setScrollValue(m_horizontalScrollPos);
+    m_layout->insertWidget(m_layout->count() - 1, line);
+    connect(line, SIGNAL(keyframeDeleted(AnimationItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteKeyFrameSlot(AnimationItem*,QString,KeyFrame*)));
+    connect(line, SIGNAL(deleteTransition(AnimationItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteTransitionSlot(AnimationItem*,QString,KeyFrame*)));
+    connect(line, SIGNAL(transitionAdded(AnimationItem*,QString,KeyFrame*)), m_timeline, SLOT(addTransitionSlot(AnimationItem*,QString,KeyFrame*)));
+    connect(line, SIGNAL(transitionSelected(KeyFrame*)), m_timeline, SLOT(transitionSelected(KeyFrame*)));
+    connect(line, SIGNAL(transitionSelected(KeyFrame*)), this, SLOT(transitionSelected(KeyFrame*)));
+    enableDisableLines();
+}
+
+void TransitionPanel::propertyKeyAdded(AnimationItem *item, QString propertyName, KeyFrame *key)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line && line->propertyName() == propertyName && line->item() == item)
+        {
+            line->addKeyframe(key);
+            break;
+        }
     }
-    else
-        update();
 }
 
 void TransitionPanel::transitionSelected(KeyFrame *frame)
@@ -225,11 +241,20 @@ void TransitionPanel::transitionDeleted(AnimationItem *item, QString propertyNam
     }
 }
 
-void TransitionPanel::keyframeDeleted(AnimationItem *item, QString propertyName)
+void TransitionPanel::deleteKeyframe(AnimationItem *item, QString propertyName)
 {
+    int count = 0;
     if(!item->keyframes()->value(propertyName))
     {
-        for(int i = 0; i < m_layout->count(); i++)
+        for(int j = 0; j < m_layout->count(); j++)
+        {
+            TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(j)->widget());
+            if(line && line->item() == item)
+            {
+                count ++;
+            }
+        }
+        for(int i = m_layout->count() - 1; i >= 0 ; i--)
         {
             TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
             if(line)
@@ -237,13 +262,25 @@ void TransitionPanel::keyframeDeleted(AnimationItem *item, QString propertyName)
                 if(line->propertyName() == propertyName && line->item() == item)
                 {
                     m_layout->removeWidget(line);
+                    line->setVisible(false);
+                    if(count == 2) // that means we also should drop the empty line which belongs to the item
+                    {
+                        // if previous line has no propertyName
+                        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i - 1)->widget());
+                        if(line)
+                        {
+                            if(line->propertyName() == "" && line->item() == item)
+                            {
+                                m_layout->removeWidget(line);
+                                line->setVisible(false);
+                            }
+                        }
+                    }
                     break;
                 }
             }
         }
     }
-    enableDisableLines();
-    update();
 }
 
 void TransitionPanel::resizeEvent(QResizeEvent *)
