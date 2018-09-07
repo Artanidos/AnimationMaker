@@ -73,17 +73,25 @@ void TransitionLine::paintEvent(QPaintEvent *)
 
 void TransitionLine::addKeyframe(KeyFrame *key)
 {
+    if(key->easing() > -1)
+    {
+        // no need to add a keyframehandle when a transition exists
+        // transition will be added with next keyframe
+        return;
+    }
+    if(key->prev() && key->prev()->easing() > -1)
+    {
+        Transition *trans = new Transition(this, key->prev());
+        trans->move(key->prev()->time() / 5 - m_horizontalScrollValue * 20,0);
+        connect(trans, SIGNAL(transitionMoved(Transition*,int)), this, SLOT(moveTransition(Transition*,int)));
+        // no need to add a keyframehandle when a transition exists
+        return;
+    }
     KeyframeHandle *handle = new KeyframeHandle(this, key);
 	connect(handle, SIGNAL(keyframeDeleted(KeyframeHandle*)), this, SLOT(deleteKeyframe(KeyframeHandle*)));
     connect(handle, SIGNAL(transitionAdded(KeyFrame*)), this, SLOT(addTransition(KeyFrame*)));
     connect(handle, SIGNAL(keyframeMoved(KeyframeHandle*,int)), this, SLOT(moveKeyframe(KeyframeHandle*,int)));
     handle->move(key->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
-
-    if(key->prev() && key->prev()->easing() > -1)
-    {
-        Transition *trans = new Transition(this, key->prev());
-        trans->move(key->prev()->time() / 5 - m_horizontalScrollValue * 20,0);
-    }
 }
 
 void TransitionLine::setScrollValue(int value)
@@ -113,6 +121,7 @@ void TransitionLine::addTransition(KeyFrame *key)
     emit transitionAdded(m_item, m_propertyName, key);
     Transition *trans = new Transition(this, key);
     trans->move(key->time() / 5 - m_horizontalScrollValue * 20,0);
+    connect(trans, SIGNAL(transitionMoved(Transition*,int)), this, SLOT(moveTransition(Transition*,int)));
 
     // remove keyframe handles
     QList<KeyframeHandle*> handles = findChildren<KeyframeHandle*>();
@@ -126,11 +135,21 @@ void TransitionLine::addTransition(KeyFrame *key)
     }
 }
 
-void TransitionLine::moveKeyframe(KeyframeHandle *handle, int pos)
+void TransitionLine::moveKeyframe(KeyframeHandle *handle, int dist)
 {
-    if(handle->key()->time() > 0 || pos > 0)
+    if(handle->key()->time() > 0 || dist > 0)
     {
-        handle->key()->setTime(handle->key()->time() + pos * 100);
+        handle->key()->setTime(handle->key()->time() + dist * 100);
         handle->move(handle->key()->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
+    }
+}
+
+void TransitionLine::moveTransition(Transition *transition, int dist)
+{
+    if(transition->key()->time() > 0 || dist > 0)
+    {
+        transition->key()->setTime(transition->key()->time() + dist * 100);
+        transition->key()->next()->setTime(transition->key()->next()->time() + dist * 100);
+        transition->move(transition->key()->time() / 5 - m_horizontalScrollValue * 20,0);
     }
 }

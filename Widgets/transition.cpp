@@ -49,7 +49,23 @@ void Transition::paintEvent(QPaintEvent *)
     int height = size().height();
 
     QPainter painter(this);
-    painter.fillRect(0, 0, width, height, orange);
+    if(hasFocus())
+        painter.fillRect(0, 0, width, height, orangeSelected);
+    else
+        painter.fillRect(0, 0, width, height, orange);
     painter.drawImage(0, 2, m_imageLeft);
     painter.drawImage(width - 5, 2, m_imageRight);
+}
+
+void Transition::keyPressEvent(QKeyEvent *e)
+{
+    switch(e->key())
+    {
+        case Qt::Key_Left:
+            emit transitionMoved(this, -1);
+            break;
+        case Qt::Key_Right:
+            emit transitionMoved(this, 1);
+            break;
+    }
 }

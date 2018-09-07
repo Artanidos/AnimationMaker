@@ -33,7 +33,7 @@ private slots:
 signals:
     void transitionAdded(KeyFrame *key);
     void keyframeDeleted(KeyframeHandle *handle);
-    void keyframeMoved(KeyframeHandle *handle, int pos);
+    void keyframeMoved(KeyframeHandle *handle, int dist);
 
 private:
     QImage m_imageRaute;

@@ -26,6 +26,7 @@
 #include "widgets_global.h"
 
 class KeyframeHandle;
+class Transition;
 class WIDGETSSHARED_EXPORT TransitionLine : public QWidget
 {
     Q_OBJECT
@@ -61,7 +62,8 @@ private:
 private slots:
     void deleteKeyframe(KeyframeHandle *handle);
     void addTransition(KeyFrame *key);
-    void moveKeyframe(KeyframeHandle *handle, int pos);
+    void moveKeyframe(KeyframeHandle *handle, int dist);
+    void moveTransition(Transition *transition, int dist);
 };
 
 #endif // TRANSITIONLINE_H

@@ -36,11 +36,17 @@ public:
 
     KeyFrame *key() {return m_key;}
 
+protected:
+    void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
+
+signals:
+    void transitionMoved(Transition *transition, int dist);
+
 private:
-    bool m_pressed;
     QImage m_imageLeft;
     QImage m_imageRight;
     KeyFrame *m_key;
+    bool m_pressed;
 };
 
 #endif // TRANSITION_H

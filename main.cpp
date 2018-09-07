@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("AnimationMaker");
-    QCoreApplication::setApplicationVersion("1.8.0");
+    QCoreApplication::setApplicationVersion("1.8.1");
 #ifdef LINUX
     QCoreApplication::setOrganizationName("Artanidos");
 #else
