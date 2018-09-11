@@ -72,20 +72,14 @@ void Transition::mouseMoveEvent(QMouseEvent *ev)
         int p = x() + ev->x() - m_oldX;
         int newVal = qRound((qreal)p * 5 / 100) * 100;
         if(newVal >= 0)
-            move(newVal / 5, y());
+            emit transitionMoved(this, newVal);
     }
 }
 
-void Transition::mouseReleaseEvent(QMouseEvent *ev)
+void Transition::mouseReleaseEvent(QMouseEvent *)
 {
     if(m_pressed)
-    {
         m_pressed = false;
-        int p = x() + ev->x() - m_oldX;
-        int newVal = qRound((qreal)p * 5 / 100) * 100;
-        if(newVal >= 0)
-            emit transitionMoved(this, newVal);
-    }
 }
 
 void Transition::keyPressEvent(QKeyEvent *e)
@@ -105,7 +99,7 @@ void Transition::keyPressEvent(QKeyEvent *e)
 void Transition::sizeTransitionLeft(int time)
 {
     int width = (m_key->next()->time() - time) / 5;
-    if(width > 0 && time >= 0)
+    if(width > 0 && time >= 0 && (m_key->prev() == nullptr || m_key->prev()->time() < time))
     {
         m_key->setTime(time);
         resize(width, 18);
@@ -118,7 +112,7 @@ void Transition::sizeTransitionLeft(int time)
 void Transition::sizeTransitionRight(int time)
 {
     int width = (time - m_key->time()) / 5;
-    if(width > 0)
+    if(width > 0 && (m_key->next()->next() == nullptr || m_key->next()->next()->time() > time))
     {
         m_key->next()->setTime(time);
         resize(width, 18);

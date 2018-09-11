@@ -138,7 +138,7 @@ void TransitionLine::addTransition(KeyFrame *key)
 
 void TransitionLine::moveKeyframe(KeyframeHandle *handle, int time)
 {
-    if(handle->key()->time() >= 0 || time >= 0)
+    if(time >= 0 && ((handle->key()->next() == nullptr || handle->key()->next()->time() > time)) && (handle->key()->prev() == nullptr || handle->key()->prev()->time() < time))
     {
         handle->key()->setTime(time);
         handle->move(handle->key()->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
@@ -147,7 +147,7 @@ void TransitionLine::moveKeyframe(KeyframeHandle *handle, int time)
 
 void TransitionLine::moveTransition(Transition *transition, int time)
 {
-    if(transition->key()->time() >= 0 || time >= 0)
+    if(time >= 0 && ((transition->key()->next()->next() == nullptr || transition->key()->next()->next()->time() > transition->key()->next()->time() - transition->key()->time() + time)) && (transition->key()->prev() == nullptr || transition->key()->prev()->time() < time))
     {
         transition->key()->next()->setTime(transition->key()->next()->time() - transition->key()->time() + time);
         transition->key()->setTime(time);
