@@ -64,6 +64,7 @@ private slots:
     void addTransition(KeyFrame *key);
     void moveKeyframe(KeyframeHandle *handle, int dist);
     void moveTransition(Transition *transition, int dist);
+    void transitionResized();
 };
 
 #endif // TRANSITIONLINE_H

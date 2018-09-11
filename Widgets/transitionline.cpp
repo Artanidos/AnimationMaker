@@ -122,6 +122,7 @@ void TransitionLine::addTransition(KeyFrame *key)
     Transition *trans = new Transition(this, key);
     trans->move(key->time() / 5 - m_horizontalScrollValue * 20,0);
     connect(trans, SIGNAL(transitionMoved(Transition*,int)), this, SLOT(moveTransition(Transition*,int)));
+    connect(trans, SIGNAL(transitionResized()), this, SLOT(transitionResized()));
 
     // remove keyframe handles
     QList<KeyframeHandle*> handles = findChildren<KeyframeHandle*>();
@@ -137,7 +138,7 @@ void TransitionLine::addTransition(KeyFrame *key)
 
 void TransitionLine::moveKeyframe(KeyframeHandle *handle, int time)
 {
-    if(handle->key()->time() > 0 || time > 0)
+    if(handle->key()->time() >= 0 || time >= 0)
     {
         handle->key()->setTime(time);
         handle->move(handle->key()->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
@@ -146,10 +147,15 @@ void TransitionLine::moveKeyframe(KeyframeHandle *handle, int time)
 
 void TransitionLine::moveTransition(Transition *transition, int time)
 {
-    if(transition->key()->time() > 0 || time > 0)
+    if(transition->key()->time() >= 0 || time >= 0)
     {
         transition->key()->next()->setTime(transition->key()->next()->time() - transition->key()->time() + time);
         transition->key()->setTime(time);
         transition->move(transition->key()->time() / 5 - m_horizontalScrollValue * 20,0);
     }
+}
+
+void TransitionLine::transitionResized()
+{
+    update();
 }

@@ -18,46 +18,25 @@
 **
 ****************************************************************************/
 
-#ifndef TRANSITION_H
-#define TRANSITION_H
+#ifndef TRANSITIONHANDLELEFT_H
+#define TRANSITIONHANDLELEFT_H
 
+#include "transitionhandle.h"
 #include <QWidget>
+
 #include "widgets_global.h"
 
-class TransitionLine;
+class Transition;
 class KeyFrame;
-class TransitionHandleLeft;
-class TransitionHandleRight;
-class WIDGETSSHARED_EXPORT Transition : public QWidget
+class WIDGETSSHARED_EXPORT TransitionHandleLeft : public TransitionHandle
 {
     Q_OBJECT
 public:
-    Transition(TransitionLine *parent, KeyFrame *key);
+    TransitionHandleLeft(Transition *parent, KeyFrame *key);
 
-    void paintEvent(QPaintEvent *ev) Q_DECL_OVERRIDE;
-    void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
 
-    KeyFrame *key() {return m_key;}
-
-protected:
-    void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
-
-signals:
-    void transitionMoved(Transition *transition, int time);
-    void transitionResized();
-
-private slots:
-    void sizeTransitionLeft(int time);
-    void sizeTransitionRight(int time);
-
-private:
-    KeyFrame *m_key;
-    bool m_pressed;
-    TransitionHandleLeft *m_left;
-    TransitionHandleRight *m_right;
-    int m_oldX;
 };
 
-#endif // TRANSITION_H
+#endif // TRANSITIONHANDLELEFT_H

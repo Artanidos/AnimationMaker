@@ -48,7 +48,10 @@ SOURCES += \
     xmlhighlighter.cpp \
     installer.cpp \
     transition.cpp \
-    keyframehandle.cpp
+    keyframehandle.cpp \
+    transitionhandleright.cpp \
+    transitionhandleleft.cpp \
+    transitionhandle.cpp
     
 
 HEADERS +=\
@@ -79,7 +82,10 @@ HEADERS +=\
     xmlhighlighter.h \
     installer.h \
     transition.h \
-    keyframehandle.h
+    keyframehandle.h \
+    transitionhandleright.h \
+    transitionhandleleft.h \
+    transitionhandle.h
     
 unix {
     target.path = /usr/lib

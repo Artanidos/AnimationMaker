@@ -20,6 +20,8 @@
 
 #include "transition.h"
 #include "transitionline.h"
+#include "transitionhandleleft.h"
+#include "transitionhandleright.h"
 #include <QPainter>
 
 Transition::Transition(TransitionLine *parent, KeyFrame *key)
@@ -30,14 +32,13 @@ Transition::Transition(TransitionLine *parent, KeyFrame *key)
     setParent(parent);
     setMouseTracking(true);
     setFocusPolicy(Qt::FocusPolicy::ClickFocus);
-    setMaximumHeight(18);
-    setMinimumHeight(18);
-    setMaximumWidth((m_key->next()->time() - m_key->time()) / 5);
-    setMinimumWidth((m_key->next()->time() - m_key->time()) / 5);
+    resize((m_key->next()->time() - m_key->time()) / 5, 18);
     setVisible(true);
 
-    m_imageLeft = QImage(":/images/trans-left.png");
-    m_imageRight = QImage(":/images/trans-right.png");
+    m_left = new TransitionHandleLeft(this, key);
+    connect(m_left, SIGNAL(keyframeMoved(int)), this, SLOT(sizeTransitionLeft(int)));
+    m_right = new TransitionHandleRight(this, key->next());
+    connect(m_right, SIGNAL(keyframeMoved(int)), this, SLOT(sizeTransitionRight(int)));
 }
 
 void Transition::paintEvent(QPaintEvent *)
@@ -53,8 +54,6 @@ void Transition::paintEvent(QPaintEvent *)
         painter.fillRect(0, 0, width, height, orangeSelected);
     else
         painter.fillRect(0, 0, width, height, orange);
-    painter.drawImage(0, 2, m_imageLeft);
-    painter.drawImage(width - 5, 2, m_imageRight);
 }
 
 void Transition::mousePressEvent(QMouseEvent *ev)
@@ -62,6 +61,7 @@ void Transition::mousePressEvent(QMouseEvent *ev)
     if(ev->button() == Qt::LeftButton)
     {
         m_pressed = true;
+        m_oldX = ev->x();
     }
 }
 
@@ -69,9 +69,10 @@ void Transition::mouseMoveEvent(QMouseEvent *ev)
 {
     if(m_pressed)
     {
-        int p = x() + ev->x();
+        int p = x() + ev->x() - m_oldX;
         int newVal = qRound((qreal)p * 5 / 100) * 100;
-        move(newVal / 5 - 6, y());
+        if(newVal >= 0)
+            move(newVal / 5, y());
     }
 }
 
@@ -80,23 +81,48 @@ void Transition::mouseReleaseEvent(QMouseEvent *ev)
     if(m_pressed)
     {
         m_pressed = false;
-        int p = x() + ev->x();
+        int p = x() + ev->x() - m_oldX;
         int newVal = qRound((qreal)p * 5 / 100) * 100;
-        emit transitionMoved(this, newVal);
+        if(newVal >= 0)
+            emit transitionMoved(this, newVal);
     }
 }
-
-
 
 void Transition::keyPressEvent(QKeyEvent *e)
 {
     switch(e->key())
     {
         case Qt::Key_Left:
-            emit transitionMoved(this, m_key->time() - 100);
+            if(m_key->time() > 99)
+                emit transitionMoved(this, m_key->time() - 100);
             break;
         case Qt::Key_Right:
             emit transitionMoved(this, m_key->time() + 100);
             break;
+    }
+}
+
+void Transition::sizeTransitionLeft(int time)
+{
+    int width = (m_key->next()->time() - time) / 5;
+    if(width > 0 && time >= 0)
+    {
+        m_key->setTime(time);
+        resize(width, 18);
+        m_right->move(width - 5,0);
+        emit transitionResized();
+        emit transitionMoved(this, time);
+    }
+}
+
+void Transition::sizeTransitionRight(int time)
+{
+    int width = (time - m_key->time()) / 5;
+    if(width > 0)
+    {
+        m_key->next()->setTime(time);
+        resize(width, 18);
+        m_right->move(width - 5,0);
+        emit transitionResized();
     }
 }
