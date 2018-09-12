@@ -678,3 +678,23 @@ void MoveKeyframeCommand::redo()
 {
     m_timeline->moveKeyframe(m_key, m_newTime);
 }
+
+MoveTransitionCommand::MoveTransitionCommand(KeyFrame *key, int oldTime, int newTime, Timeline *timeline, QUndoCommand *parent)
+    : QUndoCommand (parent)
+{
+    m_key = key;
+    m_oldTime = oldTime;
+    m_newTime = newTime;
+    m_timeline = timeline;
+    setText("Move transition");
+}
+
+void MoveTransitionCommand::undo()
+{
+    m_timeline->moveTransition(m_key, m_oldTime);
+}
+
+void MoveTransitionCommand::redo()
+{
+    m_timeline->moveTransition(m_key, m_newTime);
+}

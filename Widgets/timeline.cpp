@@ -22,7 +22,7 @@
 #include "animationitem.h"
 #include "keyframe.h"
 #include "commands.h"
-
+#include "transition.h"
 #include <QHeaderView>
 #include <QLabel>
 #include <QGridLayout>
@@ -313,10 +313,17 @@ void Timeline::deleteTransition(AnimationItem *item, QString propertyName, KeyFr
     m_transitionPanel->transitionDeleted(item, propertyName);
 }
 
-void Timeline::moveKeyframe(KeyFrame *frame, int time)
+void Timeline::moveKeyframe(KeyFrame *key, int time)
 {
-    frame->setTime(time);
-    m_transitionPanel->keyframeMoved(frame);
+    key->setTime(time);
+    m_transitionPanel->keyframeMoved(key);
+}
+
+void Timeline::moveTransition(KeyFrame *key, int time)
+{
+    key->next()->setTime(key->next()->time() - key->time() + time);
+    key->setTime(time);
+    m_transitionPanel->transitionMoved(key);
 }
 
 void Timeline::addTransition(AnimationItem *item, QString propertyName, KeyFrame *frame)

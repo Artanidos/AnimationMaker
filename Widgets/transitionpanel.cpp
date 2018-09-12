@@ -22,6 +22,7 @@
 #include "keyframe.h"
 #include "transitionline.h"
 #include "timeline.h"
+#include "transition.h"
 #include "keyframehandle.h"
 #include <QPainter>
 #include <QTest>
@@ -254,6 +255,23 @@ void TransitionPanel::keyframeMoved(KeyFrame *key)
             if(handle)
             {
                 handle->move(handle->key()->time() / 5 - line->horizontalScrollValue() * 20 - 6, 2);
+                break;
+            }
+        }
+    }
+}
+
+void TransitionPanel::transitionMoved(KeyFrame *key)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line)
+        {
+            Transition *transition = line->getTransition(key);
+            if(transition)
+            {
+                transition->move(transition->key()->time() / 5 - line->horizontalScrollValue() * 20,0);
                 break;
             }
         }

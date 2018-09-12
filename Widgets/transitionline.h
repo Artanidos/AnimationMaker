@@ -47,6 +47,7 @@ public:
     void setScrollValue(int value);
     KeyframeHandle *getKeyframeHandle(KeyFrame *key);
     int horizontalScrollValue() {return m_horizontalScrollValue;}
+    Transition *getTransition(KeyFrame *key);
 
 signals:
     void keyframeDeleted(AnimationItem *item, QString propertyName, KeyFrame *frame);

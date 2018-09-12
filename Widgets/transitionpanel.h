@@ -46,6 +46,7 @@ public:
     void transitionAdded(AnimationItem *item, QString propertyName);
     void transitionDeleted(AnimationItem *item, QString propertyName);
     void keyframeMoved(KeyFrame *key);
+    void transitionMoved(KeyFrame *key);
 
 public slots:
     void treeExpanded(QModelIndex);

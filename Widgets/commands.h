@@ -394,4 +394,19 @@ private:
     Timeline *m_timeline;
 };
 
+class WIDGETSSHARED_EXPORT MoveTransitionCommand : public QUndoCommand
+{
+public:
+    MoveTransitionCommand(KeyFrame *key, int oldTime, int newTime, Timeline *timeline, QUndoCommand *parent = nullptr);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    KeyFrame *m_key;
+    int m_oldTime;
+    int m_newTime;
+    Timeline *m_timeline;
+};
+
 #endif // COMMANDS_H

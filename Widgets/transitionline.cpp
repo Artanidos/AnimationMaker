@@ -124,6 +124,17 @@ KeyframeHandle *TransitionLine::getKeyframeHandle(KeyFrame *key)
     return nullptr;
 }
 
+Transition *TransitionLine::getTransition(KeyFrame *key)
+{
+    QList<Transition*> transitions = findChildren<Transition*>();
+    foreach(Transition *transition, transitions)
+    {
+        if(transition->key() == key)
+            return transition;
+    }
+    return nullptr;
+}
+
 void TransitionLine::deleteKeyframe(KeyframeHandle *handle)
 {
     emit keyframeDeleted(m_item, m_propertyName, handle->key());
@@ -166,9 +177,11 @@ void TransitionLine::moveTransition(Transition *transition, int time)
 {
     if(time >= 0 && ((transition->key()->next()->next() == nullptr || transition->key()->next()->next()->time() > transition->key()->next()->time() - transition->key()->time() + time)) && (transition->key()->prev() == nullptr || transition->key()->prev()->time() < time))
     {
-        transition->key()->next()->setTime(transition->key()->next()->time() - transition->key()->time() + time);
-        transition->key()->setTime(time);
-        transition->move(transition->key()->time() / 5 - m_horizontalScrollValue * 20,0);
+        if(transition->key()->time() != time)
+        {
+            QUndoCommand *cmd = new MoveTransitionCommand(transition->key(), transition->key()->time(), time, m_timeline);
+            m_undostack->push(cmd);
+        }
     }
 }
 
