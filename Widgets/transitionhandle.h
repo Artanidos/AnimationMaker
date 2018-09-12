@@ -34,7 +34,7 @@ public:
     TransitionHandle(Transition *parent, KeyFrame *key);
 
     void paintEvent(QPaintEvent *ev) Q_DECL_OVERRIDE;
-    void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
+    virtual void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE = 0;
     virtual void mouseMoveEvent(QMouseEvent *ev) Q_DECL_OVERRIDE = 0;
     virtual void mouseReleaseEvent(QMouseEvent *ev) Q_DECL_OVERRIDE = 0;
 
@@ -45,6 +45,7 @@ protected:
     bool m_pressed;
     KeyFrame *m_key;
     int m_oldX;
+    int m_oldTime;
 
 signals:
     void keyframeMoved(int pos);

@@ -409,4 +409,21 @@ private:
     Timeline *m_timeline;
 };
 
+class WIDGETSSHARED_EXPORT ResizeTransitionCommand : public QUndoCommand
+{
+public:
+    ResizeTransitionCommand(KeyFrame *key, int oldStartTime, int newStartTime, int oldEndTime, int newEndTime, Timeline *timeline, QUndoCommand *parent = nullptr);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    KeyFrame *m_key;
+    int m_oldStartTime;
+    int m_newStartTime;
+    int m_oldEndTime;
+    int m_newEndTime;
+    Timeline *m_timeline;
+};
+
 #endif // COMMANDS_H

@@ -50,6 +50,7 @@ public:
     void deleteTransition(AnimationItem *item, QString propertyName, KeyFrame *frame);
     void moveKeyframe(KeyFrame *key, int time);
     void moveTransition(KeyFrame *key, int time);
+    void resizeTransition(KeyFrame *key, int startTime, int endTime);
 
 public slots:
     void onCustomContextMenu(const QPoint &point);

@@ -698,3 +698,25 @@ void MoveTransitionCommand::redo()
 {
     m_timeline->moveTransition(m_key, m_newTime);
 }
+
+ResizeTransitionCommand::ResizeTransitionCommand(KeyFrame *key, int oldStartTime, int newStartTime, int oldEndTime, int newEndTime, Timeline *timeline, QUndoCommand *parent)
+    : QUndoCommand (parent)
+{
+    m_key = key;
+    m_oldStartTime = oldStartTime;
+    m_oldEndTime = oldEndTime;
+    m_newStartTime = newStartTime;
+    m_newEndTime = newEndTime;
+    m_timeline = timeline;
+    setText("Resize transition");
+}
+
+void ResizeTransitionCommand::undo()
+{
+    m_timeline->resizeTransition(m_key, m_oldStartTime, m_oldEndTime);
+}
+
+void ResizeTransitionCommand::redo()
+{
+    m_timeline->resizeTransition(m_key, m_newStartTime, m_newEndTime);
+}

@@ -52,15 +52,6 @@ void TransitionHandle::paintEvent(QPaintEvent *)
     }
 }
 
-void TransitionHandle::mousePressEvent(QMouseEvent *ev)
-{
-    if(ev->button() == Qt::LeftButton)
-    {
-        m_pressed = true;
-        m_oldX = ev->x();
-    }
-}
-
 void TransitionHandle::keyPressEvent(QKeyEvent *e)
 {
     switch(e->key())

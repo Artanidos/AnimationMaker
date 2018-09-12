@@ -28,11 +28,13 @@ class TransitionLine;
 class KeyFrame;
 class TransitionHandleLeft;
 class TransitionHandleRight;
+class Timeline;
+class QUndoStack;
 class WIDGETSSHARED_EXPORT Transition : public QWidget
 {
     Q_OBJECT
 public:
-    Transition(TransitionLine *parent, KeyFrame *key);
+    Transition(TransitionLine *parent, KeyFrame *key, Timeline *timeline, QUndoStack *undostack);
 
     void paintEvent(QPaintEvent *ev) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
@@ -40,6 +42,7 @@ public:
     void mouseReleaseEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
 
     KeyFrame *key() {return m_key;}
+    void resizeTransition();
 
 protected:
     void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
@@ -58,6 +61,8 @@ private:
     TransitionHandleLeft *m_left;
     TransitionHandleRight *m_right;
     int m_oldX;
+    Timeline *m_timeline;
+    QUndoStack *m_undostack;
 };
 
 #endif // TRANSITION_H

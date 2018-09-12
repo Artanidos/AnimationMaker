@@ -326,6 +326,13 @@ void Timeline::moveTransition(KeyFrame *key, int time)
     m_transitionPanel->transitionMoved(key);
 }
 
+void Timeline::resizeTransition(KeyFrame *key, int startTime, int endTime)
+{
+    key->next()->setTime(endTime);
+    key->setTime(startTime);
+    m_transitionPanel->transitionResized(key);
+}
+
 void Timeline::addTransition(AnimationItem *item, QString propertyName, KeyFrame *frame)
 {
     frame->setEasing((int)QEasingCurve::Linear);

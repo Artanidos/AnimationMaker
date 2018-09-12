@@ -34,6 +34,7 @@ class WIDGETSSHARED_EXPORT TransitionHandleRight : public TransitionHandle
 public:
     TransitionHandleRight(Transition *parent, KeyFrame *key);
 
+    void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
 };

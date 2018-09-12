@@ -278,6 +278,23 @@ void TransitionPanel::transitionMoved(KeyFrame *key)
     }
 }
 
+void TransitionPanel::transitionResized(KeyFrame *key)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line)
+        {
+            Transition *transition = line->getTransition(key);
+            if(transition)
+            {
+                transition->resizeTransition();
+                break;
+            }
+        }
+    }
+}
+
 void TransitionPanel::deleteKeyframe(AnimationItem *item, QString propertyName)
 {
     int count = 0;

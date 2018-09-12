@@ -84,7 +84,7 @@ void TransitionLine::addKeyframe(KeyFrame *key)
     }
     if(key->prev() && key->prev()->easing() > -1)
     {
-        Transition *trans = new Transition(this, key->prev());
+        Transition *trans = new Transition(this, key->prev(), m_timeline, m_undostack);
         trans->move(key->prev()->time() / 5 - m_horizontalScrollValue * 20,0);
         connect(trans, SIGNAL(transitionMoved(Transition*,int)), this, SLOT(moveTransition(Transition*,int)));
         // no need to add a keyframehandle when a transition exists
@@ -144,7 +144,7 @@ void TransitionLine::deleteKeyframe(KeyframeHandle *handle)
 void TransitionLine::addTransition(KeyFrame *key)
 {
     emit transitionAdded(m_item, m_propertyName, key);
-    Transition *trans = new Transition(this, key);
+    Transition *trans = new Transition(this, key, m_timeline, m_undostack);
     trans->move(key->time() / 5 - m_horizontalScrollValue * 20,0);
     connect(trans, SIGNAL(transitionMoved(Transition*,int)), this, SLOT(moveTransition(Transition*,int)));
     connect(trans, SIGNAL(transitionResized()), this, SLOT(transitionResized()));

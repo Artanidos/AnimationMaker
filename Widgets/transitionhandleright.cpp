@@ -33,17 +33,32 @@ TransitionHandleRight::TransitionHandleRight(Transition *parent, KeyFrame *key)
     move(parent->width() - 5,0);
 }
 
+void TransitionHandleRight::mousePressEvent(QMouseEvent *ev)
+{
+    if(ev->button() == Qt::LeftButton)
+    {
+        m_pressed = true;
+        m_oldX = ev->x();
+        m_oldTime = m_key->time();
+    }
+}
+
 void TransitionHandleRight::mouseMoveEvent(QMouseEvent *ev)
 {
     if(m_pressed)
     {
         int p = x() + ev->x() - m_oldX;
         int newVal = m_key->prev()->time() + qRound((qreal)p * 5 / 100) * 100;
-        emit keyframeMoved(newVal);
+        m_key->setTime(newVal);
+        Transition *transition = dynamic_cast<Transition*>(parent());
+        transition->resizeTransition();
     }
 }
 
 void TransitionHandleRight::mouseReleaseEvent(QMouseEvent *ev)
 {
     m_pressed = false;
+    int newTime = m_key->time();
+    m_key->setTime(m_oldTime);
+    emit keyframeMoved(newTime);
 }

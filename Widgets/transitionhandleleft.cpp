@@ -32,6 +32,16 @@ TransitionHandleLeft::TransitionHandleLeft(Transition *parent, KeyFrame *key)
     m_image = QImage(":/images/trans-left.png");
 }
 
+void TransitionHandleLeft::mousePressEvent(QMouseEvent *ev)
+{
+    if(ev->button() == Qt::LeftButton)
+    {
+        m_pressed = true;
+        m_oldX = ev->x();
+        m_oldTime = m_key->time();
+    }
+}
+
 void TransitionHandleLeft::mouseMoveEvent(QMouseEvent *ev)
 {
     if(m_pressed)
@@ -39,11 +49,18 @@ void TransitionHandleLeft::mouseMoveEvent(QMouseEvent *ev)
         int p = x() + ev->x() - m_oldX;
         int newVal = m_key->time() + qRound((qreal)p * 5 / 100) * 100;
         if(newVal >= 0)
-            emit keyframeMoved(newVal);
+        {
+            m_key->setTime(newVal);
+            Transition *transition = dynamic_cast<Transition*>(parent());
+            transition->resizeTransition();
+        }
     }
 }
 
 void TransitionHandleLeft::mouseReleaseEvent(QMouseEvent *ev)
 {
     m_pressed = false;
+    int newTime = m_key->time();
+    m_key->setTime(m_oldTime);
+    emit keyframeMoved(newTime);
 }

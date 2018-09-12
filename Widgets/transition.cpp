@@ -22,12 +22,16 @@
 #include "transitionline.h"
 #include "transitionhandleleft.h"
 #include "transitionhandleright.h"
+#include "commands.h"
 #include <QPainter>
 
-Transition::Transition(TransitionLine *parent, KeyFrame *key)
+
+Transition::Transition(TransitionLine *parent, KeyFrame *key, Timeline *timeline, QUndoStack *undostack)
 {
     m_pressed = false;
     m_key = key;
+    m_timeline = timeline;
+    m_undostack = undostack;
 
     setParent(parent);
     setMouseTracking(true);
@@ -82,6 +86,15 @@ void Transition::mouseReleaseEvent(QMouseEvent *)
         m_pressed = false;
 }
 
+void Transition::resizeTransition()
+{
+    TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
+    int width = (m_key->next()->time() - m_key->time()) / 5;
+    resize(width, 18);
+    m_right->move(width - 5, 0);
+    move(m_key->time() / 5 - tl->horizontalScrollValue() * 20,0);
+}
+
 void Transition::keyPressEvent(QKeyEvent *e)
 {
     switch(e->key())
@@ -101,11 +114,8 @@ void Transition::sizeTransitionLeft(int time)
     int width = (m_key->next()->time() - time) / 5;
     if(width > 0 && time >= 0 && (m_key->prev() == nullptr || m_key->prev()->time() < time))
     {
-        m_key->setTime(time);
-        resize(width, 18);
-        m_right->move(width - 5,0);
-        emit transitionResized();
-        emit transitionMoved(this, time);
+        QUndoCommand *cmd = new ResizeTransitionCommand(m_key, m_key->time(), time, m_key->next()->time(), m_key->next()->time(), m_timeline);
+        m_undostack->push(cmd);
     }
 }
 
@@ -114,9 +124,7 @@ void Transition::sizeTransitionRight(int time)
     int width = (time - m_key->time()) / 5;
     if(width > 0 && (m_key->next()->next() == nullptr || m_key->next()->next()->time() > time))
     {
-        m_key->next()->setTime(time);
-        resize(width, 18);
-        m_right->move(width - 5,0);
-        emit transitionResized();
+        QUndoCommand *cmd = new ResizeTransitionCommand(m_key, m_key->time(), m_key->time(), m_key->next()->time(), time, m_timeline);
+        m_undostack->push(cmd);
     }
 }
