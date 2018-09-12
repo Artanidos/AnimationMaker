@@ -95,7 +95,7 @@ Timeline::Timeline(AnimationScene *scene)
     m_tree->setStyleSheet("QTreeWidget::item:has-children:!selected {background-color: #4c4e50;} QTreeWidget::item:!selected { border-bottom: 1px solid #292929;} QTreeView::branch:!selected {border-bottom: 1px solid #292929;} QTreeWidget::branch:has-children:!selected {background-color: #4c4e50;} QTreeWidget::branch:has-children:!has-siblings:closed, QTreeWidget::branch:closed:has-children:has-siblings {border-image: none; image: url(:/images/branch-closed.png);} QTreeWidget::branch:open:has-children:!has-siblings, QTreeWidget::branch:open:has-children:has-siblings {border-image: none;image: url(:/images/branch-open.png);}");
     m_tree->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    m_transitionPanel = new TransitionPanel();
+    m_transitionPanel = new TransitionPanel(m_scene->undoStack());
     m_transitionPanel->setTreeWidget(m_tree);
     m_transitionPanel->registerTimeline(this);
     m_playhead = new PlayHead();
@@ -148,7 +148,7 @@ void Timeline::reset()
     while(1)
     {
         QTreeWidgetItem *treeItem = m_tree->takeTopLevelItem(0);
-        if(treeItem == NULL)
+        if(treeItem == nullptr)
             break;
         delete treeItem;
     }
@@ -164,7 +164,7 @@ void Timeline::transitionSelected(KeyFrame *frame)
 
 void Timeline::transitionDeselected()
 {
-    emit transitionSelectionChanged(NULL);
+    emit transitionSelectionChanged(nullptr);
 }
 
 void Timeline::onCustomContextMenu(const QPoint &point)
@@ -311,6 +311,12 @@ void Timeline::deleteTransition(AnimationItem *item, QString propertyName, KeyFr
 {
     frame->setEasing(-1);
     m_transitionPanel->transitionDeleted(item, propertyName);
+}
+
+void Timeline::moveKeyframe(KeyFrame *frame, int time)
+{
+    frame->setTime(time);
+    m_transitionPanel->keyframeMoved(frame);
 }
 
 void Timeline::addTransition(AnimationItem *item, QString propertyName, KeyFrame *frame)

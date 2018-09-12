@@ -22,17 +22,19 @@
 #include "keyframe.h"
 #include "transitionline.h"
 #include "timeline.h"
-
+#include "keyframehandle.h"
 #include <QPainter>
 #include <QTest>
 #include <limits.h>
 #include <QSplitter>
 #include <QLayout>
+#include <QUndoStack>
 
-TransitionPanel::TransitionPanel()
+TransitionPanel::TransitionPanel(QUndoStack *undostack)
 {
     m_verticalScrollPos = 0;
     m_horizontalScrollPos = 0;
+    m_undostack = undostack;
 
     setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
     setMinimumWidth(100);
@@ -170,7 +172,7 @@ void TransitionPanel::scrollValueChanged(int pos)
 
 void TransitionPanel::lineAdded(AnimationItem *item)
 {
-    TransitionLine *line = new TransitionLine(item, "");
+    TransitionLine *line = new TransitionLine(item, "", m_timeline, m_undostack);
     line->setScrollValue(m_horizontalScrollPos);
     m_layout->insertWidget(m_layout->count() - 1, line);
     enableDisableLines();
@@ -178,7 +180,7 @@ void TransitionPanel::lineAdded(AnimationItem *item)
 
 void TransitionPanel::propertyAdded(AnimationItem *item, QString propertyName)
 {
-    TransitionLine *line = new TransitionLine(item, propertyName);
+    TransitionLine *line = new TransitionLine(item, propertyName, m_timeline, m_undostack);
     line->setScrollValue(m_horizontalScrollPos);
     m_layout->insertWidget(m_layout->count() - 1, line);
     connect(line, SIGNAL(keyframeDeleted(AnimationItem*,QString,KeyFrame*)), m_timeline, SLOT(deleteKeyFrameSlot(AnimationItem*,QString,KeyFrame*)));
@@ -237,6 +239,23 @@ void TransitionPanel::transitionDeleted(AnimationItem *item, QString propertyNam
         {
             line->update();
             break;
+        }
+    }
+}
+
+void TransitionPanel::keyframeMoved(KeyFrame *key)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line)
+        {
+            KeyframeHandle *handle = line->getKeyframeHandle(key);
+            if(handle)
+            {
+                handle->move(handle->key()->time() / 5 - line->horizontalScrollValue() * 20 - 6, 2);
+                break;
+            }
         }
     }
 }

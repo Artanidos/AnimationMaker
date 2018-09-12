@@ -367,7 +367,7 @@ private:
 class WIDGETSSHARED_EXPORT ExchangeBitmapCommand : public QUndoCommand
 {
 public:
-    ExchangeBitmapCommand(Bitmap *item, QString fileName, QUndoCommand *parent = 0);
+    ExchangeBitmapCommand(Bitmap *item, QString fileName, QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;
@@ -377,6 +377,21 @@ private:
     QString m_fileName;
     QImage m_originalImage;
     QImage m_newImage;
+};
+
+class WIDGETSSHARED_EXPORT MoveKeyframeCommand : public QUndoCommand
+{
+public:
+    MoveKeyframeCommand(KeyFrame *key, int oldTime, int newTime, Timeline *timeline, QUndoCommand *parent = nullptr);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    KeyFrame *m_key;
+    int m_oldTime;
+    int m_newTime;
+    Timeline *m_timeline;
 };
 
 #endif // COMMANDS_H

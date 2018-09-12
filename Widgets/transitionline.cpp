@@ -26,15 +26,18 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <QUndoCommand>
+#include <QUndoStack>
 #include <QTest>
 
-TransitionLine::TransitionLine(AnimationItem *item, QString propertyName)
+TransitionLine::TransitionLine(AnimationItem *item, QString propertyName, Timeline *timeline, QUndoStack *undostack)
 {
     m_item = item;
     m_frame = nullptr;
     m_selectedFrame = nullptr;
     m_propertyName = propertyName;
     m_playheadPosition = 0;
+    m_timeline = timeline;
+    m_undostack = undostack;
 
     setMaximumHeight(18);
     setMinimumHeight(18);
@@ -110,6 +113,17 @@ void TransitionLine::setScrollValue(int value)
     update();
 }
 
+KeyframeHandle *TransitionLine::getKeyframeHandle(KeyFrame *key)
+{
+    QList<KeyframeHandle*> handles = findChildren<KeyframeHandle*>();
+    foreach(KeyframeHandle *handle, handles)
+    {
+        if(handle->key() == key)
+            return handle;
+    }
+    return nullptr;
+}
+
 void TransitionLine::deleteKeyframe(KeyframeHandle *handle)
 {
     emit keyframeDeleted(m_item, m_propertyName, handle->key());
@@ -140,8 +154,11 @@ void TransitionLine::moveKeyframe(KeyframeHandle *handle, int time)
 {
     if(time >= 0 && ((handle->key()->next() == nullptr || handle->key()->next()->time() > time)) && (handle->key()->prev() == nullptr || handle->key()->prev()->time() < time))
     {
-        handle->key()->setTime(time);
-        handle->move(handle->key()->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
+        if(handle->key()->time() != time)
+        {
+            QUndoCommand *cmd = new MoveKeyframeCommand(handle->key(), handle->key()->time(), time, m_timeline);
+            m_undostack->push(cmd);
+        }
     }
 }
 

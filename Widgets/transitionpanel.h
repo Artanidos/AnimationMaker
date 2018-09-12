@@ -29,11 +29,12 @@
 #include "widgets_global.h"
 
 class Timeline;
+class QUndoStack;
 class WIDGETSSHARED_EXPORT TransitionPanel : public QWidget
 {
     Q_OBJECT
 public:
-    TransitionPanel();
+    TransitionPanel(QUndoStack *undostack);
 
     void paintEvent(QPaintEvent*);
     void resizeEvent(QResizeEvent *);
@@ -44,6 +45,7 @@ public:
     inline void registerTimeline(Timeline *timeline) {m_timeline = timeline;}
     void transitionAdded(AnimationItem *item, QString propertyName);
     void transitionDeleted(AnimationItem *item, QString propertyName);
+    void keyframeMoved(KeyFrame *key);
 
 public slots:
     void treeExpanded(QModelIndex);
@@ -63,6 +65,7 @@ private:
     QVBoxLayout *m_layout;
     Timeline *m_timeline;
     int m_playheadPosition;
+    QUndoStack *m_undostack;
 
     void enableDisableLines();
     TransitionLine *getTransitionLine(AnimationItem *item, QString propertyName);

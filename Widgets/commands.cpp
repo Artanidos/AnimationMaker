@@ -658,3 +658,23 @@ void ExchangeBitmapCommand::redo()
     m_item->setImage(m_newImage);
     m_item->update();
 }
+
+MoveKeyframeCommand::MoveKeyframeCommand(KeyFrame *key, int oldTime, int newTime, Timeline *timeline, QUndoCommand *parent)
+    : QUndoCommand (parent)
+{
+    m_key = key;
+    m_oldTime = oldTime;
+    m_newTime = newTime;
+    m_timeline = timeline;
+    setText("Move keyframe");
+}
+
+void MoveKeyframeCommand::undo()
+{
+    m_timeline->moveKeyframe(m_key, m_oldTime);
+}
+
+void MoveKeyframeCommand::redo()
+{
+    m_timeline->moveKeyframe(m_key, m_newTime);
+}

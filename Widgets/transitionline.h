@@ -27,11 +27,13 @@
 
 class KeyframeHandle;
 class Transition;
+class QUndoStack;
+class Timeline;
 class WIDGETSSHARED_EXPORT TransitionLine : public QWidget
 {
     Q_OBJECT
 public:
-    TransitionLine(AnimationItem *item, QString propertyName);
+    TransitionLine(AnimationItem *item, QString propertyName, Timeline *timeline, QUndoStack *undostack);
 
     void paintEvent(QPaintEvent *ev) Q_DECL_OVERRIDE;
 
@@ -43,6 +45,8 @@ public:
 
     void addKeyframe(KeyFrame *key);
     void setScrollValue(int value);
+    KeyframeHandle *getKeyframeHandle(KeyFrame *key);
+    int horizontalScrollValue() {return m_horizontalScrollValue;}
 
 signals:
     void keyframeDeleted(AnimationItem *item, QString propertyName, KeyFrame *frame);
@@ -58,6 +62,8 @@ private:
     int m_oldx;
     int m_playheadPosition;
     int m_horizontalScrollValue;
+    QUndoStack *m_undostack;
+    Timeline *m_timeline;
 
 private slots:
     void deleteKeyframe(KeyframeHandle *handle);
