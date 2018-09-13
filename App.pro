@@ -41,7 +41,9 @@ SOURCES += main.cpp\
     scenepropertyeditor.cpp \
     transitioneditor.cpp \
     svgattributeeditor.cpp \
-    licensedialog.cpp
+    licensedialog.cpp \
+    sceneview.cpp \
+    ruler.cpp
 
 HEADERS  += mainwindow.h \
     itempropertyeditor.h \
@@ -49,7 +51,9 @@ HEADERS  += mainwindow.h \
     transitioneditor.h \
     interfaces.h \
     svgattributeeditor.h \
-    licensedialog.h
+    licensedialog.h \
+    sceneview.h \
+    ruler.h
 
 linux-g++ {
     LIBS += -L$$PWD/lib/

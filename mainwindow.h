@@ -36,7 +36,7 @@ class TransitionEditor;
 class KeyFrame;
 class QSplitter;
 class QTreeWidget;
-class QGraphicsView;
+class SceneView;
 class QTreeWidgetItem;
 class QUndoStack;
 class QGraphicsItem;
@@ -84,7 +84,7 @@ private:
     QToolBar *toolbar;
     QTreeWidget *elementTree;
     AnimationScene *scene;
-    QGraphicsView *view;
+    SceneView *view;
     QFileInfo loadedFile;
     Timeline *timeline;
     ItemPropertyEditor *m_itemPropertyEditor;

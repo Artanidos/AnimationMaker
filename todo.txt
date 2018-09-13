@@ -18,9 +18,3 @@
 - animationScene paste should also copy plugin items and vector attributes
 
 - Sans Serif bold has no BOLD only Obliqe and Italic
-
-- Transition move
-
-- Select multiple transtions and move them
-
-- Transition create/edit should be put on undostack

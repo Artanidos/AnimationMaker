@@ -37,6 +37,7 @@
 #include "itempropertyeditor.h"
 #include "timeline.h"
 #include "scenepropertyeditor.h"
+#include "sceneview.h"
 #include "transitioneditor.h"
 #include "expander.h"
 #include "rectangle.h"
@@ -360,7 +361,7 @@ void MainWindow::createGui()
 
     addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
 
-    view = new QGraphicsView(scene);
+    view = new SceneView(scene);
     view->setSceneRect(-100, -100, scene->width() + 200, scene->height() + 200);
     view->setRenderHint(QPainter::RenderHint::Antialiasing);
     connect(scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
