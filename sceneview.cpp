@@ -22,6 +22,7 @@
 #include "animationscene.h"
 #include "ruler.h"
 #include <QGridLayout>
+#include <QScrollBar>
 
 SceneView::SceneView(AnimationScene *scene)
     : QGraphicsView (scene)
@@ -57,9 +58,13 @@ void SceneView::mouseMoveEvent(QMouseEvent *event)
 void SceneView::scrollContentsBy(int dx, int dy)
 {
     QGraphicsView::scrollContentsBy(dx, dy);
-
     QPointF p1(mapToScene(QPoint(0, 0)));
     QPointF p2(mapToScene(QPoint(viewport()->width(), viewport()->height())));
+
+    if(verticalScrollBar())
+        p2.setX(p2.x() + verticalScrollBar()->width());
+    if(horizontalScrollBar())
+        p2.setY(p2.y() + horizontalScrollBar()->height());
     QRectF  r(p1, p2);
 
     m_horizontalRuler->setScaledRect(r);

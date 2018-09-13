@@ -4,6 +4,7 @@
 - Move object using cursor keys
 - Keyframes and transitions are now selectable and can be moved using cursor keys and by dragging with the mouse
 - Moving keyframes and transitions is now undoable
+- Rulers have been added
 
 1.8
 ---

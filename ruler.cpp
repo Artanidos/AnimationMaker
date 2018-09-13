@@ -46,7 +46,6 @@ void Ruler::setScaledRect(const QRectF rect)
 
 void Ruler::setCursorPos(const QPoint cursorPos)
 {
-    qDebug() << m_scaledRect;
     m_cursorPos = cursorPos;
     m_cursorPos.setX(m_cursorPos.x() - m_scaledRect.left());
     m_cursorPos.setY(m_cursorPos.y() - m_scaledRect.top());
@@ -96,18 +95,19 @@ void Ruler::drawMeter(QPainter *painter, QRectF rulerRect, int div)
         unit*=10;
         unitSize = a*unit;
     }
-        for(int i = 1; i <= div; i *= 2)
-        {
-            if(i == div)
-                m_drawText = true;
-            else
-                m_drawText = false;
 
-            qreal tickFact = (qreal)i / (qreal)div;
+    for(int i = 1; i <= div; i *= 2)
+    {
+        if(i == div)
+            m_drawText = true;
+        else
+            m_drawText = false;
 
-            drawFromOrigin(painter, rulerRect, b, 0, widgetWidth, unit*tickFact, unitSize*tickFact, tickFact);
-            drawFromOrigin(painter, rulerRect, b, widgetWidth, widgetWidth, unit*tickFact, unitSize*tickFact, tickFact);
-        }
+        qreal tickFact = (qreal)i / (qreal)div;
+
+        drawFromOrigin(painter, rulerRect, b, 0, widgetWidth, unit*tickFact, unitSize*tickFact, tickFact);
+        drawFromOrigin(painter, rulerRect, b, widgetWidth, widgetWidth, unit*tickFact, unitSize*tickFact, tickFact);
+    }
 }
 
 void Ruler::drawFromOrigin(QPainter *painter, QRectF rulerRect, qreal origin, qreal until, qreal widgetWidth, qreal unit, qreal unitSize, qreal tickFact)
@@ -129,8 +129,6 @@ void Ruler::drawFromOrigin(QPainter *painter, QRectF rulerRect, qreal origin, qr
             x2 = isHorz ? currentTickPos : rulerRect.right() - rulerRect.right()*tickFact;
             y2 = isHorz ? rulerRect.bottom() - rulerRect.bottom()*tickFact : currentTickPos;
 
-            QLineF line (x1, y1, x2, y2);
-
             painter->drawLine(x1, y1, x2, y2);
 
             if(m_drawText)
@@ -140,7 +138,6 @@ void Ruler::drawFromOrigin(QPainter *painter, QRectF rulerRect, qreal origin, qr
                 painter->drawText(xt, yt, QString::number(unit*nbreUnit));
             }
         }
-
         nbreUnit++;
     }
 }
