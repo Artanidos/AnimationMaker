@@ -67,7 +67,7 @@ void Ruler::paintEvent(QPaintEvent *)
 
     QPointF starPt = Horizontal == m_rulerType ? rulerRect.bottomLeft() : rulerRect.topRight();
     QPointF endPt = Horizontal == m_rulerType ? rulerRect.bottomRight() : rulerRect.bottomRight();
-    painter.setPen(QPen(Qt::black, 2));
+    painter.setPen(QPen(Qt::gray, 2));
     painter.drawLine(starPt,endPt);
 }
 

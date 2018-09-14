@@ -166,6 +166,7 @@ public slots:
     void sceneItemRemoved(AnimationItem *item);
     void idChanged(AnimationItem *, QString);
     void transitionSelectionChanged(KeyFrame *frame);
+    void changeZoom(int zoom);
 };
 
 #endif // MAINWINDOW_H

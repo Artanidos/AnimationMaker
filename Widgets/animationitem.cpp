@@ -712,9 +712,12 @@ void AnimationItem::setOpacity(int opacity)
 
 void AnimationItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    scene()->clearSelection();
-    setSelected(true);
-    m_contextMenu->exec(event->screenPos());
+    if(!m_isSceneRect)
+    {
+        scene()->clearSelection();
+        setSelected(true);
+        m_contextMenu->exec(event->screenPos());
+    }
 }
 
 void AnimationItem::lowerAction()

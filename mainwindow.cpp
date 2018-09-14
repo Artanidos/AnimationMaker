@@ -370,6 +370,25 @@ void MainWindow::createGui()
     connect(scene, SIGNAL(itemRemoved(AnimationItem*)), this, SLOT(sceneItemRemoved(AnimationItem*)));
     connect(scene, SIGNAL(animationResetted()), this, SLOT(reset()));
 
+    QWidget *w = new QWidget();
+    QVBoxLayout *vbox = new QVBoxLayout();
+    QHBoxLayout *hbox = new QHBoxLayout();
+    QComboBox *zoom = new QComboBox();
+    zoom->addItem("1:4");
+    zoom->addItem("1:2");
+    zoom->addItem("1:1");
+    zoom->addItem("2:1");
+    zoom->addItem("4:1");
+    zoom->addItem("8:1");
+    zoom->addItem("16:1");
+    connect(zoom, SIGNAL(currentIndexChanged(int)), this, SLOT(changeZoom(int)));
+
+    vbox->addWidget(view);
+    vbox->addLayout(hbox);
+    hbox->addWidget(zoom);
+    hbox->addStretch();
+    w->setLayout(vbox);
+
     elementTree = new QTreeWidget();
     elementTree->header()->close();
     elementTree->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -391,7 +410,7 @@ void MainWindow::createGui()
     connect(m_scenePropertyEditor, SIGNAL(addKeyFrame(AnimationItem*,QString,QVariant)), timeline, SLOT(addKeyFrame(AnimationItem*,QString,QVariant)));
 
     splitter = new QSplitter(Qt::Vertical);
-    splitter->addWidget(view);
+    splitter->addWidget(w);
     splitter->addWidget(timeline);
 
     setCentralWidget(splitter);
@@ -825,6 +844,35 @@ void MainWindow::transitionSelectionChanged(KeyFrame *frame)
     }
     else
         propertiesdock->setWidget(m_scenePropertyEditor);
+}
+
+void MainWindow::changeZoom(int zoom)
+{
+    view->resetMatrix();
+    switch(zoom)
+    {
+    case 0:
+        view->scale(0.25, 0.25);
+        break;
+    case 1:
+        view->scale(0.5, 0.5);
+        break;
+    case 2:
+        view->scale(1.,1.);
+        break;
+    case 3:
+        view->scale(2.,2.);
+        break;
+    case 4:
+        view->scale(4.,4.);
+        break;
+    case 5:
+        view->scale(8.,8.);
+        break;
+    case 6:
+        view->scale(16.,16.);
+        break;
+    }
 }
 
 void MainWindow::exportMovie()
