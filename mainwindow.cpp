@@ -436,6 +436,7 @@ void MainWindow::writeSettings()
     settings.setValue("state", saveState());
     settings.setValue("email", m_email);
     settings.setValue("licenseKey", m_licenseKey);
+    settings.setValue("rulers", showRulerAct->isChecked());
 }
 
 void MainWindow::readSettings()
@@ -475,6 +476,12 @@ void MainWindow::readSettings()
         m_licensed = true;
     }
 #endif
+    bool showRulers = settings.value("rulers", "true").toBool();
+    if(!showRulers)
+    {
+        showRulerAct->setChecked(false);
+        view->showRulers(false);
+    }
 }
 
 void MainWindow::createActions()
