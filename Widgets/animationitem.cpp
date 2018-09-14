@@ -673,7 +673,7 @@ void AnimationItem::adjustKeyframes(QString propertyName, QVariant value, int ti
                 KeyFrame *newFrame = new KeyFrame();
                 newFrame->setValue(value);
                 newFrame->setTime(time);
-                if(last == NULL)
+                if(last == nullptr)
                 {
                     newFrame->setNext(first);
                     first->setPrev(newFrame);
@@ -697,6 +697,7 @@ void AnimationItem::adjustKeyframes(QString propertyName, QVariant value, int ti
                     if(autotransition)
                         last->setEasing(QEasingCurve::Linear);
                 }
+                emit keyframeAdded(newFrame);
             }
         }
     }

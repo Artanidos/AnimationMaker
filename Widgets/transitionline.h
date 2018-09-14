@@ -43,7 +43,6 @@ public:
     inline KeyFrame *selectedFrame() {return m_selectedFrame;}
     inline void deselectFrame() {m_selectedFrame = nullptr; update();}
 
-    void addKeyframe(KeyFrame *key);
     void setScrollValue(int value);
     KeyframeHandle *getKeyframeHandle(KeyFrame *key);
     int horizontalScrollValue() {return m_horizontalScrollValue;}
@@ -65,6 +64,9 @@ private:
     int m_horizontalScrollValue;
     QUndoStack *m_undostack;
     Timeline *m_timeline;
+
+public slots:
+    void addKeyframe(KeyFrame *key);
 
 private slots:
     void deleteKeyframe(KeyframeHandle *handle);

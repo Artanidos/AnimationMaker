@@ -21,6 +21,7 @@
 #include "transitionline.h"
 #include "commands.h"
 #include "keyframehandle.h"
+#include "keyframe.h"
 #include "transition.h"
 #include <QPainter>
 #include <QMouseEvent>
@@ -45,6 +46,8 @@ TransitionLine::TransitionLine(AnimationItem *item, QString propertyName, Timeli
     connect(item, SIGNAL(positionChanged(qreal,qreal)), this, SLOT(update()));
     connect(item, SIGNAL(sizeChanged(qreal,qreal)), this, SLOT(update()));
     connect(item, SIGNAL(opacityChanged(int)), this, SLOT(update()));
+    if(!m_propertyName.isEmpty())
+        connect(item, SIGNAL(keyframeAdded(KeyFrame*)), this, SLOT(addKeyframe(KeyFrame*)));
 }
 
 void TransitionLine::paintEvent(QPaintEvent *)

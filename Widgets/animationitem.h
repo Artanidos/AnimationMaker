@@ -157,6 +157,7 @@ signals:
     void brushChanged(QColor);
     void penChanged(QColor);
     void opacityChanged(int opacity);
+    void keyframeAdded(KeyFrame *key);
 
 protected:
     void setHandlePositions();
