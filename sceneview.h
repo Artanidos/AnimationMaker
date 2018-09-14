@@ -30,6 +30,8 @@ class SceneView : public QGraphicsView
 public:
     SceneView(AnimationScene *scene);
 
+    void showRulers(bool mode);
+
 protected:
     void mouseMoveEvent(QMouseEvent* event);
     void scrollContentsBy(int dx, int dy);
@@ -37,6 +39,7 @@ protected:
 private:
     Ruler *m_horizontalRuler;
     Ruler *m_verticalRuler;
+    QWidget* m_corner;
 };
 
 #endif // SCENEVIEW_H

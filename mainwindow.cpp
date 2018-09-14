@@ -531,6 +531,11 @@ void MainWindow::createActions()
     showToolPanelAct = new QAction("Tools");
     connect(showToolPanelAct, SIGNAL(triggered()), this, SLOT(showToolPanel()));
 
+    showRulerAct = new QAction("Rulers");
+    showRulerAct->setCheckable(true);
+    showRulerAct->setChecked(true);
+    connect(showRulerAct, SIGNAL(triggered()), this, SLOT(showRuler()));
+
     aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
@@ -581,6 +586,7 @@ void MainWindow::createMenus()
     viewMenu->addAction(showToolPanelAct);
     viewMenu->addAction(showElementsAct);
     viewMenu->addAction(showPropertyPanelAct);
+    viewMenu->addAction(showRulerAct);
 
     menuBar()->addSeparator();
 
@@ -760,6 +766,11 @@ void MainWindow::showToolPanel()
 void MainWindow::showElementsPanel()
 {
     elementsdock->setVisible(true);
+}
+
+void MainWindow::showRuler()
+{
+    view->showRulers(showRulerAct->isChecked());
 }
 
 void MainWindow::copy()

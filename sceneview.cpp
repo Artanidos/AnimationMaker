@@ -36,15 +36,23 @@ SceneView::SceneView(AnimationScene *scene)
     m_horizontalRuler = new Ruler(Ruler::Horizontal);
     m_verticalRuler = new Ruler(Ruler::Vertical);
 
-    QWidget* corner = new QWidget();
-    corner->setBackgroundRole(QPalette::Window);
-    corner->setFixedSize(20, 20);
-    gridLayout->addWidget(corner, 0, 0);
+    m_corner = new QWidget();
+    m_corner->setBackgroundRole(QPalette::Window);
+    m_corner->setFixedSize(20, 20);
+    gridLayout->addWidget(m_corner, 0, 0);
     gridLayout->addWidget(m_horizontalRuler, 0, 1);
     gridLayout->addWidget(m_verticalRuler, 1, 0);
     gridLayout->addWidget(viewport(), 1, 1);
 
     setLayout(gridLayout);
+}
+
+void SceneView::showRulers(bool mode)
+{
+    setViewportMargins(mode * 20, mode * 20, 0, 0);
+    m_corner->setVisible(mode);
+    m_horizontalRuler->setVisible(mode);
+    m_verticalRuler->setVisible(mode);
 }
 
 void SceneView::mouseMoveEvent(QMouseEvent *event)

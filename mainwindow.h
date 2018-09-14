@@ -116,6 +116,7 @@ private:
     QAction *showPropertyPanelAct;
     QAction *showToolPanelAct;
     QAction *showElementsAct;
+    QAction *showRulerAct;
     QAction *exportMovieAct;
     QAction *undoAct;
     QAction *redoAct;
@@ -155,6 +156,7 @@ public slots:
     void showPropertyPanel();
     void showToolPanel();
     void showElementsPanel();
+    void showRuler();
     void sceneSelectionChanged();
     void timelineSelectionChanged(AnimationItem*);
     void copy();
