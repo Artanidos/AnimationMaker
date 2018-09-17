@@ -48,6 +48,8 @@ public:
     int horizontalScrollValue() {return m_horizontalScrollValue;}
     Transition *getTransition(KeyFrame *key);
 
+    bool eventFilter(QObject *object, QEvent *event) Q_DECL_OVERRIDE;
+
 signals:
     void keyframeDeleted(AnimationItem *item, QString propertyName, KeyFrame *frame);
     void deleteTransition(AnimationItem *item, QString propertyName, KeyFrame *frame);

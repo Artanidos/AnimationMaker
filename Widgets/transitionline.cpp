@@ -94,6 +94,8 @@ void TransitionLine::addKeyframe(KeyFrame *key)
         Transition *trans = new Transition(this, key->prev(), m_timeline, m_undostack);
         trans->move(key->prev()->time() / 5 - m_horizontalScrollValue * 20,0);
         connect(trans, SIGNAL(transitionMoved(Transition*,int)), this, SLOT(moveTransition(Transition*,int)));
+        connect(trans, SIGNAL(transitionResized()), this, SLOT(transitionResized()));
+        trans->installEventFilter(this);
         // no need to add a keyframehandle when a transition exists
         return;
     }
@@ -182,6 +184,7 @@ void TransitionLine::addTransition(KeyFrame *key)
     trans->move(key->time() / 5 - m_horizontalScrollValue * 20,0);
     connect(trans, SIGNAL(transitionMoved(Transition*,int)), this, SLOT(moveTransition(Transition*,int)));
     connect(trans, SIGNAL(transitionResized()), this, SLOT(transitionResized()));
+    trans->installEventFilter(this);
 
     // remove keyframe handles
     QList<KeyframeHandle*> handles = findChildren<KeyframeHandle*>();
@@ -222,4 +225,19 @@ void TransitionLine::moveTransition(Transition *transition, int time)
 void TransitionLine::transitionResized()
 {
     update();
+}
+
+bool TransitionLine::eventFilter(QObject *object, QEvent *event)
+{
+    if (event->type() == QEvent::FocusIn)
+    {
+        Transition *t = dynamic_cast<Transition*>(object);
+        if(t)
+            emit m_timeline->transitionSelectionChanged(t->key());
+    }
+    else if(event->type() == QEvent::FocusOut)
+    {
+        //emit m_timeline->transitionSelectionChanged(nullptr);
+    }
+    return false;
 }
