@@ -37,7 +37,7 @@
 class WIDGETSSHARED_EXPORT ItemHandle : public QGraphicsItem
 {
 public:
-    explicit ItemHandle(int corner = 0);
+    explicit ItemHandle(int corner = 0, int scaling = 1);
 
     int  getCorner();
     void setMouseState(int);
@@ -45,6 +45,8 @@ public:
 
     qreal mouseDownX;
     qreal mouseDownY;
+
+    qreal width() {return m_width;}
 
     enum {kMouseReleased=0, kMouseDown, kMouseMoving};
 

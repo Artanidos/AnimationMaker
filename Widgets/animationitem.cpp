@@ -117,9 +117,9 @@ void AnimationItem::addKeyframe(QString propertyName, KeyFrame *frame)
         }
         else
         {
-            for(KeyFrame *f = first; f!= NULL; f=f->next())
+            for(KeyFrame *f = first; f!= nullptr; f=f->next())
             {
-                if(f->next() == NULL)
+                if(f->next() == nullptr)
                 {
                     // append
                     f->setNext(frame);
@@ -208,8 +208,8 @@ void AnimationItem::setRect(qreal x, qreal y, qreal w, qreal h)
     update();
     if(m_scene)
     {
-        adjustKeyframes("width", QVariant(w), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
-        adjustKeyframes("height", QVariant(h), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
+        //adjustKeyframes("width", QVariant(w), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(),nullptr, false);
+        //adjustKeyframes("height", QVariant(h), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(), nullptr, false);
         emit sizeChanged(w, h);
     }
 }
@@ -320,36 +320,36 @@ bool AnimationItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 
     switch (event->type() )
     {
-        case QEvent::GraphicsSceneMousePress:
-        {
-            m_oldx = this->pos().x();
-            m_oldy = this->pos().y();
-            m_oldwidth = this->rect().width();
-            m_oldheight = this->rect().height();
+    case QEvent::GraphicsSceneMousePress:
+    {
+        m_oldx = this->pos().x();
+        m_oldy = this->pos().y();
+        m_oldwidth = this->rect().width();
+        m_oldheight = this->rect().height();
 
-            handle->setMouseState(ItemHandle::kMouseDown);
-            handle->mouseDownX = mevent->pos().x();
-            handle->mouseDownY = mevent->pos().y();
-            break;
-        }
-        case QEvent::GraphicsSceneMouseRelease:
+        handle->setMouseState(ItemHandle::kMouseDown);
+        handle->mouseDownX = mevent->pos().x();
+        handle->mouseDownY = mevent->pos().y();
+        break;
+    }
+    case QEvent::GraphicsSceneMouseRelease:
+    {
+        if(m_oldx != this->pos().x() || m_oldy != this->pos().y() || m_oldwidth != this->rect().width() || m_oldheight != this->rect().height())
         {
-            if(m_oldx != this->pos().x() || m_oldy != this->pos().y() || m_oldwidth != this->rect().width() || m_oldheight != this->rect().height())
-            {
-                QUndoStack *undoStack = m_scene->undoStack();
-                QUndoCommand *cmd = new ScaleItemCommand(this->pos().x(), this->pos().y(), this->rect().width(), this->rect().height(), m_oldx, m_oldy, m_oldwidth, m_oldheight, m_scene, this);
-                undoStack->push(cmd);
-            }
-            handle->setMouseState(ItemHandle::kMouseReleased);
-            break;
+            QUndoStack *undoStack = m_scene->undoStack();
+            QUndoCommand *cmd = new ScaleItemCommand(this->pos().x(), this->pos().y(), this->rect().width(), this->rect().height(), m_oldx, m_oldy, m_oldwidth, m_oldheight, m_scene, this);
+            undoStack->push(cmd);
         }
-        case QEvent::GraphicsSceneMouseMove:
-        {
-            handle->setMouseState(ItemHandle::kMouseMoving );
-            break;
-        }
-        default:
-            return false;
+        handle->setMouseState(ItemHandle::kMouseReleased);
+        break;
+    }
+    case QEvent::GraphicsSceneMouseMove:
+    {
+        handle->setMouseState(ItemHandle::kMouseMoving );
+        break;
+    }
+    default:
+        return false;
     }
 
     if ( handle->getMouseState() == ItemHandle::kMouseMoving )
@@ -360,50 +360,50 @@ bool AnimationItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
         int YaxisSign = 0;
         switch(handle->getCorner())
         {
-            case 0:
-            {
-                XaxisSign = +1;
-                YaxisSign = +1;
-                break;
-            }
-            case 1:
-            {
-                XaxisSign = -1;
-                YaxisSign = +1;
-                break;
-            }
-            case 2:
-            {
-                XaxisSign = -1;
-                YaxisSign = -1;
-                break;
-            }
-            case 3:
-            {
-                XaxisSign = +1;
-                YaxisSign = -1;
-                break;
-            }
-            case 4:
-            {
-                YaxisSign = +1;
-                break;
-            }
-            case 5:
-            {
-                XaxisSign = -1;
-                break;
-            }
-            case 6:
-            {
-                YaxisSign = -1;
-                break;
-            }
-            case 7:
-            {
-                XaxisSign = +1;
-                break;
-            }
+        case 0:
+        {
+            XaxisSign = +1;
+            YaxisSign = +1;
+            break;
+        }
+        case 1:
+        {
+            XaxisSign = -1;
+            YaxisSign = +1;
+            break;
+        }
+        case 2:
+        {
+            XaxisSign = -1;
+            YaxisSign = -1;
+            break;
+        }
+        case 3:
+        {
+            XaxisSign = +1;
+            YaxisSign = -1;
+            break;
+        }
+        case 4:
+        {
+            YaxisSign = +1;
+            break;
+        }
+        case 5:
+        {
+            XaxisSign = -1;
+            break;
+        }
+        case 6:
+        {
+            YaxisSign = -1;
+            break;
+        }
+        case 7:
+        {
+            XaxisSign = +1;
+            break;
+        }
         }
 
         int xMoved = handle->mouseDownX - x;
@@ -440,8 +440,8 @@ bool AnimationItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
         }
 
         setRect(0,0,rect().width() + deltaWidth, rect().height() + deltaHeight);
-        adjustKeyframes("width", QVariant(rect().width() + deltaWidth), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
-        adjustKeyframes("height", QVariant(rect().height() + deltaHeight), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
+        //adjustKeyframes("width", QVariant(rect().width() + deltaWidth), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(), nullptr, false);
+        //adjustKeyframes("height", QVariant(rect().height() + deltaHeight), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(), nullptr, false);
         scaleObjects();
 
         deltaWidth *= (-1);
@@ -454,113 +454,113 @@ bool AnimationItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 
         switch(handle->getCorner())
         {
-            case 0: // top left
+        case 0: // top left
+        {
+            if(shiftPressed)
             {
-                if(shiftPressed)
-                {
-                    newXpos = this->pos().x() + deltaWidth / 2;
-                    newYpos = this->pos().y() + deltaHeight / 2;
-                }
-                else
-                {
-                    newXpos = this->pos().x() + deltaWidth;
-                    newYpos = this->pos().y() + deltaHeight;
-                }
-                break;
+                newXpos = this->pos().x() + deltaWidth / 2;
+                newYpos = this->pos().y() + deltaHeight / 2;
             }
-            case 1: // top right
+            else
             {
-                if(shiftPressed)
-                {
-                    newXpos = this->pos().x() + deltaWidth / 2;
-                    newYpos = this->pos().y() + deltaHeight / 2;
-                }
-                else
-                    newYpos = this->pos().y() + deltaHeight;
-                break;
+                newXpos = this->pos().x() + deltaWidth;
+                newYpos = this->pos().y() + deltaHeight;
             }
-            case 2: // bottom right
+            break;
+        }
+        case 1: // top right
+        {
+            if(shiftPressed)
             {
-                if(shiftPressed)
-                {
-                    newXpos = this->pos().x() + deltaWidth / 2;
-                    newYpos = this->pos().y() + deltaHeight / 2;
-                }
-                break;
+                newXpos = this->pos().x() + deltaWidth / 2;
+                newYpos = this->pos().y() + deltaHeight / 2;
             }
-            case 3: // bottom left
+            else
+                newYpos = this->pos().y() + deltaHeight;
+            break;
+        }
+        case 2: // bottom right
+        {
+            if(shiftPressed)
             {
-                if(shiftPressed)
-                {
-                    newXpos = this->pos().x() + deltaWidth / 2;
-                    newYpos = this->pos().y() + deltaHeight / 2;
-                }
-                else
-                    newXpos = this->pos().x() + deltaWidth;
-                break;
+                newXpos = this->pos().x() + deltaWidth / 2;
+                newYpos = this->pos().y() + deltaHeight / 2;
             }
-            case 4: // top
+            break;
+        }
+        case 3: // bottom left
+        {
+            if(shiftPressed)
             {
-                if(shiftPressed)
-                {
-                    newXpos = this->pos().x() + deltaWidth / 2;
-                    newYpos = this->pos().y() + deltaHeight / 2;
-                }
-                else if(controlPressed)
-                {
-                    newYpos = this->pos().y() + deltaHeight;
-                    newXpos = this->pos().x() + deltaWidth / 2;
-                }
-                else
-                {
-                    newYpos = this->pos().y() + deltaHeight;
-                }
-                break;
+                newXpos = this->pos().x() + deltaWidth / 2;
+                newYpos = this->pos().y() + deltaHeight / 2;
             }
-            case 5: // right
+            else
+                newXpos = this->pos().x() + deltaWidth;
+            break;
+        }
+        case 4: // top
+        {
+            if(shiftPressed)
             {
-                if(shiftPressed)
-                {
-                    newXpos = this->pos().x() + deltaWidth / 2;
-                    newYpos = this->pos().y() + deltaHeight / 2;
-                }
-                else if(controlPressed)
-                {
-                    newYpos = this->pos().y() + deltaHeight / 2;
-                }
-                break;
+                newXpos = this->pos().x() + deltaWidth / 2;
+                newYpos = this->pos().y() + deltaHeight / 2;
             }
-            case 6: // bottom
+            else if(controlPressed)
             {
-                if(shiftPressed)
-                {
-                    newXpos = this->pos().x() + deltaWidth / 2;
-                    newYpos = this->pos().y() + deltaHeight / 2;
-                }
-                else if(controlPressed)
-                {
-                    newXpos = this->pos().x() + deltaWidth / 2;
-                }
-                break;
+                newYpos = this->pos().y() + deltaHeight;
+                newXpos = this->pos().x() + deltaWidth / 2;
             }
-            case 7: // left
+            else
             {
-                if(shiftPressed)
-                {
-                    newXpos = this->pos().x() + deltaWidth / 2;
-                    newYpos = this->pos().y() + deltaHeight / 2;
-                }
-                else if(controlPressed)
-                {
-                    newXpos = this->pos().x() + deltaWidth;
-                    newYpos = this->pos().y() + deltaHeight / 2;
-                }
-                else
-                {
-                    newXpos = this->pos().x() + deltaWidth;
-                }
-                break;
+                newYpos = this->pos().y() + deltaHeight;
             }
+            break;
+        }
+        case 5: // right
+        {
+            if(shiftPressed)
+            {
+                newXpos = this->pos().x() + deltaWidth / 2;
+                newYpos = this->pos().y() + deltaHeight / 2;
+            }
+            else if(controlPressed)
+            {
+                newYpos = this->pos().y() + deltaHeight / 2;
+            }
+            break;
+        }
+        case 6: // bottom
+        {
+            if(shiftPressed)
+            {
+                newXpos = this->pos().x() + deltaWidth / 2;
+                newYpos = this->pos().y() + deltaHeight / 2;
+            }
+            else if(controlPressed)
+            {
+                newXpos = this->pos().x() + deltaWidth / 2;
+            }
+            break;
+        }
+        case 7: // left
+        {
+            if(shiftPressed)
+            {
+                newXpos = this->pos().x() + deltaWidth / 2;
+                newYpos = this->pos().y() + deltaHeight / 2;
+            }
+            else if(controlPressed)
+            {
+                newXpos = this->pos().x() + deltaWidth;
+                newYpos = this->pos().y() + deltaHeight / 2;
+            }
+            else
+            {
+                newXpos = this->pos().x() + deltaWidth;
+            }
+            break;
+        }
         }
         if(newXpos != this->pos().x() || newYpos != this->pos().y())
         {
@@ -576,16 +576,21 @@ bool AnimationItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 
 void AnimationItem::setHandlePositions()
 {
+    qreal halfwidth;
     if(!m_hasHandles)
         return;
-    m_handles[0]->setPos(x() - 4, y() - 4);
-    m_handles[1]->setPos(x() + rect().width() - 4, y() - 4);
-    m_handles[2]->setPos(x() + rect().width() - 4, y() + rect().height() - 4);
-    m_handles[3]->setPos(x() - 4, y() + rect().height() - 4);
-    m_handles[4]->setPos(x() + rect().width() / 2 - 4, y() - 4);
-    m_handles[5]->setPos(x() + rect().width() - 4, y() + rect().height() / 2 - 4);
-    m_handles[6]->setPos(x() + rect().width() /2 - 4, y() + rect().height() - 4);
-    m_handles[7]->setPos(x() - 4, y() + rect().height() / 2 - 4);
+
+    halfwidth = m_handles[0]->width() / 2.0;
+    m_handles[0]->setPos(x() - halfwidth, y() - halfwidth);
+    m_handles[1]->setPos(x() + rect().width() - halfwidth, y() - halfwidth);
+    m_handles[2]->setPos(x() + rect().width() - halfwidth, y() + rect().height() - halfwidth);
+    m_handles[3]->setPos(x() - halfwidth, y() + rect().height() - halfwidth);
+    m_handles[4]->setPos(x() + rect().width() / 2 - halfwidth, y() - halfwidth);
+    m_handles[5]->setPos(x() + rect().width() - halfwidth, y() + rect().height() / 2 - halfwidth);
+    m_handles[6]->setPos(x() + rect().width() /2 - halfwidth, y() + rect().height() - halfwidth);
+    m_handles[7]->setPos(x() - halfwidth, y() + rect().height() / 2 - halfwidth);
+
+    m_scene->update(x() - halfwidth - 5, y() - halfwidth - 5, x() + rect().width() + halfwidth * 2 + 5, y() + rect().height() + halfwidth * 2 + 5);
 }
 
 QVariant AnimationItem::itemChange(GraphicsItemChange change, const QVariant &value)
@@ -598,7 +603,7 @@ QVariant AnimationItem::itemChange(GraphicsItemChange change, const QVariant &va
             {
                 for(int i = 0; i < 8; i++)
                 {
-                    m_handles[i] = new ItemHandle(i);
+                    m_handles[i] = new ItemHandle(i, scene()->scaling());
                     this->scene()->addItem(m_handles[i]);
                     m_handles[i]->installSceneEventFilter(this);
                 }
@@ -630,8 +635,8 @@ QVariant AnimationItem::itemChange(GraphicsItemChange change, const QVariant &va
 
 void AnimationItem::posChanged(qreal x, qreal y)
 {
-    adjustKeyframes("left", QVariant(x), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
-    adjustKeyframes("top", QVariant(y), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition());
+    //adjustKeyframes("left", QVariant(x), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(), nullptr, false);
+    //adjustKeyframes("top", QVariant(y), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(), nullptr, false);
     emit positionChanged(x, y);
 }
 
@@ -640,14 +645,38 @@ void AnimationItem::posChanged(qreal x, qreal y)
  * and adjust its value.
  * If no keyframe will be found and autokeyframe is switched to on a new keyframe will be added
  */
-void AnimationItem::adjustKeyframes(QString propertyName, QVariant value, int time, bool autokeyframes, bool autotransition)
+void AnimationItem::adjustKeyframes(QString propertyName, QVariant value, int time, bool autokeyframes, bool autotransition, KeyFrame **key, bool undo)
 {
     if(m_keyframes->contains(propertyName))
     {
+        if(undo && (*key) != nullptr)
+        {
+            if(autotransition)
+            {
+                if((*key)->prev()->easing() > -1)
+                {
+                    (*key)->prev()->setEasing(-1);
+                    emit transitionRemoved((*key)->prev());
+                }
+            }
+            // we have to drop the newest keyframe here while undoing
+            if((*key)->next())
+            {
+                (*key)->next()->setPrev((*key)->prev());
+            }
+            if((*key)->prev())
+            {
+                (*key)->prev()->setNext((*key)->next());
+            }
+            emit keyframeRemoved((*key));
+            delete (*key);
+            (*key) = nullptr;
+        }
+
         KeyFrame *first = m_keyframes->value(propertyName);
-        KeyFrame *found = NULL;
-        KeyFrame *last = NULL;
-        for(KeyFrame *frame = first; frame != NULL; frame = frame->next())
+        KeyFrame *found = nullptr;
+        KeyFrame *last = nullptr;
+        for(KeyFrame *frame = first; frame != nullptr; frame = frame->next())
         {
             if(autokeyframes)
             {
@@ -668,36 +697,36 @@ void AnimationItem::adjustKeyframes(QString propertyName, QVariant value, int ti
         }
         else
         {
-            if(autokeyframes)
+            if(autokeyframes && !undo)
             {
-                KeyFrame *newFrame = new KeyFrame();
-                newFrame->setValue(value);
-                newFrame->setTime(time);
+                *key = new KeyFrame();
+                (*key)->setValue(value);
+                (*key)->setTime(time);
                 if(last == nullptr)
                 {
-                    newFrame->setNext(first);
-                    first->setPrev(newFrame);
+                    (*key)->setNext(first);
+                    first->setPrev((*key));
                     // first has changed, so update hash
                     m_keyframes->remove(propertyName);
-                    m_keyframes->insert(propertyName, newFrame);
+                    m_keyframes->insert(propertyName, (*key));
 
                     if(autotransition)
-                        newFrame->setEasing(QEasingCurve::Linear);
+                        (*key)->setEasing(QEasingCurve::Linear);
                 }
                 else
                 {
-                    newFrame->setPrev(last);
+                    (*key)->setPrev(last);
                     if(last->next())
                     {
-                        newFrame->setNext(last->next());
-                        last->next()->setPrev(newFrame);
+                        (*key)->setNext(last->next());
+                        last->next()->setPrev((*key));
                     }
-                    last->setNext(newFrame);
+                    last->setNext((*key));
 
                     if(autotransition)
                         last->setEasing(QEasingCurve::Linear);
                 }
-                emit keyframeAdded(newFrame);
+                emit keyframeAdded((*key));
             }
         }
     }

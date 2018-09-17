@@ -374,13 +374,12 @@ void MainWindow::createGui()
     QVBoxLayout *vbox = new QVBoxLayout();
     QHBoxLayout *hbox = new QHBoxLayout();
     QComboBox *zoom = new QComboBox();
-    zoom->addItem("1:4");
     zoom->addItem("1:2");
     zoom->addItem("1:1");
     zoom->addItem("2:1");
     zoom->addItem("4:1");
     zoom->addItem("8:1");
-    zoom->addItem("16:1");
+    zoom->setCurrentIndex(1);
     connect(zoom, SIGNAL(currentIndexChanged(int)), this, SLOT(changeZoom(int)));
 
     vbox->addWidget(view);
@@ -849,29 +848,33 @@ void MainWindow::transitionSelectionChanged(KeyFrame *frame)
 void MainWindow::changeZoom(int zoom)
 {
     view->resetMatrix();
+    scene->setScaling(zoom);
+    QList<QGraphicsItem*> list = scene->selectedItems();
+    foreach(QGraphicsItem* item,list)
+    {
+        item->setSelected(false);
+    }
     switch(zoom)
     {
     case 0:
-        view->scale(0.25, 0.25);
-        break;
-    case 1:
         view->scale(0.5, 0.5);
         break;
-    case 2:
+    case 1:
         view->scale(1.,1.);
         break;
-    case 3:
+    case 2:
         view->scale(2.,2.);
         break;
-    case 4:
+    case 3:
         view->scale(4.,4.);
         break;
-    case 5:
+    case 4:
         view->scale(8.,8.);
         break;
-    case 6:
-        view->scale(16.,16.);
-        break;
+    }
+    foreach(QGraphicsItem* item,list)
+    {
+        item->setSelected(true);
     }
 }
 

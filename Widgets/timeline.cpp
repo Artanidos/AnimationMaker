@@ -42,12 +42,14 @@ Timeline::Timeline(AnimationScene *scene)
     autokeyframeButton->setCheckable(true);
     autokeyframeButton->setChecked(false);
     autokeyframeButton->setIcon(QIcon(":/images/autokeyframe.png"));
+    autokeyframeButton->setToolTip("Auto keyframes");
     connect(autokeyframeButton, SIGNAL(toggled(bool)), this, SLOT(autokeyframes(bool)));
 
     QToolButton *autotransitionButton = new QToolButton();
     autotransitionButton->setCheckable(true);
     autotransitionButton->setChecked(false);
     autotransitionButton->setIcon(QIcon(":/images/autotransition.png"));
+    autotransitionButton->setToolTip("Auto transitions");
     connect(autotransitionButton, SIGNAL(toggled(bool)), this, SLOT(autotransitions(bool)));
     playButton = new QToolButton();
     pauseButton = new QToolButton();
@@ -67,7 +69,7 @@ Timeline::Timeline(AnimationScene *scene)
 
     QAction *reverseAct = new QAction("Reverse");
     reverseAct->setIcon(QIcon(":/images/reverse.png"));
-    reverseAct->setToolTip("Reset the animation");
+    reverseAct->setToolTip("Reverse the animation");
     connect(reverseAct, SIGNAL(triggered()), this, SLOT(revertAnimation()));
 
     QAction *forwardAct = new QAction("Forward");

@@ -49,6 +49,7 @@ void AnimationScene::initialize()
     m_copy = nullptr;
     m_playheadPosition = 0;
     m_movingItem = nullptr;
+    m_scaling = 1;
     addBackgroundRect();
 }
 

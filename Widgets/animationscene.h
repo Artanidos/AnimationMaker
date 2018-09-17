@@ -89,6 +89,9 @@ public:
 
     void exportXml(QString fileName, bool exportAll = true);
     bool importXml(QString fileName);
+
+    int scaling() {return m_scaling;}
+    void setScaling(int scaling) {m_scaling = scaling;}
         
 signals:
     void itemAdded(QGraphicsItem *item);
@@ -123,6 +126,7 @@ private:
     QString m_actPluginName;
     QGraphicsRectItem *m_blackSelectionRect;
     QGraphicsRectItem *m_whiteSelectionRect;
+    int m_scaling;
 
     void initialize();
     void addBackgroundRect();

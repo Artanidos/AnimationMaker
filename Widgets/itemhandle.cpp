@@ -22,17 +22,38 @@
 
 #include <QTest>
 
-ItemHandle::ItemHandle(int corner) :
+ItemHandle::ItemHandle(int corner, int scaling) :
     mouseDownX(0),
     mouseDownY(0),
     m_color(Qt::black),
     m_pen(Qt::white),
-    m_width(9),
-    m_height(9),
     m_corner(corner),
     m_mouseButtonState(kMouseReleased)
 {
     m_pen.setWidth(1);
+    switch(scaling)
+    {
+    case 0:
+        m_width = 18.;
+        m_height = 18.;
+        break;
+    case 1:
+        m_width = 9.;
+        m_height = 9.;
+        break;
+    case 2:
+        m_width = 4.5;
+        m_height = 4.5;
+        break;
+    case 3:
+        m_width = 2.25;
+        m_height = 2.25;
+        break;
+    case 4:
+        m_width = 2.25;
+        m_height = 2.25;
+        break;
+    }
     this->setAcceptHoverEvents(true);
     setZValue(100);
 

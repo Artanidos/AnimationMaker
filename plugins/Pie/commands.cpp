@@ -30,20 +30,21 @@ ChangeStartAngleCommand::ChangeStartAngleCommand(int newValue, int oldValue, Ani
     m_time = scene->playheadPosition();
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
+    m_keyframe  = nullptr;
     setText("Change Pie Start Angle");
 }
 
 void ChangeStartAngleCommand::undo()
 {
     m_pie->setStartAngle(m_oldValue);
-    m_pie->adjustKeyframes("startAngle", QVariant(m_oldValue), m_time, m_autokeyframes, m_autotransition);
+    m_pie->adjustKeyframes("startAngle", QVariant(m_oldValue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
     emit m_pie->startAngleChanged(m_oldValue);
 }
 
 void ChangeStartAngleCommand::redo()
 {
     m_pie->setStartAngle(m_newValue);
-    m_pie->adjustKeyframes("startAngle", QVariant(m_newValue), m_time, m_autokeyframes, m_autotransition);
+    m_pie->adjustKeyframes("startAngle", QVariant(m_newValue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
     emit m_pie->startAngleChanged(m_newValue);
 }
 
@@ -56,19 +57,20 @@ ChangeSpanAngleCommand::ChangeSpanAngleCommand(int newValue, int oldValue, Anima
     m_time = scene->playheadPosition();
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
+    m_keyframe  = nullptr;
     setText("Change Pie Span Angle");
 }
 
 void ChangeSpanAngleCommand::undo()
 {
     m_pie->setSpanAngle(m_oldValue);
-    m_pie->adjustKeyframes("spanAngle", QVariant(m_oldValue), m_time, m_autokeyframes, m_autotransition);
+    m_pie->adjustKeyframes("spanAngle", QVariant(m_oldValue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
     emit m_pie->spanAngleChanged(m_oldValue);
 }
 
 void ChangeSpanAngleCommand::redo()
 {
     m_pie->setSpanAngle(m_newValue);
-    m_pie->adjustKeyframes("spanAngle", QVariant(m_newValue), m_time, m_autokeyframes, m_autotransition);
+    m_pie->adjustKeyframes("spanAngle", QVariant(m_newValue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
     emit m_pie->spanAngleChanged(m_newValue);
 }

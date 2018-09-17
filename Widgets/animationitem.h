@@ -103,7 +103,7 @@ public:
     bool deleteKeyframe(QString propertyName, KeyFrame *frame);
     inline QHash<QString, KeyFrame*> *keyframes() {return m_keyframes;}
 
-    void adjustKeyframes(QString propertyName, QVariant value, int time, bool autokeyframes, bool autotransition);
+    void adjustKeyframes(QString propertyName, QVariant value, int time, bool autokeyframes, bool autotransition, KeyFrame **key, bool undo);
 
     void posChanged(qreal x, qreal y);
 
@@ -158,6 +158,8 @@ signals:
     void penChanged(QColor);
     void opacityChanged(int opacity);
     void keyframeAdded(KeyFrame *key);
+    void keyframeRemoved(KeyFrame *key);
+    void transitionRemoved(KeyFrame *key);
 
 protected:
     void setHandlePositions();

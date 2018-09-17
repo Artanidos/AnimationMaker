@@ -47,7 +47,11 @@ TransitionLine::TransitionLine(AnimationItem *item, QString propertyName, Timeli
     connect(item, SIGNAL(sizeChanged(qreal,qreal)), this, SLOT(update()));
     connect(item, SIGNAL(opacityChanged(int)), this, SLOT(update()));
     if(!m_propertyName.isEmpty())
+    {
         connect(item, SIGNAL(keyframeAdded(KeyFrame*)), this, SLOT(addKeyframe(KeyFrame*)));
+        connect(item, SIGNAL(keyframeRemoved(KeyFrame*)), this, SLOT(removeKeyframe(KeyFrame*)));
+        connect(item, SIGNAL(transitionRemoved(KeyFrame*)), this, SLOT(removeTransition(KeyFrame*)));
+    }
 }
 
 void TransitionLine::paintEvent(QPaintEvent *)
@@ -100,9 +104,36 @@ void TransitionLine::addKeyframe(KeyFrame *key)
     handle->move(key->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
 }
 
+void TransitionLine::removeKeyframe(KeyFrame *key)
+{
+    QList<KeyframeHandle*> handles = findChildren<KeyframeHandle*>();
+    foreach(KeyframeHandle *handle, handles)
+    {
+        if(handle->key() == key)
+        {
+            delete handle;
+            update();
+        }
+    }
+}
+
+void TransitionLine::removeTransition(KeyFrame *key)
+{
+    QList<Transition*> transitions = findChildren<Transition*>();
+    foreach(Transition *transition, transitions)
+    {
+        if(transition->key() == key)
+        {
+            delete transition;
+            update();
+        }
+    }
+}
+
 void TransitionLine::setScrollValue(int value)
 {
     m_horizontalScrollValue = value;
+
     QList<KeyframeHandle*> handles = findChildren<KeyframeHandle*>();
     foreach(KeyframeHandle *handle, handles)
     {

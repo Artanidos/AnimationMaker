@@ -40,6 +40,7 @@ private:
    int m_time;
    bool m_autokeyframes;
    bool m_autotransition;
+   KeyFrame *m_keyframe;
 };
 
 class ChangeSpanAngleCommand : public QUndoCommand
@@ -57,6 +58,7 @@ private:
    int m_time;
    bool m_autokeyframes;
    bool m_autotransition;
+   KeyFrame *m_keyframe;
 };
 
 #endif // COMMANDS_H

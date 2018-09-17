@@ -176,21 +176,23 @@ MoveItemCommand::MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, Anima
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_item = item;
+    m_keyframeLeft = nullptr;
+    m_keyframeTop = nullptr;
     setText("Move " + item->typeName());
 }
 
 void MoveItemCommand::undo()
 {
     m_item->setPos(m_oldx, m_oldy);
-    m_item->adjustKeyframes("left", QVariant(m_oldx), m_time, m_autokeyframes, m_autotransition);
-    m_item->adjustKeyframes("top", QVariant(m_oldy), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("left", QVariant(m_oldx), m_time, m_autokeyframes, m_autotransition, &m_keyframeLeft, true);
+    m_item->adjustKeyframes("top", QVariant(m_oldy), m_time, m_autokeyframes, m_autotransition, &m_keyframeTop, true);
 }
 
 void MoveItemCommand::redo()
 {
     m_item->setPos(m_x, m_y);
-    m_item->adjustKeyframes("left", QVariant(m_x), m_time, m_autokeyframes, m_autotransition);
-    m_item->adjustKeyframes("top", QVariant(m_y), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("left", QVariant(m_x), m_time, m_autokeyframes, m_autotransition, &m_keyframeLeft, false);
+    m_item->adjustKeyframes("top", QVariant(m_y), m_time, m_autokeyframes, m_autotransition, &m_keyframeTop, false);
 }
 
 
@@ -205,6 +207,8 @@ ResizeItemCommand::ResizeItemCommand(qreal width, qreal height, qreal oldwidth, 
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_item = item;
+    m_keyframeWidth = nullptr;
+    m_keyframeHeight = nullptr;
     setText("Resize " + item->typeName());
 }
 
@@ -212,8 +216,8 @@ void ResizeItemCommand::undo()
 {
     m_item->setWidth(m_oldwidth);
     m_item->setHeight(m_oldheight);
-    m_item->adjustKeyframes("width", QVariant(m_oldwidth), m_time, m_autokeyframes, m_autotransition);
-    m_item->adjustKeyframes("height", QVariant(m_oldheight), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("width", QVariant(m_oldwidth), m_time, m_autokeyframes, m_autotransition, &m_keyframeWidth, true);
+    m_item->adjustKeyframes("height", QVariant(m_oldheight), m_time, m_autokeyframes, m_autotransition, &m_keyframeHeight, true);
 }
 
 void ResizeItemCommand::redo()
@@ -221,8 +225,8 @@ void ResizeItemCommand::redo()
     m_item->setWidth(m_width);
     m_item->setHeight(m_height);
 
-    m_item->adjustKeyframes("width", QVariant(m_width), m_time, m_autokeyframes, m_autotransition);
-    m_item->adjustKeyframes("height", QVariant(m_height), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("width", QVariant(m_width), m_time, m_autokeyframes, m_autotransition, &m_keyframeWidth, false);
+    m_item->adjustKeyframes("height", QVariant(m_height), m_time, m_autokeyframes, m_autotransition, &m_keyframeHeight, false);
 }
 
 ScaleItemCommand::ScaleItemCommand(qreal x, qreal y, qreal width, qreal height, qreal oldx, qreal oldy, qreal oldwidth, qreal oldheight, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
@@ -240,6 +244,10 @@ ScaleItemCommand::ScaleItemCommand(qreal x, qreal y, qreal width, qreal height, 
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_item = item;
+    m_keyframeLeft = nullptr;
+    m_keyframeTop = nullptr;
+    m_keyframeWidth = nullptr;
+    m_keyframeHeight = nullptr;
     setText("Scale " + item->typeName());
 }
 
@@ -248,10 +256,10 @@ void ScaleItemCommand::undo()
     m_item->setPos(m_oldx, m_oldy);
     m_item->setWidth(m_oldwidth);
     m_item->setHeight(m_oldheight);
-    m_item->adjustKeyframes("left", QVariant(m_oldx), m_time, m_autokeyframes, m_autotransition);
-    m_item->adjustKeyframes("top", QVariant(m_oldy), m_time, m_autokeyframes, m_autotransition);
-    m_item->adjustKeyframes("width", QVariant(m_oldwidth), m_time, m_autokeyframes, m_autotransition);
-    m_item->adjustKeyframes("height", QVariant(m_oldheight), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("left", QVariant(m_oldx), m_time, m_autokeyframes, m_autotransition, &m_keyframeLeft, true);
+    m_item->adjustKeyframes("top", QVariant(m_oldy), m_time, m_autokeyframes, m_autotransition, &m_keyframeTop, true);
+    m_item->adjustKeyframes("width", QVariant(m_oldwidth), m_time, m_autokeyframes, m_autotransition, &m_keyframeWidth, true);
+    m_item->adjustKeyframes("height", QVariant(m_oldheight), m_time, m_autokeyframes, m_autotransition, &m_keyframeHeight, true);
     m_item->scaleObjects();
     m_item->posChanged(m_oldx, m_oldy);
 }
@@ -261,10 +269,10 @@ void ScaleItemCommand::redo()
     m_item->setPos(m_x, m_y);
     m_item->setWidth(m_width);
     m_item->setHeight(m_height);
-    m_item->adjustKeyframes("left", QVariant(m_x), m_time, m_autokeyframes, m_autotransition);
-    m_item->adjustKeyframes("top", QVariant(m_y), m_time, m_autokeyframes, m_autotransition);
-    m_item->adjustKeyframes("width", QVariant(m_width), m_time, m_autokeyframes, m_autotransition);
-    m_item->adjustKeyframes("height", QVariant(m_height), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("left", QVariant(m_x), m_time, m_autokeyframes, m_autotransition, &m_keyframeLeft,false);
+    m_item->adjustKeyframes("top", QVariant(m_y), m_time, m_autokeyframes, m_autotransition, &m_keyframeTop, false);
+    m_item->adjustKeyframes("width", QVariant(m_width), m_time, m_autokeyframes, m_autotransition, &m_keyframeWidth, false);
+    m_item->adjustKeyframes("height", QVariant(m_height), m_time, m_autokeyframes, m_autotransition, &m_keyframeHeight, false);
     m_item->scaleObjects();
     m_item->posChanged(m_x, m_y);
 }
@@ -297,19 +305,20 @@ ChangeColorCommand::ChangeColorCommand(QColor color, QColor oldcolor, AnimationS
     m_time = scene->playheadPosition();
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
     setText("Change " + item->typeName() + " Color");
 }
 
 void ChangeColorCommand::undo()
 {
     m_item->setBrush(QBrush(m_oldcolor));
-    m_item->adjustKeyframes("brushColor", QVariant(m_oldcolor), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("brushColor", QVariant(m_oldcolor), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
 }
 
 void ChangeColorCommand::redo()
 {
     m_item->setBrush(QBrush(m_color));
-    m_item->adjustKeyframes("brushColor", QVariant(m_color), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("brushColor", QVariant(m_color), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
 }
 
 ChangePenCommand::ChangePenCommand(QColor color, QColor oldcolor, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
@@ -321,19 +330,20 @@ ChangePenCommand::ChangePenCommand(QColor color, QColor oldcolor, AnimationScene
     m_time = scene->playheadPosition();
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
     setText("Change " + item->typeName() + " Pen");
 }
 
 void ChangePenCommand::undo()
 {
     m_item->setPen(QPen(m_oldcolor));
-    m_item->adjustKeyframes("penColor", QVariant(m_oldcolor), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("penColor", QVariant(m_oldcolor), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
 }
 
 void ChangePenCommand::redo()
 {
     m_item->setPen(QPen(m_color));
-    m_item->adjustKeyframes("penColor", QVariant(m_color), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("penColor", QVariant(m_color), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
 }
 
 ChangeTextcolorCommand::ChangeTextcolorCommand(QColor color, QColor oldcolor, AnimationScene *scene, Text *item, QUndoCommand *parent)
@@ -345,19 +355,20 @@ ChangeTextcolorCommand::ChangeTextcolorCommand(QColor color, QColor oldcolor, An
     m_time = scene->playheadPosition();
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
     setText("Change " + item->typeName() + " Textcolor");
 }
 
 void ChangeTextcolorCommand::undo()
 {
     m_item->setTextColor(m_oldcolor);
-    m_item->adjustKeyframes("textColor", QVariant(m_oldcolor), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("textColor", QVariant(m_oldcolor), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
 }
 
 void ChangeTextcolorCommand::redo()
 {
     m_item->setTextColor(m_color);
-    m_item->adjustKeyframes("textColor", QVariant(m_color), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("textColor", QVariant(m_color), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
 }
 
 ChangeOpacityCommand::ChangeOpacityCommand(int opacity, int oldopacity, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
@@ -369,19 +380,20 @@ ChangeOpacityCommand::ChangeOpacityCommand(int opacity, int oldopacity, Animatio
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_item = item;
+    m_keyframe = nullptr;
     setText("Change " + item->typeName() + " Opacity");
 }
 
 void ChangeOpacityCommand::undo()
 {
     m_item->setOpacity(m_oldopacity);
-    m_item->adjustKeyframes("opacity", QVariant(m_oldopacity), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("opacity", QVariant(m_oldopacity), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
 }
 
 void ChangeOpacityCommand::redo()
 {
     m_item->setOpacity(m_opacity);
-    m_item->adjustKeyframes("opacity", QVariant(m_opacity), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes("opacity", QVariant(m_opacity), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
 }
 
 AddKeyframeCommand::AddKeyframeCommand(QString propertyName, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent)
@@ -580,19 +592,20 @@ ChangeAttributeCommand::ChangeAttributeCommand(QString attributeName, QString ne
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_item = item;
+    m_keyframe = nullptr;
     setText("Change " + attributeName);
 }
 
 void ChangeAttributeCommand::undo()
 {
     m_item->setAttributeValue(m_attributeName, m_oldValue);
-    m_item->adjustKeyframes(m_attributeName, QVariant(m_oldValue), m_time, m_autokeyframes, m_autotransition);
+    m_item->adjustKeyframes(m_attributeName, QVariant(m_oldValue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
 }
 
 void ChangeAttributeCommand::redo()
 {
      m_item->setAttributeValue(m_attributeName, m_newValue);
-     m_item->adjustKeyframes(m_attributeName, QVariant(m_newValue), m_time, m_autokeyframes, m_autotransition);
+     m_item->adjustKeyframes(m_attributeName, QVariant(m_newValue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
 }
 
 

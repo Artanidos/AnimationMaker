@@ -22,3 +22,5 @@
 - Sans Serif bold has no BOLD only Obliqe and Italic
 
 - Undo of item move should dropped keyframes if they where created using autokeyframes
+
+- Scene FPS should be visibel in timeline

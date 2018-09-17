@@ -67,6 +67,8 @@ private:
 
 public slots:
     void addKeyframe(KeyFrame *key);
+    void removeKeyframe(KeyFrame *key);
+    void removeTransition(KeyFrame *key);
 
 private slots:
     void deleteKeyframe(KeyframeHandle *handle);

@@ -72,6 +72,8 @@ private:
     int m_time;
     bool m_autokeyframes;
     bool m_autotransition;
+    KeyFrame *m_keyframeLeft;
+    KeyFrame *m_keyframeTop;
 };
 
 
@@ -89,6 +91,8 @@ private:
     int m_time;
     bool m_autokeyframes;
     bool m_autotransition;
+    KeyFrame *m_keyframeWidth;
+    KeyFrame *m_keyframeHeight;
 };
 
 
@@ -106,6 +110,10 @@ private:
     int m_time;
     bool m_autokeyframes;
     bool m_autotransition;
+    KeyFrame *m_keyframeLeft;
+    KeyFrame *m_keyframeTop;
+    KeyFrame *m_keyframeWidth;
+    KeyFrame *m_keyframeHeight;
 };
 
 
@@ -136,6 +144,7 @@ private:
     int m_time;
     bool m_autokeyframes;
     bool m_autotransition;
+    KeyFrame *m_keyframe;
 };
 
 class WIDGETSSHARED_EXPORT ChangePenCommand : public QUndoCommand
@@ -152,6 +161,7 @@ private:
     int m_time;
     bool m_autokeyframes;
     bool m_autotransition;
+    KeyFrame *m_keyframe;
 };
 
 class WIDGETSSHARED_EXPORT ChangeTextcolorCommand : public QUndoCommand
@@ -168,6 +178,7 @@ private:
     int m_time;
     bool m_autokeyframes;
     bool m_autotransition;
+    KeyFrame *m_keyframe;
 };
 
 class WIDGETSSHARED_EXPORT ChangeOpacityCommand : public QUndoCommand
@@ -184,6 +195,7 @@ private:
     int m_time;
     bool m_autokeyframes;
     bool m_autotransition;
+    KeyFrame *m_keyframe;
 };
 
 class WIDGETSSHARED_EXPORT AddKeyframeCommand : public QUndoCommand
@@ -335,6 +347,7 @@ private:
     int m_time;
     bool m_autokeyframes;
     bool m_autotransition;
+    KeyFrame *m_keyframe;
 };
 
 class WIDGETSSHARED_EXPORT ChangeSvgCommand : public QUndoCommand
