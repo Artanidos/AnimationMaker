@@ -309,12 +309,6 @@ void Timeline::addTransitionSlot(AnimationItem *item, QString propertyName, KeyF
     m_scene->undoStack()->push(cmd);
 }
 
-void Timeline::deleteTransition(AnimationItem *item, QString propertyName, KeyFrame *frame)
-{
-    frame->setEasing(-1);
-    m_transitionPanel->transitionDeleted(item, propertyName);
-}
-
 void Timeline::moveKeyframe(KeyFrame *key, int time)
 {
     key->setTime(time);
@@ -338,7 +332,13 @@ void Timeline::resizeTransition(KeyFrame *key, int startTime, int endTime)
 void Timeline::addTransition(AnimationItem *item, QString propertyName, KeyFrame *frame)
 {
     frame->setEasing((int)QEasingCurve::Linear);
-    m_transitionPanel->transitionAdded(item, propertyName);
+    m_transitionPanel->addTransition(item, propertyName, frame);
+}
+
+void Timeline::deleteTransition(AnimationItem *item, QString propertyName, KeyFrame *frame)
+{
+    frame->setEasing(-1);
+    m_transitionPanel->deleteTransition(item, propertyName, frame);
 }
 
 void Timeline::deleteKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *frame)

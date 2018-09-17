@@ -43,11 +43,13 @@ public:
     void setPlayheadPosition(int value);
     void removeItem(AnimationItem *item);
     inline void registerTimeline(Timeline *timeline) {m_timeline = timeline;}
-    void transitionAdded(AnimationItem *item, QString propertyName);
-    void transitionDeleted(AnimationItem *item, QString propertyName);
+    void transitionAdded(AnimationItem *item, QString propertyName, KeyFrame *key);
+    void transitionDeleted(AnimationItem *item, QString propertyName, KeyFrame *key);
     void keyframeMoved(KeyFrame *key);
     void transitionMoved(KeyFrame *key);
     void transitionResized(KeyFrame *key);
+    void addTransition(AnimationItem *item, QString propertyName, KeyFrame *key);
+    void deleteTransition(AnimationItem *item, QString propertyName, KeyFrame *key);
 
 public slots:
     void treeExpanded(QModelIndex);

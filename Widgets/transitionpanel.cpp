@@ -217,7 +217,7 @@ void TransitionPanel::transitionSelected(KeyFrame *frame)
     }
 }
 
-void TransitionPanel::transitionAdded(AnimationItem *item, QString propertyName)
+void TransitionPanel::transitionAdded(AnimationItem *item, QString propertyName, KeyFrame *key)
 {
     for(int i = 0; i < m_layout->count(); i++)
     {
@@ -231,7 +231,7 @@ void TransitionPanel::transitionAdded(AnimationItem *item, QString propertyName)
 }
 
 
-void TransitionPanel::transitionDeleted(AnimationItem *item, QString propertyName)
+void TransitionPanel::transitionDeleted(AnimationItem *item, QString propertyName, KeyFrame *key)
 {
     for(int i = 0; i < m_layout->count(); i++)
     {
@@ -291,6 +291,32 @@ void TransitionPanel::transitionResized(KeyFrame *key)
                 transition->resizeTransition();
                 break;
             }
+        }
+    }
+}
+
+void TransitionPanel::addTransition(AnimationItem *item, QString propertyName, KeyFrame *key)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line && line->propertyName() == propertyName && line->item() == item)
+        {
+            line->addTransitionGui(key);
+            break;
+        }
+    }
+}
+
+void TransitionPanel::deleteTransition(AnimationItem *item, QString propertyName, KeyFrame *key)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line && line->propertyName() == propertyName && line->item() == item)
+        {
+            line->removeTransition(key);
+            break;
         }
     }
 }

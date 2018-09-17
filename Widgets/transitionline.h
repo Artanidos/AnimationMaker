@@ -50,6 +50,8 @@ public:
 
     bool eventFilter(QObject *object, QEvent *event) Q_DECL_OVERRIDE;
 
+    void addTransitionGui(KeyFrame *key);
+
 signals:
     void keyframeDeleted(AnimationItem *item, QString propertyName, KeyFrame *frame);
     void deleteTransition(AnimationItem *item, QString propertyName, KeyFrame *frame);
@@ -67,14 +69,15 @@ private:
     QUndoStack *m_undostack;
     Timeline *m_timeline;
 
+
 public slots:
     void addKeyframe(KeyFrame *key);
     void removeKeyframe(KeyFrame *key);
     void removeTransition(KeyFrame *key);
 
 private slots:
-    void deleteKeyframe(KeyframeHandle *handle);
     void addTransition(KeyFrame *key);
+    void deleteKeyframe(KeyframeHandle *handle);
     void moveKeyframe(KeyframeHandle *handle, int dist);
     void moveTransition(Transition *transition, int dist);
     void transitionResized();

@@ -182,6 +182,10 @@ void TransitionLine::deleteKeyframe(KeyframeHandle *handle)
 void TransitionLine::addTransition(KeyFrame *key)
 {
     emit transitionAdded(m_item, m_propertyName, key);
+}
+
+void TransitionLine::addTransitionGui(KeyFrame *key)
+{
     Transition *trans = new Transition(this, key, m_timeline, m_undostack);
     trans->move(key->time() / 5 - m_horizontalScrollValue * 20,0);
     connect(trans, SIGNAL(transitionMoved(Transition*,int)), this, SLOT(moveTransition(Transition*,int)));
@@ -236,10 +240,6 @@ bool TransitionLine::eventFilter(QObject *object, QEvent *event)
         Transition *t = dynamic_cast<Transition*>(object);
         if(t)
             emit m_timeline->transitionSelectionChanged(t->key());
-    }
-    else if(event->type() == QEvent::FocusOut)
-    {
-        //emit m_timeline->transitionSelectionChanged(nullptr);
     }
     return false;
 }
