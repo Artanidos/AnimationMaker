@@ -97,6 +97,8 @@ void TransitionLine::addKeyframe(KeyFrame *key)
         connect(trans, SIGNAL(transitionResized()), this, SLOT(transitionResized()));
         trans->installEventFilter(this);
         // no need to add a keyframehandle when a transition exists
+        // but we have to remove the prev keyframehandle
+        removeKeyframe(key->prev());
         return;
     }
     KeyframeHandle *handle = new KeyframeHandle(this, key);
