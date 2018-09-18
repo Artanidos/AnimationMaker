@@ -199,7 +199,7 @@ void TransitionPanel::propertyKeyAdded(AnimationItem *item, QString propertyName
         TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
         if(line && line->propertyName() == propertyName && line->item() == item)
         {
-            line->addKeyframe(key);
+            line->addKeyframe(propertyName, key);
             break;
         }
     }
@@ -315,7 +315,7 @@ void TransitionPanel::deleteTransition(AnimationItem *item, QString propertyName
         TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
         if(line && line->propertyName() == propertyName && line->item() == item)
         {
-            line->removeTransition(key);
+            line->removeTransition(propertyName, key);
             break;
         }
     }

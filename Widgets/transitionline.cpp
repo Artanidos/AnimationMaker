@@ -48,9 +48,9 @@ TransitionLine::TransitionLine(AnimationItem *item, QString propertyName, Timeli
     connect(item, SIGNAL(opacityChanged(int)), this, SLOT(update()));
     if(!m_propertyName.isEmpty())
     {
-        connect(item, SIGNAL(keyframeAdded(KeyFrame*)), this, SLOT(addKeyframe(KeyFrame*)));
-        connect(item, SIGNAL(keyframeRemoved(KeyFrame*)), this, SLOT(removeKeyframe(KeyFrame*)));
-        connect(item, SIGNAL(transitionRemoved(KeyFrame*)), this, SLOT(removeTransition(KeyFrame*)));
+        connect(item, SIGNAL(keyframeAdded(QString,KeyFrame*)), this, SLOT(addKeyframe(QString,KeyFrame*)));
+        connect(item, SIGNAL(keyframeRemoved(QString,KeyFrame*)), this, SLOT(removeKeyframe(QString,KeyFrame*)));
+        connect(item, SIGNAL(transitionRemoved(QString,KeyFrame*)), this, SLOT(removeTransition(QString,KeyFrame*)));
     }
 }
 
@@ -81,8 +81,10 @@ void TransitionLine::paintEvent(QPaintEvent *)
     painter.drawLine(m_playheadPosition / 5 - 1 - offset, 0, m_playheadPosition / 5 - 1 - offset, height);
 }
 
-void TransitionLine::addKeyframe(KeyFrame *key)
+void TransitionLine::addKeyframe(QString propertyName, KeyFrame *key)
 {
+    if(propertyName != m_propertyName)
+        return;
     if(key->easing() > -1)
     {
         // no need to add a keyframehandle when a transition exists
@@ -98,7 +100,7 @@ void TransitionLine::addKeyframe(KeyFrame *key)
         trans->installEventFilter(this);
         // no need to add a keyframehandle when a transition exists
         // but we have to remove the prev keyframehandle
-        removeKeyframe(key->prev());
+        removeKeyframe(propertyName, key->prev());
         return;
     }
     KeyframeHandle *handle = new KeyframeHandle(this, key);
@@ -108,8 +110,10 @@ void TransitionLine::addKeyframe(KeyFrame *key)
     handle->move(key->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
 }
 
-void TransitionLine::removeKeyframe(KeyFrame *key)
+void TransitionLine::removeKeyframe(QString propertyName, KeyFrame *key)
 {
+    if(propertyName != m_propertyName)
+        return;
     QList<KeyframeHandle*> handles = findChildren<KeyframeHandle*>();
     foreach(KeyframeHandle *handle, handles)
     {
@@ -121,8 +125,10 @@ void TransitionLine::removeKeyframe(KeyFrame *key)
     }
 }
 
-void TransitionLine::removeTransition(KeyFrame *key)
+void TransitionLine::removeTransition(QString propertyName, KeyFrame *key)
 {
+    if(propertyName != m_propertyName)
+        return;
     QList<Transition*> transitions = findChildren<Transition*>();
     foreach(Transition *transition, transitions)
     {
@@ -132,6 +138,18 @@ void TransitionLine::removeTransition(KeyFrame *key)
             update();
         }
     }
+
+    KeyframeHandle *handleLeft = new KeyframeHandle(this, key);
+    connect(handleLeft, SIGNAL(keyframeDeleted(KeyframeHandle*)), this, SLOT(deleteKeyframe(KeyframeHandle*)));
+    connect(handleLeft, SIGNAL(transitionAdded(KeyFrame*)), this, SLOT(addTransition(KeyFrame*)));
+    connect(handleLeft, SIGNAL(keyframeMoved(KeyframeHandle*,int)), this, SLOT(moveKeyframe(KeyframeHandle*,int)));
+    handleLeft->move(key->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
+
+    KeyframeHandle *handleRight = new KeyframeHandle(this, key->next());
+    connect(handleRight, SIGNAL(keyframeDeleted(KeyframeHandle*)), this, SLOT(deleteKeyframe(KeyframeHandle*)));
+    connect(handleRight, SIGNAL(transitionAdded(KeyFrame*)), this, SLOT(addTransition(KeyFrame*)));
+    connect(handleRight, SIGNAL(keyframeMoved(KeyframeHandle*,int)), this, SLOT(moveKeyframe(KeyframeHandle*,int)));
+    handleRight->move(key->next()->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
 }
 
 void TransitionLine::setScrollValue(int value)

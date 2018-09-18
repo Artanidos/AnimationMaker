@@ -656,7 +656,7 @@ void AnimationItem::adjustKeyframes(QString propertyName, QVariant value, int ti
                 if((*key)->prev()->easing() > -1)
                 {
                     (*key)->prev()->setEasing(-1);
-                    emit transitionRemoved((*key)->prev());
+                    emit transitionRemoved(propertyName, (*key)->prev());
                 }
             }
             // we have to drop the newest keyframe here while undoing
@@ -668,7 +668,7 @@ void AnimationItem::adjustKeyframes(QString propertyName, QVariant value, int ti
             {
                 (*key)->prev()->setNext((*key)->next());
             }
-            emit keyframeRemoved((*key));
+            emit keyframeRemoved(propertyName, (*key));
             delete (*key);
             (*key) = nullptr;
         }
@@ -726,7 +726,7 @@ void AnimationItem::adjustKeyframes(QString propertyName, QVariant value, int ti
                     if(autotransition)
                         last->setEasing(QEasingCurve::Linear);
                 }
-                emit keyframeAdded((*key));
+                emit keyframeAdded(propertyName, (*key));
             }
         }
     }

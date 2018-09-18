@@ -157,9 +157,9 @@ signals:
     void brushChanged(QColor);
     void penChanged(QColor);
     void opacityChanged(int opacity);
-    void keyframeAdded(KeyFrame *key);
-    void keyframeRemoved(KeyFrame *key);
-    void transitionRemoved(KeyFrame *key);
+    void keyframeAdded(QString propertyName, KeyFrame *key);
+    void keyframeRemoved(QString propertyName, KeyFrame *key);
+    void transitionRemoved(QString propertyName, KeyFrame *key);
 
 protected:
     void setHandlePositions();

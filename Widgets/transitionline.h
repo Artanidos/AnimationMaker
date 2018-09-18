@@ -71,9 +71,9 @@ private:
 
 
 public slots:
-    void addKeyframe(KeyFrame *key);
-    void removeKeyframe(KeyFrame *key);
-    void removeTransition(KeyFrame *key);
+    void addKeyframe(QString propertyName, KeyFrame *key);
+    void removeKeyframe(QString propertyName, KeyFrame *key);
+    void removeTransition(QString propertyName, KeyFrame *key);
 
 private slots:
     void addTransition(KeyFrame *key);
