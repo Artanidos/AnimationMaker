@@ -194,7 +194,6 @@ Transition *TransitionLine::getTransition(KeyFrame *key)
 void TransitionLine::deleteKeyframe(KeyframeHandle *handle)
 {
     emit keyframeDeleted(m_item, m_propertyName, handle->key());
-    delete handle;
 }
 
 void TransitionLine::addTransition(KeyFrame *key)

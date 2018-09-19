@@ -24,6 +24,7 @@
 #include "transitionhandleright.h"
 #include "commands.h"
 #include <QPainter>
+#include <QMenu>
 
 
 Transition::Transition(TransitionLine *parent, KeyFrame *key, Timeline *timeline, QUndoStack *undostack)
@@ -39,10 +40,18 @@ Transition::Transition(TransitionLine *parent, KeyFrame *key, Timeline *timeline
     resize((m_key->next()->time() - m_key->time()) / 5, 18);
     setVisible(true);
 
+    m_contextMenu = new QMenu();
+    m_transitionAct = new QAction("Remove transition");
+    m_contextMenu->addAction(m_transitionAct);
+
     m_left = new TransitionHandleLeft(this, key);
     connect(m_left, SIGNAL(keyframeMoved(int)), this, SLOT(sizeTransitionLeft(int)));
     m_right = new TransitionHandleRight(this, key->next());
     connect(m_right, SIGNAL(keyframeMoved(int)), this, SLOT(sizeTransitionRight(int)));
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
+    connect(m_transitionAct, SIGNAL(triggered(bool)), this, SLOT(removeTransition()));
+
+    setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
 void Transition::paintEvent(QPaintEvent *)
@@ -58,6 +67,11 @@ void Transition::paintEvent(QPaintEvent *)
         painter.fillRect(0, 0, width, height, orangeSelected);
     else
         painter.fillRect(0, 0, width, height, orange);
+}
+
+void Transition::onCustomContextMenu(const QPoint &point)
+{
+    m_contextMenu->exec(this->mapToGlobal(point));
 }
 
 void Transition::mousePressEvent(QMouseEvent *ev)
@@ -127,4 +141,10 @@ void Transition::sizeTransitionRight(int time)
         QUndoCommand *cmd = new ResizeTransitionCommand(m_key, m_key->time(), m_key->time(), m_key->next()->time(), time, m_timeline);
         m_undostack->push(cmd);
     }
+}
+
+void Transition::removeTransition()
+{
+    TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
+    m_timeline->deleteTransitionSlot(tl->item(), tl->propertyName(), m_key);
 }

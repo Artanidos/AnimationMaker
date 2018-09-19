@@ -205,6 +205,19 @@ void TransitionPanel::propertyKeyAdded(AnimationItem *item, QString propertyName
     }
 }
 
+void TransitionPanel::propertyKeyRemoved(AnimationItem *item, QString propertyName, KeyFrame *key)
+{
+    for(int i = 0; i < m_layout->count(); i++)
+    {
+        TransitionLine *line = dynamic_cast<TransitionLine*>(m_layout->itemAt(i)->widget());
+        if(line && line->propertyName() == propertyName && line->item() == item)
+        {
+            line->removeKeyframe(propertyName, key);
+            break;
+        }
+    }
+}
+
 void TransitionPanel::transitionSelected(KeyFrame *frame)
 {
     for(int i = 0; i < m_layout->count(); i++)

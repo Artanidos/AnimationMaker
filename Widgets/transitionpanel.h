@@ -58,6 +58,7 @@ public slots:
     void lineAdded(AnimationItem *item);
     void propertyAdded(AnimationItem *item, QString propertyName);
     void propertyKeyAdded(AnimationItem *item, QString propertyName, KeyFrame *key);
+    void propertyKeyRemoved(AnimationItem *item, QString propertyName, KeyFrame *key);
     void deleteKeyframe(AnimationItem *item, QString propertyName);
     void scrollValueChanged(int pos);
     void transitionSelected(KeyFrame *frame);

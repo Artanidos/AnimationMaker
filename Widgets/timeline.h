@@ -77,6 +77,7 @@ signals:
     void lineAdded(AnimationItem *item);
     void propertyAdded(AnimationItem *item, QString propertyName);
     void propertyKeyAdded(AnimationItem *item, QString propertyName, KeyFrame *key);
+    void propertyKeyRemoved(AnimationItem *item, QString propertyName, KeyFrame *key);
     void keyframeDeleted(AnimationItem *item, QString propertyName);
     void transitionDeleted(AnimationItem *item, QString propertyName);
     void transitionSelectionChanged(KeyFrame *frame);

@@ -108,8 +108,8 @@ AddItemCommand::AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, 
 
 AddItemCommand::~AddItemCommand()
 {
-    if(m_item->isDeleted())
-        delete m_item;
+    //if(m_item->isDeleted())
+    //    delete m_item;
 }
 
 void AddItemCommand::undo()

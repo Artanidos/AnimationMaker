@@ -123,7 +123,8 @@ Timeline::Timeline(AnimationScene *scene)
     connect(this, SIGNAL(lineAdded(AnimationItem*)), m_transitionPanel, SLOT(lineAdded(AnimationItem *)));
     connect(this, SIGNAL(propertyAdded(AnimationItem*,QString)), m_transitionPanel, SLOT(propertyAdded(AnimationItem *, QString)));
     connect(this, SIGNAL(propertyKeyAdded(AnimationItem*,QString,KeyFrame*)), m_transitionPanel, SLOT(propertyKeyAdded(AnimationItem*, QString, KeyFrame*)));
-	connect(this, SIGNAL(keyframeDeleted(AnimationItem*,QString)), m_transitionPanel, SLOT(deleteKeyframe(AnimationItem*,QString)));
+    connect(this, SIGNAL(propertyKeyRemoved(AnimationItem*,QString,KeyFrame*)), m_transitionPanel, SLOT(propertyKeyRemoved(AnimationItem*, QString, KeyFrame*)));
+    connect(this, SIGNAL(keyframeDeleted(AnimationItem*,QString)), m_transitionPanel, SLOT(deleteKeyframe(AnimationItem*,QString)));
 
     connect(m_tree->verticalScrollBar(), SIGNAL(valueChanged(int)), m_transitionPanel, SLOT(treeScrollValueChanged(int)));
 
@@ -363,6 +364,7 @@ void Timeline::deleteKeyFrame(AnimationItem *item, QString propertyName, KeyFram
             }
         }
     }
+    emit propertyKeyRemoved(item, propertyName, frame);
     emit keyframeDeleted(item, propertyName);
 }
 

@@ -30,6 +30,7 @@ class TransitionHandleLeft;
 class TransitionHandleRight;
 class Timeline;
 class QUndoStack;
+class QMenu;
 class WIDGETSSHARED_EXPORT Transition : public QWidget
 {
     Q_OBJECT
@@ -50,10 +51,13 @@ protected:
 signals:
     void transitionMoved(Transition *transition, int time);
     void transitionResized();
+    void transitionRemoved(KeyFrame *key);
 
 private slots:
+    void onCustomContextMenu(const QPoint &point);
     void sizeTransitionLeft(int time);
     void sizeTransitionRight(int time);
+    void removeTransition();
 
 private:
     KeyFrame *m_key;
@@ -61,6 +65,8 @@ private:
     TransitionHandleLeft *m_left;
     TransitionHandleRight *m_right;
     int m_oldX;
+    QMenu *m_contextMenu;
+    QAction *m_transitionAct;
     Timeline *m_timeline;
     QUndoStack *m_undostack;
 };
