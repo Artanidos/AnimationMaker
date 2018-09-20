@@ -126,7 +126,7 @@ void Transition::keyPressEvent(QKeyEvent *e)
 void Transition::sizeTransitionLeft(int time)
 {
     int width = (m_key->next()->time() - time) / 5;
-    if(width > 0 && time >= 0 && (m_key->prev() == nullptr || m_key->prev()->time() < time))
+    if(width > 0 && time >= 0 && (m_key->prev() == nullptr || m_key->prev()->time() <= time))
     {
         QUndoCommand *cmd = new ResizeTransitionCommand(m_key, m_key->time(), time, m_key->next()->time(), m_key->next()->time(), m_timeline);
         m_undostack->push(cmd);
@@ -136,7 +136,7 @@ void Transition::sizeTransitionLeft(int time)
 void Transition::sizeTransitionRight(int time)
 {
     int width = (time - m_key->time()) / 5;
-    if(width > 0 && (m_key->next()->next() == nullptr || m_key->next()->next()->time() > time))
+    if(width > 0 && (m_key->next()->next() == nullptr || m_key->next()->next()->time() >= time))
     {
         QUndoCommand *cmd = new ResizeTransitionCommand(m_key, m_key->time(), m_key->time(), m_key->next()->time(), time, m_timeline);
         m_undostack->push(cmd);

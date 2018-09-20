@@ -70,9 +70,9 @@ void KeyframeHandle::paintEvent(QPaintEvent *)
 void KeyframeHandle::onCustomContextMenu(const QPoint &point)
 {
     m_contextMenu->clear();
-    m_contextMenu->addAction(m_delKeyframeAct);
     if(m_key->prev() && m_key->prev()->easing() < 0)
         m_contextMenu->addAction(m_transitionAct);
+    m_contextMenu->addAction(m_delKeyframeAct);
     m_contextMenu->exec(this->mapToGlobal(point));
 }
 
@@ -100,7 +100,10 @@ void KeyframeHandle::mouseMoveEvent(QMouseEvent *ev)
     {
         int p = x() + ev->x();
         int newVal = qRound((qreal)p * 5 / 100) * 100;
-        move(newVal / 5 - 6, y());
+        if(newVal >= 0 && (m_key->next() == nullptr || m_key->next()->time() >= newVal) && (m_key->prev() == nullptr || m_key->prev()->time() <= newVal))
+        {
+            move(newVal / 5 - 6, y());
+        }
     }
 }
 
@@ -111,6 +114,12 @@ void KeyframeHandle::mouseReleaseEvent(QMouseEvent *ev)
         m_pressed = false;
         int p = x() + ev->x();
         int newVal = qRound((qreal)p * 5 / 100) * 100;
+        if(newVal < 0)
+            newVal = 0;
+        if(m_key->next() && m_key->next()->time() < newVal)
+            newVal = m_key->next()->time();
+        if(m_key->prev() && m_key->prev()->time() > newVal)
+            newVal = m_key->prev()->time();
         emit keyframeMoved(this, newVal);
     }
 }

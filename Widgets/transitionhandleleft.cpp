@@ -48,7 +48,7 @@ void TransitionHandleLeft::mouseMoveEvent(QMouseEvent *ev)
     {
         int p = x() + ev->x() - m_oldX;
         int newVal = m_key->time() + qRound((qreal)p * 5 / 100) * 100;
-        if(newVal >= 0)
+        if(newVal >= 0 && (m_key->prev() == nullptr || m_key->prev()->time() <= newVal) && newVal < m_key->next()->time())
         {
             m_key->setTime(newVal);
             Transition *transition = dynamic_cast<Transition*>(parent());

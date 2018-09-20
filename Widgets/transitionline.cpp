@@ -223,7 +223,7 @@ void TransitionLine::addTransitionGui(KeyFrame *key)
 
 void TransitionLine::moveKeyframe(KeyframeHandle *handle, int time)
 {
-    if(time >= 0 && ((handle->key()->next() == nullptr || handle->key()->next()->time() > time)) && (handle->key()->prev() == nullptr || handle->key()->prev()->time() < time))
+    if(time >= 0 && ((handle->key()->next() == nullptr || handle->key()->next()->time() >= time)) && (handle->key()->prev() == nullptr || handle->key()->prev()->time() <= time))
     {
         if(handle->key()->time() != time)
         {
@@ -235,7 +235,7 @@ void TransitionLine::moveKeyframe(KeyframeHandle *handle, int time)
 
 void TransitionLine::moveTransition(Transition *transition, int time)
 {
-    if(time >= 0 && ((transition->key()->next()->next() == nullptr || transition->key()->next()->next()->time() > transition->key()->next()->time() - transition->key()->time() + time)) && (transition->key()->prev() == nullptr || transition->key()->prev()->time() < time))
+    if(time >= 0 && ((transition->key()->next()->next() == nullptr || transition->key()->next()->next()->time() >= transition->key()->next()->time() - transition->key()->time() + time)) && (transition->key()->prev() == nullptr || transition->key()->prev()->time() <= time))
     {
         if(transition->key()->time() != time)
         {
