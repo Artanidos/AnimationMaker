@@ -25,11 +25,32 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QDebug>
+#include <QMenu>
 
 TransitionHandleLeft::TransitionHandleLeft(Transition *parent, KeyFrame *key)
     : TransitionHandle(parent, key)
 {
     m_image = QImage(":/images/trans-left.png");
+    m_contextMenu = new QMenu();
+    m_transitionAct = new QAction("Create transition");
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
+    connect(m_transitionAct, SIGNAL(triggered(bool)), this, SLOT(addTransition()));
+    setContextMenuPolicy(Qt::CustomContextMenu);
+}
+
+void TransitionHandleLeft::onCustomContextMenu(const QPoint &point)
+{
+    m_contextMenu->clear();
+    if(m_key->prev() && m_key->prev()->easing() < 0)
+    {
+        m_contextMenu->addAction(m_transitionAct);
+        m_contextMenu->exec(this->mapToGlobal(point));
+    }
+}
+
+void TransitionHandleLeft::addTransition()
+{
+    emit transitionAdded(m_key->prev());
 }
 
 void TransitionHandleLeft::mousePressEvent(QMouseEvent *ev)

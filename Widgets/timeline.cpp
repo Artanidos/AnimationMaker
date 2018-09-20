@@ -320,6 +320,10 @@ void Timeline::moveTransition(KeyFrame *key, int time)
 {
     key->next()->setTime(key->next()->time() - key->time() + time);
     key->setTime(time);
+    if(key->next()->easing() > -1)
+        m_transitionPanel->transitionResized(key->next());
+    if(key->prev() && key->prev()->easing() > -1)
+        m_transitionPanel->transitionResized(key->prev());
     m_transitionPanel->transitionMoved(key);
 }
 

@@ -25,8 +25,5 @@
 
 - Scene FPS should be visibel in timeline
 
-- When save as set .amx automatically
-
 - Transitions can share keyframes. Moving the right transition resizes the left transition
 
-- Two transitions can be at the same time.

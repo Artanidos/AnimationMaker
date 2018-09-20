@@ -37,8 +37,6 @@ Transition::Transition(TransitionLine *parent, KeyFrame *key, Timeline *timeline
     setParent(parent);
     setMouseTracking(true);
     setFocusPolicy(Qt::FocusPolicy::ClickFocus);
-    resize((m_key->next()->time() - m_key->time()) / 5, 18);
-    setVisible(true);
 
     m_contextMenu = new QMenu();
     m_transitionAct = new QAction("Remove transition");
@@ -46,12 +44,15 @@ Transition::Transition(TransitionLine *parent, KeyFrame *key, Timeline *timeline
 
     m_left = new TransitionHandleLeft(this, key);
     connect(m_left, SIGNAL(keyframeMoved(int)), this, SLOT(sizeTransitionLeft(int)));
+    connect(m_left, SIGNAL(transitionAdded(KeyFrame*)), this, SLOT(addTransition(KeyFrame*)));
     m_right = new TransitionHandleRight(this, key->next());
     connect(m_right, SIGNAL(keyframeMoved(int)), this, SLOT(sizeTransitionRight(int)));
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
     connect(m_transitionAct, SIGNAL(triggered(bool)), this, SLOT(removeTransition()));
 
     setContextMenuPolicy(Qt::CustomContextMenu);
+    resize((m_key->next()->time() - m_key->time()) / 5, 18);
+    setVisible(true);
 }
 
 void Transition::paintEvent(QPaintEvent *)
@@ -87,17 +88,74 @@ void Transition::mouseMoveEvent(QMouseEvent *ev)
 {
     if(m_pressed)
     {
-        int p = x() + ev->x() - m_oldX;
-        int newVal = qRound((qreal)p * 5 / 100) * 100;
-        if(newVal >= 0)
-            emit transitionMoved(this, newVal);
+        TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
+        int newVal = calculatePos(ev->x());
+        if(m_key->prev() && m_key->prev()->easing() > -1)
+        {
+            QList<Transition*> transitions = tl->findChildren<Transition*>();
+            foreach(Transition *trans, transitions)
+            {
+                if(trans->key() == m_key->prev())
+                {
+                    int width = (newVal - m_key->prev()->time()) / 5;
+                    trans->resize(width, 18);
+                }
+            }
+        }
+        if(m_key->next()->easing() > -1)
+        {
+            QList<Transition*> transitions = tl->findChildren<Transition*>();
+            foreach(Transition *trans, transitions)
+            {
+                if(trans->key() == m_key->next())
+                {
+                    int width = (m_key->next()->next()->time() - (m_key->next()->time() - m_key->time()) - newVal) / 5;
+                    trans->resize(width, 18);
+                    trans->move((newVal + m_key->next()->time() - m_key->time()) / 5 - tl->horizontalScrollValue() * 20, 0);
+                }
+            }
+        }
+        move(newVal / 5 - tl->horizontalScrollValue() * 20, 0);
     }
 }
 
-void Transition::mouseReleaseEvent(QMouseEvent *)
+void Transition::mouseReleaseEvent(QMouseEvent *ev)
 {
     if(m_pressed)
+    {
         m_pressed = false;
+        emit transitionMoved(this, calculatePos(ev->x()));
+    }
+}
+
+void Transition::resize(int w, int h)
+{
+    QWidget::resize(w, h);
+    if(m_right)
+        m_right->move(width() - 5, 0);
+}
+
+int Transition::calculatePos(int pos)
+{
+    int p = x() + pos - m_oldX;
+    int newVal = qRound((qreal)p * 5 / 100) * 100;
+    if(newVal < 0)
+        newVal = 0;
+    if(m_key->next()->next())
+    {
+        if(m_key->next()->easing() > -1 && m_key->next()->next()->time() - 100 < newVal + m_key->next()->time() - m_key->time())
+            newVal = m_key->next()->next()->time() - (m_key->next()->time() - m_key->time()) - 100;
+        else if(m_key->next()->next()->time() < newVal + m_key->next()->time() - m_key->time())
+        newVal = m_key->next()->next()->time() - (m_key->next()->time() - m_key->time());
+    }
+    if(m_key->prev())
+    {
+        if(m_key->prev()->easing() > -1 && m_key->prev()->time() + 100 > newVal)
+            newVal = m_key->prev()->time() + 100;
+        else if(m_key->prev()->time() > newVal)
+            newVal = m_key->prev()->time();
+    }
+    return newVal;
 }
 
 void Transition::resizeTransition()
@@ -105,7 +163,7 @@ void Transition::resizeTransition()
     TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
     int width = (m_key->next()->time() - m_key->time()) / 5;
     resize(width, 18);
-    m_right->move(width - 5, 0);
+    //m_right->move(width - 5, 0);
     move(m_key->time() / 5 - tl->horizontalScrollValue() * 20,0);
 }
 
@@ -147,4 +205,10 @@ void Transition::removeTransition()
 {
     TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
     m_timeline->deleteTransitionSlot(tl->item(), tl->propertyName(), m_key);
+}
+
+void Transition::addTransition(KeyFrame *key)
+{
+    TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
+    tl->addTransition(key);
 }

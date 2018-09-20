@@ -28,6 +28,7 @@
 
 class Transition;
 class KeyFrame;
+class QMenu;
 class WIDGETSSHARED_EXPORT TransitionHandleLeft : public TransitionHandle
 {
     Q_OBJECT
@@ -37,6 +38,17 @@ public:
     void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
+
+signals:
+    void transitionAdded(KeyFrame *key);
+
+private slots:
+    void onCustomContextMenu(const QPoint &point);
+    void addTransition();
+
+private:
+    QMenu *m_contextMenu;
+    QAction *m_transitionAct;
 };
 
 #endif // TRANSITIONHANDLELEFT_H

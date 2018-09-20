@@ -41,6 +41,7 @@ public:
     void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
+    void resize(int w, int h);
 
     KeyFrame *key() {return m_key;}
     void resizeTransition();
@@ -58,6 +59,7 @@ private slots:
     void sizeTransitionLeft(int time);
     void sizeTransitionRight(int time);
     void removeTransition();
+    void addTransition(KeyFrame *key);
 
 private:
     KeyFrame *m_key;
@@ -69,6 +71,8 @@ private:
     QAction *m_transitionAct;
     Timeline *m_timeline;
     QUndoStack *m_undostack;
+
+    int calculatePos(int pos);
 };
 
 #endif // TRANSITION_H
