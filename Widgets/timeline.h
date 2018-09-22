@@ -52,6 +52,10 @@ public:
     void moveTransition(KeyFrame *key, int time);
     void resizeTransition(KeyFrame *key, int startTime, int endTime);
 
+#ifdef TEST
+    TransitionPanel *getTransitionPanel() {return m_transitionPanel;}
+#endif
+
 public slots:
     void onCustomContextMenu(const QPoint &point);
     void playAnimation();

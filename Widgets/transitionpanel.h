@@ -73,6 +73,9 @@ private:
     QUndoStack *m_undostack;
 
     void enableDisableLines();
+#ifdef TEST
+public:
+#endif
     TransitionLine *getTransitionLine(AnimationItem *item, QString propertyName);
 };
 

@@ -1,4 +1,4 @@
-#    Copyright (C) 2017 Olaf Japp
+#    Copyright (C) 2018 Olaf Japp
 #    https://facebook.com/artanidos
 #
 #    This file is part of AnimationMaker.
@@ -16,12 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
-TEMPLATE = subdirs
+QT += widgets testlib xml svg
+SOURCES = testgui.cpp
+DEFINES += TEST
+unix:!macx: LIBS += -L$$OUT_PWD/../Widgets/ -lWidgets
 
-SUBDIRS += \
-    Widgets \
-    plugins/Pie \
-    plugins/Html \
-    App.pro \
-    test/Test.pro \
-    License
+INCLUDEPATH += $$PWD/../Widgets
+DEPENDPATH += $$PWD/../Widgets
