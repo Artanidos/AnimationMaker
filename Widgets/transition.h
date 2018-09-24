@@ -46,6 +46,10 @@ public:
     KeyFrame *key() {return m_key;}
     void resizeTransition();
 
+#ifdef TEST
+    TransitionHandleLeft *getLeftHandle() {return m_left;}
+    TransitionHandleRight *getRightHandle() {return m_right;}
+#endif
 protected:
     void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
 

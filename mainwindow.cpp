@@ -893,6 +893,7 @@ void MainWindow::exportMovie()
     if(fileName.isEmpty())
         return;
 
+    fileName = "\"" + fileName + "\"";
     QGraphicsSimpleTextItem *watermark;
     if(!m_commercial)
     {

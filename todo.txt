@@ -1,3 +1,5 @@
+- Bug: output path withs blanks does not work
+
 - Treeview
     - Object make invisible
     - Object lock

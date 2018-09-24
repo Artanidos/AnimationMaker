@@ -80,8 +80,12 @@ void TransitionHandleLeft::mouseMoveEvent(QMouseEvent *ev)
 
 void TransitionHandleLeft::mouseReleaseEvent(QMouseEvent *ev)
 {
-    m_pressed = false;
-    int newTime = m_key->time();
-    m_key->setTime(m_oldTime);
-    emit keyframeMoved(newTime);
+    if(m_pressed)
+    {
+        m_pressed = false;
+        int newTime = m_key->time();
+        m_key->setTime(m_oldTime);
+        if(m_oldTime <= newTime)
+            emit keyframeMoved(newTime);
+    }
 }

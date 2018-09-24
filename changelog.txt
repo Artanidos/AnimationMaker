@@ -6,6 +6,7 @@
 - Moving keyframes and transitions is now undoable
 - Rulers have been added
 - Zoom has been added
+- Bugfix: Movies can now be created in paths with blanks
 
 1.8
 ---
