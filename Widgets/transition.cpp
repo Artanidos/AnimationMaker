@@ -89,7 +89,7 @@ void Transition::mouseMoveEvent(QMouseEvent *ev)
     if(m_pressed)
     {
         TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
-        int newVal = calculatePos(ev->x());
+        m_newTime = calculatePos(ev->x());
         if(m_key->prev() && m_key->prev()->easing() > -1)
         {
             QList<Transition*> transitions = tl->findChildren<Transition*>();
@@ -97,7 +97,7 @@ void Transition::mouseMoveEvent(QMouseEvent *ev)
             {
                 if(trans->key() == m_key->prev())
                 {
-                    int width = (newVal - m_key->prev()->time()) / 5;
+                    int width = (m_newTime - m_key->prev()->time()) / 5;
                     trans->resize(width, 18);
                 }
             }
@@ -109,13 +109,13 @@ void Transition::mouseMoveEvent(QMouseEvent *ev)
             {
                 if(trans->key() == m_key->next())
                 {
-                    int width = (m_key->next()->next()->time() - (m_key->next()->time() - m_key->time()) - newVal) / 5;
+                    int width = (m_key->next()->next()->time() - (m_key->next()->time() - m_key->time()) - m_newTime) / 5;
                     trans->resize(width, 18);
-                    trans->move((newVal + m_key->next()->time() - m_key->time()) / 5 - tl->horizontalScrollValue() * 20, 0);
+                    trans->move((m_newTime + m_key->next()->time() - m_key->time()) / 5 - tl->horizontalScrollValue() * 20, 0);
                 }
             }
         }
-        move(newVal / 5 - tl->horizontalScrollValue() * 20, 0);
+        move(m_newTime / 5 - tl->horizontalScrollValue() * 20, 0);
     }
 }
 
@@ -124,7 +124,7 @@ void Transition::mouseReleaseEvent(QMouseEvent *ev)
     if(m_pressed)
     {
         m_pressed = false;
-        emit transitionMoved(this, calculatePos(ev->x()));
+        emit transitionMoved(this, m_newTime);
     }
 }
 
@@ -146,7 +146,7 @@ int Transition::calculatePos(int pos)
         if(m_key->next()->easing() > -1 && m_key->next()->next()->time() - 100 < newVal + m_key->next()->time() - m_key->time())
             newVal = m_key->next()->next()->time() - (m_key->next()->time() - m_key->time()) - 100;
         else if(m_key->next()->next()->time() < newVal + m_key->next()->time() - m_key->time())
-        newVal = m_key->next()->next()->time() - (m_key->next()->time() - m_key->time());
+            newVal = m_key->next()->next()->time() - (m_key->next()->time() - m_key->time());
     }
     if(m_key->prev())
     {
@@ -163,7 +163,6 @@ void Transition::resizeTransition()
     TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
     int width = (m_key->next()->time() - m_key->time()) / 5;
     resize(width, 18);
-    //m_right->move(width - 5, 0);
     move(m_key->time() / 5 - tl->horizontalScrollValue() * 20,0);
 }
 
@@ -184,7 +183,7 @@ void Transition::keyPressEvent(QKeyEvent *e)
 void Transition::sizeTransitionLeft(int time)
 {
     int width = (m_key->next()->time() - time) / 5;
-    if(width > 0 && time >= 0 && (m_key->prev() == nullptr || m_key->prev()->time() <= time))
+    if(width > 0 && time >= 0 && (m_key->prev() == nullptr || (m_key->prev()->easing() < 0 && m_key->prev()->time() <= time) || (m_key->prev()->easing() > -1 && m_key->prev()->time() < time)))
     {
         QUndoCommand *cmd = new ResizeTransitionCommand(m_key, m_key->time(), time, m_key->next()->time(), m_key->next()->time(), m_timeline);
         m_undostack->push(cmd);
@@ -194,7 +193,7 @@ void Transition::sizeTransitionLeft(int time)
 void Transition::sizeTransitionRight(int time)
 {
     int width = (time - m_key->time()) / 5;
-    if(width > 0 && (m_key->next()->next() == nullptr || m_key->next()->next()->time() >= time))
+    if(width > 0 && (m_key->next()->next() == nullptr || (m_key->next()->easing() < 0 && m_key->next()->next()->time() >= time) || (m_key->next()->easing() > -1 && m_key->next()->next()->time() > time)))
     {
         QUndoCommand *cmd = new ResizeTransitionCommand(m_key, m_key->time(), m_key->time(), m_key->next()->time(), time, m_timeline);
         m_undostack->push(cmd);

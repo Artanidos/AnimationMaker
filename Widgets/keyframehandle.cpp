@@ -135,19 +135,5 @@ void KeyframeHandle::keyPressEvent(QKeyEvent *e)
         case Qt::Key_Right:
             emit keyframeMoved(this, m_key->time() + 100);
             break;
-#ifdef TEST
-        case Qt::Key_U:
-        {
-            TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
-            tl->item()->scene()->undoStack()->undo();
-        }
-        break;
-        case Qt::Key_R:
-        {
-            TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
-            tl->item()->scene()->undoStack()->redo();
-        }
-        break;
-#endif
     }
 }

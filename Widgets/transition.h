@@ -75,6 +75,7 @@ private:
     QAction *m_transitionAct;
     Timeline *m_timeline;
     QUndoStack *m_undostack;
+    int m_newTime;
 
     int calculatePos(int pos);
 };

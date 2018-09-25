@@ -21,6 +21,7 @@
 #include "transitionhandleleft.h"
 #include "transition.h"
 #include "keyframe.h"
+#include "transitionline.h"
 #include <QPainter>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -69,11 +70,21 @@ void TransitionHandleLeft::mouseMoveEvent(QMouseEvent *ev)
     {
         int p = x() + ev->x() - m_oldX;
         int newVal = m_key->time() + qRound((qreal)p * 5 / 100) * 100;
-        if(newVal >= 0 && (m_key->prev() == nullptr || m_key->prev()->time() <= newVal) && newVal < m_key->next()->time())
+        if(newVal < 0)
+            newVal = 0;
+        if(m_key->prev() && m_key->prev()->time() > newVal)
+            newVal = m_key->prev()->time();
+        if(newVal >= m_key->next()->time())
+            newVal = m_key->next()->time() - 100;
+        if(m_key->prev() && m_key->prev()->easing() > -1 && m_key->prev()->time() >= newVal)
+            newVal = m_key->prev()->time() + 100;
+        m_key->setTime(newVal);
+        Transition *transition = dynamic_cast<Transition*>(parent());
+        transition->resizeTransition();
+        if(m_key->prev() && m_key->prev()->easing() > -1)
         {
-            m_key->setTime(newVal);
-            Transition *transition = dynamic_cast<Transition*>(parent());
-            transition->resizeTransition();
+            TransitionLine *tl = dynamic_cast<TransitionLine*>(transition->parent());
+            tl->getTransition(m_key->prev())->resizeTransition();
         }
     }
 }
@@ -85,7 +96,7 @@ void TransitionHandleLeft::mouseReleaseEvent(QMouseEvent *ev)
         m_pressed = false;
         int newTime = m_key->time();
         m_key->setTime(m_oldTime);
-        if(m_oldTime <= newTime)
+        if(m_oldTime != newTime)
             emit keyframeMoved(newTime);
     }
 }

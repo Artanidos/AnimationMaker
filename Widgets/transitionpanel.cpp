@@ -302,8 +302,12 @@ void TransitionPanel::transitionResized(KeyFrame *key)
             if(transition)
             {
                 transition->resizeTransition();
+                if(key->next()->easing() > -1)
+                    line->getTransition(key->next())->resizeTransition();
+                if(key->prev() && key->prev()->easing() > -1)
+                    line->getTransition(key->prev())->resizeTransition();
                 break;
-            }
+            }       
         }
     }
 }

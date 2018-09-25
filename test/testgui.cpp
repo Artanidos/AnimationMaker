@@ -6,8 +6,14 @@
 #include "transitionhandleleft.h"
 #include "transitionhandleright.h"
 
-// TODO: Undostack testing
-// TODO: context menu testing
+namespace QTest {
+    inline void myMouseMove(QWidget *widget, QPoint pos = QPoint(), int delay=-1)
+    {
+        QMouseEvent *ev = new QMouseEvent(QEvent::MouseMove, pos, Qt::LeftButton, Qt::LeftButton, Qt::KeyboardModifiers());
+        QSpontaneKeyEvent::setSpontaneous(ev);
+        qApp->notify(widget, ev);
+    }
+}
 
 class TestGui: public QObject
 {
@@ -26,6 +32,10 @@ private slots:
     void testTransitionHandleLeft_data();
     void testTransitionHandleRight();
     void testTransitionHandleRight_data();
+    void testTransitionHandleLeftMouse();
+    void testTransitionHandleRightMouse();
+    void testTransitionMouse();
+    void testDoubleTransition();
 
 private:
     Timeline *m_timeline;
@@ -118,34 +128,6 @@ void TestGui::testKeyframeHandle_data()
     list12.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
     list12.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-60, 0));
     QTest::newRow("move left with mouse against other keyframe") << list12 << 100;
-/*
-    QTestEventList list13;
-    list13.addMouseClick(Qt::LeftButton);
-    list13.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
-    list13.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
-    list13.addKeyClick('u', Qt::ControlModifier);
-    QTest::newRow("move left with mouse and call undo") << list13 << 300;
-
-    QTestEventList list14;
-    list14.addMouseClick(Qt::LeftButton);
-    list14.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
-    list14.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(40, 0));
-    list14.addKeyClick('u', Qt::ControlModifier);
-    QTest::newRow("move right with mouse and call undo") << list14 << 300;
-
-    QTestEventList list15;
-    list15.addMouseClick(Qt::LeftButton);
-    list15.addKeyClick(Qt::Key_Right);
-    list15.addKeyClick('u', Qt::ControlModifier);
-    QTest::newRow("move right and call undo") << list15 << 300;
-
-    QTestEventList list16;
-    list16.addMouseClick(Qt::LeftButton);
-    list16.addKeyClick(Qt::Key_Left);
-    list16.addKeyClick('u', Qt::ControlModifier);
-    QTest::newRow("move left and call undo") << list16 << 300;
-    */
-
 }
 
 void TestGui::testKeyframeHandle()
@@ -256,43 +238,6 @@ void TestGui::testTransition_data()
     list6.addKeyClick(Qt::Key_Left);
     list6.addKeyClick(Qt::Key_Left);
     QTest::newRow("move left 3 times against keyframe") << list6 <<100;
-
-    QTestEventList list7;
-    list7.addMouseClick(Qt::LeftButton);
-    list7.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
-    list7.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(40, 0));
-    QTest::newRow("move right with mouse") << list7 << 400;
-
-    QTestEventList list8;
-    list8.addMouseClick(Qt::LeftButton);
-    list8.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
-    list8.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(60, 0));
-    QTest::newRow("move right with mouse") << list8 << 500;
-
-    QTestEventList list9;
-    list9.addMouseClick(Qt::LeftButton);
-    list9.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
-    list9.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(80, 0));
-    QTest::newRow("move right with mouse against other keyframe") << list9 << 500;
-
-    QTestEventList list10;
-    list10.addMouseClick(Qt::LeftButton);
-    list10.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
-    list10.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-1, 0));
-    QTest::newRow("move left with mouse") << list10 << 200;
-
-    QTestEventList list11;
-    list11.addMouseClick(Qt::LeftButton);
-    list11.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
-    list11.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-20, 0));
-    QTest::newRow("move left with mouse") << list11 << 100;
-
-    QTestEventList list12;
-    list12.addMouseClick(Qt::LeftButton);
-    list12.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
-    list12.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
-    QTest::newRow("move left with mouse against other keyframe") << list12 << 100;
-
 }
 
 void TestGui::testTransition()
@@ -337,18 +282,6 @@ void TestGui::testTransitionZero_data()
     list5.addKeyClick(Qt::Key_Left);
     list5.addKeyClick(Qt::Key_Left);
     QTest::newRow("move left 2 times against zero") << list5 << 0;
-
-    QTestEventList list10;
-    list10.addMouseClick(Qt::LeftButton);
-    list10.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
-    list10.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-20, 0));
-    QTest::newRow("move left with mouse") << list10 << 0;
-
-    QTestEventList list11;
-    list11.addMouseClick(Qt::LeftButton);
-    list11.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
-    list11.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
-    QTest::newRow("move left with mouse against zero") << list11 << 0;
 }
 
 void TestGui::testTransitionZero()
@@ -503,6 +436,527 @@ void TestGui::testTransitionHandleRight()
     events.simulate(thr);
 
     QCOMPARE(keyb->time(), expected);
+}
+
+void TestGui::testTransitionHandleLeftMouse()
+{
+    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    KeyFrame *keya = new KeyFrame();
+    keya->setTime(200);
+    keya->setEasing(0);
+    KeyFrame *keyb = new KeyFrame();
+    keyb->setTime(500);
+    KeyFrame *keyl = new KeyFrame();
+    keyl->setTime(100);
+    KeyFrame *keyr = new KeyFrame();
+    keyr->setTime(700);
+    m_timeline->addKeyFrame(item, "left", keya);
+    m_timeline->addKeyFrame(item, "left", keyb);
+    m_timeline->addKeyFrame(item, "left", keyl);
+    m_timeline->addKeyFrame(item, "left", keyr);
+
+    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    Transition *tr = tl->getTransition(keya);
+    TransitionHandleLeft *thl = tr->getLeftHandle();
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(20, 0));
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
+    QCOMPARE(keya->time(), 300);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(20, 0));
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
+    QCOMPARE(keya->time(), 400);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(20, 0));
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
+    QCOMPARE(keya->time(), 400);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(-20, 0));
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-20, 0));
+    QCOMPARE(keya->time(), 300);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keya->time(), 400);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keya->time(), 300);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(-40, 0));
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
+    QCOMPARE(keya->time(), 100);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(-20, 0));
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-20, 0));
+    QCOMPARE(keya->time(), 100);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(40, 0));
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(40, 0));
+    QCOMPARE(keya->time(), 300);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keya->time(), 100);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keya->time(), 300);
+
+    // test moving against zero
+    m_timeline->deleteKeyFrame(item, "left", keyl);
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(-80, 0));
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-80, 0));
+    QCOMPARE(keya->time(), 0);
+}
+
+void TestGui::testTransitionHandleRightMouse()
+{
+    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    KeyFrame *keya = new KeyFrame();
+    keya->setTime(200);
+    keya->setEasing(0);
+    KeyFrame *keyb = new KeyFrame();
+    keyb->setTime(500);
+    KeyFrame *keyl = new KeyFrame();
+    keyl->setTime(100);
+    KeyFrame *keyr = new KeyFrame();
+    keyr->setTime(700);
+    m_timeline->addKeyFrame(item, "left", keya);
+    m_timeline->addKeyFrame(item, "left", keyb);
+    m_timeline->addKeyFrame(item, "left", keyl);
+    m_timeline->addKeyFrame(item, "left", keyr);
+
+    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    Transition *tr = tl->getTransition(keya);
+    TransitionHandleRight *thr = tr->getRightHandle();
+
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(20, 0));
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
+    QCOMPARE(keyb->time(), 600);
+
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(20, 0));
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
+    QCOMPARE(keyb->time(), 700);
+
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(20, 0));
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
+    QCOMPARE(keyb->time(), 700);
+
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(-20, 0));
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-20, 0));
+    QCOMPARE(keyb->time(), 600);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keyb->time(), 700);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keyb->time(), 600);
+
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(-40, 0));
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
+    QCOMPARE(keyb->time(), 400);
+
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(-40, 0));
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
+    QCOMPARE(keyb->time(), 300);
+
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(40, 0));
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(40, 0));
+    QCOMPARE(keyb->time(), 500);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keyb->time(), 300);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keyb->time(), 500);
+}
+
+void TestGui::testTransitionMouse()
+{
+    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    KeyFrame *keya = new KeyFrame();
+    keya->setTime(200);
+    keya->setEasing(0);
+    KeyFrame *keyb = new KeyFrame();
+    keyb->setTime(500);
+    KeyFrame *keyl = new KeyFrame();
+    keyl->setTime(100);
+    KeyFrame *keyr = new KeyFrame();
+    keyr->setTime(700);
+    m_timeline->addKeyFrame(item, "left", keya);
+    m_timeline->addKeyFrame(item, "left", keyb);
+    m_timeline->addKeyFrame(item, "left", keyl);
+    m_timeline->addKeyFrame(item, "left", keyr);
+
+    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    Transition *tr = tl->getTransition(keya);
+
+    QTest::mousePress(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(tr, QPoint(60, 0));
+    QTest::mouseRelease(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(60, 0));
+    QCOMPARE(keya->time(), 400);
+    QCOMPARE(keyb->time(), 700);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keya->time(), 200);
+    QCOMPARE(keyb->time(), 500);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keya->time(), 400);
+    QCOMPARE(keyb->time(), 700);
+
+    QTest::mousePress(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(tr, QPoint(60, 0));
+    QTest::mouseRelease(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(60, 0));
+    QCOMPARE(keya->time(), 400);
+    QCOMPARE(keyb->time(), 700);
+
+    QTest::mousePress(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(tr, QPoint(-20, 0));
+    QTest::mouseRelease(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-20, 0));
+    QCOMPARE(keya->time(), 200);
+    QCOMPARE(keyb->time(), 500);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keya->time(), 400);
+    QCOMPARE(keyb->time(), 700);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keya->time(), 200);
+    QCOMPARE(keyb->time(), 500);
+
+    QTest::mousePress(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(tr, QPoint(-40, 0));
+    QTest::mouseRelease(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 400);
+
+    // test moving against zero
+    m_timeline->deleteKeyFrame(item, "left", keyl);
+    QTest::mousePress(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(tr, QPoint(-40, 0));
+    QTest::mouseRelease(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
+    QCOMPARE(keya->time(), 0);
+    QCOMPARE(keyb->time(), 300);
+}
+
+void TestGui::testDoubleTransition()
+{
+    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    KeyFrame *keya = new KeyFrame();
+    keya->setTime(200);
+    KeyFrame *keyb = new KeyFrame();
+    keyb->setTime(500);
+    KeyFrame *keyc = new KeyFrame();
+    keyc->setTime(700);
+    KeyFrame *keyl = new KeyFrame();
+    keyl->setTime(100);
+    KeyFrame *keyr = new KeyFrame();
+    keyr->setTime(900);
+    m_timeline->addKeyFrame(item, "left", keyc);
+    m_timeline->addKeyFrame(item, "left", keyb);
+    m_timeline->addKeyFrame(item, "left", keya);
+    m_timeline->addKeyFrame(item, "left", keyl);
+    m_timeline->addKeyFrame(item, "left", keyr);
+    keya->setEasing(0);
+    m_timeline->addTransition(item, "left", keya);
+    keyb->setEasing(0);
+    m_timeline->addTransition(item, "left", keyb);
+
+    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    Transition *trl = tl->getTransition(keya);
+    Transition *trr = tl->getTransition(keyb);
+    TransitionHandleLeft *thl = trr->getLeftHandle();
+    TransitionHandleRight *thr = trl->getRightHandle();
+
+    QTest::mousePress(trl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(trl, QPoint(40, 0));
+    QTest::mouseRelease(trl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(40, 0));
+    QCOMPARE(keya->time(), 300);
+    QCOMPARE(keyb->time(), 600);
+    QCOMPARE(keyc->time(), 700);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keya->time(), 200);
+    QCOMPARE(keyb->time(), 500);
+    QCOMPARE(keyc->time(), 700);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keya->time(), 300);
+    QCOMPARE(keyb->time(), 600);
+    QCOMPARE(keyc->time(), 700);
+
+    QTest::mousePress(trl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(trl, QPoint(40, 0));
+    QTest::mouseRelease(trl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(40, 0));
+    QCOMPARE(keya->time(), 300);
+    QCOMPARE(keyb->time(), 600);
+    QCOMPARE(keyc->time(), 700);
+
+    QTest::mousePress(trl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(trl, QPoint(-40, 0));
+    QTest::mouseRelease(trl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 400);
+    QCOMPARE(keyc->time(), 700);
+
+    QTest::mousePress(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(trr, QPoint(40, 0));
+    QTest::mouseRelease(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(40, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 500);
+    QCOMPARE(keyc->time(), 800);
+
+    QTest::mousePress(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(trr, QPoint(60, 0));
+    QTest::mouseRelease(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(60, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 600);
+    QCOMPARE(keyc->time(), 900);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 500);
+    QCOMPARE(keyc->time(), 800);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 600);
+    QCOMPARE(keyc->time(), 900);
+
+    QTest::mousePress(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(trr, QPoint(0, 0));
+    QTest::mouseRelease(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 500);
+    QCOMPARE(keyc->time(), 800);
+
+    QTest::mousePress(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(trr, QPoint(-80, 0));
+    QTest::mouseRelease(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-80, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 200);
+    QCOMPARE(keyc->time(), 500);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 500);
+    QCOMPARE(keyc->time(), 800);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 200);
+    QCOMPARE(keyc->time(), 500);
+
+    QTest::mousePress(trl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(trl, Qt::Key_Right);
+    QCOMPARE(keya->time(), 200);
+    QCOMPARE(keyb->time(), 300);
+    QCOMPARE(keyc->time(), 500);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 200);
+    QCOMPARE(keyc->time(), 500);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keya->time(), 200);
+    QCOMPARE(keyb->time(), 300);
+    QCOMPARE(keyc->time(), 500);
+
+    QTest::mousePress(trl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(trl, Qt::Key_Right);
+    QCOMPARE(keya->time(), 300);
+    QCOMPARE(keyb->time(), 400);
+    QCOMPARE(keyc->time(), 500);
+
+    QTest::mousePress(trl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(trl, Qt::Key_Right);
+    QCOMPARE(keya->time(), 300);
+    QCOMPARE(keyb->time(), 400);
+    QCOMPARE(keyc->time(), 500);
+
+    QTest::mousePress(trl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(trl, Qt::Key_Left);
+    QCOMPARE(keya->time(), 200);
+    QCOMPARE(keyb->time(), 300);
+    QCOMPARE(keyc->time(), 500);
+
+    QTest::mousePress(trl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(trl, Qt::Key_Left);
+    QTest::keyClick(trl, Qt::Key_Left);
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 200);
+    QCOMPARE(keyc->time(), 500);
+
+    QTest::mousePress(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(trr, Qt::Key_Right);
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 300);
+    QCOMPARE(keyc->time(), 600);
+
+    QTest::mousePress(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(trr, Qt::Key_Right);
+    QTest::keyClick(trr, Qt::Key_Right);
+    QTest::keyClick(trr, Qt::Key_Right);
+    QTest::keyClick(trr, Qt::Key_Right);
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 600);
+    QCOMPARE(keyc->time(), 900);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 500);
+    QCOMPARE(keyc->time(), 800);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 600);
+    QCOMPARE(keyc->time(), 900);
+
+    QTest::mousePress(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(trr, Qt::Key_Left);
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 500);
+    QCOMPARE(keyc->time(), 800);
+
+    QTest::mousePress(trr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(trr, Qt::Key_Left);
+    QTest::keyClick(trr, Qt::Key_Left);
+    QTest::keyClick(trr, Qt::Key_Left);
+    QTest::keyClick(trr, Qt::Key_Left);
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 200);
+    QCOMPARE(keyc->time(), 500);
+
+    m_scene->undoStack()->undo();
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 300);
+    QCOMPARE(keyc->time(), 600);
+
+    m_scene->undoStack()->redo();
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 200);
+    QCOMPARE(keyc->time(), 500);
+
+    // testing handles
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(thr, Qt::Key_Right);
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 300);
+    QCOMPARE(keyc->time(), 500);
+    QCOMPARE(trl->width(), 40);
+    QCOMPARE(trr->width(), 40);
+
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(thr, Qt::Key_Right);
+    QTest::keyClick(thr, Qt::Key_Right);
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 400);
+    QCOMPARE(keyc->time(), 500);
+    QCOMPARE(trl->width(), 60);
+    QCOMPARE(trr->width(), 20);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(thl, Qt::Key_Right);
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 400);
+    QCOMPARE(keyc->time(), 500);
+    QCOMPARE(trl->width(), 60);
+    QCOMPARE(trr->width(), 20);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(thl, Qt::Key_Left);
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 300);
+    QCOMPARE(keyc->time(), 500);
+    QCOMPARE(trl->width(), 40);
+    QCOMPARE(trr->width(), 40);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::keyClick(thl, Qt::Key_Left);
+    QTest::keyClick(thl, Qt::Key_Left);
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 200);
+    QCOMPARE(keyc->time(), 500);
+    QCOMPARE(trl->width(), 20);
+    QCOMPARE(trr->width(), 60);
+
+    // testing mousemove
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(20, 0));
+    QCOMPARE(trl->width(), 40);
+    QCOMPARE(trr->width(), 40);
+
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 300);
+    QCOMPARE(keyc->time(), 500);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(-20, 0));
+    QCOMPARE(trl->width(), 20);
+    QCOMPARE(trr->width(), 60);
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-20, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 200);
+    QCOMPARE(keyc->time(), 500);
+    QCOMPARE(trl->width(), 20);
+    QCOMPARE(trr->width(), 60);
+
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(60, 0));
+    QCOMPARE(trl->width(), 60);
+    QCOMPARE(trr->width(), 20);
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(60, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 400);
+    QCOMPARE(keyc->time(), 500);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(-60, 0));
+    QCOMPARE(trl->width(), 20);
+    QCOMPARE(trr->width(), 60);
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-60, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 200);
+    QCOMPARE(keyc->time(), 500);
+    QCOMPARE(trl->width(), 20);
+    QCOMPARE(trr->width(), 60);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(60, 0));
+    QCOMPARE(trl->width(), 60);
+    QCOMPARE(trr->width(), 20);
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(60, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 400);
+    QCOMPARE(keyc->time(), 500);
+    QCOMPARE(trl->width(), 60);
+    QCOMPARE(trr->width(), 20);
+
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(-60, 0));
+    QCOMPARE(trl->width(), 20);
+    QCOMPARE(trr->width(), 60);
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-60, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 200);
+    QCOMPARE(keyc->time(), 500);
+    QCOMPARE(trl->width(), 20);
+    QCOMPARE(trr->width(), 60);
 }
 
 QTEST_MAIN(TestGui)

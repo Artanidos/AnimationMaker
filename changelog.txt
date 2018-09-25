@@ -1,12 +1,13 @@
 1.8.1
 ---
-- Possibility to buy license keys
+- To have a better contact to our users we have created a newsletter. You can opt-in on our website or automatically while downloading a license key. Therefore we have also removed the news-panel in app.
+- Added links to buy or to get a free license key.
 - Move object using cursor keys
 - Keyframes and transitions are now selectable and can be moved using cursor keys and by dragging with the mouse
 - Moving keyframes and transitions is now undoable
 - Rulers have been added
 - Zoom has been added
-- Bugfix: Movies can now be created in paths with blanks
+- Bugfix: Movies can now be created in paths with blank spaces.
 
 1.8
 ---

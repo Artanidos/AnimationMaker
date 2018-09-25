@@ -21,6 +21,7 @@
 #include "transitionhandleright.h"
 #include "transition.h"
 #include "keyframe.h"
+#include "transitionline.h"
 #include <QPainter>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -49,11 +50,19 @@ void TransitionHandleRight::mouseMoveEvent(QMouseEvent *ev)
     {
         int p = x() + ev->x() - m_oldX;
         int newVal = m_key->prev()->time() + qRound((qreal)p * 5 / 100) * 100;
-        if((m_key->next() == nullptr || m_key->next()->time() >= newVal) && m_key->prev()->time() < newVal)
+        if(m_key->next() != nullptr && m_key->next()->time() < newVal)
+            newVal = m_key->next()->time();
+        if(m_key->prev()->time() >= newVal)
+            newVal = m_key->prev()->time() + 100;
+        if(m_key->easing() > -1 && m_key->next()->time() <= newVal)
+            newVal = m_key->next()->time() - 100;
+        m_key->setTime(newVal);
+        Transition *transition = dynamic_cast<Transition*>(parent());
+        transition->resizeTransition();
+        if(m_key->easing() > -1)
         {
-            m_key->setTime(newVal);
-            Transition *transition = dynamic_cast<Transition*>(parent());
-            transition->resizeTransition();
+            TransitionLine *tl = dynamic_cast<TransitionLine*>(transition->parent());
+            tl->getTransition(m_key)->resizeTransition();
         }
     }
 }
