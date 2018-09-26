@@ -19,7 +19,8 @@ cp plugins/Html/gsap/* AppImage/plugins/gsap
 cp default.desktop AppImage/usr/share/applications
 cp default.svg AppImage/usr/share/icons/hicolor
 
-export LD_LIBRARY_PATH=~/SourceCode/AnimationMaker/AppImage/usr/lib:~/Qt/5.9.1/gcc_64/lib
+export PATH=$PATH:~/Qt/5.9.1/gcc_64/bin
+export LD_LIBRARY_PATH=~/Sourcecode/AnimationMaker/AppImage/usr/lib:~/Qt/5.9.1/gcc_64/lib
 /home/art/Apps/linuxdeployqt/linuxdeployqt-continuous-x86_64.AppImage AppImage/usr/share/applications/*.desktop
 rm AppImage/AppRun
 cp AppRun AppImage
@@ -27,4 +28,4 @@ cp AppRun AppImage
 mv AnimationMaker-x86_64.AppImage AnimationMaker-Linux-x86_64-1.8.1.AppImage
 
 # Clean up
-rm -r AppImage/*
+# rm -r AppImage/*
