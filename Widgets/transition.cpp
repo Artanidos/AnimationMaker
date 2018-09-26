@@ -81,6 +81,7 @@ void Transition::mousePressEvent(QMouseEvent *ev)
     {
         m_pressed = true;
         m_oldX = ev->x();
+        m_newTime = m_key->time();
     }
 }
 
@@ -124,7 +125,8 @@ void Transition::mouseReleaseEvent(QMouseEvent *ev)
     if(m_pressed)
     {
         m_pressed = false;
-        emit transitionMoved(this, m_newTime);
+        if(m_newTime != m_key->time())
+            emit transitionMoved(this, m_newTime);
     }
 }
 

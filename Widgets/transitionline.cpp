@@ -85,12 +85,7 @@ void TransitionLine::addKeyframe(QString propertyName, KeyFrame *key)
 {
     if(propertyName != m_propertyName)
         return;
-    if(key->easing() > -1)
-    {
-        // no need to add a keyframehandle when a transition exists
-        // transition will be added with next keyframe
-        return;
-    }
+
     if(key->prev() && key->prev()->easing() > -1)
     {
         Transition *trans = new Transition(this, key->prev(), m_timeline, m_undostack);
@@ -101,6 +96,12 @@ void TransitionLine::addKeyframe(QString propertyName, KeyFrame *key)
         // no need to add a keyframehandle when a transition exists
         // but we have to remove the prev keyframehandle
         removeKeyframe(propertyName, key->prev());
+        return;
+    }
+    if(key->easing() > -1)
+    {
+        // no need to add a keyframehandle when a transition exists
+        // transition will be added with next keyframe
         return;
     }
     KeyframeHandle *handle = new KeyframeHandle(this, key);
