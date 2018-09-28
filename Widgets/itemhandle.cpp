@@ -145,5 +145,6 @@ void ItemHandle::paint (QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     QRectF rect (topLeft, bottomRight);
     QBrush brush (Qt::SolidPattern);
     brush.setColor(m_color);
+    painter->drawRect(rect);
     painter->fillRect(rect,brush);
 }
