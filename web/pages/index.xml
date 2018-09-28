@@ -125,7 +125,17 @@ The animation is based on SVG and <a href="https://greensock.com/gsap">GSAP</a>.
     <Section><Row>
             <Column span="12"><Text adminlabel="Downloads"><![CDATA[<h3 id="downloads"><strong>Downloads</strong></h3>
 <p class="lead">Here you can download our latest releases for <strong>Windows</strong> and <strong>Linux</strong>.
-<a href="https://github.com/Artanidos/AnimationMaker/releases"><img src="assets/images/download.png"></a></p>]]></Text></Column>
+<a href="https://github.com/Artanidos/AnimationMaker/releases"><img src="assets/images/download.png"></a></p>
+
+<h3><strong>Installation instructions</strong></h3>
+<p class="lead">
+	In order to use AnimationMaker you just have to download the platform specific file from the github page and execute it.<br/>
+	After running this file on your computer you will be prompted to get a license key first.<br/>
+	After choosing your type of license you will be redirected to digistore24.com to get your license key.<br/>
+	Enter this license key together with your email into the fields in the app and you are ready to use AnimationMaker.<br/>
+	While getting the license you will be opt-in to our newsletter automatically.<br/>
+	The newsletter can be stopped by just clicking a unsubscribe link in the email that you will get.  
+</p>]]></Text></Column>
         </Row>
         <Row>
             <Column span="12"><Text adminlabel="Trenner"><![CDATA[<div class="divider styleColor"/>
