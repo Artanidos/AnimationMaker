@@ -19,10 +19,11 @@
 ****************************************************************************/
 
 #include "itemhandle.h"
-
+#include "animationitem.h"
 #include <QTest>
 
-ItemHandle::ItemHandle(int corner, int scaling) :
+ItemHandle::ItemHandle(AnimationItem *parent, int corner, int scaling) :
+    QGraphicsItem(parent),
     mouseDownX(0),
     mouseDownY(0),
     m_color(Qt::black),

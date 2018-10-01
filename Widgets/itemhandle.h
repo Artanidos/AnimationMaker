@@ -34,10 +34,11 @@
 #include <QPointF>
 #include "widgets_global.h"
 
+class AnimationItem;
 class WIDGETSSHARED_EXPORT ItemHandle : public QGraphicsItem
 {
 public:
-    explicit ItemHandle(int corner = 0, int scaling = 1);
+    explicit ItemHandle(AnimationItem *parent, int corner = 0, int scaling = 1);
 
     int  getCorner();
     void setMouseState(int);

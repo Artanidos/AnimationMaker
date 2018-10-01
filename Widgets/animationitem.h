@@ -43,6 +43,13 @@ class WIDGETSSHARED_EXPORT AnimationItem : public QObject, public QGraphicsItem
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
     Q_PROPERTY(QColor brushColor READ brushColor WRITE setBrushColor)
     Q_PROPERTY(QColor penColor READ penColor WRITE setPenColor)
+    Q_PROPERTY(qreal scalex READ scaleX WRITE setScaleX)
+    Q_PROPERTY(qreal scaley READ scaleY WRITE setScaleY)
+    Q_PROPERTY(qreal shearx READ shearX WRITE setShearX)
+    Q_PROPERTY(qreal sheary READ shearY WRITE setShearY)
+    Q_PROPERTY(qreal transx READ transX WRITE setTransX)
+    Q_PROPERTY(qreal transy READ transY WRITE setTransY)
+    Q_PROPERTY(QString rotation READ rotation WRITE setRotation)
     Q_INTERFACES(QGraphicsItem)
 
 public:
@@ -66,6 +73,27 @@ public:
     virtual void setScale(qreal x, qreal y);
     qreal xscale();
     qreal yscale();
+
+    double scaleX() {return m_scaleX;}
+    void setScaleX(double value);
+
+    double scaleY() {return m_scaleY;}
+    void setScaleY(double value);
+
+    double shearX() {return m_shearX;}
+    void setShearX(double value);
+
+    double shearY() {return m_shearY;}
+    void setShearY(double value);
+
+    double transX() {return m_transX;}
+    void setTransX(double value);
+
+    double transY() {return m_transY;}
+    void setTransY(double value);
+
+    QString rotation() {return m_rotation;}
+    void setRotation(QString value);
 
     QString id() const;
     void setId(const QString value);
@@ -116,6 +144,9 @@ public:
     void readAttributes(QDomElement);
     bool isSceneRect() {return m_isSceneRect;}
 
+private:
+    void doTransform();
+
 protected:
     void writeAttributes(QDomElement);
 
@@ -140,6 +171,13 @@ private:
     QHash<QString, KeyFrame*> *m_keyframes;
     qreal m_oldx, m_oldy, m_oldwidth, m_oldheight;
     int m_opacity;
+    double m_scaleX;
+    double m_scaleY;
+    double m_shearX;
+    double m_shearY;
+    double m_transX;
+    double m_transY;
+    QString m_rotation;
 
 private slots:
     void deleteItem();
@@ -160,6 +198,13 @@ signals:
     void keyframeAdded(QString propertyName, KeyFrame *key);
     void keyframeRemoved(QString propertyName, KeyFrame *key);
     void transitionRemoved(QString propertyName, KeyFrame *key);
+    void scaleXChanged(AnimationItem *item, double value);
+    void scaleYChanged(AnimationItem *item, double value);
+    void shearXChanged(AnimationItem *item, double value);
+    void shearYChanged(AnimationItem *item, double value);
+    void transXChanged(AnimationItem *item, double value);
+    void transYChanged(AnimationItem *item, double value);
+    void rotationChanged(AnimationItem *item, QString value);
 
 protected:
     void setHandlePositions();

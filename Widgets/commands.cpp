@@ -733,3 +733,178 @@ void ResizeTransitionCommand::redo()
 {
     m_timeline->resizeTransition(m_key, m_newStartTime, m_newEndTime);
 }
+
+ChangeScaleXCommand::ChangeScaleXCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_value = value;
+    m_oldvalue = oldvalue;
+    m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
+    setText("Change " + item->typeName() + " scale X");
+}
+
+void ChangeScaleXCommand::undo()
+{
+    m_item->setScaleX(m_oldvalue);
+    m_item->adjustKeyframes("scalex", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
+}
+
+void ChangeScaleXCommand::redo()
+{
+    m_item->setScaleX(m_value);
+    m_item->adjustKeyframes("scalex", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
+}
+
+ChangeScaleYCommand::ChangeScaleYCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_value = value;
+    m_oldvalue = oldvalue;
+    m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
+    setText("Change " + item->typeName() + " scale y");
+}
+
+void ChangeScaleYCommand::undo()
+{
+    m_item->setScaleY(m_oldvalue);
+    m_item->adjustKeyframes("scaley", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
+}
+
+void ChangeScaleYCommand::redo()
+{
+    m_item->setScaleY(m_value);
+    m_item->adjustKeyframes("scaley", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
+}
+
+ChangeShearXCommand::ChangeShearXCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_value = value;
+    m_oldvalue = oldvalue;
+    m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
+    setText("Change " + item->typeName() + " shear X");
+}
+
+void ChangeShearXCommand::undo()
+{
+    m_item->setShearX(m_oldvalue);
+    m_item->adjustKeyframes("shearx", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
+}
+
+void ChangeShearXCommand::redo()
+{
+    m_item->setShearX(m_value);
+    m_item->adjustKeyframes("shearx", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
+}
+
+ChangeShearYCommand::ChangeShearYCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_value = value;
+    m_oldvalue = oldvalue;
+    m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
+    setText("Change " + item->typeName() + " shear y");
+}
+
+void ChangeShearYCommand::undo()
+{
+    m_item->setShearY(m_oldvalue);
+    m_item->adjustKeyframes("sheary", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
+}
+
+void ChangeShearYCommand::redo()
+{
+    m_item->setShearY(m_value);
+    m_item->adjustKeyframes("sheary", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
+}
+
+ChangeTransXCommand::ChangeTransXCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_value = value;
+    m_oldvalue = oldvalue;
+    m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
+    setText("Change " + item->typeName() + " translate X");
+}
+
+void ChangeTransXCommand::undo()
+{
+    m_item->setTransX(m_oldvalue);
+    m_item->adjustKeyframes("transx", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
+}
+
+void ChangeTransXCommand::redo()
+{
+    m_item->setTransX(m_value);
+    m_item->adjustKeyframes("transx", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
+}
+
+ChangeTransYCommand::ChangeTransYCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_value = value;
+    m_oldvalue = oldvalue;
+    m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
+    setText("Change " + item->typeName() + " translate y");
+}
+
+void ChangeTransYCommand::undo()
+{
+    m_item->setTransY(m_oldvalue);
+    m_item->adjustKeyframes("transy", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
+}
+
+void ChangeTransYCommand::redo()
+{
+    m_item->setTransY(m_value);
+    m_item->adjustKeyframes("transy", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
+}
+
+ChangeRotationCommand::ChangeRotationCommand(QString value, QString oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_value = value;
+    m_oldvalue = oldvalue;
+    m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
+    setText("Change " + item->typeName() + " rotation");
+}
+
+void ChangeRotationCommand::undo()
+{
+    m_item->setRotation(m_oldvalue);
+    m_item->adjustKeyframes("rotation", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
+}
+
+void ChangeRotationCommand::redo()
+{
+    m_item->setRotation(m_value);
+    m_item->adjustKeyframes("rotation", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
+}

@@ -9,10 +9,6 @@
 - Rectangle new
     - create via mouse drag
 
-- Items Translation like Rotate, Shear
-
-- Scene Zoom, Minimum size of 20x20 not needed anymore if zoom is implemented
-
 - Add the ability to add sound and voices.
 
 - Plugin for animated objects (tweens, videoscribe)
@@ -23,9 +19,5 @@
 
 - Sans Serif bold has no BOLD only Obliqe and Italic
 
-- Undo of item move should dropped keyframes if they where created using autokeyframes
-
 - Scene FPS should be visibel in timeline
-
-- Transitions can share keyframes. Moving the right transition resizes the left transition
 

@@ -439,4 +439,123 @@ private:
     Timeline *m_timeline;
 };
 
+class WIDGETSSHARED_EXPORT ChangeScaleXCommand : public QUndoCommand
+{
+public:
+    ChangeScaleXCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    AnimationItem *m_item;
+    double m_value, m_oldvalue;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
+    KeyFrame *m_keyframe;
+};
+
+class WIDGETSSHARED_EXPORT ChangeScaleYCommand : public QUndoCommand
+{
+public:
+    ChangeScaleYCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    AnimationItem *m_item;
+    double m_value, m_oldvalue;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
+    KeyFrame *m_keyframe;
+};
+
+class WIDGETSSHARED_EXPORT ChangeShearXCommand : public QUndoCommand
+{
+public:
+    ChangeShearXCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    AnimationItem *m_item;
+    double m_value, m_oldvalue;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
+    KeyFrame *m_keyframe;
+};
+
+class WIDGETSSHARED_EXPORT ChangeShearYCommand : public QUndoCommand
+{
+public:
+    ChangeShearYCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    AnimationItem *m_item;
+    double m_value, m_oldvalue;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
+    KeyFrame *m_keyframe;
+};
+
+class WIDGETSSHARED_EXPORT ChangeTransXCommand : public QUndoCommand
+{
+public:
+    ChangeTransXCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    AnimationItem *m_item;
+    double m_value, m_oldvalue;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
+    KeyFrame *m_keyframe;
+};
+
+class WIDGETSSHARED_EXPORT ChangeTransYCommand : public QUndoCommand
+{
+public:
+    ChangeTransYCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    AnimationItem *m_item;
+    double m_value, m_oldvalue;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
+    KeyFrame *m_keyframe;
+};
+
+class WIDGETSSHARED_EXPORT ChangeRotationCommand : public QUndoCommand
+{
+public:
+    ChangeRotationCommand(QString value, QString oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    AnimationItem *m_item;
+    QString m_value, m_oldvalue;
+    int m_time;
+    bool m_autokeyframes;
+    bool m_autotransition;
+    KeyFrame *m_keyframe;
+};
+
 #endif // COMMANDS_H

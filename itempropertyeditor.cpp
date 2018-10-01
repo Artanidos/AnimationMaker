@@ -37,13 +37,14 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QFontDatabase>
+#include <QRadioButton>
 
 ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
 {
     m_timeline = timeline;
-    m_rectangle = NULL;
-    m_ellipse = NULL;
-    m_vector = NULL;
+    m_rectangle = nullptr;
+    m_ellipse = nullptr;
+    m_vector = nullptr;
     m_initializing = false;
 
     m_additionalPropertyBox = new QVBoxLayout();
@@ -114,6 +115,94 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
     layoutGeo->addWidget(m_height, 1, 6);
     expGeo->addLayout(layoutGeo);
     vbox->addWidget(expGeo);
+
+    Expander *expTrans = new Expander("Transformation");
+    QGridLayout *layoutTrans = new QGridLayout();
+    QLabel *labelScale = new QLabel("Scale");
+    QLabel *labelShear = new QLabel("Shear");
+    QLabel *labelTranslate = new QLabel("Translate");
+    QLabel *labelRotate = new QLabel("Rotate");
+    QLabel *labelScaleX = new QLabel("X");
+    QLabel *labelScaleY = new QLabel("Y");
+    QLabel *labelShearX = new QLabel("X");
+    QLabel *labelShearY = new QLabel("Y");
+    QLabel *labelTransX = new QLabel("X");
+    QLabel *labelTransY = new QLabel("Y");
+    m_rotationX = new QRadioButton("X");
+    m_rotationY = new QRadioButton("Y");
+    m_rotationZ = new QRadioButton("Z");
+    m_scaleX = new QSpinBox();
+    m_scaleX->setMinimum(-10000);
+    m_scaleX->setMaximum(10000);
+    m_scaleY = new QSpinBox();
+    m_scaleY->setMinimum(-10000);
+    m_scaleY->setMaximum(10000);
+    m_shearX = new QSpinBox();
+    m_shearX->setMinimum(-10000);
+    m_shearX->setMaximum(10000);
+    m_shearY = new QSpinBox();
+    m_shearY->setMinimum(-10000);
+    m_shearY->setMaximum(10000);
+    m_transX = new QSpinBox();
+    m_transX->setMinimum(-10000);
+    m_transX->setMaximum(10000);
+    m_transY = new QSpinBox();
+    m_transY->setMinimum(-10000);
+    m_transY->setMaximum(10000);
+    m_rotate = new QSpinBox();
+    m_rotate->setMinimum(-10000);
+    m_rotate->setMaximum(10000);
+
+    FlatButton *addScaleXKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    addScaleXKeyframe->setMaximumWidth(9);
+    addScaleXKeyframe->setToolTip("Add keyframe for scale X");
+    FlatButton *addScaleYKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    addScaleYKeyframe->setMaximumWidth(9);
+    addScaleYKeyframe->setToolTip("Add keyframe for scale Y");
+    FlatButton *addShearXKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    addShearXKeyframe->setMaximumWidth(9);
+    addShearXKeyframe->setToolTip("Add keyframe for shear X");
+    FlatButton *addShearYKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    addShearYKeyframe->setMaximumWidth(9);
+    addShearYKeyframe->setToolTip("Add keyframe for shear Y");
+    FlatButton *addTransXKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    addTransXKeyframe->setMaximumWidth(9);
+    addTransXKeyframe->setToolTip("Add keyframe for translate X");
+    FlatButton *addTransYKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    addTransYKeyframe->setMaximumWidth(9);
+    addTransYKeyframe->setToolTip("Add keyframe for translate Y");
+    FlatButton *addRotateKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    addRotateKeyframe->setMaximumWidth(9);
+    addRotateKeyframe->setToolTip("Add keyframe for rotation");
+    layoutTrans->addWidget(labelScale, 0, 0);
+    layoutTrans->addWidget(labelScaleX, 0, 1);
+    layoutTrans->addWidget(addScaleXKeyframe, 0, 2);
+    layoutTrans->addWidget(m_scaleX, 0, 3);
+    layoutTrans->addWidget(labelScaleY, 0, 4);
+    layoutTrans->addWidget(addScaleYKeyframe, 0, 5);
+    layoutTrans->addWidget(m_scaleY, 0, 6);
+    layoutTrans->addWidget(labelShear, 1, 0);
+    layoutTrans->addWidget(labelShearX, 1, 1);
+    layoutTrans->addWidget(addShearXKeyframe, 1, 2);
+    layoutTrans->addWidget(m_shearX, 1, 3);
+    layoutTrans->addWidget(labelShearY, 1, 4);
+    layoutTrans->addWidget(addShearYKeyframe, 1, 5);
+    layoutTrans->addWidget(m_shearY, 1, 6);
+    layoutTrans->addWidget(labelTranslate, 2, 0);
+    layoutTrans->addWidget(labelTransX, 2, 1);
+    layoutTrans->addWidget(addTransXKeyframe, 2, 2);
+    layoutTrans->addWidget(m_transX, 2, 3);
+    layoutTrans->addWidget(labelTransY, 2, 4);
+    layoutTrans->addWidget(addTransYKeyframe, 2, 5);
+    layoutTrans->addWidget(m_transY, 2, 6);
+    layoutTrans->addWidget(labelRotate, 3, 0);
+    layoutTrans->addWidget(addRotateKeyframe, 3, 2);
+    layoutTrans->addWidget(m_rotate, 3, 3);
+    layoutTrans->addWidget(m_rotationX, 3, 4);
+    layoutTrans->addWidget(m_rotationY, 3, 5);
+    layoutTrans->addWidget(m_rotationZ, 3, 6);
+    expTrans->addLayout(layoutTrans);
+    vbox->addWidget(expTrans);
 
     expText = new Expander("Text");
     expText->setVisible(false);
@@ -235,6 +324,17 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
     connect(m_fontSize, SIGNAL(currentTextChanged(QString)), this, SLOT(fontSizeChanged()));
     connect(m_svgText, SIGNAL(editingFinished()), this, SLOT(svgTextChanged()));
     connect(plus, SIGNAL(clicked()), this, SLOT(addSvgAttributeEditor()));
+
+    connect(m_scaleX, SIGNAL(valueChanged(int)), this, SLOT(scaleXChanged(int)));
+    connect(m_scaleY, SIGNAL(valueChanged(int)), this, SLOT(scaleYChanged(int)));
+    connect(m_shearX, SIGNAL(valueChanged(int)), this, SLOT(shearXChanged(int)));
+    connect(m_shearY, SIGNAL(valueChanged(int)), this, SLOT(shearYChanged(int)));
+    connect(m_transX, SIGNAL(valueChanged(int)), this, SLOT(transXChanged(int)));
+    connect(m_transY, SIGNAL(valueChanged(int)), this, SLOT(transYChanged(int)));
+    connect(m_rotate, SIGNAL(valueChanged(int)), this, SLOT(rotationChanged(int)));
+    connect(m_rotationX, SIGNAL(toggled(bool)), this, SLOT(rotationXChanged(bool)));
+    connect(m_rotationY, SIGNAL(toggled(bool)), this, SLOT(rotationYChanged(bool)));
+    connect(m_rotationZ, SIGNAL(toggled(bool)), this, SLOT(rotationZChanged(bool)));
 }
 
 void ItemPropertyEditor::fontFamilyChanged(int index)
@@ -392,6 +492,120 @@ void ItemPropertyEditor::addTextColorKeyFrame()
     emit addKeyFrame(m_item, "textColor", QVariant(textcolorEditor->color()));
 }
 
+void ItemPropertyEditor::scaleXChanged(int value)
+{
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ChangeScaleXCommand((double)value/ 100.0, m_item->scaleX(), as, m_item);
+        undoStack->push(cmd);
+    }
+}
+
+void ItemPropertyEditor::scaleYChanged(int value)
+{
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ChangeScaleYCommand((double)value/ 100.0, m_item->scaleY(), as, m_item);
+        undoStack->push(cmd);
+    }
+}
+
+void ItemPropertyEditor::shearXChanged(int value)
+{
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ChangeShearXCommand((double)value/ 100.0, m_item->scaleX(), as, m_item);
+        undoStack->push(cmd);
+    }
+}
+
+void ItemPropertyEditor::shearYChanged(int value)
+{
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ChangeShearYCommand((double)value/ 100.0, m_item->scaleX(), as, m_item);
+        undoStack->push(cmd);
+    }
+}
+
+void ItemPropertyEditor::transXChanged(int value)
+{
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ChangeTransXCommand((double)value, m_item->scaleX(), as, m_item);
+        undoStack->push(cmd);
+    }
+}
+
+void ItemPropertyEditor::transYChanged(int value)
+{
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ChangeTransYCommand((double)value, m_item->scaleX(), as, m_item);
+        undoStack->push(cmd);
+    }
+}
+
+void ItemPropertyEditor::rotationChanged(int value)
+{
+    QString rotation;
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        if(m_rotationX->isChecked())
+            rotation = "X";
+        else if(m_rotationY->isChecked())
+            rotation = "Y";
+        else if(m_rotationZ->isChecked())
+            rotation = "Z";
+        rotation += QString::number(value);
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ChangeRotationCommand(rotation, m_item->rotation(), as, m_item);
+        undoStack->push(cmd);
+    }
+}
+
+void ItemPropertyEditor::rotationXChanged(bool)
+{
+    rotationChanged(m_rotate->value());
+}
+
+void ItemPropertyEditor::rotationYChanged(bool)
+{
+    rotationChanged(m_rotate->value());
+}
+
+void ItemPropertyEditor::rotationZChanged(bool)
+{
+    rotationChanged(m_rotate->value());
+}
+
 void ItemPropertyEditor::svgAttributeNameChanged(QString oldName, QString newName)
 {
     if(m_initializing)
@@ -491,6 +705,20 @@ void ItemPropertyEditor::setItem(AnimationItem *item)
     m_id->setText(item->id());
     m_opacity->setValue(item->opacity());
     m_opacityText->setValue(item->opacity());
+    m_scaleX->setValue(item->scaleX() * 100);
+    m_scaleY->setValue(item->scaleY() * 100);
+    m_shearX->setValue(item->shearX() * 100);
+    m_shearY->setValue(item->shearY() * 100);
+    m_transX->setValue(item->transX());
+    m_transY->setValue(item->transY());
+    m_rotate->setValue(item->rotation().right(item->rotation().size() - 1).toInt());
+    if(item->rotation().startsWith("Z"))
+        m_rotationZ->setChecked(true);
+    else if(item->rotation().startsWith("Y"))
+        m_rotationY->setChecked(true);
+    else if(item->rotation().startsWith("X"))
+        m_rotationX->setChecked(true);
+
 
     // delete all additional properties from prior usage
     QLayoutItem *litem;

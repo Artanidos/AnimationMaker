@@ -38,6 +38,7 @@ class Timeline;
 class QVBoxLayout;
 class XmlEditor;
 class SvgAttributeEditor;
+class QRadioButton;
 class ItemPropertyEditor : public QWidget
 {
     Q_OBJECT
@@ -68,6 +69,13 @@ private:
     QSpinBox *m_width;
     QSpinBox *m_height;
     QSpinBox *m_opacityText;
+    QSpinBox *m_scaleX;
+    QSpinBox *m_scaleY;
+    QSpinBox *m_shearX;
+    QSpinBox *m_shearY;
+    QSpinBox *m_transX;
+    QSpinBox *m_transY;
+    QSpinBox *m_rotate;
     QLabel *m_typ;
     QLineEdit *m_text;
     Expander *expText;
@@ -77,6 +85,9 @@ private:
     AnimationItem *m_item;
     Text *m_textitem;
     QVBoxLayout *m_additionalPropertyBox;
+    QRadioButton *m_rotationZ;
+    QRadioButton *m_rotationY;
+    QRadioButton *m_rotationX;
 
     Ellipse *m_ellipse;
     QSlider *m_opacity;
@@ -126,6 +137,16 @@ private slots:
     void addBrushKeyFrame();
     void addPenKeyFrame();
     void addTextColorKeyFrame();
+    void scaleXChanged(int);
+    void scaleYChanged(int);
+    void shearXChanged(int);
+    void shearYChanged(int);
+    void transXChanged(int);
+    void transYChanged(int);
+    void rotationChanged(int);
+    void rotationXChanged(bool);
+    void rotationYChanged(bool);
+    void rotationZChanged(bool);
  };
 
 #endif // ITEMPROPERTYEDITOR_H

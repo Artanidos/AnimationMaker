@@ -38,6 +38,13 @@ AnimationItem::AnimationItem(AnimationScene *scene, bool isSceneRect)
     m_hasHandles = false;
     m_xscale = 1;
     m_yscale = 1;
+    m_scaleX = 1.0;
+    m_scaleY = 1.0;
+    m_shearX = 0.0;
+    m_shearY = 0.0;
+    m_transX = 0.0;
+    m_transY = 0.0;
+    m_rotation = "Z0";
     m_opacity = 100;
     m_keyframes = new QHash<QString, KeyFrame*>();
 
@@ -75,7 +82,7 @@ AnimationItem::~AnimationItem()
     for(it = m_keyframes->begin(); it != m_keyframes->end(); it++)
     {
         KeyFrame *frame = it.value();
-        for(; frame != NULL; frame = frame->next())
+        for(; frame != nullptr; frame = frame->next())
         {
             if(frame->prev())
                 delete frame->prev();
@@ -201,6 +208,77 @@ qreal AnimationItem::yscale()
     return m_yscale;
 }
 
+void AnimationItem::doTransform()
+{
+    int rotation;
+    Qt::Axis axis;
+
+    if(m_rotation.startsWith("X"))
+        axis = Qt::XAxis;
+    else if(m_rotation.startsWith("Y"))
+        axis = Qt::YAxis;
+    else if(m_rotation.startsWith("Z"))
+        axis = Qt::ZAxis;
+    rotation = m_rotation.right(m_rotation.size() - 1).toInt();
+
+    QTransform t;
+    t.translate(m_transX, m_transY);
+    t.scale(m_scaleX, m_scaleY);
+    t.shear(m_shearX, m_shearY);
+    t.rotate(rotation, axis);
+    t.translate(-m_transX, -m_transY);
+    setTransform(t, false);
+}
+
+void AnimationItem::setScaleX(double value)
+{
+    m_scaleX = value;
+    doTransform();
+    emit scaleXChanged(this, value);
+}
+
+void AnimationItem::setScaleY(double value)
+{
+    m_scaleY = value;
+    doTransform();
+    emit scaleYChanged(this, value);
+}
+
+void AnimationItem::setShearX(double value)
+{
+    m_shearX = value;
+    doTransform();
+    emit shearXChanged(this, value);
+}
+
+void AnimationItem::setShearY(double value)
+{
+    m_shearY = value;
+    doTransform();
+    emit shearYChanged(this, value);
+}
+
+void AnimationItem::setTransX(double value)
+{
+    m_transX = value;
+    doTransform();
+    emit transXChanged(this, value);
+}
+
+void AnimationItem::setTransY(double value)
+{
+    m_transY = value;
+    doTransform();
+    emit transYChanged(this, value);
+}
+
+void AnimationItem::setRotation(QString value)
+{
+    m_rotation = value;
+    doTransform();
+    emit rotationChanged(this, value);
+}
+
 void AnimationItem::setRect(qreal x, qreal y, qreal w, qreal h)
 {
     prepareGeometryChange();
@@ -208,9 +286,7 @@ void AnimationItem::setRect(qreal x, qreal y, qreal w, qreal h)
     update();
     if(m_scene)
     {
-        //adjustKeyframes("width", QVariant(w), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(),nullptr, false);
-        //adjustKeyframes("height", QVariant(h), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(), nullptr, false);
-        emit sizeChanged(w, h);
+       emit sizeChanged(w, h);
     }
 }
 
@@ -266,7 +342,6 @@ void AnimationItem::setBrush(const QBrush &brush)
 {
     m_brush = brush;
     update();
-    //emit brushChanged(m_brush.color());
 }
 
 QColor AnimationItem::brushColor() const
@@ -308,12 +383,12 @@ QRectF AnimationItem::boundingRect() const
 bool AnimationItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
 {
     ItemHandle * handle = dynamic_cast<ItemHandle *>(watched);
-    if ( handle == NULL)
+    if ( handle == nullptr)
     {
         return false;
     }
     QGraphicsSceneMouseEvent * mevent = dynamic_cast<QGraphicsSceneMouseEvent*>(event);
-    if ( mevent == NULL)
+    if ( mevent == nullptr)
     {
         return false;
     }
@@ -440,8 +515,6 @@ bool AnimationItem::sceneEventFilter(QGraphicsItem * watched, QEvent * event)
         }
 
         setRect(0,0,rect().width() + deltaWidth, rect().height() + deltaHeight);
-        //adjustKeyframes("width", QVariant(rect().width() + deltaWidth), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(), nullptr, false);
-        //adjustKeyframes("height", QVariant(rect().height() + deltaHeight), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(), nullptr, false);
         scaleObjects();
 
         deltaWidth *= (-1);
@@ -581,14 +654,14 @@ void AnimationItem::setHandlePositions()
         return;
 
     halfwidth = m_handles[0]->width() / 2.0;
-    m_handles[0]->setPos(x() - halfwidth, y() - halfwidth);
-    m_handles[1]->setPos(x() + rect().width() - halfwidth, y() - halfwidth);
-    m_handles[2]->setPos(x() + rect().width() - halfwidth, y() + rect().height() - halfwidth);
-    m_handles[3]->setPos(x() - halfwidth, y() + rect().height() - halfwidth);
-    m_handles[4]->setPos(x() + rect().width() / 2 - halfwidth, y() - halfwidth);
-    m_handles[5]->setPos(x() + rect().width() - halfwidth, y() + rect().height() / 2 - halfwidth);
-    m_handles[6]->setPos(x() + rect().width() /2 - halfwidth, y() + rect().height() - halfwidth);
-    m_handles[7]->setPos(x() - halfwidth, y() + rect().height() / 2 - halfwidth);
+    m_handles[0]->setPos(-halfwidth, -halfwidth);
+    m_handles[1]->setPos(rect().width() - halfwidth, -halfwidth);
+    m_handles[2]->setPos(rect().width() - halfwidth, rect().height() - halfwidth);
+    m_handles[3]->setPos(-halfwidth, rect().height() - halfwidth);
+    m_handles[4]->setPos(rect().width() / 2 - halfwidth, -halfwidth);
+    m_handles[5]->setPos(rect().width() - halfwidth, rect().height() / 2 - halfwidth);
+    m_handles[6]->setPos(rect().width() /2 - halfwidth, rect().height() - halfwidth);
+    m_handles[7]->setPos(- halfwidth, rect().height() / 2 - halfwidth);
 
     m_scene->update(x() - halfwidth - 5, y() - halfwidth - 5, x() + rect().width() + halfwidth * 2 + 5, y() + rect().height() + halfwidth * 2 + 5);
 }
@@ -603,8 +676,7 @@ QVariant AnimationItem::itemChange(GraphicsItemChange change, const QVariant &va
             {
                 for(int i = 0; i < 8; i++)
                 {
-                    m_handles[i] = new ItemHandle(i, scene()->scaling());
-                    this->scene()->addItem(m_handles[i]);
+                    m_handles[i] = new ItemHandle(this, i, scene()->scaling());
                     m_handles[i]->installSceneEventFilter(this);
                 }
                 m_hasHandles = true;
@@ -635,8 +707,6 @@ QVariant AnimationItem::itemChange(GraphicsItemChange change, const QVariant &va
 
 void AnimationItem::posChanged(qreal x, qreal y)
 {
-    //adjustKeyframes("left", QVariant(x), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(), nullptr, false);
-    //adjustKeyframes("top", QVariant(y), m_scene->playheadPosition(), m_scene->autokeyframes(), m_scene->autotransition(), nullptr, false);
     emit positionChanged(x, y);
 }
 
