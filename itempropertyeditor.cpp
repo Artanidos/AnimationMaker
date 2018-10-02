@@ -335,6 +335,13 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
     connect(m_rotationX, SIGNAL(toggled(bool)), this, SLOT(rotationXChanged(bool)));
     connect(m_rotationY, SIGNAL(toggled(bool)), this, SLOT(rotationYChanged(bool)));
     connect(m_rotationZ, SIGNAL(toggled(bool)), this, SLOT(rotationZChanged(bool)));
+    connect(addScaleXKeyframe, SIGNAL(clicked()), this, SLOT(addScaleXKeyframe()));
+    connect(addScaleYKeyframe, SIGNAL(clicked()), this, SLOT(addScaleYKeyframe()));
+    connect(addShearXKeyframe, SIGNAL(clicked()), this, SLOT(addShearXKeyframe()));
+    connect(addShearYKeyframe, SIGNAL(clicked()), this, SLOT(addShearYKeyframe()));
+    connect(addTransXKeyframe, SIGNAL(clicked()), this, SLOT(addTransXKeyframe()));
+    connect(addTransYKeyframe, SIGNAL(clicked()), this, SLOT(addTransYKeyframe()));
+    connect(addRotateKeyframe, SIGNAL(clicked()), this, SLOT(addRotateKeyframe()));
 }
 
 void ItemPropertyEditor::fontFamilyChanged(int index)
@@ -585,6 +592,7 @@ void ItemPropertyEditor::rotationChanged(int value)
         else if(m_rotationZ->isChecked())
             rotation = "Z";
         rotation += QString::number(value);
+
         QUndoStack *undoStack = as->undoStack();
         QUndoCommand *cmd = new ChangeRotationCommand(rotation, m_item->rotation(), as, m_item);
         undoStack->push(cmd);
@@ -604,6 +612,49 @@ void ItemPropertyEditor::rotationYChanged(bool)
 void ItemPropertyEditor::rotationZChanged(bool)
 {
     rotationChanged(m_rotate->value());
+}
+
+void ItemPropertyEditor::addScaleXKeyframe()
+{
+    emit addKeyFrame(m_item, "scalex", QVariant((double)m_scaleX->value() / 100.0));
+}
+
+void ItemPropertyEditor::addScaleYKeyframe()
+{
+    emit addKeyFrame(m_item, "scaley", QVariant((double)m_scaleY->value() / 100.0));
+}
+
+void ItemPropertyEditor::addShearXKeyframe()
+{
+    emit addKeyFrame(m_item, "shearx", QVariant((double)m_shearX->value() / 100.0));
+}
+
+void ItemPropertyEditor::addShearYKeyframe()
+{
+    emit addKeyFrame(m_item, "sheary", QVariant((double)m_shearY->value() / 100.0));
+}
+
+void ItemPropertyEditor::addTransXKeyframe()
+{
+    emit addKeyFrame(m_item, "transx", QVariant((double)m_transX->value() / 100.0));
+}
+
+void ItemPropertyEditor::addTransYKeyframe()
+{
+    emit addKeyFrame(m_item, "transy", QVariant((double)m_transY->value() / 100.0));
+}
+
+void ItemPropertyEditor::addRotateKeyframe()
+{
+    QString rotation;
+    if(m_rotationX->isChecked())
+        rotation = "X";
+    else if(m_rotationY->isChecked())
+        rotation = "Y";
+    else if(m_rotationZ->isChecked())
+        rotation = "Z";
+    rotation += QString::number(m_rotate->value());
+    emit addKeyFrame(m_item, "rotation", QVariant(rotation));
 }
 
 void ItemPropertyEditor::svgAttributeNameChanged(QString oldName, QString newName)

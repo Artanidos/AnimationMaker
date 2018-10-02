@@ -147,6 +147,13 @@ private slots:
     void rotationXChanged(bool);
     void rotationYChanged(bool);
     void rotationZChanged(bool);
+    void addScaleXKeyframe();
+    void addScaleYKeyframe();
+    void addShearXKeyframe();
+    void addShearYKeyframe();
+    void addTransXKeyframe();
+    void addTransYKeyframe();
+    void addRotateKeyframe();
  };
 
 #endif // ITEMPROPERTYEDITOR_H

@@ -749,6 +749,21 @@ void AnimationScene::setPlayheadPosition(int playheadPosition)
                                 item->setProperty(propertyName.toLatin1(), value);
                                 break;
                             }
+                            case QVariant::Type::String:
+                            {
+                                if(propertyName == "rotation")
+                                {
+                                    QString value;
+                                    if(found->easing() >= 0)
+                                        value = calculateRotationValue(found, m_playheadPosition);
+                                    else
+                                        value = found->value().value<QString>();
+                                    item->setProperty(propertyName.toLatin1(), value);
+                                }
+                                else
+                                    qDebug() << propertyName << found->value().type() << "not implemented yet";
+                                break;
+                            }
                             default:
                                 qDebug() << propertyName << found->value().type() << "not implemented yet";
                                 break;
@@ -784,8 +799,7 @@ QColor calculateColorValue(KeyFrame *found, int playheadPosition)
 
     QColor fromColor = found->value().value<QColor>();
     QColor toColor = found->next()->value().value<QColor>();
-    //QColor fromColor(found->value().toString());
-    //QColor toColor(found->next()->value().toString());
+
     int fromRed = fromColor.red();
     int fromBlue = fromColor.blue();
     int fromGreen = fromColor.green();
@@ -799,4 +813,22 @@ QColor calculateColorValue(KeyFrame *found, int playheadPosition)
     int newGreen = fromGreen + (toGreen - fromGreen) / 1.0 * progressValue;
 
     return QColor(newRed, newGreen, newBlue);
+}
+
+QString calculateRotationValue(KeyFrame *found, int playheadPosition)
+{
+    qreal progressValue = getProgressValue(found, playheadPosition);
+
+    QString fromValue = found->value().value<QString>();
+    QString toValue = found->next()->value().value<QString>();
+    QString fromAxis = fromValue.left(1);
+    int fromRot = fromValue.right(fromValue.size() - 1).toInt();
+    QString toAxis = toValue.left(1);
+    int toRot = toValue.right(toValue.size() - 1).toInt();
+
+    if(fromAxis != toAxis)
+        return fromValue;
+
+    int newRot = fromRot + (toRot - fromRot) / 1.0 * progressValue;
+    return fromAxis + QString::number(newRot);
 }

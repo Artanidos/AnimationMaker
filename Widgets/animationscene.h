@@ -139,5 +139,6 @@ qreal getProgressValue(KeyFrame *found, int playheadPosition);
 qreal calculateRealValue(KeyFrame *found, int playheadPosition);
 QColor calculateColorValue(KeyFrame *found, int playheadPosition);
 int calculateIntValue(KeyFrame *found, int playheadPosition);
+QString calculateRotationValue(KeyFrame *found, int playheadPosition);
 
 #endif // ANIMATIONSCENE_H
