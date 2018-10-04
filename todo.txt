@@ -1,5 +1,3 @@
-- Bug: output path withs blanks does not work
-
 - Treeview
     - Object make invisible
     - Object lock
@@ -20,4 +18,6 @@
 - Sans Serif bold has no BOLD only Obliqe and Italic
 
 - Scene FPS should be visibel in timeline
+
+- effects like shadow
 

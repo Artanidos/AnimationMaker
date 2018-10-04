@@ -128,9 +128,19 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
     QLabel *labelShearY = new QLabel("Y");
     QLabel *labelTransX = new QLabel("X");
     QLabel *labelTransY = new QLabel("Y");
+    labelScaleX->setFixedWidth(15);
+    labelScaleY->setFixedWidth(15);
+    labelShearX->setFixedWidth(15);
+    labelShearY->setFixedWidth(15);
+    labelTransX->setFixedWidth(15);
+    labelTransY->setFixedWidth(15);
+    QHBoxLayout *radioLayout = new QHBoxLayout();
     m_rotationX = new QRadioButton("X");
     m_rotationY = new QRadioButton("Y");
     m_rotationZ = new QRadioButton("Z");
+    radioLayout->addWidget(m_rotationX);
+    radioLayout->addWidget(m_rotationY);
+    radioLayout->addWidget(m_rotationZ);
     m_scaleX = new QSpinBox();
     m_scaleX->setMinimum(-10000);
     m_scaleX->setMaximum(10000);
@@ -198,9 +208,7 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
     layoutTrans->addWidget(labelRotate, 3, 0);
     layoutTrans->addWidget(addRotateKeyframe, 3, 2);
     layoutTrans->addWidget(m_rotate, 3, 3);
-    layoutTrans->addWidget(m_rotationX, 3, 4);
-    layoutTrans->addWidget(m_rotationY, 3, 5);
-    layoutTrans->addWidget(m_rotationZ, 3, 6);
+    layoutTrans->addLayout(radioLayout, 3, 4, 1, 3);
     expTrans->addLayout(layoutTrans);
     vbox->addWidget(expTrans);
 

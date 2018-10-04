@@ -1,6 +1,6 @@
 1.8.2
 ---
-- New properties for transformation like scale, shear, translate and rotate added
+- New animateable properties for transformation (scale, shear, translate and rotate) added
 
 1.8.1
 ---

@@ -37,12 +37,8 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("AnimationMaker");
-    QCoreApplication::setApplicationVersion("1.8.1");
-#ifdef LINUX
+    QCoreApplication::setApplicationVersion("1.8.2");
     QCoreApplication::setOrganizationName("Artanidos");
-#else
-    QCoreApplication::setOrganizationName("CrowdWare");
-#endif
 
     QFont newFont("Sans Serif", 10);
     a.setFont(newFont);
