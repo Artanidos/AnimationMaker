@@ -238,17 +238,17 @@ QString HtmlExport::getTweens(QString &tweenArray, AnimationItem *item, int i, Q
                     QString rot = from->value().toString();
                     QString axis = rot.left(1);
                     value = rot.right(rot.size() - 1);
-                    var = "rotation" + axis.toUpper() +": " + value + ", transformOrigin: \"" + QString::number(item->transX()) + "px " + QString::number(item->transY()) + "px\"";
+                    //var = "rotation" + axis.toUpper() +": " + value + ", transformOrigin: \"" + QString::number(item->transX()) + "px " + QString::number(item->transY()) + "px\"";
                 }
                 else if(property == "shearx")
                 {
                     value = QString::number(from->value().toReal() * 50);
-                    var = "skewX: " + value + ", transformOrigin: \"" + QString::number(item->transX()) + "px " + QString::number(item->transY()) + "px\"";
+                    //var = "skewX: " + value + ", transformOrigin: \"" + QString::number(item->transX()) + "px " + QString::number(item->transY()) + "px\"";
                 }
                 else if(property == "sheary")
                 {
                     value = QString::number(from->value().toReal() * 50);
-                    var = "skewY: " + value + ", transformOrigin: \"" + QString::number(item->transX()) + "px " + QString::number(item->transY()) + "px\"";
+                    //var = "skewY: " + value + ", transformOrigin: \"" + QString::number(item->transX()) + "px " + QString::number(item->transY()) + "px\"";
                 }
                 else
                     qDebug() << "animation for attribute " + property + " not yet implemented";

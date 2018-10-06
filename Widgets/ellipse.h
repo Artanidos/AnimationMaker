@@ -31,7 +31,7 @@ class WIDGETSSHARED_EXPORT Ellipse : public AnimationItem
 {
     Q_OBJECT
 public:
-    Ellipse(qreal width, qreal height, AnimationScene *scene);
+    Ellipse(AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 

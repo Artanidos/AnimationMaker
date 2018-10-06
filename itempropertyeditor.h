@@ -73,9 +73,11 @@ private:
     QSpinBox *m_scaleY;
     QSpinBox *m_shearX;
     QSpinBox *m_shearY;
-    QSpinBox *m_transX;
-    QSpinBox *m_transY;
-    QSpinBox *m_rotate;
+    QSpinBox *m_rotateX;
+    QSpinBox *m_rotateY;
+    QSpinBox *m_rotateZ;
+    QSpinBox *m_origY;
+    QSpinBox *m_origX;
     QLabel *m_typ;
     QLineEdit *m_text;
     Expander *expText;
@@ -85,10 +87,6 @@ private:
     AnimationItem *m_item;
     Text *m_textitem;
     QVBoxLayout *m_additionalPropertyBox;
-    QRadioButton *m_rotationZ;
-    QRadioButton *m_rotationY;
-    QRadioButton *m_rotationX;
-
     Ellipse *m_ellipse;
     QSlider *m_opacity;
     QVBoxLayout *m_vboxAttributeEditors;
@@ -141,19 +139,18 @@ private slots:
     void scaleYChanged(int);
     void shearXChanged(int);
     void shearYChanged(int);
-    void transXChanged(int);
-    void transYChanged(int);
-    void rotationChanged(int);
-    void rotationXChanged(bool);
-    void rotationYChanged(bool);
-    void rotationZChanged(bool);
+    void rotationXChanged(int);
+    void rotationYChanged(int);
+    void rotationZChanged(int);
     void addScaleXKeyframe();
     void addScaleYKeyframe();
     void addShearXKeyframe();
     void addShearYKeyframe();
-    void addTransXKeyframe();
-    void addTransYKeyframe();
-    void addRotateKeyframe();
+    void addRotateXKeyframe();
+    void addRotateYKeyframe();
+    void addRotateZKeyframe();
+    void origXChanged(int);
+    void origYChanged(int);
  };
 
 #endif // ITEMPROPERTYEDITOR_H

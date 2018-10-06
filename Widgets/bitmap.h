@@ -31,7 +31,7 @@ class WIDGETSSHARED_EXPORT Bitmap : public AnimationItem
 public:
     Bitmap();
     Bitmap(QString filename, AnimationScene *scene);
-    Bitmap(QImage img, qreal width, qreal height, AnimationScene *scene);
+    Bitmap(QImage img, AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
 

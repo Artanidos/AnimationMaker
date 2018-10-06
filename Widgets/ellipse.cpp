@@ -23,10 +23,10 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsItem>
 
-Ellipse::Ellipse(qreal width, qreal height, AnimationScene *scene)
+Ellipse::Ellipse(AnimationScene *scene)
     : AnimationItem(scene)
 {
-    setRect(0, 0, width, height);
+    setRect(0, 0, 0, 0);
 }
 
 QDomElement Ellipse::getXml(QDomDocument doc)

@@ -42,11 +42,11 @@ Bitmap::Bitmap(QString filename, AnimationScene *scene)
     addMenu();
 }
 
-Bitmap::Bitmap(QImage image, qreal width, qreal height, AnimationScene *scene)
+Bitmap::Bitmap(QImage image, AnimationScene *scene)
     :AnimationItem(scene)
 {
     m_image = image;
-    setRect(0, 0, width, height);
+    setRect(0, 0, 0, 0);
     addMenu();
 }
 

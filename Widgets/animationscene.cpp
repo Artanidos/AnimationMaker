@@ -238,9 +238,11 @@ void AnimationScene::setEditMode(QString pluginName)
 
 void AnimationScene::addBackgroundRect()
 {
-    m_rect = new Rectangle(width(), height(), this, true);
+    m_rect = new Rectangle(this, true);
     m_rect->setId("Scene");
     m_rect->setPos(0,0);
+    m_rect->setWidth(width());
+    m_rect->setHeight(height());
     m_backgroundColor = QColor("#404244");
     m_rect->setBrush(QBrush(QColor(m_backgroundColor)));
     addItem(m_rect);
@@ -282,13 +284,10 @@ bool AnimationScene::importXml(QString fileName)
         if(node.nodeName() == "Rectangle")
         {
             QDomElement ele = node.toElement();
-            Rectangle *r = new Rectangle(ele.attribute("width", "50").toDouble(), ele.attribute("height", "50").toDouble(), this);
-            r->setId(ele.attribute("id", "Rectangle"));
-            r->setLeft(ele.attribute("left", "0").toDouble());
-            r->setTop(ele.attribute("top", "0").toDouble());
+            Rectangle *r = new Rectangle(this);
+            r->readAttributes(ele);
             r->setPen(QPen(QColor(ele.attribute("pen", "#000000"))));
             r->setBrush(QBrush(QColor(ele.attribute("brush", "#0000FF"))));
-            r->setOpacity(ele.attribute("opacity", "100").toInt());
             r->setFlag(QGraphicsItem::ItemIsMovable, true);
             r->setFlag(QGraphicsItem::ItemIsSelectable, true);
             readKeyframes(&ele, r);
@@ -297,14 +296,10 @@ bool AnimationScene::importXml(QString fileName)
         else if(node.nodeName() == "Ellipse")
         {
             QDomElement ele = node.toElement();
-            Ellipse *e = new Ellipse(ele.attribute("width", "50").toDouble(), ele.attribute("height", "50").toDouble(), this);
-            e->setId(ele.attribute("id", "Ellipse"));
-            e->setHeight(ele.attribute("height", "50").toDouble());
-            e->setLeft(ele.attribute("left", "0").toDouble());
-            e->setTop(ele.attribute("top", "0").toDouble());
+            Ellipse *e = new Ellipse(this);
+            e->readAttributes(ele);
             e->setPen(QPen(QColor(ele.attribute("pen", "#000000"))));
             e->setBrush(QBrush(QColor(ele.attribute("brush", "#0000FF"))));
-            e->setOpacity(ele.attribute("opacity", "100").toInt());
             e->setFlag(QGraphicsItem::ItemIsMovable, true);
             e->setFlag(QGraphicsItem::ItemIsSelectable, true);
             readKeyframes(&ele, e);
@@ -314,11 +309,8 @@ bool AnimationScene::importXml(QString fileName)
         {
             QDomElement ele = node.toElement();
             Text *t = new Text(ele.attribute("text"), this);
-            t->setId(ele.attribute("id", "Text"));
-            t->setLeft(ele.attribute("left", "0").toDouble());
-            t->setTop(ele.attribute("top", "0").toDouble());
+            t->readAttributes(ele);
             t->setTextColor(QColor(ele.attribute("textcolor", "#000000")));
-            t->setOpacity(ele.attribute("opacity", "100").toInt());
             QFont font;
             font.setFamily(ele.attribute("font-family"));
             font.setPointSize(ele.attribute("font-size").toInt());
@@ -336,11 +328,8 @@ bool AnimationScene::importXml(QString fileName)
             QDomNode data = ele.firstChild();
             QDomCDATASection cdata = data.toCDATASection();
             QImage img = QImage::fromData(QByteArray::fromBase64(cdata.data().toLatin1()), "PNG");
-            Bitmap *b = new Bitmap(img, ele.attribute("width", "50").toDouble(), ele.attribute("height", "50").toDouble(), this);
-            b->setId(ele.attribute("id", "Bitmap"));
-            b->setLeft(ele.attribute("left", "0").toDouble());
-            b->setTop(ele.attribute("top", "0").toDouble());
-            b->setOpacity(ele.attribute("opacity", "100").toInt());
+            Bitmap *b = new Bitmap(img, this);
+            b->readAttributes(ele);
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
             readKeyframes(&ele, b);
@@ -352,11 +341,8 @@ bool AnimationScene::importXml(QString fileName)
             QDomNode data = ele.firstChild();
             QDomCDATASection cdata = data.toCDATASection();
             Vectorgraphic *v = new Vectorgraphic(cdata.data().toLatin1(), this);
-            v->setId(ele.attribute("id", "Vectorgraphic"));
-            v->setLeft(ele.attribute("left", "0").toDouble());
-            v->setTop(ele.attribute("top", "0").toDouble());
+            v->readAttributes(ele);
             v->setScale(ele.attribute("xscale", "1").toDouble(), ele.attribute("yscale", "1").toDouble());
-            v->setOpacity(ele.attribute("opacity", "100").toInt());
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
             v->setFlag(QGraphicsItem::ItemIsSelectable, true);
             for(int j = 0; j < ele.childNodes().count(); j++)
@@ -586,8 +572,10 @@ void AnimationScene::pasteItem()
     {
         case Rectangle::Type:
         {
-            Rectangle *r = new Rectangle(m_copy->rect().width(), m_copy->rect().height(), this);
+            Rectangle *r = new Rectangle(this);
             r->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
+            r->setWidth(m_copy->rect().width());
+            r->setHeight(m_copy->rect().height());
             r->setId("Rectangle");
             r->setPen(m_copy->pen());
             r->setBrush(m_copy->brush());
@@ -600,8 +588,10 @@ void AnimationScene::pasteItem()
         }
         case Ellipse::Type:
         {
-            Ellipse *e = new Ellipse(m_copy->rect().width(), m_copy->rect().height(), this);
+            Ellipse *e = new Ellipse(this);
             e->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
+            e->setWidth(m_copy->rect().width());
+            e->setHeight(m_copy->rect().height());
             e->setId("Ellipse");
             e->setPen(m_copy->pen());
             e->setBrush(m_copy->brush());
@@ -631,9 +621,11 @@ void AnimationScene::pasteItem()
         case Bitmap::Type:
         {
             Bitmap *bm = dynamic_cast<Bitmap*>(m_copy);
-            Bitmap *b = new Bitmap(bm->getImage(), bm->rect().width(), bm->rect().height(), this);
+            Bitmap *b = new Bitmap(bm->getImage(), this);
             b->setId("Bitmap");
             b->setPos(m_copy->pos().x() + 10, m_copy->pos().y() + 10);
+            b->setWidth(bm->rect().width());
+            b->setHeight(bm->rect().height());
             b->setFlag(QGraphicsItem::ItemIsMovable, true);
             b->setFlag(QGraphicsItem::ItemIsSelectable, true);
             b->setScale(bm->xscale(), bm->yscale());

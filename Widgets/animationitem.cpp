@@ -42,9 +42,11 @@ AnimationItem::AnimationItem(AnimationScene *scene, bool isSceneRect)
     m_scaleY = 1.0;
     m_shearX = 0.0;
     m_shearY = 0.0;
-    m_transX = 0.0;
-    m_transY = 0.0;
-    m_rotation = "Z0";
+    m_rotationX = 0;
+    m_rotationY = 0;
+    m_rotationZ = 0;
+    m_originX = 0;
+    m_originY = 0;
     m_opacity = 100;
     m_keyframes = new QHash<QString, KeyFrame*>();
 
@@ -210,23 +212,14 @@ qreal AnimationItem::yscale()
 
 void AnimationItem::doTransform()
 {
-    int rotation;
-    Qt::Axis axis;
-
-    if(m_rotation.startsWith("X"))
-        axis = Qt::XAxis;
-    else if(m_rotation.startsWith("Y"))
-        axis = Qt::YAxis;
-    else if(m_rotation.startsWith("Z"))
-        axis = Qt::ZAxis;
-    rotation = m_rotation.right(m_rotation.size() - 1).toInt();
-
     QTransform t;
-    t.translate(m_transX, m_transY);
+    t.translate(m_originX, m_originY);
     t.scale(m_scaleX, m_scaleY);
     t.shear(m_shearX, m_shearY);
-    t.rotate(rotation, axis);
-    t.translate(-m_transX, -m_transY);
+    t.rotate(m_rotationX, Qt::XAxis);
+    t.rotate(m_rotationY, Qt::YAxis);
+    t.rotate(m_rotationZ, Qt::ZAxis);
+    t.translate(-m_originX, -m_originY);
     setTransform(t, false);
 }
 
@@ -258,25 +251,39 @@ void AnimationItem::setShearY(double value)
     emit shearYChanged(this, value);
 }
 
-void AnimationItem::setTransX(double value)
+void AnimationItem::setRotationX(int value)
 {
-    m_transX = value;
+    m_rotationX = value;
     doTransform();
-    emit transXChanged(this, value);
+    emit rotationXChanged(this, value);
 }
 
-void AnimationItem::setTransY(double value)
+void AnimationItem::setRotationY(int value)
 {
-    m_transY = value;
+    m_rotationY = value;
     doTransform();
-    emit transYChanged(this, value);
+    emit rotationYChanged(this, value);
 }
 
-void AnimationItem::setRotation(QString value)
+void AnimationItem::setRotationZ(int value)
 {
-    m_rotation = value;
+    m_rotationZ = value;
     doTransform();
-    emit rotationChanged(this, value);
+    emit rotationZChanged(this, value);
+}
+
+void AnimationItem::setOriginX(int value)
+{
+    m_originX = value;
+    doTransform();
+    emit originXChanged(this, value);
+}
+
+void AnimationItem::setOriginY(int value)
+{
+    m_originY = value;
+    doTransform();
+    emit originYChanged(this, value);
 }
 
 void AnimationItem::setRect(qreal x, qreal y, qreal w, qreal h)
@@ -917,6 +924,15 @@ void AnimationItem::writeAttributes(QDomElement ele)
     ele.setAttribute("width", QVariant(rect().width()).toString());
     ele.setAttribute("height", QVariant(rect().height()).toString());
     ele.setAttribute("opacity", opacity());
+    ele.setAttribute("scalex", QVariant(scaleX()).toString());
+    ele.setAttribute("scaley", QVariant(scaleY()).toString());
+    ele.setAttribute("shearx", QVariant(shearX()).toString());
+    ele.setAttribute("sheary", QVariant(shearY()).toString());
+    ele.setAttribute("rotationx", QVariant(rotationX()).toString());
+    ele.setAttribute("rotationy", QVariant(rotationY()).toString());
+    ele.setAttribute("rotationz", QVariant(rotationZ()).toString());
+    ele.setAttribute("originx", QVariant(originX()).toString());
+    ele.setAttribute("originy", QVariant(originY()).toString());
 }
 
 void AnimationItem::readAttributes(QDomElement ele)
@@ -927,6 +943,15 @@ void AnimationItem::readAttributes(QDomElement ele)
     setWidth(ele.attribute("width", "50").toDouble());
     setHeight(ele.attribute("height", "50").toDouble());
     setOpacity(ele.attribute("opacity", "100").toInt());
+    setScaleX(ele.attribute("scalex", "1").toDouble());
+    setScaleY(ele.attribute("scaley", "1").toDouble());
+    setShearX(ele.attribute("shearx", "0").toDouble());
+    setShearY(ele.attribute("sheary", "0").toDouble());
+    setRotationX(ele.attribute("rotationx", "0").toInt());
+    setRotationY(ele.attribute("rotationy", "0").toInt());
+    setRotationZ(ele.attribute("rotationz", "0").toInt());
+    setOriginX(ele.attribute("originx", "0").toInt());
+    setOriginY(ele.attribute("originy", "0").toInt());
 }
 
 void AnimationItem::deleteItem()

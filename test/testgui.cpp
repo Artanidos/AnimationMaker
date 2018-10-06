@@ -135,7 +135,9 @@ void TestGui::testKeyframeHandle()
     QFETCH(QTestEventList, events);
     QFETCH(int, expected);
 
-    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    AnimationItem *item = new Rectangle(m_scene);
+    item->setWidth(50);
+    item->setHeight(50);
     KeyFrame *key = new KeyFrame();
     key->setTime(300);
     KeyFrame *keyl = new KeyFrame();
@@ -187,7 +189,9 @@ void TestGui::testKeyframeHandleZero()
     QFETCH(QTestEventList, events);
     QFETCH(int, expected);
 
-    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    AnimationItem *item = new Rectangle(m_scene);
+    item->setWidth(50);
+    item->setHeight(50);
     KeyFrame *key = new KeyFrame();
     key->setTime(100);
     m_timeline->addKeyFrame(item, "left", key);
@@ -245,7 +249,9 @@ void TestGui::testTransition()
     QFETCH(QTestEventList, events);
     QFETCH(int, expected);
 
-    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    AnimationItem *item = new Rectangle(m_scene);
+    item->setWidth(50);
+    item->setHeight(50);
     KeyFrame *keya = new KeyFrame();
     keya->setTime(300);
     keya->setEasing(0);
@@ -289,7 +295,9 @@ void TestGui::testTransitionZero()
     QFETCH(QTestEventList, events);
     QFETCH(int, expected);
 
-    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    AnimationItem *item = new Rectangle(m_scene);
+    item->setWidth(50);
+    item->setHeight(50);
     KeyFrame *keya = new KeyFrame();
     keya->setTime(100);
     keya->setEasing(0);
@@ -351,7 +359,9 @@ void TestGui::testTransitionHandleLeft()
     QFETCH(QTestEventList, events);
     QFETCH(int, expected);
 
-    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    AnimationItem *item = new Rectangle(m_scene);
+    item->setWidth(50);
+    item->setHeight(50);
     KeyFrame *keya = new KeyFrame();
     keya->setTime(300);
     keya->setEasing(0);
@@ -418,7 +428,9 @@ void TestGui::testTransitionHandleRight()
     QFETCH(QTestEventList, events);
     QFETCH(int, expected);
 
-    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    AnimationItem *item = new Rectangle(m_scene);
+    item->setWidth(50);
+    item->setHeight(50);
     KeyFrame *keya = new KeyFrame();
     keya->setTime(200);
     keya->setEasing(0);
@@ -440,7 +452,9 @@ void TestGui::testTransitionHandleRight()
 
 void TestGui::testTransitionHandleLeftMouse()
 {
-    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    AnimationItem *item = new Rectangle(m_scene);
+    item->setWidth(50);
+    item->setHeight(50);
     KeyFrame *keya = new KeyFrame();
     keya->setTime(200);
     keya->setEasing(0);
@@ -516,7 +530,9 @@ void TestGui::testTransitionHandleLeftMouse()
 
 void TestGui::testTransitionHandleRightMouse()
 {
-    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    AnimationItem *item = new Rectangle(m_scene);
+    item->setWidth(50);
+    item->setHeight(50);
     KeyFrame *keya = new KeyFrame();
     keya->setTime(200);
     keya->setEasing(0);
@@ -585,7 +601,9 @@ void TestGui::testTransitionHandleRightMouse()
 
 void TestGui::testTransitionMouse()
 {
-    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    AnimationItem *item = new Rectangle(m_scene);
+    item->setWidth(50);
+    item->setHeight(50);
     KeyFrame *keya = new KeyFrame();
     keya->setTime(200);
     keya->setEasing(0);
@@ -654,7 +672,9 @@ void TestGui::testTransitionMouse()
 
 void TestGui::testDoubleTransition()
 {
-    AnimationItem *item = new Rectangle(50, 50, m_scene);
+    AnimationItem *item = new Rectangle(m_scene);
+    item->setWidth(50);
+    item->setHeight(50);
     KeyFrame *keya = new KeyFrame();
     keya->setTime(200);
     KeyFrame *keyb = new KeyFrame();

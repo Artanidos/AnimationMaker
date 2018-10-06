@@ -39,25 +39,29 @@ AddItemCommand::AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, 
             break;
         case AnimationScene::EditMode::ModeRectangle:
         {
-            m_item = new Rectangle(50, 50, m_scene);
+            m_item = new Rectangle(m_scene);
             m_item->setId("Rectangle");
             m_item->setPen(QPen(Qt::black));
             m_item->setBrush(QBrush(Qt::blue));
             m_item->setFlag(QGraphicsItem::ItemIsMovable, true);
             m_item->setFlag(QGraphicsItem::ItemIsSelectable, true);
             m_item->setPos(x, y);
+            m_item->setWidth(50);
+            m_item->setHeight(50);
             setText(QObject::tr("Add Rectangle"));
             break;
         }
         case AnimationScene::EditMode::ModeEllipse:
         {
-            m_item = new Ellipse(50, 50, m_scene);
+            m_item = new Ellipse(m_scene);
             m_item->setId("Ellipse");
             m_item->setPen(QPen(Qt::black));
             m_item->setBrush(QBrush(Qt::blue));
             m_item->setFlag(QGraphicsItem::ItemIsMovable, true);
             m_item->setFlag(QGraphicsItem::ItemIsSelectable, true);
             m_item->setPos(x, y);
+            m_item->setWidth(50);
+            m_item->setHeight(50);
             setText(QObject::tr("Add Ellipse"));
             break;
         }
@@ -834,7 +838,7 @@ void ChangeShearYCommand::redo()
     m_item->adjustKeyframes("sheary", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
 }
 
-ChangeTransXCommand::ChangeTransXCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+ChangeRotationXCommand::ChangeRotationXCommand(int value, int oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_value = value;
@@ -844,22 +848,22 @@ ChangeTransXCommand::ChangeTransXCommand(double value, double oldvalue, Animatio
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_keyframe = nullptr;
-    setText("Change " + item->typeName() + " translate X");
+    setText("Change " + item->typeName() + " rotation X");
 }
 
-void ChangeTransXCommand::undo()
+void ChangeRotationXCommand::undo()
 {
-    m_item->setTransX(m_oldvalue);
-    m_item->adjustKeyframes("transx", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
+    m_item->setRotationX(m_oldvalue);
+    m_item->adjustKeyframes("rotationx", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
 }
 
-void ChangeTransXCommand::redo()
+void ChangeRotationXCommand::redo()
 {
-    m_item->setTransX(m_value);
-    m_item->adjustKeyframes("transx", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
+    m_item->setRotationX(m_value);
+    m_item->adjustKeyframes("rotationx", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
 }
 
-ChangeTransYCommand::ChangeTransYCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+ChangeRotationYCommand::ChangeRotationYCommand(int value, int oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_value = value;
@@ -869,22 +873,22 @@ ChangeTransYCommand::ChangeTransYCommand(double value, double oldvalue, Animatio
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_keyframe = nullptr;
-    setText("Change " + item->typeName() + " translate y");
+    setText("Change " + item->typeName() + " rotation Y");
 }
 
-void ChangeTransYCommand::undo()
+void ChangeRotationYCommand::undo()
 {
-    m_item->setTransY(m_oldvalue);
-    m_item->adjustKeyframes("transy", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
+    m_item->setRotationY(m_oldvalue);
+    m_item->adjustKeyframes("rotationy", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
 }
 
-void ChangeTransYCommand::redo()
+void ChangeRotationYCommand::redo()
 {
-    m_item->setTransY(m_value);
-    m_item->adjustKeyframes("transy", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
+    m_item->setRotationY(m_value);
+    m_item->adjustKeyframes("rotationy", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
 }
 
-ChangeRotationCommand::ChangeRotationCommand(QString value, QString oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+ChangeRotationZCommand::ChangeRotationZCommand(int value, int oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
     : QUndoCommand(parent)
 {
     m_value = value;
@@ -894,17 +898,63 @@ ChangeRotationCommand::ChangeRotationCommand(QString value, QString oldvalue, An
     m_autokeyframes = scene->autokeyframes();
     m_autotransition = scene->autotransition();
     m_keyframe = nullptr;
-    setText("Change " + item->typeName() + " rotation");
+    setText("Change " + item->typeName() + " rotation Z");
 }
 
-void ChangeRotationCommand::undo()
+void ChangeRotationZCommand::undo()
 {
-    m_item->setRotation(m_oldvalue);
-    m_item->adjustKeyframes("rotation", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
+    m_item->setRotationZ(m_oldvalue);
+    m_item->adjustKeyframes("rotationz", QVariant(m_oldvalue), m_time, m_autokeyframes, m_autotransition, &m_keyframe, true);
 }
 
-void ChangeRotationCommand::redo()
+void ChangeRotationZCommand::redo()
 {
-    m_item->setRotation(m_value);
-    m_item->adjustKeyframes("rotation", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
+    m_item->setRotationZ(m_value);
+    m_item->adjustKeyframes("rotationz", QVariant(m_value), m_time, m_autokeyframes, m_autotransition, &m_keyframe, false);
+}
+
+ChangeOriginXCommand::ChangeOriginXCommand(int value, int oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_value = value;
+    m_oldvalue = oldvalue;
+    m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
+    setText("Change " + item->typeName() + " origin X");
+}
+
+void ChangeOriginXCommand::undo()
+{
+    m_item->setOriginX(m_oldvalue);
+}
+
+void ChangeOriginXCommand::redo()
+{
+    m_item->setOriginX(m_value);
+}
+
+ChangeOriginYCommand::ChangeOriginYCommand(int value, int oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent)
+    : QUndoCommand(parent)
+{
+    m_value = value;
+    m_oldvalue = oldvalue;
+    m_item = item;
+    m_time = scene->playheadPosition();
+    m_autokeyframes = scene->autokeyframes();
+    m_autotransition = scene->autotransition();
+    m_keyframe = nullptr;
+    setText("Change " + item->typeName() + " origin Y");
+}
+
+void ChangeOriginYCommand::undo()
+{
+    m_item->setOriginY(m_oldvalue);
+}
+
+void ChangeOriginYCommand::redo()
+{
+    m_item->setOriginY(m_value);
 }

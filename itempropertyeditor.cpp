@@ -118,29 +118,27 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
 
     Expander *expTrans = new Expander("Transformation");
     QGridLayout *layoutTrans = new QGridLayout();
+    QLabel *labelRotate = new QLabel("Rotate");
+    QLabel *labelRotateX = new QLabel("X");
+    QLabel *labelRotateY = new QLabel("Y");
+    QLabel *labelRotateZ = new QLabel("Z");
     QLabel *labelScale = new QLabel("Scale");
     QLabel *labelShear = new QLabel("Shear");
-    QLabel *labelTranslate = new QLabel("Translate");
-    QLabel *labelRotate = new QLabel("Rotate");
     QLabel *labelScaleX = new QLabel("X");
     QLabel *labelScaleY = new QLabel("Y");
     QLabel *labelShearX = new QLabel("X");
     QLabel *labelShearY = new QLabel("Y");
-    QLabel *labelTransX = new QLabel("X");
-    QLabel *labelTransY = new QLabel("Y");
+    QLabel *labelOrig = new QLabel("Origin");
+    QLabel *labelOrigX = new QLabel("X");
+    QLabel *labelOrigY = new QLabel("Y");
+    QLabel *labelOrigZ = new QLabel("Z");
     labelScaleX->setFixedWidth(15);
     labelScaleY->setFixedWidth(15);
     labelShearX->setFixedWidth(15);
     labelShearY->setFixedWidth(15);
-    labelTransX->setFixedWidth(15);
-    labelTransY->setFixedWidth(15);
-    QHBoxLayout *radioLayout = new QHBoxLayout();
-    m_rotationX = new QRadioButton("X");
-    m_rotationY = new QRadioButton("Y");
-    m_rotationZ = new QRadioButton("Z");
-    radioLayout->addWidget(m_rotationX);
-    radioLayout->addWidget(m_rotationY);
-    radioLayout->addWidget(m_rotationZ);
+    labelOrigX->setFixedWidth(15);
+    labelOrigY->setFixedWidth(15);
+    labelOrigZ->setFixedWidth(15);
     m_scaleX = new QSpinBox();
     m_scaleX->setMinimum(-10000);
     m_scaleX->setMaximum(10000);
@@ -153,16 +151,21 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
     m_shearY = new QSpinBox();
     m_shearY->setMinimum(-10000);
     m_shearY->setMaximum(10000);
-    m_transX = new QSpinBox();
-    m_transX->setMinimum(-10000);
-    m_transX->setMaximum(10000);
-    m_transY = new QSpinBox();
-    m_transY->setMinimum(-10000);
-    m_transY->setMaximum(10000);
-    m_rotate = new QSpinBox();
-    m_rotate->setMinimum(-10000);
-    m_rotate->setMaximum(10000);
-
+    m_rotateX = new QSpinBox();
+    m_rotateX->setMinimum(-10000);
+    m_rotateX->setMaximum(10000);
+    m_rotateY = new QSpinBox();
+    m_rotateY->setMinimum(-10000);
+    m_rotateY->setMaximum(10000);
+    m_rotateZ = new QSpinBox();
+    m_rotateZ->setMinimum(-10000);
+    m_rotateZ->setMaximum(10000);
+    m_origY = new QSpinBox();
+    m_origY->setMinimum(-10000);
+    m_origY->setMaximum(10000);
+    m_origX = new QSpinBox();
+    m_origX->setMinimum(-10000);
+    m_origX->setMaximum(10000);
     FlatButton *addScaleXKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
     addScaleXKeyframe->setMaximumWidth(9);
     addScaleXKeyframe->setToolTip("Add keyframe for scale X");
@@ -175,15 +178,16 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
     FlatButton *addShearYKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
     addShearYKeyframe->setMaximumWidth(9);
     addShearYKeyframe->setToolTip("Add keyframe for shear Y");
-    FlatButton *addTransXKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
-    addTransXKeyframe->setMaximumWidth(9);
-    addTransXKeyframe->setToolTip("Add keyframe for translate X");
-    FlatButton *addTransYKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
-    addTransYKeyframe->setMaximumWidth(9);
-    addTransYKeyframe->setToolTip("Add keyframe for translate Y");
-    FlatButton *addRotateKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
-    addRotateKeyframe->setMaximumWidth(9);
-    addRotateKeyframe->setToolTip("Add keyframe for rotation");
+    FlatButton *addRotateXKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    addRotateXKeyframe->setMaximumWidth(9);
+    addRotateXKeyframe->setToolTip("Add keyframe for rotation X");
+    FlatButton *addRotateYKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    addRotateYKeyframe->setMaximumWidth(9);
+    addRotateYKeyframe->setToolTip("Add keyframe for rotation Y");
+    FlatButton *addRotateZKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
+    addRotateZKeyframe->setMaximumWidth(9);
+    addRotateZKeyframe->setToolTip("Add keyframe for rotation Z");
+
     layoutTrans->addWidget(labelScale, 0, 0);
     layoutTrans->addWidget(labelScaleX, 0, 1);
     layoutTrans->addWidget(addScaleXKeyframe, 0, 2);
@@ -198,17 +202,21 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
     layoutTrans->addWidget(labelShearY, 1, 4);
     layoutTrans->addWidget(addShearYKeyframe, 1, 5);
     layoutTrans->addWidget(m_shearY, 1, 6);
-    layoutTrans->addWidget(labelTranslate, 2, 0);
-    layoutTrans->addWidget(labelTransX, 2, 1);
-    layoutTrans->addWidget(addTransXKeyframe, 2, 2);
-    layoutTrans->addWidget(m_transX, 2, 3);
-    layoutTrans->addWidget(labelTransY, 2, 4);
-    layoutTrans->addWidget(addTransYKeyframe, 2, 5);
-    layoutTrans->addWidget(m_transY, 2, 6);
-    layoutTrans->addWidget(labelRotate, 3, 0);
-    layoutTrans->addWidget(addRotateKeyframe, 3, 2);
-    layoutTrans->addWidget(m_rotate, 3, 3);
-    layoutTrans->addLayout(radioLayout, 3, 4, 1, 3);
+    layoutTrans->addWidget(labelRotate, 2, 0);
+    layoutTrans->addWidget(labelRotateX, 2, 1);
+    layoutTrans->addWidget(addRotateXKeyframe, 2, 2);
+    layoutTrans->addWidget(m_rotateX, 2, 3);
+    layoutTrans->addWidget(labelRotateY, 2, 4);
+    layoutTrans->addWidget(addRotateYKeyframe, 2, 5);
+    layoutTrans->addWidget(m_rotateY, 2, 6);
+    layoutTrans->addWidget(labelRotateZ, 3, 1);
+    layoutTrans->addWidget(addRotateZKeyframe, 3, 2);
+    layoutTrans->addWidget(m_rotateZ, 3, 3);
+    layoutTrans->addWidget(labelOrig, 4, 0);
+    layoutTrans->addWidget(labelOrigX, 4, 1);
+    layoutTrans->addWidget(m_origX, 4, 3);
+    layoutTrans->addWidget(labelOrigY, 4, 5);
+    layoutTrans->addWidget(m_origY, 4, 6);
     expTrans->addLayout(layoutTrans);
     vbox->addWidget(expTrans);
 
@@ -337,19 +345,18 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
     connect(m_scaleY, SIGNAL(valueChanged(int)), this, SLOT(scaleYChanged(int)));
     connect(m_shearX, SIGNAL(valueChanged(int)), this, SLOT(shearXChanged(int)));
     connect(m_shearY, SIGNAL(valueChanged(int)), this, SLOT(shearYChanged(int)));
-    connect(m_transX, SIGNAL(valueChanged(int)), this, SLOT(transXChanged(int)));
-    connect(m_transY, SIGNAL(valueChanged(int)), this, SLOT(transYChanged(int)));
-    connect(m_rotate, SIGNAL(valueChanged(int)), this, SLOT(rotationChanged(int)));
-    connect(m_rotationX, SIGNAL(toggled(bool)), this, SLOT(rotationXChanged(bool)));
-    connect(m_rotationY, SIGNAL(toggled(bool)), this, SLOT(rotationYChanged(bool)));
-    connect(m_rotationZ, SIGNAL(toggled(bool)), this, SLOT(rotationZChanged(bool)));
+    connect(m_rotateX, SIGNAL(valueChanged(int)), this, SLOT(rotationXChanged(int)));
+    connect(m_rotateY, SIGNAL(valueChanged(int)), this, SLOT(rotationYChanged(int)));
+    connect(m_rotateZ, SIGNAL(valueChanged(int)), this, SLOT(rotationZChanged(int)));
     connect(addScaleXKeyframe, SIGNAL(clicked()), this, SLOT(addScaleXKeyframe()));
     connect(addScaleYKeyframe, SIGNAL(clicked()), this, SLOT(addScaleYKeyframe()));
     connect(addShearXKeyframe, SIGNAL(clicked()), this, SLOT(addShearXKeyframe()));
     connect(addShearYKeyframe, SIGNAL(clicked()), this, SLOT(addShearYKeyframe()));
-    connect(addTransXKeyframe, SIGNAL(clicked()), this, SLOT(addTransXKeyframe()));
-    connect(addTransYKeyframe, SIGNAL(clicked()), this, SLOT(addTransYKeyframe()));
-    connect(addRotateKeyframe, SIGNAL(clicked()), this, SLOT(addRotateKeyframe()));
+    connect(addRotateXKeyframe, SIGNAL(clicked()), this, SLOT(addRotateXKeyframe()));
+    connect(addRotateYKeyframe, SIGNAL(clicked()), this, SLOT(addRotateYKeyframe()));
+    connect(addRotateZKeyframe, SIGNAL(clicked()), this, SLOT(addRotateZKeyframe()));
+    connect(m_origX, SIGNAL(valueChanged(int)), this, SLOT(origXChanged(int)));
+    connect(m_origY, SIGNAL(valueChanged(int)), this, SLOT(origYChanged(int)));
 }
 
 void ItemPropertyEditor::fontFamilyChanged(int index)
@@ -559,7 +566,7 @@ void ItemPropertyEditor::shearYChanged(int value)
     }
 }
 
-void ItemPropertyEditor::transXChanged(int value)
+void ItemPropertyEditor::rotationXChanged(int value)
 {
     if(m_initializing)
         return;
@@ -567,12 +574,12 @@ void ItemPropertyEditor::transXChanged(int value)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeTransXCommand((double)value, m_item->scaleX(), as, m_item);
+        QUndoCommand *cmd = new ChangeRotationXCommand(value, m_item->rotationX(), as, m_item);
         undoStack->push(cmd);
     }
 }
 
-void ItemPropertyEditor::transYChanged(int value)
+void ItemPropertyEditor::rotationYChanged(int value)
 {
     if(m_initializing)
         return;
@@ -580,46 +587,22 @@ void ItemPropertyEditor::transYChanged(int value)
     if(as)
     {
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeTransYCommand((double)value, m_item->scaleX(), as, m_item);
+        QUndoCommand *cmd = new ChangeRotationYCommand(value, m_item->rotationX(), as, m_item);
         undoStack->push(cmd);
     }
 }
 
-void ItemPropertyEditor::rotationChanged(int value)
+void ItemPropertyEditor::rotationZChanged(int value)
 {
-    QString rotation;
     if(m_initializing)
         return;
     AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
     if(as)
     {
-        if(m_rotationX->isChecked())
-            rotation = "X";
-        else if(m_rotationY->isChecked())
-            rotation = "Y";
-        else if(m_rotationZ->isChecked())
-            rotation = "Z";
-        rotation += QString::number(value);
-
         QUndoStack *undoStack = as->undoStack();
-        QUndoCommand *cmd = new ChangeRotationCommand(rotation, m_item->rotation(), as, m_item);
+        QUndoCommand *cmd = new ChangeRotationZCommand(value, m_item->rotationX(), as, m_item);
         undoStack->push(cmd);
     }
-}
-
-void ItemPropertyEditor::rotationXChanged(bool)
-{
-    rotationChanged(m_rotate->value());
-}
-
-void ItemPropertyEditor::rotationYChanged(bool)
-{
-    rotationChanged(m_rotate->value());
-}
-
-void ItemPropertyEditor::rotationZChanged(bool)
-{
-    rotationChanged(m_rotate->value());
 }
 
 void ItemPropertyEditor::addScaleXKeyframe()
@@ -642,27 +625,45 @@ void ItemPropertyEditor::addShearYKeyframe()
     emit addKeyFrame(m_item, "sheary", QVariant((double)m_shearY->value() / 100.0));
 }
 
-void ItemPropertyEditor::addTransXKeyframe()
+void ItemPropertyEditor::addRotateXKeyframe()
 {
-    emit addKeyFrame(m_item, "transx", QVariant((double)m_transX->value() / 100.0));
+    emit addKeyFrame(m_item, "rotationx", QVariant(m_rotateX->value()));
 }
 
-void ItemPropertyEditor::addTransYKeyframe()
+void ItemPropertyEditor::addRotateYKeyframe()
 {
-    emit addKeyFrame(m_item, "transy", QVariant((double)m_transY->value() / 100.0));
+    emit addKeyFrame(m_item, "rotationy", QVariant(m_rotateY->value()));
 }
 
-void ItemPropertyEditor::addRotateKeyframe()
+void ItemPropertyEditor::addRotateZKeyframe()
 {
-    QString rotation;
-    if(m_rotationX->isChecked())
-        rotation = "X";
-    else if(m_rotationY->isChecked())
-        rotation = "Y";
-    else if(m_rotationZ->isChecked())
-        rotation = "Z";
-    rotation += QString::number(m_rotate->value());
-    emit addKeyFrame(m_item, "rotation", QVariant(rotation));
+    emit addKeyFrame(m_item, "rotationz", QVariant(m_rotateZ->value()));
+}
+
+void ItemPropertyEditor::origXChanged(int value)
+{
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ChangeOriginXCommand(value, m_item->originX(), as, m_item);
+        undoStack->push(cmd);
+    }
+}
+
+void ItemPropertyEditor::origYChanged(int value)
+{
+    if(m_initializing)
+        return;
+    AnimationScene *as = dynamic_cast<AnimationScene *>(m_item->scene());
+    if(as)
+    {
+        QUndoStack *undoStack = as->undoStack();
+        QUndoCommand *cmd = new ChangeOriginYCommand(value, m_item->originY(), as, m_item);
+        undoStack->push(cmd);
+    }
 }
 
 void ItemPropertyEditor::svgAttributeNameChanged(QString oldName, QString newName)
@@ -768,16 +769,11 @@ void ItemPropertyEditor::setItem(AnimationItem *item)
     m_scaleY->setValue(item->scaleY() * 100);
     m_shearX->setValue(item->shearX() * 100);
     m_shearY->setValue(item->shearY() * 100);
-    m_transX->setValue(item->transX());
-    m_transY->setValue(item->transY());
-    m_rotate->setValue(item->rotation().right(item->rotation().size() - 1).toInt());
-    if(item->rotation().startsWith("Z"))
-        m_rotationZ->setChecked(true);
-    else if(item->rotation().startsWith("Y"))
-        m_rotationY->setChecked(true);
-    else if(item->rotation().startsWith("X"))
-        m_rotationX->setChecked(true);
-
+    m_rotateZ->setValue(item->rotationZ());
+    m_rotateY->setValue(item->rotationY());
+    m_rotateX->setValue(item->rotationX());
+    m_origX->setValue(item->originX());
+    m_origY->setValue(item->originY());
 
     // delete all additional properties from prior usage
     QLayoutItem *litem;

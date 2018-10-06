@@ -24,10 +24,10 @@
 #include <QGraphicsItem>
 #include "animationscene.h"
 
-Rectangle::Rectangle(qreal width, qreal height, AnimationScene *scene, bool isSceneRect)
+Rectangle::Rectangle(AnimationScene *scene, bool isSceneRect)
     : AnimationItem(scene, isSceneRect)
 {
-    setRect(0, 0, width, height);
+    setRect(0, 0, 0, 0);
 }
 
 int Rectangle::type() const

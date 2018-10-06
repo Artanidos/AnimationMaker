@@ -47,9 +47,9 @@ class WIDGETSSHARED_EXPORT AnimationItem : public QObject, public QGraphicsItem
     Q_PROPERTY(qreal scaley READ scaleY WRITE setScaleY)
     Q_PROPERTY(qreal shearx READ shearX WRITE setShearX)
     Q_PROPERTY(qreal sheary READ shearY WRITE setShearY)
-    Q_PROPERTY(qreal transx READ transX WRITE setTransX)
-    Q_PROPERTY(qreal transy READ transY WRITE setTransY)
-    Q_PROPERTY(QString rotation READ rotation WRITE setRotation)
+    Q_PROPERTY(int rotationx READ rotationX WRITE setRotationX)
+    Q_PROPERTY(int rotationy READ rotationY WRITE setRotationY)
+    Q_PROPERTY(int rotationz READ rotationZ WRITE setRotationZ)
     Q_INTERFACES(QGraphicsItem)
 
 public:
@@ -86,14 +86,20 @@ public:
     double shearY() {return m_shearY;}
     void setShearY(double value);
 
-    double transX() {return m_transX;}
-    void setTransX(double value);
+    int rotationX() {return m_rotationX;}
+    void setRotationX(int value);
 
-    double transY() {return m_transY;}
-    void setTransY(double value);
+    int rotationY() {return m_rotationY;}
+    void setRotationY(int value);
 
-    QString rotation() {return m_rotation;}
-    void setRotation(QString value);
+    int rotationZ() {return m_rotationZ;}
+    void setRotationZ(int value);
+
+    int originX() {return m_originX;}
+    void setOriginX(int value);
+
+    int originY() {return m_originY;}
+    void setOriginY(int value);
 
     QString id() const;
     void setId(const QString value);
@@ -175,9 +181,11 @@ private:
     double m_scaleY;
     double m_shearX;
     double m_shearY;
-    double m_transX;
-    double m_transY;
-    QString m_rotation;
+    int m_rotationX;
+    int m_rotationY;
+    int m_rotationZ;
+    int m_originX;
+    int m_originY;
 
 private slots:
     void deleteItem();
@@ -202,9 +210,11 @@ signals:
     void scaleYChanged(AnimationItem *item, double value);
     void shearXChanged(AnimationItem *item, double value);
     void shearYChanged(AnimationItem *item, double value);
-    void transXChanged(AnimationItem *item, double value);
-    void transYChanged(AnimationItem *item, double value);
-    void rotationChanged(AnimationItem *item, QString value);
+    void rotationXChanged(AnimationItem *item, int value);
+    void rotationYChanged(AnimationItem *item, int value);
+    void rotationZChanged(AnimationItem *item, int value);
+    void originXChanged(AnimationItem *item, int value);
+    void originYChanged(AnimationItem *item, int value);
 
 protected:
     void setHandlePositions();
