@@ -58,8 +58,10 @@ public:
 
     virtual QString typeName() = 0;
     virtual QDomElement getXml(QDomDocument) = 0;
+    virtual QString getHtml(QString id, QString assetsPath) = 0;
     virtual bool hasBrushAndPen() = 0;
     virtual QList<PropertyEditorInterface*> *getPropertyEditors() {return nullptr;}
+    virtual QStringList getPropertyList() {QStringList list; return list;}
 
     void setPlayheadPosition(int pos) {m_playheadPosition = pos; update();}
     int playheadPosition() {return m_playheadPosition;}

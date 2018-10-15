@@ -53,3 +53,20 @@ void Ellipse::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QW
     if (option->state & QStyle::State_Selected)
         drawHighlightSelected(paint, option);
 }
+
+QString Ellipse::getHtml(QString id, QString)
+{
+    QString html = "<svg width=\"" + QString::number(width()) + "\" height=\"" + QString::number(height()) + "\">\n";
+    html += "<ellipse ";
+    html += "id=\"" + id + "\" ";
+    html += "cx=\"" + QString::number((qreal)width() / 2.0) + "\" ";
+    html += "cy=\"" + QString::number((qreal)height() / 2.0) + "\" ";
+    html += "rx=\"" + QString::number((qreal)width() / 2.0) + "\" ";
+    html += "ry=\"" + QString::number((qreal)height() / 2.0) + "\" ";
+    html += "fill=\"" + brushColor().name() + "\" ";
+    html += "stroke=\"" + penColor().name() + "\" ";
+    html += "stroke-width=\"1\" ";
+    html += "/>\n";
+    html += "</svg>\n";
+    return html;
+}

@@ -30,6 +30,12 @@
 #include "animationitem.h"
 
 
+QString Text::getHtml(QString id, QString)
+{
+    QString html = "<svg width=\"" + QString::number(width()) + "\" height=\"" + QString::number(height()) + "\">" + getTextTag(id) + "<svg/>";
+    return html;
+}
+
 QString Text::getTextTag(QString id)
 {
     QFontMetrics fm(m_font);

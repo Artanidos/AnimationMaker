@@ -57,7 +57,7 @@ public:
     Pie(AnimationScene *scene, QString typeName);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
-
+    QString getHtml(QString id, QString assetsPath) Q_DECL_OVERRIDE;
     QString typeName() {return m_typeName;}
     QDomElement getXml(QDomDocument);
     bool hasBrushAndPen() {return true;}

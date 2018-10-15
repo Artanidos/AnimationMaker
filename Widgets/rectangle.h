@@ -33,7 +33,7 @@ public:
     Rectangle(AnimationScene *scene, bool isSceneRect = false);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
-
+    QString getHtml(QString id, QString assetsPath) Q_DECL_OVERRIDE;
     enum { Type = UserType + 1 };
     int type() const Q_DECL_OVERRIDE;
     QString typeName() {return "Rectangle";}

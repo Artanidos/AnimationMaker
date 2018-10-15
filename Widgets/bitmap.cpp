@@ -107,6 +107,22 @@ void Bitmap::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, QWi
         drawHighlightSelected(paint, option);
 }
 
+QString Bitmap::getHtml(QString id, QString assetsPath)
+{
+    QString imgPath = assetsPath + "/images/" + id + ".png";
+    m_image.save(imgPath);
+
+    QString html = "<img ";
+    html += "id=\"" + id + "\" ";
+    html += "style=\"";
+    html += "width: " + QString::number(width()) + "px; ";
+    html += "height: " + QString::number(height()) + "px; ";
+    html += "\"";
+    html += "src=\"" + imgPath +"\"";
+    html += "/>\n";
+    return html;
+}
+
 QImage Bitmap::getImage()
 {
     return m_image;

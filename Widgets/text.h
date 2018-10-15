@@ -39,11 +39,12 @@ class WIDGETSSHARED_EXPORT Text : public AnimationItem
 public:
     Text(QString text, AnimationScene *scene);
 
-    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
-    void scaleObjects();
-    void setScale(qreal x, qreal y);
+    void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *) Q_DECL_OVERRIDE;
+    void scaleObjects() Q_DECL_OVERRIDE;
+    void setScale(qreal x, qreal y) Q_DECL_OVERRIDE;
     QString text();
     void setText(QString text);
+    QString getHtml(QString id, QString assetsPath) Q_DECL_OVERRIDE;
 
     QColor textColor();
     void setTextColor(QColor textColor);
@@ -53,9 +54,9 @@ public:
 
     enum { Type = UserType + 3 };
     int type() const Q_DECL_OVERRIDE;
-    QString typeName() {return "Text";}
-    QDomElement getXml(QDomDocument);
-    bool hasBrushAndPen() {return false;}
+    QString typeName() Q_DECL_OVERRIDE {return "Text";}
+    QDomElement getXml(QDomDocument) Q_DECL_OVERRIDE;
+    bool hasBrushAndPen() Q_DECL_OVERRIDE {return false;}
 
     QString getTextTag(QString id);
     

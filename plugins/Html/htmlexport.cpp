@@ -135,6 +135,7 @@ QString HtmlExport::getTweens(QString &tweenArray, AnimationItem *item, int i, Q
     QString var = "";
     QString value = "";
     QString id = "";
+    QString idAdd = "";
 
     bool isEllipse = false;
     Ellipse *ellipse = dynamic_cast<Ellipse*>(item);
@@ -149,31 +150,18 @@ QString HtmlExport::getTweens(QString &tweenArray, AnimationItem *item, int i, Q
             for(KeyFrame *from = item->keyframes()->value(property); from != nullptr; from = from->next())
             {
                 id = item->id() + QString::number(i);
+                idAdd = "";
                 if(property == "left")
                 {
-                    if(isEllipse)
-                    {
-                        value = QString::number((qreal)from->value().toReal() + item->width() / 2.0);
-                        var = "cx";
-                    }
-                    else
-                    {
-                        value = QString::number(from->value().toInt() - item->x());
-                        var = "x";
-                    }
+                    value = QString::number(from->value().toInt());
+                    var = "left: " + value;
+                    idAdd = "_pos";
                 }
                 else if(property == "top")
                 {
-                    if(isEllipse)
-                    {
-                        value = QString::number((qreal)from->value().toReal() + item->height() / 2.0);
-                        var = "cy";
-                    }
-                    else
-                    {
-                        value = QString::number(from->value().toInt() - item->y());
-                        var = "y";
-                    }
+                    value = QString::number(from->value().toInt());
+                    var = "top: " + value;
+                    idAdd = "_pos";
                 }
                 else if(property == "width")
                 {
@@ -233,65 +221,93 @@ QString HtmlExport::getTweens(QString &tweenArray, AnimationItem *item, int i, Q
                     value = '"' + from->value().toString() + '"';
                     var = '"' + property.mid(dot + 1) + '"';
                 }
-                else if(property == "rotation")
+                else if(property == "rotationx")
                 {
-                    QString rot = from->value().toString();
-                    QString axis = rot.left(1);
-                    value = rot.right(rot.size() - 1);
-                    //var = "rotation" + axis.toUpper() +": " + value + ", transformOrigin: \"" + QString::number(item->transX()) + "px " + QString::number(item->transY()) + "px\"";
+                    idAdd = "_x";
+                    value = from->value().toString();
+                    var = "rotationX: " + value + ", transformOrigin: \"" + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px\"";
+                }
+                else if(property == "rotationy")
+                {
+                    idAdd = "_y";
+                    value = from->value().toString();
+                    var = "rotationY: -" + value + ", transformOrigin: \"" + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px\"";
+                }
+                else if(property == "rotationz")
+                {
+                    idAdd = "_z";
+                    value = from->value().toString();
+                    var = "rotationZ: " + value + ", transformOrigin: \"" + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px\"";
                 }
                 else if(property == "shearx")
                 {
+                    idAdd = "_pos";
                     value = QString::number(from->value().toReal() * 50);
-                    //var = "skewX: " + value + ", transformOrigin: \"" + QString::number(item->transX()) + "px " + QString::number(item->transY()) + "px\"";
+                    var = "skewX: " + value + ", transformOrigin: \"" + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px\"";
                 }
                 else if(property == "sheary")
                 {
+                    idAdd = "_pos";
                     value = QString::number(from->value().toReal() * 50);
-                    //var = "skewY: " + value + ", transformOrigin: \"" + QString::number(item->transX()) + "px " + QString::number(item->transY()) + "px\"";
+                    var = "skewY: " + value + ", transformOrigin: \"" + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px\"";
                 }
                 else
                     qDebug() << "animation for attribute " + property + " not yet implemented";
 
-
-                QString obj = "tween" + QString::number(i) + "_" + QString::number(frameNumber) + "_" + property;
-                if(!tweenArray.isEmpty())
-                    tweenArray += ", ";
-                tweenArray += obj;
-                js << "var " + obj + " = TweenLite.to(\"#" + cleanId(id);
-                if(!var.contains(":"))
-                    js << "_pos";
-                js << "\", ";
                 if(from->prev() && from->prev()->easing() >= 0)
+                {
+                    QString obj = "tween" + QString::number(i) + "_" + QString::number(frameNumber) + "_" + property;
+                    if(!tweenArray.isEmpty())
+                        tweenArray += ", ";
+                    tweenArray += obj;
+                    js << "var " + obj + " = TweenLite.to(\"#" + cleanId(id);
+                    js << idAdd;
+                    js << "\", ";
                     js << QString::number(double(from->time() - from->prev()->time())/1000.0);
-                else
-                    js << "0";
-                js << ", {";
-                if(var.contains(":"))
-                {
-                   js << var;
-                }
-                else
-                {
-                    js << "attr:{";
-                    js << var;
-                    js << ":";
-                    js << value;
-                    js << "}";
-                }
-                js << ", delay: ";
-                if(from->prev() && from->prev()->easing() >= 0)
-                {
-                    js << QString::number((double)(from->prev()->time() / 1000.0));
-                    js << ", " + getEaseString(from->easing());
-                }
-                else
-                    if(frameNumber == 0)
-                        js << "0";
+                    js << ", {";
+                    if(var.contains(":"))
+                    {
+                        js << var;
+                    }
+                    else
+                    {
+                        js << "attr:{";
+                        js << var;
+                        js << ":";
+                        js << value;
+                        js << "}";
+                    }
+                    js << ", delay: ";
+                    if(from->prev() && from->prev()->easing() >= 0)
+                    {
+                        js << QString::number((double)(from->prev()->time() / 1000.0));
+                        js << ", " + getEaseString(from->prev()->easing());
+                    }
                     else
                         js << QString::number((double)from->time() / 1000.0);
-                js << "});\n";
-
+                    js << "});\n";
+                }
+                else
+                {
+                    js << "TweenLite.set(\"#" + cleanId(id);
+                    js << idAdd;
+                    js << "\", {";
+                    if(var.contains(":"))
+                    {
+                        js << var;
+                    }
+                    else
+                    {
+                        js << "attr:{";
+                        js << var;
+                        js << ":";
+                        js << value;
+                        js << "}";
+                    }
+                    js << ", delay: ";
+                    js << QString::number((double)from->time() / 1000.0);
+                    js << "});\n";
+                }
                 frameNumber++;
             }
         }
@@ -320,6 +336,7 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
     dir.mkdir("assets");
     dir.cd("assets");
     dir.mkdir("js");
+    dir.mkdir("images");
     dir.cdUp();
 
 #ifdef DEBUG
@@ -358,15 +375,16 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
     html << "<title>AnimationMaker</title>\n";
     html << "<link rel=\"stylesheet\" href=\"assets/css/style.css\">\n";
     html << "</head>\n";
-    html << "<body>\n";
-
+    html << "<body style=\"margin:0;padding:0\">\n";
+    html << "<div style=\"position: absolute\">\n";
     html << "<svg width=\"" + QString::number(scene->width()) + "\" height=\"" + QString::number(scene->height()) +"\">\n";
     html << "<rect id=\"scene\" x=\"0\" y=\"0\" width=\"" + QString::number(scene->width()) + "\" height=\"" + QString::number(scene->height()) + "\" fill=\"" + scene->backgroundRect()->brushColor().name() + "\"/>\n";
+    html << "</svg>\n";
+    html << "</div>\n";
 
     QTextStream js(&jsFile);
     js.setCodec("UTF-8");
     js << "window.onload = function(){\n";
-    js << "CSSPlugin.useSVGTransformAttr = false;\n";
 
     QString tweenArray = "";
     for(int i = 0; i < itemList.count(); i++)
@@ -384,90 +402,32 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
             properties << "brushColor";
             properties << "penColor";
             properties << "textColor";
-            properties << "rotation";
+            properties << "rotationx";
+            properties << "rotationy";
+            properties << "rotationz";
             properties << "shearx";
             properties << "sheary";
 
             if(!item->isSceneRect())
             {
-                html << "<svg id=\"" + cleanId(item->id() + QString::number(i)) + "_pos\" width=\"" + QString::number(scene->width()) + "\" height=\"" + QString::number(scene->height()) +"\">\n";
-
-                Rectangle *rect = dynamic_cast<Rectangle*>(item);
-                if(rect)
-                {
-                    html << "<rect ";
-                    html << "id=\"" + cleanId(rect->id() + QString::number(i)) + "\" ";
-                    html << "x=\"" + QString::number(rect->x()) + "\" ";
-                    html << "y=\"" + QString::number(rect->y()) + "\" ";
-                    html << "width=\"" + QString::number(rect->width()) + "\" ";
-                    html << "height=\"" + QString::number(rect->height()) + "\" ";
-                    html << "fill=\"" + rect->brushColor().name() + "\" ";
-                    html << "stroke=\"" + rect->penColor().name() + "\" ";
-                    html << "stroke-width=\"1\" ";
-                    html << "opacity=\"" + QString::number((qreal)rect->opacity() / 100.0) + "\" ";
-                    html << "/>\n";
-                }
-
-                Ellipse *ellipse = dynamic_cast<Ellipse*>(item);
-                if(ellipse)
-                {
-                    html << "<ellipse ";
-                    html << "id=\"" + cleanId(ellipse->id() + QString::number(i)) + "\" ";
-                    html << "cx=\"" + QString::number((qreal)ellipse->x() + ellipse->width() / 2.0) + "\" ";
-                    html << "cy=\"" + QString::number((qreal)ellipse->y() + ellipse->height() / 2.0) + "\" ";
-                    html << "rx=\"" + QString::number((qreal)ellipse->width() / 2.0) + "\" ";
-                    html << "ry=\"" + QString::number((qreal)ellipse->height() / 2.0) + "\" ";
-                    html << "fill=\"" + ellipse->brushColor().name() + "\" ";
-                    html << "stroke=\"" + ellipse->penColor().name() + "\" ";
-                    html << "stroke-width=\"1\" ";
-                    html << "opacity=\"" + QString::number((qreal)ellipse->opacity() / 100.0) + "\" ";
-                    html << "/>\n";
-                }
-
-                Text *text = dynamic_cast<Text*>(item);
-                if(text)
-                {
-                    html << "<svg id=\"" + cleanId(text->id() + QString::number(i)) + "\" ";
-                    html << "x=\"" + QString::number(text->x()) + "\" ";
-                    html << "y=\"" + QString::number(text->y()) + "\" ";
-                    html << "opacity=\"" + QString::number((double)text->opacity() / 100.0) + "\" ";
-                    html << ">";
-                    html << text->getTextTag(cleanId(text->id() + QString::number(i)) + "t");
-                    html << "</svg>";
-                }
-
-                Bitmap *bitmap = dynamic_cast<Bitmap*>(item);
-                if(bitmap)
-                {
-                    QByteArray byteArray;
-                    QBuffer buffer(&byteArray);
-                    bitmap->getImage().save(&buffer, "PNG");
-
-                    html << "<image ";
-                    html << "id=\"" + cleanId(bitmap->id() + QString::number(i)) + "\" ";
-                    html << "x=\"" + QString::number(bitmap->x()) + "\" ";
-                    html << "y=\"" + QString::number(bitmap->y()) + "\" ";
-                    html << "width=\"" + QString::number(bitmap->width()) + "\" ";
-                    html << "height=\"" + QString::number(bitmap->height()) + "\" ";
-                    html << "xlink:href=\"data:image/png;base64," + QString::fromLatin1(byteArray.toBase64().data()) + "\"";
-                    html << "opacity=\"" + QString::number((qreal)bitmap->opacity() / 100.0) + "\" ";
-                    html << "/>\n";
-                }
-
-                Vectorgraphic *vg = dynamic_cast<Vectorgraphic*>(item);
-                if(vg)
-                {
-                    html << "<svg id=\"" + cleanId(vg->id() + QString::number(i)) + "\" ";
-                    html << "x=\"" + QString::number(vg->x()) + "\" ";
-                    html << "y=\"" + QString::number(vg->y()) + "\" ";
-                    html << "opacity=\"" + QString::number((double)vg->opacity() / 100.0) + "\" ";
-                    html << ">";
-                    html << vg->getInnerSvg();
-                    html << "</svg>";
-                    properties.append(vg->getPropertyList());
-                }
+                html << "<div id=\"" + cleanId(item->id() + QString::number(i)) + "_pos\" style=\"left: " + QString::number(item->x()) + "px; top: " + QString::number(item->top()) + "px; position: absolute; ";
+                html << "transform: ";
+                html << "skewX(" + QString::number(item->shearX() * 100) + "deg) ";
+                html << "skewY(" + QString::number(item->shearY() * 100) + "deg) ";
+                html << "scale(" + QString::number(item->scaleX()) + "," + QString::number(item->scaleY()) + ")";
+                html << "\" ";
+                html << "opacity=\"" + QString::number((qreal)item->opacity() / 100.0) + "\"";
+                html << ">\n";
+                html << "<div id=\"" + cleanId(item->id() + QString::number(i)) + "_x\" style=\"transform: perspective(1000px) rotateX(" + QString::number(item->rotationX()) +"deg); transform-origin: " + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px;\">\n";
+                html << "<div id=\"" + cleanId(item->id() + QString::number(i)) + "_y\" style=\"transform: perspective(1000px) rotateY(" + QString::number(item->rotationY() * -1) +"deg); transform-origin: " + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px;\">\n";
+                html << "<div id=\"" + cleanId(item->id() + QString::number(i)) + "_z\" style=\"transform: perspective(1000px) rotateZ(" + QString::number(item->rotationZ()) +"deg); transform-origin: " + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px;\">\n";
+                html << item->getHtml(cleanId(item->id() + QString::number(i)), fileName + "/assets");
+                properties.append(item->getPropertyList());
                 js << getTweens(tweenArray, item, i, properties);
-                html << "</svg>\n";
+                html << "</div>\n";
+                html << "</div>\n";
+                html << "</div>\n";
+                html << "</div>\n";
             }
         }
     }
@@ -480,13 +440,12 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
     js << "}\n";
     jsFile.close();
 
-    html << "</svg>\n";
     html << "<script src='assets/js/CSSPlugin.min.js'></script>\n";
     html << "<script src='assets/js/EasePack.min.js'></script>\n";
     html << "<script src='assets/js/TweenLite.min.js'></script>\n";
     html << "<script src='assets/js/TimelineLite.min.js'></script>\n";
     html << "<script src='assets/js/AttrPlugin.min.js'></script>\n";
-    html << "<script  src='assets/js/animationmaker.js'></script>\n";
+    html << "<script src='assets/js/animationmaker.js'></script>\n";
     html << "</body>\n";
     html << "</html>\n";
     htmlFile.close();

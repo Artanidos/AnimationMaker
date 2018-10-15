@@ -55,3 +55,19 @@ void Rectangle::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, 
     if (option->state & QStyle::State_Selected)
         drawHighlightSelected(paint, option);
 }
+
+QString Rectangle::getHtml(QString id, QString)
+{
+    QString html = "<div ";
+    html += "id=\"" + id + "\" ";
+    html += "style=\"";
+    html += "width: " + QString::number(width()) + "px; ";
+    html += "height: " + QString::number(height()) + "px; ";
+    html += "background-color: " + brushColor().name() + "; ";
+    html += "border-color: " + penColor().name() + "; ";
+    html += "border-width: 1px; ";
+    html += "border-style: solid; ";
+    html += "\"";
+    html += "></div>\n";
+    return html;
+}

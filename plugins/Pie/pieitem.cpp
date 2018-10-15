@@ -18,6 +18,14 @@
 **
 ****************************************************************************/
 
+/****************************************************************************
+** Just a small example how to implement nice plugins.
+** The pie has been rendered into a canvas when exporting to HTML.
+** So I just ported the paint method to javascript and canvas.
+**
+** What are you going to create?
+****************************************************************************/
+
 #include "pieitem.h"
 #include "propertyeditor.h"
 #include <QVBoxLayout>
@@ -92,4 +100,29 @@ void Pie::paint(QPainter *paint, const QStyleOptionGraphicsItem *option, QWidget
 
     if (option->state & QStyle::State_Selected)
         drawHighlightSelected(paint, option);
+}
+
+QString Pie::getHtml(QString id, QString)
+{
+    // This is everything but complete.
+    // For example the fillstyle and the angles are not animated yet.
+    // But this sample is just an idea for you to create your own plugin.
+
+    qreal angleA = 2.0 / 360.0 * (360 - startAngle());
+    qreal angleB = 2.0 / 360.0 * (360 - spanAngle() - startAngle());
+
+    QString html = "<canvas id=\"" + id +"\" width=\"" + QString::number(width()) + "\" height=\"" + QString::number(height()) + "\"></canvas>\n";
+    html += "<script>\n";
+    html += "var c = document.getElementById(\"" + id + "\");\n";
+    html += "var ctx = c.getContext(\"2d\");\n";
+    html += "ctx.fillStyle = \"" + brush().color().name() + "\";\n";
+    html += "ctx.lineWidth = 1;\n";
+    html += "ctx.beginPath();\n";
+    html += "ctx.moveTo(" + QString::number(width() / 2.0) + "," + QString::number(height() / 2.0) + ");\n";
+    html += "ctx.arc(" + QString::number(width() / 2.0) + ", " + QString::number(height() / 2.0) + ", " + QString::number(height() / 2.0) + ", " + QString::number(angleB) + " * Math.PI, " + QString::number(angleA) + " * Math.PI);\n";
+    html += "ctx.lineTo(" + QString::number(width() / 2.0) + "," + QString::number(height() / 2.0) + ");\n";
+    html += "ctx.stroke();\n";
+    html += "ctx.fill();\n";
+    html += "</script>\n";
+    return html;
 }

@@ -35,7 +35,7 @@ public:
     Vectorgraphic();
     Vectorgraphic(QString filename, AnimationScene *scene);
     Vectorgraphic(QByteArray arr, AnimationScene *scene);
-
+    QString getHtml(QString id, QString assetsPath) Q_DECL_OVERRIDE;
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
     void scaleObjects();
     void setScale(qreal x, qreal y);
@@ -54,7 +54,7 @@ public:
     bool hasBrushAndPen() {return false;}
 
     QString getInnerSvg();
-    QStringList getPropertyList();
+    QStringList getPropertyList() Q_DECL_OVERRIDE;
 
 signals:
     void attributeAdded();

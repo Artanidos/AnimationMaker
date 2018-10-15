@@ -34,7 +34,7 @@ public:
     Bitmap(QImage img, AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
-
+    QString getHtml(QString id, QString assetsPath) Q_DECL_OVERRIDE;
     QImage getImage();
     void setImage(QImage image);
 

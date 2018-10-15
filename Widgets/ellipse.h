@@ -34,7 +34,7 @@ public:
     Ellipse(AnimationScene *scene);
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
-
+    QString getHtml(QString id, QString assetsPath) Q_DECL_OVERRIDE;
     enum { Type = UserType + 2 };
     int type() const Q_DECL_OVERRIDE;
     QString typeName() {return "Ellipse";}

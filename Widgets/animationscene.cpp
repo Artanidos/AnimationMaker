@@ -251,6 +251,9 @@ void AnimationScene::addBackgroundRect()
 bool AnimationScene::importXml(QString fileName)
 {
     bool fullyLoaded = false;
+    QString errorMsg;
+    int errorLine, errorColumn;
+
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
     {
@@ -259,10 +262,10 @@ bool AnimationScene::importXml(QString fileName)
     }
 
     QDomDocument doc;
-    if (!doc.setContent(&file))
+    if (!doc.setContent(&file, &errorMsg, &errorLine, &errorColumn))
     {
         file.close();
-        QMessageBox::warning(nullptr, "Error", "Unable to read file " + fileName);
+        QMessageBox::warning(nullptr, "Error", "Unable to read file " + fileName + "\n" + errorMsg + "\nLine: " + QString::number(errorLine) + ", column: " + QString::number(errorColumn));
         return false;
     }
     file.close();
@@ -338,9 +341,18 @@ bool AnimationScene::importXml(QString fileName)
         else if(node.nodeName() == "Vectorgraphic")
         {
             QDomElement ele = node.toElement();
-            QDomNode data = ele.firstChild();
-            QDomCDATASection cdata = data.toCDATASection();
-            Vectorgraphic *v = new Vectorgraphic(cdata.data().toLatin1(), this);
+            QDomNodeList list = ele.childNodes();
+            QString content = "";
+            for(int i=0; i < list.count();i++)
+            {
+                QDomNode data = list.at(i);
+                if(data.isCDATASection())
+                {
+                    QDomCDATASection cdata = data.toCDATASection();
+                    content += cdata.data();
+                }
+            }
+            Vectorgraphic *v = new Vectorgraphic(content.toLatin1(), this);
             v->readAttributes(ele);
             v->setScale(ele.attribute("xscale", "1").toDouble(), ele.attribute("yscale", "1").toDouble());
             v->setFlag(QGraphicsItem::ItemIsMovable, true);
