@@ -82,5 +82,9 @@
         <file>images/commercial-linux-hover.png</file>
         <file>images/commercial-windows.png</file>
         <file>images/commercial-windows-hover.png</file>
+        <file>images/eye_unchecked.png</file>
+        <file>images/lock_unchecked.png</file>
+        <file>images/eye_checked.png</file>
+        <file>images/lock_checked.png</file>
     </qresource>
 </RCC>

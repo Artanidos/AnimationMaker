@@ -80,20 +80,20 @@ private:
     QProcess *m_proc;
     QString m_url;
     QString m_err;
-    QSplitter *splitter;
+    QSplitter *m_splitter;
     QToolBar *toolbar;
-    QTreeWidget *elementTree;
-    AnimationScene *scene;
-    SceneView *view;
+    QTreeWidget *m_elementTree;
+    AnimationScene *m_scene;
+    SceneView *m_view;
     QFileInfo loadedFile;
-    Timeline *timeline;
+    Timeline *m_timeline;
     ItemPropertyEditor *m_itemPropertyEditor;
     ScenePropertyEditor *m_scenePropertyEditor;
     TransitionEditor *m_transitionEditor;
-    QDockWidget *propertiesdock;
-    QDockWidget *tooldock;
-    QDockWidget *elementsdock;
-    QTreeWidgetItem *root;
+    QDockWidget *m_propertiesdock;
+    QDockWidget *m_tooldock;
+    QDockWidget *m_elementsdock;
+    QTreeWidgetItem *m_root;
     QTextBrowser *browser;
     QString m_email;
     QString m_licenseKey;
@@ -107,12 +107,12 @@ private:
     QAction *saveItemAsAct;
     QAction *exitAct;
     QAction *aboutAct;
-    QAction *selectAct;
-    QAction *rectangleAct;
-    QAction *ellipseAct;
-    QAction *textAct;
-    QAction *svgAct;
-    QAction *bitmapAct;
+    QAction *m_selectAct;
+    QAction *m_rectangleAct;
+    QAction *m_ellipseAct;
+    QAction *m_textAct;
+    QAction *m_svgAct;
+    QAction *m_bitmapAct;
     QAction *showPropertyPanelAct;
     QAction *showToolPanelAct;
     QAction *showElementsAct;
@@ -131,7 +131,7 @@ private:
     QMenu *viewMenu;
     QMenu *importMenu;
     QMenu *exportMenu;
-    QUndoStack *undoStack;
+    QUndoStack *m_undoStack;
 
 public slots:
     void reset();

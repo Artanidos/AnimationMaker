@@ -59,7 +59,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    undoStack = new QUndoStack(this);
+    m_undoStack = new QUndoStack(this);
 
     setDockNestingEnabled(true);
     install();
@@ -75,10 +75,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete scene;
-    delete timeline;
-    delete elementTree;
-    delete view;
+    delete m_scene;
+    delete m_timeline;
+    delete m_elementTree;
+    delete m_view;
 }
 
 void MainWindow::loadPlugins()
@@ -168,19 +168,19 @@ void MainWindow::saveItemAs()
     if(fileName.isEmpty())
         return;
 
-    scene->exportXml(fileName, false);
+    m_scene->exportXml(fileName, false);
     statusBar()->showMessage(QString("Item saved as " + fileName));
 }
 
 void MainWindow::writeFile(QString fileName)
 {
-    scene->clearSelection();
-    timeline->setPlayheadPosition(0);
+    m_scene->clearSelection();
+    m_timeline->setPlayheadPosition(0);
 
-    scene->exportXml(fileName);
+    m_scene->exportXml(fileName);
     statusBar()->showMessage(QString("File saved as " + fileName));
 
-    undoStack->clear();
+    m_undoStack->clear();
 }
 
 void MainWindow::setTitle()
@@ -193,9 +193,9 @@ void MainWindow::setTitle()
 
 void MainWindow::reset()
 {
-    setCentralWidget(splitter);
-    scene->reset();
-    timeline->reset();
+    setCentralWidget(m_splitter);
+    m_scene->reset();
+    m_timeline->reset();
 }
 
 void MainWindow::newfile()
@@ -205,8 +205,8 @@ void MainWindow::newfile()
     saveAct->setEnabled(false);
     loadedFile.setFile("");
     setTitle();
-    m_scenePropertyEditor->setScene(scene);
-    propertiesdock->setWidget(m_scenePropertyEditor);
+    m_scenePropertyEditor->setScene(m_scene);
+    m_propertiesdock->setWidget(m_scenePropertyEditor);
 }
 
 void MainWindow::open()
@@ -226,12 +226,12 @@ void MainWindow::open()
 
     bool fullyLoaded = true;
     // read xml version
-    fullyLoaded = scene->importXml(fileName);
+    fullyLoaded = m_scene->importXml(fileName);
 
     fillTree();
-    elementTree->expandAll();
-    m_scenePropertyEditor->setScene(scene);
-    timeline->expandTree();
+    m_elementTree->expandAll();
+    m_scenePropertyEditor->setScene(m_scene);
+    m_timeline->expandTree();
 
     if(fullyLoaded)
     {
@@ -239,29 +239,30 @@ void MainWindow::open()
         saveAct->setEnabled(true);
         setTitle();
     }
-    timeline->setPlayheadPosition(0);
+    m_timeline->setPlayheadPosition(0);
 }
 
 void MainWindow::fillTree()
 {
-    for(int i = root->childCount() - 1; i >= 0; i--)
+    for(int i = m_root->childCount() - 1; i >= 0; i--)
     {
-        QTreeWidgetItem *treeItem = root->child(i);
-        root->removeChild(treeItem);
+        QTreeWidgetItem *treeItem = m_root->child(i);
+        m_root->removeChild(treeItem);
         delete treeItem;
     }
 
-    QList<QGraphicsItem*> itemList = scene->items(Qt::AscendingOrder);
+    QList<QGraphicsItem*> itemList = m_scene->items(Qt::AscendingOrder);
     foreach (QGraphicsItem *item, itemList)
     {
         AnimationItem *ri = dynamic_cast<AnimationItem*>(item);
         if(ri && !ri->isSceneRect())
         {
             QTreeWidgetItem *treeItem = new QTreeWidgetItem();
+
             treeItem->setText(0, ri->id());
             treeItem->setIcon(0, QIcon(":/images/rect.png"));
             treeItem->setData(0, 3, qVariantFromValue((void *) ri));
-            root->addChild(treeItem);
+            m_root->addChild(treeItem);
             connect(ri, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
         }
     }
@@ -269,11 +270,11 @@ void MainWindow::fillTree()
 
 void MainWindow::idChanged(AnimationItem *item, QString id)
 {
-    for(int i=0; i < root->childCount(); i++)
+    for(int i=0; i < m_root->childCount(); i++)
     {
-        if(root->child(i)->data(0, 3).value<void *>() == item)
+        if(m_root->child(i)->data(0, 3).value<void *>() == item)
         {
-            root->child(i)->setText(0, id);
+            m_root->child(i)->setText(0, id);
             break;
         }
     }
@@ -284,43 +285,43 @@ void MainWindow::createGui()
     QToolBar *toolpanel = new QToolBar();
     toolpanel->setOrientation(Qt::Vertical);
     QActionGroup *anActionGroup = new QActionGroup(toolpanel);
-    selectAct = new QAction("Select", anActionGroup);
-    selectAct->setIcon(QIcon(":/images/arrow.png"));
-    selectAct->setCheckable(true);
+    m_selectAct = new QAction("Select", anActionGroup);
+    m_selectAct->setIcon(QIcon(":/images/arrow.png"));
+    m_selectAct->setCheckable(true);
 
-    rectangleAct = new QAction("Rectangle", anActionGroup);
-    rectangleAct->setIcon(QIcon(":/images/rectangle.png"));
-    rectangleAct->setCheckable(true);
+    m_rectangleAct = new QAction("Rectangle", anActionGroup);
+    m_rectangleAct->setIcon(QIcon(":/images/rectangle.png"));
+    m_rectangleAct->setCheckable(true);
 
-    ellipseAct = new QAction("Ellipse", anActionGroup);
-    ellipseAct->setIcon(QIcon(":/images/ellipse.png"));
-    ellipseAct->setCheckable(true);
+    m_ellipseAct = new QAction("Ellipse", anActionGroup);
+    m_ellipseAct->setIcon(QIcon(":/images/ellipse.png"));
+    m_ellipseAct->setCheckable(true);
 
-    textAct = new QAction("Text", anActionGroup);
-    textAct->setIcon(QIcon(":/images/text.png"));
-    textAct->setCheckable(true);
+    m_textAct = new QAction("Text", anActionGroup);
+    m_textAct->setIcon(QIcon(":/images/text.png"));
+    m_textAct->setCheckable(true);
 
-    bitmapAct = new QAction("Bitmap", anActionGroup);
-    bitmapAct->setIcon(QIcon(":/images/camera.png"));
-    bitmapAct->setCheckable(true);
+    m_bitmapAct = new QAction("Bitmap", anActionGroup);
+    m_bitmapAct->setIcon(QIcon(":/images/camera.png"));
+    m_bitmapAct->setCheckable(true);
 
-    svgAct = new QAction("Vectorgraphic", anActionGroup);
-    svgAct->setIcon(QIcon(":/images/svg.png"));
-    svgAct->setCheckable(true);
+    m_svgAct = new QAction("Vectorgraphic", anActionGroup);
+    m_svgAct->setIcon(QIcon(":/images/svg.png"));
+    m_svgAct->setCheckable(true);
 
-    connect(selectAct, SIGNAL(triggered()), this, SLOT(setSelectMode()));
-    connect(rectangleAct, SIGNAL(triggered()), this, SLOT(setRectangleMode()));
-    connect(ellipseAct, SIGNAL(triggered()), this, SLOT(setEllipseMode()));
-    connect(textAct, SIGNAL(triggered()), this, SLOT(setTextMode()));
-    connect(bitmapAct, SIGNAL(triggered()), this, SLOT(setBitmapMode()));
-    connect(svgAct, SIGNAL(triggered()), this, SLOT(setSvgMode()));
+    connect(m_selectAct, SIGNAL(triggered()), this, SLOT(setSelectMode()));
+    connect(m_rectangleAct, SIGNAL(triggered()), this, SLOT(setRectangleMode()));
+    connect(m_ellipseAct, SIGNAL(triggered()), this, SLOT(setEllipseMode()));
+    connect(m_textAct, SIGNAL(triggered()), this, SLOT(setTextMode()));
+    connect(m_bitmapAct, SIGNAL(triggered()), this, SLOT(setBitmapMode()));
+    connect(m_svgAct, SIGNAL(triggered()), this, SLOT(setSvgMode()));
 
-    toolpanel->addAction(selectAct);
-    toolpanel->addAction(rectangleAct);
-    toolpanel->addAction(ellipseAct);
-    toolpanel->addAction(textAct);
-    toolpanel->addAction(bitmapAct);
-    toolpanel->addAction(svgAct);
+    toolpanel->addAction(m_selectAct);
+    toolpanel->addAction(m_rectangleAct);
+    toolpanel->addAction(m_ellipseAct);
+    toolpanel->addAction(m_textAct);
+    toolpanel->addAction(m_bitmapAct);
+    toolpanel->addAction(m_svgAct);
 
     // load plugins here
     foreach(QString pluginName, Plugins::itemPluginNames())
@@ -333,42 +334,42 @@ void MainWindow::createGui()
         connect(act, SIGNAL(triggered()), this, SLOT(setPluginMode()));
         toolpanel->addAction(act);
     }
-    selectAct->toggle();
+    m_selectAct->toggle();
 
-    tooldock = new QDockWidget(tr("Tools"), this);
-    tooldock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    tooldock->setWidget(toolpanel);
-    tooldock->setObjectName("Tools");
-    addDockWidget(Qt::LeftDockWidgetArea, tooldock);
+    m_tooldock = new QDockWidget(tr("Tools"), this);
+    m_tooldock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    m_tooldock->setWidget(toolpanel);
+    m_tooldock->setObjectName("Tools");
+    addDockWidget(Qt::LeftDockWidgetArea, m_tooldock);
 
-    scene = new AnimationScene();
-    scene->registerUndoStack(undoStack);
+    m_scene = new AnimationScene();
+    m_scene->registerUndoStack(m_undoStack);
 
-    timeline = new Timeline(scene);
-    timeline->setMinimumHeight(110);
+    m_timeline = new Timeline(m_scene);
+    m_timeline->setMinimumHeight(110);
 
-    m_itemPropertyEditor = new ItemPropertyEditor(timeline);
+    m_itemPropertyEditor = new ItemPropertyEditor(m_timeline);
     m_scenePropertyEditor = new ScenePropertyEditor();
     m_transitionEditor = new TransitionEditor();
-    m_transitionEditor->setUndoStack(undoStack);
+    m_transitionEditor->setUndoStack(m_undoStack);
 
-    m_scenePropertyEditor->setScene(scene);
+    m_scenePropertyEditor->setScene(m_scene);
 
-    propertiesdock = new QDockWidget(tr("Properties"), this);
-    propertiesdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    propertiesdock->setWidget(m_scenePropertyEditor);
-    propertiesdock->setObjectName("Properties");
+    m_propertiesdock = new QDockWidget(tr("Properties"), this);
+    m_propertiesdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    m_propertiesdock->setWidget(m_scenePropertyEditor);
+    m_propertiesdock->setObjectName("Properties");
 
-    addDockWidget(Qt::RightDockWidgetArea, propertiesdock);
+    addDockWidget(Qt::RightDockWidgetArea, m_propertiesdock);
 
-    view = new SceneView(scene);
-    view->setSceneRect(-100, -100, scene->width() + 200, scene->height() + 200);
-    view->setRenderHint(QPainter::RenderHint::Antialiasing);
-    connect(scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
-    connect(scene, SIGNAL(itemAdded(QGraphicsItem*)), this, SLOT(sceneItemAdded(QGraphicsItem*)));
-    connect(scene, SIGNAL(sizeChanged(int,int)), this, SLOT(sceneSizeChanged(int, int)));
-    connect(scene, SIGNAL(itemRemoved(AnimationItem*)), this, SLOT(sceneItemRemoved(AnimationItem*)));
-    connect(scene, SIGNAL(animationResetted()), this, SLOT(reset()));
+    m_view = new SceneView(m_scene);
+    m_view->setSceneRect(-100, -100, m_scene->width() + 200, m_scene->height() + 200);
+    m_view->setRenderHint(QPainter::RenderHint::Antialiasing);
+    connect(m_scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
+    connect(m_scene, SIGNAL(itemAdded(QGraphicsItem*)), this, SLOT(sceneItemAdded(QGraphicsItem*)));
+    connect(m_scene, SIGNAL(sizeChanged(int,int)), this, SLOT(sceneSizeChanged(int, int)));
+    connect(m_scene, SIGNAL(itemRemoved(AnimationItem*)), this, SLOT(sceneItemRemoved(AnimationItem*)));
+    connect(m_scene, SIGNAL(animationResetted()), this, SLOT(reset()));
 
     QWidget *w = new QWidget();
     QVBoxLayout *vbox = new QVBoxLayout();
@@ -382,58 +383,70 @@ void MainWindow::createGui()
     zoom->setCurrentIndex(1);
     connect(zoom, SIGNAL(currentIndexChanged(int)), this, SLOT(changeZoom(int)));
 
-    vbox->addWidget(view);
+    vbox->addWidget(m_view);
     vbox->addLayout(hbox);
     hbox->addWidget(zoom);
     hbox->addStretch();
     w->setLayout(vbox);
 
-    elementTree = new QTreeWidget();
-    elementTree->header()->close();
-    elementTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    root = new QTreeWidgetItem();
-    root->setText(0, "Scene");
-    elementTree->addTopLevelItem(root);
-    connect(elementTree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(elementTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    m_elementTree = new QTreeWidget();
+    m_elementTree->header()->close();
+    m_elementTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_root = new QTreeWidgetItem();
+    m_root->setText(0, "Scene");
+    m_elementTree->setColumnCount(3);
+    m_elementTree->header()->moveSection(0,2);
+    m_elementTree->addTopLevelItem(m_root);
+    QCheckBox *rootVisible = new QCheckBox();
+    rootVisible->setFixedWidth(18);
+    QCheckBox *rootLocked = new QCheckBox();
+    rootLocked->setFixedWidth(18);
+    m_elementTree->setItemWidget(m_root, 1, rootVisible);
+    m_elementTree->setItemWidget(m_root, 2, rootLocked);
+    m_elementTree->setColumnWidth(1, 18);
+    m_elementTree->setColumnWidth(2, 18);
+    rootVisible->setStyleSheet("QCheckBox::indicator:unchecked {image: url(:/images/eye_unchecked.png);} QCheckBox::indicator:checked {image: url(:/images/eye_checked.png);}");
+    rootLocked->setStyleSheet("QCheckBox::indicator:unchecked {image: url(:/images/lock_unchecked.png);} QCheckBox::indicator:checked {image: url(:/images/lock_checked.png);}");
+    connect(m_elementTree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(elementTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
-    elementsdock = new QDockWidget(tr("Elements"), this);
-    elementsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    elementsdock->setWidget(elementTree);
-    elementsdock->setObjectName("Elements");
-    addDockWidget(Qt::LeftDockWidgetArea, elementsdock);
-    splitDockWidget(tooldock, elementsdock, Qt::Horizontal);
+    m_elementsdock = new QDockWidget(tr("Elements"), this);
+    m_elementsdock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    m_elementsdock->setWidget(m_elementTree);
+    m_elementsdock->setObjectName("Elements");
+    addDockWidget(Qt::LeftDockWidgetArea, m_elementsdock);
+    splitDockWidget(m_tooldock, m_elementsdock, Qt::Horizontal);
 
-    connect(timeline, SIGNAL(itemSelectionChanged(AnimationItem *)), this, SLOT(timelineSelectionChanged(AnimationItem*)));
-    connect(timeline, SIGNAL(transitionSelectionChanged(KeyFrame*)), this, SLOT(transitionSelectionChanged(KeyFrame*)));
-    connect(m_itemPropertyEditor, SIGNAL(addKeyFrame(AnimationItem*,QString,QVariant)), timeline, SLOT(addKeyFrame(AnimationItem*,QString,QVariant)));
-    connect(m_scenePropertyEditor, SIGNAL(addKeyFrame(AnimationItem*,QString,QVariant)), timeline, SLOT(addKeyFrame(AnimationItem*,QString,QVariant)));
+    connect(m_timeline, SIGNAL(itemSelectionChanged(AnimationItem *)), this, SLOT(timelineSelectionChanged(AnimationItem*)));
+    connect(m_timeline, SIGNAL(transitionSelectionChanged(KeyFrame*)), this, SLOT(transitionSelectionChanged(KeyFrame*)));
+    connect(m_itemPropertyEditor, SIGNAL(addKeyFrame(AnimationItem*,QString,QVariant)), m_timeline, SLOT(addKeyFrame(AnimationItem*,QString,QVariant)));
+    connect(m_scenePropertyEditor, SIGNAL(addKeyFrame(AnimationItem*,QString,QVariant)), m_timeline, SLOT(addKeyFrame(AnimationItem*,QString,QVariant)));
 
-    splitter = new QSplitter(Qt::Vertical);
-    splitter->addWidget(w);
-    splitter->addWidget(timeline);
+    m_splitter = new QSplitter(Qt::Vertical);
+    m_splitter->addWidget(w);
+    m_splitter->addWidget(m_timeline);
 
-    setCentralWidget(splitter);
+    setCentralWidget(m_splitter);
 }
 
 void MainWindow::elementTreeItemChanged(QTreeWidgetItem *newItem, QTreeWidgetItem *)
 {
-    scene->clearSelection();
+    m_scene->clearSelection();
     AnimationItem *item = (AnimationItem *)  newItem->data(0, 3).value<void *>();
     if(item)
     {
         item->setSelected(true);
         m_itemPropertyEditor->setItem(item);
-        propertiesdock->setWidget(m_itemPropertyEditor);
+        m_propertiesdock->setWidget(m_itemPropertyEditor);
     }
     else
     {
-        propertiesdock->setWidget(m_scenePropertyEditor);
+        m_propertiesdock->setWidget(m_scenePropertyEditor);
     }
 }
 
 void MainWindow::sceneSizeChanged(int width, int height)
 {
-    view->setSceneRect(-100, -100, width + 200, height + 200);
+    m_view->setSceneRect(-100, -100, width + 200, height + 200);
 }
 
 void MainWindow::createStatusBar()
@@ -498,23 +511,27 @@ void MainWindow::readSettings()
     if(!showRulers)
     {
         showRulerAct->setChecked(false);
-        view->showRulers(false);
+        m_view->showRulers(false);
     }
 }
 
 void MainWindow::createActions()
 {
     openAct = new QAction(tr("&Open..."), this);
+    openAct->setShortcut(QKeySequence::Open);
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
 
     newAct = new QAction(tr("&New"), this);
+    newAct->setShortcut(QKeySequence::New);
     connect(newAct, SIGNAL(triggered()), this, SLOT(newfile()));
 
     saveAct = new QAction(tr("&Save"), this);
     saveAct->setEnabled(false);
+    saveAct->setShortcut(QKeySequence::Save);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
 
     saveAsAct = new QAction(tr("Save &As..."), this);
+    saveAsAct->setShortcut(QKeySequence::SaveAs);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
     saveItemAsAct = new QAction(tr("Save &Item as..."), this);
@@ -529,10 +546,10 @@ void MainWindow::createActions()
     exitAct->setStatusTip(tr("Exit the application"));
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    undoAct = undoStack->createUndoAction(this, tr("&Undo"));
+    undoAct = m_undoStack->createUndoAction(this, tr("&Undo"));
     undoAct->setShortcuts(QKeySequence::Undo);
 
-    redoAct = undoStack->createRedoAction(this, tr("&Redo"));
+    redoAct = m_undoStack->createRedoAction(this, tr("&Redo"));
     redoAct->setShortcuts(QKeySequence::Redo);
 
     copyAct = new QAction(tr("&Copy"), this);
@@ -657,43 +674,43 @@ void MainWindow::license()
 
 void MainWindow::setSelectMode()
 {
-    scene->setEditMode(AnimationScene::EditMode::ModeSelect);
-    scene->setCursor(Qt::ArrowCursor);
+    m_scene->setEditMode(AnimationScene::EditMode::ModeSelect);
+    m_scene->setCursor(Qt::ArrowCursor);
 }
 
 void MainWindow::setRectangleMode()
 {
-    scene->clearSelection();
-    scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/rect_cursor.png"))));
-    scene->setEditMode(AnimationScene::EditMode::ModeRectangle);
+    m_scene->clearSelection();
+    m_scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/rect_cursor.png"))));
+    m_scene->setEditMode(AnimationScene::EditMode::ModeRectangle);
 }
 
 void MainWindow::setEllipseMode()
 {
-    scene->clearSelection();
-    scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/ellipse_cursor.png"))));
-    scene->setEditMode(AnimationScene::EditMode::ModeEllipse);
+    m_scene->clearSelection();
+    m_scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/ellipse_cursor.png"))));
+    m_scene->setEditMode(AnimationScene::EditMode::ModeEllipse);
 }
 
 void MainWindow::setTextMode()
 {
-    scene->clearSelection();
-    scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/text_cursor.png"))));
-    scene->setEditMode(AnimationScene::EditMode::ModeText);
+    m_scene->clearSelection();
+    m_scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/text_cursor.png"))));
+    m_scene->setEditMode(AnimationScene::EditMode::ModeText);
 }
 
 void MainWindow::setBitmapMode()
 {
-    scene->clearSelection();
-    scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/bitmap_cursor.png"))));
-    scene->setEditMode(AnimationScene::EditMode::ModeBitmap);
+    m_scene->clearSelection();
+    m_scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/bitmap_cursor.png"))));
+    m_scene->setEditMode(AnimationScene::EditMode::ModeBitmap);
 }
 
 void MainWindow::setSvgMode()
 {
-    scene->clearSelection();
-    scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/svg_cursor.png"))));
-    scene->setEditMode(AnimationScene::EditMode::ModeSvg);
+    m_scene->clearSelection();
+    m_scene->setCursor(QCursor(QPixmap::fromImage(QImage(":/images/svg_cursor.png"))));
+    m_scene->setEditMode(AnimationScene::EditMode::ModeSvg);
 }
 
 void MainWindow::setPluginMode()
@@ -703,9 +720,9 @@ void MainWindow::setPluginMode()
     {
         QString pluginName = act->data().toString();
         ItemInterface *item = Plugins::getItemPlugin(pluginName);
-        scene->clearSelection();
-        scene->setCursor(item->getCursor());
-        scene->setEditMode(item->className());
+        m_scene->clearSelection();
+        m_scene->setCursor(item->getCursor());
+        m_scene->setEditMode(item->className());
     }
 }
 
@@ -713,9 +730,9 @@ void MainWindow::sceneSelectionChanged()
 {
     AnimationItem *item = NULL;
 
-    if(scene->selectedItems().count())
+    if(m_scene->selectedItems().count())
     {
-        item = dynamic_cast<AnimationItem*>(scene->selectedItems().first());
+        item = dynamic_cast<AnimationItem*>(m_scene->selectedItems().first());
         saveItemAsAct->setEnabled(true);
     }
     else
@@ -724,36 +741,36 @@ void MainWindow::sceneSelectionChanged()
     if(item)
     {
         m_itemPropertyEditor->setItem(item);
-        propertiesdock->setWidget(m_itemPropertyEditor);
-        for(int i=0; i<root->childCount(); i++)
+        m_propertiesdock->setWidget(m_itemPropertyEditor);
+        for(int i=0; i<m_root->childCount(); i++)
         {
-            QTreeWidgetItem *treeItem = root->child(i);
+            QTreeWidgetItem *treeItem = m_root->child(i);
             if(treeItem->data(0, 3).value<void *>() == item)
                 treeItem->setSelected(true);
             else
                 treeItem->setSelected(false);
         }
-        root->setSelected(false);
+        m_root->setSelected(false);
 
-        timeline->selectItem(item);
+        m_timeline->selectItem(item);
     }
     else
     {
-        propertiesdock->setWidget(m_scenePropertyEditor);
-        for(int i=0; i<root->childCount(); i++)
-            root->child(i)->setSelected(false);
-        root->setSelected(true);
-        timeline->selectItem(nullptr);
+        m_propertiesdock->setWidget(m_scenePropertyEditor);
+        for(int i=0; i<m_root->childCount(); i++)
+            m_root->child(i)->setSelected(false);
+        m_root->setSelected(true);
+        m_timeline->selectItem(nullptr);
     }
 }
 
 void MainWindow::timelineSelectionChanged(AnimationItem* item)
 {
-    scene->clearSelection();
+    m_scene->clearSelection();
     item->setSelected(true);
 
     m_itemPropertyEditor->setItem(item);
-    propertiesdock->setWidget(m_itemPropertyEditor);
+    m_propertiesdock->setWidget(m_itemPropertyEditor);
 }
 
 void MainWindow::sceneItemAdded(QGraphicsItem *item)
@@ -765,91 +782,91 @@ void MainWindow::sceneItemAdded(QGraphicsItem *item)
     treeItem->setData(0, 3, qVariantFromValue((void *) ri));
     connect(ri, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
 
-    root->addChild(treeItem);
-    root->setExpanded(true);
-    root->setSelected(false);
-    for(int i=0; i<root->childCount(); i++)
-        root->child(i)->setSelected(false);
+    m_root->addChild(treeItem);
+    m_root->setExpanded(true);
+    m_root->setSelected(false);
+    for(int i=0; i<m_root->childCount(); i++)
+        m_root->child(i)->setSelected(false);
     treeItem->setSelected(true);
 
     item->setSelected(true);
-    selectAct->setChecked(true);
-    scene->setEditMode(AnimationScene::EditMode::ModeSelect);
-    scene->setCursor(Qt::ArrowCursor);
+    m_selectAct->setChecked(true);
+    m_scene->setEditMode(AnimationScene::EditMode::ModeSelect);
+    m_scene->setCursor(Qt::ArrowCursor);
 }
 
 void MainWindow::showPropertyPanel()
 {
-    propertiesdock->setVisible(true);
+    m_propertiesdock->setVisible(true);
 }
 
 void MainWindow::showToolPanel()
 {
-    tooldock->setVisible(true);
+    m_tooldock->setVisible(true);
 }
 
 void MainWindow::showElementsPanel()
 {
-    elementsdock->setVisible(true);
+    m_elementsdock->setVisible(true);
 }
 
 void MainWindow::showRuler()
 {
-    view->showRulers(showRulerAct->isChecked());
+    m_view->showRulers(showRulerAct->isChecked());
 }
 
 void MainWindow::copy()
 {
-    scene->copyItem();
+    m_scene->copyItem();
 }
 
 void MainWindow::paste()
 {
-    scene->pasteItem();
+    m_scene->pasteItem();
 }
 
 void MainWindow::del()
 {
-    while(scene->selectedItems().count())
+    while(m_scene->selectedItems().count())
     {
-        AnimationItem *item = dynamic_cast<AnimationItem*>(scene->selectedItems().first());
+        AnimationItem *item = dynamic_cast<AnimationItem*>(m_scene->selectedItems().first());
         if(item)
-            scene->deleteItem(item);
+            m_scene->deleteItem(item);
     }
 }
 
 void MainWindow::sceneItemRemoved(AnimationItem *item)
 {
-    for(int i=0; i<root->childCount(); i++)
+    for(int i=0; i<m_root->childCount(); i++)
     {
-        if(root->child(i)->data(0, 3).value<void *>() == item)
+        if(m_root->child(i)->data(0, 3).value<void *>() == item)
         {
-            QTreeWidgetItem *treeItem = root->child(i);
-            root->removeChild(treeItem);
+            QTreeWidgetItem *treeItem = m_root->child(i);
+            m_root->removeChild(treeItem);
             delete treeItem;
             break;
         }
     }
-    timeline->removeItem(item);
+    m_timeline->removeItem(item);
 }
 
 void MainWindow::transitionSelectionChanged(KeyFrame *frame)
 {
     if(frame)
     {
-        scene->clearSelection();
+        m_scene->clearSelection();
         m_transitionEditor->setKeyframe(frame);
-        propertiesdock->setWidget(m_transitionEditor);
+        m_propertiesdock->setWidget(m_transitionEditor);
     }
     else
-        propertiesdock->setWidget(m_scenePropertyEditor);
+        m_propertiesdock->setWidget(m_scenePropertyEditor);
 }
 
 void MainWindow::changeZoom(int zoom)
 {
-    view->resetMatrix();
-    scene->setScaling(zoom);
-    QList<QGraphicsItem*> list = scene->selectedItems();
+    m_view->resetMatrix();
+    m_scene->setScaling(zoom);
+    QList<QGraphicsItem*> list = m_scene->selectedItems();
     foreach(QGraphicsItem* item,list)
     {
         item->setSelected(false);
@@ -857,19 +874,19 @@ void MainWindow::changeZoom(int zoom)
     switch(zoom)
     {
     case 0:
-        view->scale(0.5, 0.5);
+        m_view->scale(0.5, 0.5);
         break;
     case 1:
-        view->scale(1.,1.);
+        m_view->scale(1.,1.);
         break;
     case 2:
-        view->scale(2.,2.);
+        m_view->scale(2.,2.);
         break;
     case 3:
-        view->scale(4.,4.);
+        m_view->scale(4.,4.);
         break;
     case 4:
-        view->scale(8.,8.);
+        m_view->scale(8.,8.);
         break;
     }
     foreach(QGraphicsItem* item,list)
@@ -900,20 +917,20 @@ void MainWindow::exportMovie()
         // watermark here if not licensed commercial
         QFont font("Arial");
         font.setPixelSize(13);
-        watermark = scene->addSimpleText("Created with AnimationMaker (https://artanidos.github.io/AnimationMaker/)", font);
+        watermark = m_scene->addSimpleText("Created with AnimationMaker (https://artanidos.github.io/AnimationMaker/)", font);
         watermark->setBrush(QBrush(Qt::white));
-        watermark->setPos(10, scene->height() - 20);
+        watermark->setPos(10, m_scene->height() - 20);
     }
 
-    scene->clearSelection();
-    view->setUpdatesEnabled(false);
-    QGraphicsView *exportView = new QGraphicsView(scene);
+    m_scene->clearSelection();
+    m_view->setUpdatesEnabled(false);
+    QGraphicsView *exportView = new QGraphicsView(m_scene);
     exportView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     exportView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    exportView->setGeometry(0, 0, scene->width(), scene->height());
+    exportView->setGeometry(0, 0, m_scene->width(), m_scene->height());
 
-    int delay = 1000 / scene->fps();
-    int frames = timeline->lastKeyframe() / delay + 2;
+    int delay = 1000 / m_scene->fps();
+    int frames = m_timeline->lastKeyframe() / delay + 2;
 
     QDir tmp = QDir::temp();
     tmp.mkdir("animationmaker");
@@ -931,7 +948,8 @@ void MainWindow::exportMovie()
     {
         statusBar()->showMessage(QString("Writing frame %1 of %2 frames").arg(i).arg(frames));
 
-        timeline->setPlayheadPosition(i * delay);
+        m_timeline->setPlayheadPosition(i * delay);
+
         QTest::qSleep(delay);
         QCoreApplication::processEvents(QEventLoop::AllEvents, delay);
 
@@ -949,25 +967,25 @@ void MainWindow::exportMovie()
     {
         QString output = tmp.absolutePath() + "/temp.mp4";
         statusBar()->showMessage("Creating temp movie");
-        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(scene->fps()) + " -safe 0 -f concat -i list -b 4M -y " + output, tmp.absolutePath());
+        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(m_scene->fps()) + " -safe 0 -f concat -i list -b 4M -y " + output, tmp.absolutePath());
         statusBar()->showMessage("Creating palette file");
         runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -i " + output + " -vf palettegen -y " + tmp.absolutePath() + "/temp.png", tmp.absolutePath());
         statusBar()->showMessage("Converting temp movie");
-        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(scene->fps()) + " -i " + output + " -i " + tmp.absolutePath() + "/temp.png -lavfi paletteuse -y " + fileName, tmp.absolutePath());
+        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(m_scene->fps()) + " -i " + output + " -i " + tmp.absolutePath() + "/temp.png -lavfi paletteuse -y " + fileName, tmp.absolutePath());
     }
     else
     {
         statusBar()->showMessage("Creating movie file");
-        qDebug() << "\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(scene->fps()) + " -safe 0 -f concat -i list -b 4M -y " + fileName, tmp.absolutePath();
-        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(scene->fps()) + " -safe 0 -f concat -i list -b 4M -y " + fileName, tmp.absolutePath());
+        qDebug() << "\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(m_scene->fps()) + " -safe 0 -f concat -i list -b 4M -y " + fileName, tmp.absolutePath();
+        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(m_scene->fps()) + " -safe 0 -f concat -i list -b 4M -y " + fileName, tmp.absolutePath());
     }
 
     tmp.removeRecursively();
-    view->setUpdatesEnabled(true);
+    m_view->setUpdatesEnabled(true);
     statusBar()->showMessage("Ready");
     delete exportView;
     if(!m_commercial)
-        scene->removeItem(watermark);
+        m_scene->removeItem(watermark);
 }
 
 void MainWindow::pluginExport()
@@ -976,7 +994,7 @@ void MainWindow::pluginExport()
     if(act)
     {
         ExportInterface *ei = qobject_cast<ExportInterface *>(act->parent());
-        ei->exportAnimation(scene, statusBar());
+        ei->exportAnimation(m_scene, statusBar());
     }
 }
 
