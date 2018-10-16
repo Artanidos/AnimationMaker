@@ -933,6 +933,8 @@ void AnimationItem::writeAttributes(QDomElement ele)
     ele.setAttribute("rotationz", QVariant(rotationZ()).toString());
     ele.setAttribute("originx", QVariant(originX()).toString());
     ele.setAttribute("originy", QVariant(originY()).toString());
+    ele.setAttribute("visible", isVisible() ? "true" : "false");
+    ele.setAttribute("locked", this->flags().testFlag(QGraphicsItem::ItemIsSelectable) ? "false" : "true");
 }
 
 void AnimationItem::readAttributes(QDomElement ele)
@@ -952,6 +954,9 @@ void AnimationItem::readAttributes(QDomElement ele)
     setRotationZ(ele.attribute("rotationz", "0").toInt());
     setOriginX(ele.attribute("originx", "0").toInt());
     setOriginY(ele.attribute("originy", "0").toInt());
+    setVisible(ele.attribute("visible", "true") == "true");
+    setFlag(QGraphicsItem::ItemIsSelectable, ele.attribute("locked", "false") == "false");
+    setFlag(QGraphicsItem::ItemIsMovable, ele.attribute("locked", "false") == "false");
 }
 
 void AnimationItem::deleteItem()

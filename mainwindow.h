@@ -76,6 +76,7 @@ private:
     void writeFile(QString fileName);
     void fillTree();
     void runCommand(QString cmd, QString path);
+    void addCheckboxes(QTreeWidgetItem *treeItem, AnimationItem *item);
 
     QProcess *m_proc;
     QString m_url;
@@ -132,7 +133,7 @@ private:
     QMenu *importMenu;
     QMenu *exportMenu;
     QUndoStack *m_undoStack;
-
+    
 public slots:
     void reset();
     void exportMovie();
@@ -167,6 +168,8 @@ public slots:
     void idChanged(AnimationItem *, QString);
     void transitionSelectionChanged(KeyFrame *frame);
     void changeZoom(int zoom);
+    void elementVisibleStateChanged(int);
+    void elementLockStateChanged(int);
 };
 
 #endif // MAINWINDOW_H

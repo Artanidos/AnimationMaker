@@ -291,8 +291,6 @@ bool AnimationScene::importXml(QString fileName)
             r->readAttributes(ele);
             r->setPen(QPen(QColor(ele.attribute("pen", "#000000"))));
             r->setBrush(QBrush(QColor(ele.attribute("brush", "#0000FF"))));
-            r->setFlag(QGraphicsItem::ItemIsMovable, true);
-            r->setFlag(QGraphicsItem::ItemIsSelectable, true);
             readKeyframes(&ele, r);
             addItem(r);
         }
@@ -303,8 +301,6 @@ bool AnimationScene::importXml(QString fileName)
             e->readAttributes(ele);
             e->setPen(QPen(QColor(ele.attribute("pen", "#000000"))));
             e->setBrush(QBrush(QColor(ele.attribute("brush", "#0000FF"))));
-            e->setFlag(QGraphicsItem::ItemIsMovable, true);
-            e->setFlag(QGraphicsItem::ItemIsSelectable, true);
             readKeyframes(&ele, e);
             addItem(e);
         }
@@ -320,8 +316,6 @@ bool AnimationScene::importXml(QString fileName)
             font.setStyleName(ele.attribute("font-style"));
             t->setFont(font);
             t->setScale(ele.attribute("xscale", "1").toDouble(), ele.attribute("yscale", "1").toDouble());
-            t->setFlag(QGraphicsItem::ItemIsMovable, true);
-            t->setFlag(QGraphicsItem::ItemIsSelectable, true);
             readKeyframes(&ele, t);
             addItem(t);
         }
@@ -333,8 +327,6 @@ bool AnimationScene::importXml(QString fileName)
             QImage img = QImage::fromData(QByteArray::fromBase64(cdata.data().toLatin1()), "PNG");
             Bitmap *b = new Bitmap(img, this);
             b->readAttributes(ele);
-            b->setFlag(QGraphicsItem::ItemIsMovable, true);
-            b->setFlag(QGraphicsItem::ItemIsSelectable, true);
             readKeyframes(&ele, b);
             addItem(b);
         }
@@ -355,8 +347,6 @@ bool AnimationScene::importXml(QString fileName)
             Vectorgraphic *v = new Vectorgraphic(content.toLatin1(), this);
             v->readAttributes(ele);
             v->setScale(ele.attribute("xscale", "1").toDouble(), ele.attribute("yscale", "1").toDouble());
-            v->setFlag(QGraphicsItem::ItemIsMovable, true);
-            v->setFlag(QGraphicsItem::ItemIsSelectable, true);
             for(int j = 0; j < ele.childNodes().count(); j++)
             {
                 QDomNode nodej = ele.childNodes().at(j);
@@ -387,8 +377,6 @@ bool AnimationScene::importXml(QString fileName)
                 {
                     QDomElement ele = node.toElement();
                     AnimationItem *i = item->getInstanceFromXml(this, ele);
-                    i->setFlag(QGraphicsItem::ItemIsMovable, true);
-                    i->setFlag(QGraphicsItem::ItemIsSelectable, true);
                     readKeyframes(&ele, i);
                     addItem(i);
                 }

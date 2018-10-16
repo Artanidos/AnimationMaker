@@ -6,6 +6,7 @@
 - HTML export now used "<div..." instead of "<svg><rect..."
 - HTML export now also supports 3d transformations using layered div's
 - The PIE-plugin, which in fact is just a sample how to create an item plugin, now also supports HTML export.
+- Elements can now be locked and be made invisible
 - Bugfix: using SVG with <![CDATA[...]]> will now be escaped correctly when writing amx files
 - Bugfix: HTML export handles keyframes now correctly
 

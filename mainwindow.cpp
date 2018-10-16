@@ -263,6 +263,7 @@ void MainWindow::fillTree()
             treeItem->setIcon(0, QIcon(":/images/rect.png"));
             treeItem->setData(0, 3, qVariantFromValue((void *) ri));
             m_root->addChild(treeItem);
+            addCheckboxes(treeItem, ri);
             connect(ri, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
         }
     }
@@ -395,18 +396,10 @@ void MainWindow::createGui()
     m_root = new QTreeWidgetItem();
     m_root->setText(0, "Scene");
     m_elementTree->setColumnCount(3);
-    m_elementTree->header()->moveSection(0,2);
-    m_elementTree->addTopLevelItem(m_root);
-    QCheckBox *rootVisible = new QCheckBox();
-    rootVisible->setFixedWidth(18);
-    QCheckBox *rootLocked = new QCheckBox();
-    rootLocked->setFixedWidth(18);
-    m_elementTree->setItemWidget(m_root, 1, rootVisible);
-    m_elementTree->setItemWidget(m_root, 2, rootLocked);
     m_elementTree->setColumnWidth(1, 18);
     m_elementTree->setColumnWidth(2, 18);
-    rootVisible->setStyleSheet("QCheckBox::indicator:unchecked {image: url(:/images/eye_unchecked.png);} QCheckBox::indicator:checked {image: url(:/images/eye_checked.png);}");
-    rootLocked->setStyleSheet("QCheckBox::indicator:unchecked {image: url(:/images/lock_unchecked.png);} QCheckBox::indicator:checked {image: url(:/images/lock_checked.png);}");
+    m_elementTree->header()->moveSection(0,2);
+    m_elementTree->addTopLevelItem(m_root);
     connect(m_elementTree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(elementTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     m_elementsdock = new QDockWidget(tr("Elements"), this);
@@ -773,6 +766,26 @@ void MainWindow::timelineSelectionChanged(AnimationItem* item)
     m_propertiesdock->setWidget(m_itemPropertyEditor);
 }
 
+void MainWindow::addCheckboxes(QTreeWidgetItem *treeItem, AnimationItem *item)
+{
+    QCheckBox *elementVisible = new QCheckBox();
+    elementVisible->setProperty("item", qVariantFromValue((void *)item));
+    elementVisible->setFixedWidth(18);
+    QCheckBox *elementLocked = new QCheckBox();
+    elementLocked->setProperty("item", qVariantFromValue((void *)item));
+    elementLocked->setFixedWidth(18);
+    m_elementTree->setItemWidget(treeItem, 1, elementVisible);
+    m_elementTree->setItemWidget(treeItem, 2, elementLocked);
+    elementVisible->setStyleSheet("QCheckBox {spacing: 3px;} QCheckBox::indicator{width: 18px; height: 9px;} QCheckBox::indicator:unchecked {image: url(:/images/eye_unchecked.png);} QCheckBox::indicator:checked {image: url(:/images/eye_checked.png);}");
+    elementLocked->setStyleSheet("QCheckBox {spacing: 3px;} QCheckBox::indicator{width: 18px; height: 9px;} QCheckBox::indicator:unchecked {image: url(:/images/lock_unchecked.png);} QCheckBox::indicator:checked {image: url(:/images/lock_checked.png);}");
+    elementVisible->setToolTip("Visibility");
+    elementLocked->setToolTip("Lock");
+    elementVisible->setChecked(!item->isVisible());
+    elementLocked->setChecked(!item->flags().testFlag(QGraphicsItem::ItemIsSelectable));
+    connect(elementVisible, SIGNAL(stateChanged(int)), this, SLOT(elementVisibleStateChanged(int)));
+    connect(elementLocked, SIGNAL(stateChanged(int)), this, SLOT(elementLockStateChanged(int)));
+}
+
 void MainWindow::sceneItemAdded(QGraphicsItem *item)
 {
     AnimationItem *ri = dynamic_cast<AnimationItem*>(item);
@@ -785,6 +798,9 @@ void MainWindow::sceneItemAdded(QGraphicsItem *item)
     m_root->addChild(treeItem);
     m_root->setExpanded(true);
     m_root->setSelected(false);
+
+    addCheckboxes(treeItem, ri);
+
     for(int i=0; i<m_root->childCount(); i++)
         m_root->child(i)->setSelected(false);
     treeItem->setSelected(true);
@@ -895,6 +911,20 @@ void MainWindow::changeZoom(int zoom)
     }
 }
 
+void MainWindow::elementVisibleStateChanged(int state)
+{
+    AnimationItem *item = (AnimationItem *)sender()->property("item").value<void *>();
+    item->setVisible(state == 0);
+}
+
+void MainWindow::elementLockStateChanged(int state)
+{
+    m_scene->clearSelection();
+    AnimationItem *item = (AnimationItem *)sender()->property("item").value<void *>();
+    item->setFlag(QGraphicsItem::ItemIsMovable, state == 0);
+    item->setFlag(QGraphicsItem::ItemIsSelectable, state == 0);
+}
+
 void MainWindow::exportMovie()
 {
     QString fileName;
@@ -911,15 +941,15 @@ void MainWindow::exportMovie()
         return;
 
     fileName = "\"" + fileName + "\"";
-    QGraphicsSimpleTextItem *watermark;
+    QGraphicsSimpleTextItem *branding;
     if(!m_commercial)
     {
-        // watermark here if not licensed commercial
+        // branding here if not licensed commercial
         QFont font("Arial");
         font.setPixelSize(13);
-        watermark = m_scene->addSimpleText("Created with AnimationMaker (https://artanidos.github.io/AnimationMaker/)", font);
-        watermark->setBrush(QBrush(Qt::white));
-        watermark->setPos(10, m_scene->height() - 20);
+        branding = m_scene->addSimpleText("Created with AnimationMaker (https://artanidos.github.io/AnimationMaker/)", font);
+        branding->setBrush(QBrush(Qt::white));
+        branding->setPos(10, m_scene->height() - 20);
     }
 
     m_scene->clearSelection();
@@ -985,7 +1015,7 @@ void MainWindow::exportMovie()
     statusBar()->showMessage("Ready");
     delete exportView;
     if(!m_commercial)
-        m_scene->removeItem(watermark);
+        m_scene->removeItem(branding);
 }
 
 void MainWindow::pluginExport()
