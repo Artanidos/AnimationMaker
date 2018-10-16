@@ -31,7 +31,6 @@ SOURCES += \
     commands.cpp \
     timeline.cpp \
     playhead.cpp \
-    transitionpanel.cpp \
     transitionline.cpp \
     ellipse.cpp \
     rectangle.cpp \
@@ -63,7 +62,6 @@ HEADERS +=\
     commands.h \
     timeline.h \
     playhead.h \
-    transitionpanel.h \
     transitionline.h \
     ellipse.h \
     rectangle.h \

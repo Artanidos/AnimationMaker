@@ -3,10 +3,12 @@
 #include "timeline.h"
 #include "keyframehandle.h"
 #include "transition.h"
+#include "transitionline.h"
 #include "transitionhandleleft.h"
 #include "transitionhandleright.h"
 
-namespace QTest {
+namespace QTest
+{
     inline void myMouseMove(QWidget *widget, QPoint pos = QPoint(), int delay=-1)
     {
         QMouseEvent *ev = new QMouseEvent(QEvent::MouseMove, pos, Qt::LeftButton, Qt::LeftButton, Qt::KeyboardModifiers());
@@ -39,7 +41,6 @@ private slots:
 
 private:
     Timeline *m_timeline;
-    TransitionPanel *m_transitionPanel;
     AnimationScene *m_scene;
 };
 
@@ -49,7 +50,6 @@ void TestGui::initTestCase()
     m_scene = new AnimationScene();
     m_scene->registerUndoStack(undostack);
     m_timeline = new Timeline(m_scene);
-    m_transitionPanel = m_timeline->getTransitionPanel();
 }
 
 void TestGui::testKeyframeHandle_data()
@@ -148,7 +148,7 @@ void TestGui::testKeyframeHandle()
     m_timeline->addKeyFrame(item, "left", key);
     m_timeline->addKeyFrame(item, "left", keyr);
 
-    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
     KeyframeHandle *kh = tl->getKeyframeHandle(key);
     events.simulate(kh);
 
@@ -195,7 +195,7 @@ void TestGui::testKeyframeHandleZero()
     KeyFrame *key = new KeyFrame();
     key->setTime(100);
     m_timeline->addKeyFrame(item, "left", key);
-    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
     KeyframeHandle *kh = tl->getKeyframeHandle(key);
     events.simulate(kh);
 
@@ -266,7 +266,7 @@ void TestGui::testTransition()
     m_timeline->addKeyFrame(item, "left", keyb);
     m_timeline->addKeyFrame(item, "left", keyr);
 
-    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
     Transition *tr = tl->getTransition(keya);
     events.simulate(tr);
 
@@ -305,7 +305,7 @@ void TestGui::testTransitionZero()
     keyb->setTime(200);
     m_timeline->addKeyFrame(item, "left", keya);
     m_timeline->addKeyFrame(item, "left", keyb);
-    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
     Transition *tr = tl->getTransition(keya);
     events.simulate(tr);
 
@@ -373,7 +373,7 @@ void TestGui::testTransitionHandleLeft()
     m_timeline->addKeyFrame(item, "left", keya);
     m_timeline->addKeyFrame(item, "left", keyb);
 
-    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
     Transition *tr = tl->getTransition(keya);
     TransitionHandleLeft *thl = tr->getLeftHandle();
     events.simulate(thl);
@@ -442,7 +442,7 @@ void TestGui::testTransitionHandleRight()
     m_timeline->addKeyFrame(item, "left", keyb);
     m_timeline->addKeyFrame(item, "left", keyr);
 
-    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
     Transition *tr = tl->getTransition(keya);
     TransitionHandleRight *thr = tr->getRightHandle();
     events.simulate(thr);
@@ -469,7 +469,7 @@ void TestGui::testTransitionHandleLeftMouse()
     m_timeline->addKeyFrame(item, "left", keyl);
     m_timeline->addKeyFrame(item, "left", keyr);
 
-    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
     Transition *tr = tl->getTransition(keya);
     TransitionHandleLeft *thl = tr->getLeftHandle();
 
@@ -547,7 +547,7 @@ void TestGui::testTransitionHandleRightMouse()
     m_timeline->addKeyFrame(item, "left", keyl);
     m_timeline->addKeyFrame(item, "left", keyr);
 
-    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
     Transition *tr = tl->getTransition(keya);
     TransitionHandleRight *thr = tr->getRightHandle();
 
@@ -618,7 +618,7 @@ void TestGui::testTransitionMouse()
     m_timeline->addKeyFrame(item, "left", keyl);
     m_timeline->addKeyFrame(item, "left", keyr);
 
-    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
     Transition *tr = tl->getTransition(keya);
 
     QTest::mousePress(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
@@ -695,7 +695,7 @@ void TestGui::testDoubleTransition()
     keyb->setEasing(0);
     m_timeline->addTransition(item, "left", keyb);
 
-    TransitionLine *tl = m_transitionPanel->getTransitionLine(item, "left");
+    TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
     Transition *trl = tl->getTransition(keya);
     Transition *trr = tl->getTransition(keyb);
     TransitionHandleLeft *thl = trr->getLeftHandle();

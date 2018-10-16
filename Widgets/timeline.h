@@ -28,10 +28,10 @@
 #include <QPropertyAnimation>
 #include "animationitem.h"
 #include "animationscene.h"
-#include "transitionpanel.h"
 #include "playhead.h"
 #include "widgets_global.h"
 
+class TransitionLine;
 class WIDGETSSHARED_EXPORT Timeline : public QWidget
 {
     Q_OBJECT
@@ -51,10 +51,7 @@ public:
     void moveKeyframe(KeyFrame *key, int time);
     void moveTransition(KeyFrame *key, int time);
     void resizeTransition(KeyFrame *key, int startTime, int endTime);
-
-#ifdef TEST
-    TransitionPanel *getTransitionPanel() {return m_transitionPanel;}
-#endif
+    TransitionLine *getTransitionLine(AnimationItem *item, QString propertyName);
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
@@ -78,10 +75,6 @@ public slots:
 
 signals:
     void itemSelectionChanged(AnimationItem *item);
-    void lineAdded(AnimationItem *item);
-    void propertyAdded(AnimationItem *item, QString propertyName);
-    void propertyKeyAdded(AnimationItem *item, QString propertyName, KeyFrame *key);
-    void propertyKeyRemoved(AnimationItem *item, QString propertyName, KeyFrame *key);
     void keyframeDeleted(AnimationItem *item, QString propertyName);
     void transitionDeleted(AnimationItem *item, QString propertyName);
     void transitionSelectionChanged(KeyFrame *frame);
@@ -92,15 +85,21 @@ private:
     QMenu *m_contextMenu;
     QAction *m_delAct;
     AnimationScene *m_scene;
-    TransitionPanel *m_transitionPanel;
     PlayHead *m_playhead;
     QLabel *m_time;
     bool m_playing;
     QToolButton *playButton;
     QToolButton *pauseButton;
+    int m_horizontalScrollPos;
 
     void addProperty(const QString name);
     void createAnimationGroup();
+    void addTransitionLine(QTreeWidgetItem *tvi, AnimationItem *item);
+    void addProperty(QTreeWidgetItem *treeChildItem, AnimationItem *item, QString propertyName);
+    void addPropertyKey(QTreeWidgetItem *treeChildItem, AnimationItem *item, QString propertyName, KeyFrame *key);
+    void propertyKeyRemoved(AnimationItem *item, QString propertyName, KeyFrame *key);
+    void transitionResized(KeyFrame *key);
+    void transitionMoved(KeyFrame *key);
     QTreeWidgetItem *search(AnimationItem *item);
     QTreeWidgetItem *search(QTreeWidgetItem *treeItem, QString propertyName);
 };

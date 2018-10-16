@@ -72,13 +72,14 @@ void TransitionLine::paintEvent(QPaintEvent *)
     painter.fillRect(0, 0, width, height, gray);
 
     painter.setPen(QColor(41, 41, 41));
-    for(int k = 199 - offset; k < width; k+=200)
+    for(int k = 200 - offset; k < width; k+=200)
     {
         painter.drawLine(k, 0, k, height);
     }
+    painter.drawLine(0, height - 1, width, height - 1);
 
     painter.setPen(Qt::red);
-    painter.drawLine(m_playheadPosition / 5 - 1 - offset, 0, m_playheadPosition / 5 - 1 - offset, height);
+    painter.drawLine(m_playheadPosition / 5 - offset, 0, m_playheadPosition / 5 - offset, height);
 }
 
 void TransitionLine::addKeyframe(QString propertyName, KeyFrame *key)
