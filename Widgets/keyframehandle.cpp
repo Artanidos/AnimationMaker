@@ -113,8 +113,9 @@ void KeyframeHandle::mouseReleaseEvent(QMouseEvent *ev)
     if(m_pressed)
     {
         m_pressed = false;
+        TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
         int p = x() + ev->x();
-        int newVal = qRound((qreal)p * 5 / 100) * 100;
+        int newVal = qRound((qreal)p * 5 / 100) * 100 + tl->horizontalScrollValue() * 100;
         if(newVal < 0)
             newVal = 0;
         if(m_key->next() && m_key->next()->time() < newVal)

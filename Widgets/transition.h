@@ -77,7 +77,7 @@ private:
     QUndoStack *m_undostack;
     int m_newTime;
 
-    int calculatePos(int pos);
+    int calculatePos(int pos, int scrollPos);
 };
 
 #endif // TRANSITION_H

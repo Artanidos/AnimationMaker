@@ -90,7 +90,7 @@ void Transition::mouseMoveEvent(QMouseEvent *ev)
     if(m_pressed)
     {
         TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
-        m_newTime = calculatePos(ev->x());
+        m_newTime = calculatePos(ev->x(), tl->horizontalScrollValue());
         if(m_key->prev() && m_key->prev()->easing() > -1)
         {
             QList<Transition*> transitions = tl->findChildren<Transition*>();
@@ -137,10 +137,10 @@ void Transition::resize(int w, int h)
         m_right->move(width() - 5, 0);
 }
 
-int Transition::calculatePos(int pos)
+int Transition::calculatePos(int pos, int scrollPos)
 {
     int p = x() + pos - m_oldX;
-    int newVal = qRound((qreal)p * 5 / 100) * 100;
+    int newVal = qRound((qreal)p * 5 / 100) * 100 + scrollPos * 100;
     if(newVal < 0)
         newVal = 0;
     if(m_key->next()->next())

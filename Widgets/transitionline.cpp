@@ -72,6 +72,7 @@ void TransitionLine::paintEvent(QPaintEvent *)
     painter.fillRect(0, 0, width, height, gray);
 
     painter.setPen(QColor(41, 41, 41));
+    painter.drawLine(0, 0, 0, height);
     for(int k = 200 - offset; k < width; k+=200)
     {
         painter.drawLine(k, 0, k, height);

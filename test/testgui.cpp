@@ -50,90 +50,129 @@ void TestGui::initTestCase()
     m_scene = new AnimationScene();
     m_scene->registerUndoStack(undostack);
     m_timeline = new Timeline(m_scene);
+    m_timeline->scrollValueChanged(0);
 }
 
 void TestGui::testKeyframeHandle_data()
 {
     QTest::addColumn<QTestEventList>("events");
     QTest::addColumn<int>("expected");
+    QTest::addColumn<int>("scrollpos");
 
     QTestEventList list1;
     list1.addMouseClick(Qt::LeftButton);
     list1.addKeyClick(Qt::Key_Right);
-    QTest::newRow("move right") << list1 << 400;
+    QTest::newRow("move right") << list1 << 400 << 0;
 
     QTestEventList list2;
     list2.addMouseClick(Qt::LeftButton);
     list2.addKeyClick(Qt::Key_Right);
     list2.addKeyClick(Qt::Key_Right);
-    QTest::newRow("move right 2 times") << list2 << 500;
+    QTest::newRow("move right 2 times") << list2 << 500 << 0;
 
     QTestEventList list3;
     list3.addMouseClick(Qt::LeftButton);
     list3.addKeyClick(Qt::Key_Right);
     list3.addKeyClick(Qt::Key_Right);
     list3.addKeyClick(Qt::Key_Right);
-    QTest::newRow("move right against other keyframe") << list3 << 500;
+    QTest::newRow("move right against other keyframe") << list3 << 500 << 0;
 
     QTestEventList list4;
     list4.addMouseClick(Qt::LeftButton);
     list4.addKeyClick(Qt::Key_Left);
-    QTest::newRow("move left") << list4 << 200;
+    QTest::newRow("move left") << list4 << 200 << 0;
 
     QTestEventList list5;
     list5.addMouseClick(Qt::LeftButton);
     list5.addKeyClick(Qt::Key_Left);
     list5.addKeyClick(Qt::Key_Left);
-    QTest::newRow("move left 2 times") << list5 << 100;
+    QTest::newRow("move left 2 times") << list5 << 100 << 0;
 
     QTestEventList list6;
     list6.addMouseClick(Qt::LeftButton);
     list6.addKeyClick(Qt::Key_Left);
     list6.addKeyClick(Qt::Key_Left);
     list6.addKeyClick(Qt::Key_Left);
-    QTest::newRow("move left against other keyframe") << list6 << 100;
+    QTest::newRow("move left against other keyframe") << list6 << 100 << 0;
 
     QTestEventList list7;
     list7.addMouseClick(Qt::LeftButton);
     list7.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
     list7.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
-    QTest::newRow("move right with mouse") << list7 << 400;
+    QTest::newRow("move right with mouse") << list7 << 400 << 0;
 
     QTestEventList list8;
     list8.addMouseClick(Qt::LeftButton);
     list8.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
     list8.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(40, 0));
-    QTest::newRow("move right with mouse") << list8 << 500;
+    QTest::newRow("move right with mouse") << list8 << 500 << 0;
 
     QTestEventList list9;
     list9.addMouseClick(Qt::LeftButton);
     list9.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
     list9.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(60, 0));
-    QTest::newRow("move right with mouse against other keyframe") << list9 << 500;
+    QTest::newRow("move right with mouse against other keyframe") << list9 << 500 << 0;
 
     QTestEventList list10;
     list10.addMouseClick(Qt::LeftButton);
     list10.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
     list10.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-20, 0));
-    QTest::newRow("move left with mouse") << list10 << 200;
+    QTest::newRow("move left with mouse") << list10 << 200 << 0;
 
     QTestEventList list11;
     list11.addMouseClick(Qt::LeftButton);
     list11.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
     list11.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
-    QTest::newRow("move left with mouse") << list11 << 100;
+    QTest::newRow("move left with mouse") << list11 << 100 << 0;
 
     QTestEventList list12;
     list12.addMouseClick(Qt::LeftButton);
     list12.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
     list12.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-60, 0));
-    QTest::newRow("move left with mouse against other keyframe") << list12 << 100;
+    QTest::newRow("move left with mouse against other keyframe") << list12 << 100 << 0;
+
+    QTestEventList list13;
+    list13.addMouseClick(Qt::LeftButton);
+    list13.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
+    list13.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
+    QTest::newRow("move right with mouse") << list13 << 400 << 20;
+
+    QTestEventList list14;
+    list14.addMouseClick(Qt::LeftButton);
+    list14.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
+    list14.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(40, 0));
+    QTest::newRow("move right with mouse") << list14 << 500 << 20;
+
+    QTestEventList list15;
+    list15.addMouseClick(Qt::LeftButton);
+    list15.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
+    list15.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(60, 0));
+    QTest::newRow("move right with mouse against other keyframe") << list15 << 500 << 20;
+
+    QTestEventList list16;
+    list16.addMouseClick(Qt::LeftButton);
+    list16.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
+    list16.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-20, 0));
+    QTest::newRow("move left with mouse") << list16 << 200 << 20;
+
+    QTestEventList list17;
+    list17.addMouseClick(Qt::LeftButton);
+    list17.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
+    list17.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
+    QTest::newRow("move left with mouse") << list17 << 100 << 20;
+
+    QTestEventList list18;
+    list18.addMouseClick(Qt::LeftButton);
+    list18.addMousePress(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0, 0));
+    list18.addMouseRelease(Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-60, 0));
+    QTest::newRow("move left with mouse against other keyframe") << list18 << 100 << 20;
 }
 
 void TestGui::testKeyframeHandle()
 {
     QFETCH(QTestEventList, events);
     QFETCH(int, expected);
+    QFETCH(int, scrollpos);
 
     AnimationItem *item = new Rectangle(m_scene);
     item->setWidth(50);
@@ -144,6 +183,7 @@ void TestGui::testKeyframeHandle()
     keyl->setTime(100);
     KeyFrame *keyr = new KeyFrame();
     keyr->setTime(500);
+    m_timeline->scrollValueChanged(scrollpos);
     m_timeline->addKeyFrame(item, "left", keyl);
     m_timeline->addKeyFrame(item, "left", key);
     m_timeline->addKeyFrame(item, "left", keyr);
@@ -194,6 +234,7 @@ void TestGui::testKeyframeHandleZero()
     item->setHeight(50);
     KeyFrame *key = new KeyFrame();
     key->setTime(100);
+    m_timeline->scrollValueChanged(0);
     m_timeline->addKeyFrame(item, "left", key);
     TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
     KeyframeHandle *kh = tl->getKeyframeHandle(key);
@@ -261,6 +302,7 @@ void TestGui::testTransition()
     keyl->setTime(100);
     KeyFrame *keyr = new KeyFrame();
     keyr->setTime(700);
+    m_timeline->scrollValueChanged(0);
     m_timeline->addKeyFrame(item, "left", keyl);
     m_timeline->addKeyFrame(item, "left", keya);
     m_timeline->addKeyFrame(item, "left", keyb);
@@ -303,6 +345,7 @@ void TestGui::testTransitionZero()
     keya->setEasing(0);
     KeyFrame *keyb = new KeyFrame();
     keyb->setTime(200);
+    m_timeline->scrollValueChanged(0);
     m_timeline->addKeyFrame(item, "left", keya);
     m_timeline->addKeyFrame(item, "left", keyb);
     TransitionLine *tl = m_timeline->getTransitionLine(item, "left");
@@ -369,6 +412,7 @@ void TestGui::testTransitionHandleLeft()
     keyb->setTime(600);
     KeyFrame *keyl = new KeyFrame();
     keyl->setTime(100);
+    m_timeline->scrollValueChanged(0);
     m_timeline->addKeyFrame(item, "left", keyl);
     m_timeline->addKeyFrame(item, "left", keya);
     m_timeline->addKeyFrame(item, "left", keyb);
@@ -438,6 +482,7 @@ void TestGui::testTransitionHandleRight()
     keyb->setTime(500);
     KeyFrame *keyr = new KeyFrame();
     keyr->setTime(700);
+    m_timeline->scrollValueChanged(0);
     m_timeline->addKeyFrame(item, "left", keya);
     m_timeline->addKeyFrame(item, "left", keyb);
     m_timeline->addKeyFrame(item, "left", keyr);
@@ -464,6 +509,7 @@ void TestGui::testTransitionHandleLeftMouse()
     keyl->setTime(100);
     KeyFrame *keyr = new KeyFrame();
     keyr->setTime(700);
+    m_timeline->scrollValueChanged(0);
     m_timeline->addKeyFrame(item, "left", keya);
     m_timeline->addKeyFrame(item, "left", keyb);
     m_timeline->addKeyFrame(item, "left", keyl);
@@ -526,6 +572,18 @@ void TestGui::testTransitionHandleLeftMouse()
     QTest::myMouseMove(thl, QPoint(-80, 0));
     QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-80, 0));
     QCOMPARE(keya->time(), 0);
+
+    // change scroll pos
+    m_timeline->scrollValueChanged(20);
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(20, 0));
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
+    QCOMPARE(keya->time(), 100);
+
+    QTest::mousePress(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thl, QPoint(-20, 0));
+    QTest::mouseRelease(thl, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-20, 0));
+    QCOMPARE(keya->time(), 0);
 }
 
 void TestGui::testTransitionHandleRightMouse()
@@ -542,6 +600,7 @@ void TestGui::testTransitionHandleRightMouse()
     keyl->setTime(100);
     KeyFrame *keyr = new KeyFrame();
     keyr->setTime(700);
+    m_timeline->scrollValueChanged(0);
     m_timeline->addKeyFrame(item, "left", keya);
     m_timeline->addKeyFrame(item, "left", keyb);
     m_timeline->addKeyFrame(item, "left", keyl);
@@ -597,6 +656,18 @@ void TestGui::testTransitionHandleRightMouse()
 
     m_scene->undoStack()->redo();
     QCOMPARE(keyb->time(), 500);
+
+    // change scroll pos
+    m_timeline->scrollValueChanged(20);
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(20, 0));
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20, 0));
+    QCOMPARE(keyb->time(), 600);
+
+    QTest::mousePress(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(0,0));
+    QTest::myMouseMove(thr, QPoint(-20, 0));
+    QTest::mouseRelease(thr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-20, 0));
+    QCOMPARE(keyb->time(), 500);
 }
 
 void TestGui::testTransitionMouse()
@@ -613,6 +684,7 @@ void TestGui::testTransitionMouse()
     keyl->setTime(100);
     KeyFrame *keyr = new KeyFrame();
     keyr->setTime(700);
+    m_timeline->scrollValueChanged(0);
     m_timeline->addKeyFrame(item, "left", keya);
     m_timeline->addKeyFrame(item, "left", keyb);
     m_timeline->addKeyFrame(item, "left", keyl);
@@ -668,6 +740,21 @@ void TestGui::testTransitionMouse()
     QTest::mouseRelease(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
     QCOMPARE(keya->time(), 0);
     QCOMPARE(keyb->time(), 300);
+
+    // change scroll pos
+    m_timeline->scrollValueChanged(20);
+    QTest::mousePress(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(tr, QPoint(40, 0));
+    QTest::mouseRelease(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(40, 0));
+    QCOMPARE(keya->time(), 100);
+    QCOMPARE(keyb->time(), 400);
+
+    m_timeline->scrollValueChanged(20);
+    QTest::mousePress(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(20,0));
+    QTest::myMouseMove(tr, QPoint(-40, 0));
+    QTest::mouseRelease(tr, Qt::LeftButton, Qt::KeyboardModifiers(), QPoint(-40, 0));
+    QCOMPARE(keya->time(), 0);
+    QCOMPARE(keyb->time(), 300);
 }
 
 void TestGui::testDoubleTransition()
@@ -685,6 +772,7 @@ void TestGui::testDoubleTransition()
     keyl->setTime(100);
     KeyFrame *keyr = new KeyFrame();
     keyr->setTime(900);
+    m_timeline->scrollValueChanged(0);
     m_timeline->addKeyFrame(item, "left", keyc);
     m_timeline->addKeyFrame(item, "left", keyb);
     m_timeline->addKeyFrame(item, "left", keya);
