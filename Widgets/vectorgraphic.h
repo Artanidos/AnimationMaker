@@ -53,7 +53,6 @@ public:
     QDomElement getXml(QDomDocument);
     bool hasBrushAndPen() {return false;}
 
-    QString getInnerSvg();
     QStringList getPropertyList() Q_DECL_OVERRIDE;
 
 signals:

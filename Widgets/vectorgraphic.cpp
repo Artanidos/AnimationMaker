@@ -62,9 +62,12 @@ Vectorgraphic::Vectorgraphic(QByteArray arr, AnimationScene *scene)
     setRect(0, 0, m_svg->boundingRect().width(), m_svg->boundingRect().height());
 }
 
-QString Vectorgraphic::getHtml(QString, QString)
+QString Vectorgraphic::getHtml(QString id, QString)
 {
-    return QString(m_data);
+    QString svg = QString(m_data);
+    int start = svg.indexOf("<svg");
+    int end = svg.lastIndexOf("</svg>");
+    return "<svg id=\"" + id + "\" style=\"transform: scale(" + QString::number(xscale()) +"," + QString::number(yscale()) + "); transform-origin: 0px 0px;\"" + svg.mid(start + 4, end - start + 2);
 }
 
 QDomElement Vectorgraphic::getXml(QDomDocument doc)
@@ -85,14 +88,6 @@ QDomElement Vectorgraphic::getXml(QDomDocument doc)
     }
     ele.appendChild(atts);
     return ele;
-}
-
-QString Vectorgraphic::getInnerSvg()
-{
-    QString svg = QString(m_data);
-    int start = svg.indexOf("<", svg.indexOf("<svg") + 1);
-    int end = svg.lastIndexOf("</svg>");
-    return "<g transform=\"scale(" + QString::number(xscale()) +"," + QString::number(yscale()) + ")\">" + svg.mid(start, end - start) + "</g>";
 }
 
 QStringList Vectorgraphic::getPropertyList()

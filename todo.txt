@@ -21,3 +21,4 @@
 
 - effects like shadow
 
+- ask to save animation closing the pogram or loading / new
