@@ -196,7 +196,8 @@ QString HtmlExport::getTweens(QString &tweenArray, AnimationItem *item, int i, Q
                 else if(property == "opacity")
                 {
                     value = QString::number((qreal)from->value().toInt() / 100.0);
-                    var = "opacity";
+                    var = "opacity: " + value;
+                    idAdd = "_pos";
                 }
                 else if(property == "brushColor")
                 {
@@ -210,7 +211,7 @@ QString HtmlExport::getTweens(QString &tweenArray, AnimationItem *item, int i, Q
                 }
                 else if(property == "textColor")
                 {
-                    id = item->id() + QString::number(i) + "t";
+                    id = item->id() + QString::number(i);
                     value = '"' + from->value().toString() + '"';
                     var = "fill";
                 }
@@ -256,7 +257,7 @@ QString HtmlExport::getTweens(QString &tweenArray, AnimationItem *item, int i, Q
 
                 if(from->prev() && from->prev()->easing() >= 0)
                 {
-                    QString obj = "tween" + QString::number(i) + "_" + QString::number(frameNumber) + "_" + property;
+                    QString obj = "tween" + QString::number(i) + "_" + QString::number(frameNumber) + "_" + property.replace(".", "_");
                     if(!tweenArray.isEmpty())
                         tweenArray += ", ";
                     tweenArray += obj;
@@ -406,13 +407,11 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
 
             if(!item->isSceneRect())
             {
-                html << "<div id=\"" + cleanId(item->id() + QString::number(i)) + "_pos\" style=\"left: " + QString::number(item->x()) + "px; top: " + QString::number(item->top()) + "px; position: absolute; ";
+                html << "<div id=\"" + cleanId(item->id() + QString::number(i)) + "_pos\" style=\"left: " + QString::number(item->x()) + "px; top: " + QString::number(item->top()) + "px; position: absolute; opacity: " + QString::number((qreal)item->opacity() / 100.0) + "; ";
                 html << "transform: ";
                 html << "skewX(" + QString::number(item->shearX() * 100) + "deg) ";
                 html << "skewY(" + QString::number(item->shearY() * 100) + "deg) ";
                 html << "scale(" + QString::number(item->scaleX()) + "," + QString::number(item->scaleY()) + ")";
-                html << "\" ";
-                html << "opacity=\"" + QString::number((qreal)item->opacity() / 100.0) + "\"";
                 html << ">\n";
                 html << "<div id=\"" + cleanId(item->id() + QString::number(i)) + "_x\" style=\"transform: perspective(1000px) rotateX(" + QString::number(item->rotationX()) +"deg); transform-origin: " + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px;\">\n";
                 html << "<div id=\"" + cleanId(item->id() + QString::number(i)) + "_y\" style=\"transform: perspective(1000px) rotateY(" + QString::number(item->rotationY() * -1) +"deg); transform-origin: " + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px;\">\n";
