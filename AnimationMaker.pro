@@ -23,5 +23,4 @@ SUBDIRS += \
     plugins/Pie \
     plugins/Html \
     App.pro \
-    test/Test.pro \
-    License
+    test/Test.pro

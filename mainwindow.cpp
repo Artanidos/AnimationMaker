@@ -46,8 +46,6 @@
 #include "bitmap.h"
 #include "vectorgraphic.h"
 #include "keyframe.h"
-#include "licensedialog.h"
-#include "license.h"
 #include <QtTest/QTest>
 #include <QMessageBox>
 #include <QGraphicsSvgItem>
@@ -69,8 +67,6 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenus();
     createGui();
     readSettings();
-    if(!m_licensed)
-        QTimer::singleShot(0, this, SLOT(license()));
 }
 
 MainWindow::~MainWindow()
@@ -458,8 +454,6 @@ void MainWindow::writeSettings()
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue("geometry", saveGeometry());
     settings.setValue("state", saveState());
-    settings.setValue("email", m_email);
-    settings.setValue("licenseKey", m_licenseKey);
     settings.setValue("rulers", showRulerAct->isChecked());
 }
 
@@ -478,28 +472,6 @@ void MainWindow::readSettings()
         restoreGeometry(geometry);
         restoreState(settings.value("state").toByteArray());
     }
-    m_commercial = false;
-    m_licensed = false;
-    m_email = settings.value("email", "").toString();
-    m_licenseKey = settings.value("licenseKey", "").toString();
-    if(checkLicense(m_email, m_licenseKey, 0)) // Community
-    {
-        m_commercial = false;
-        m_licensed = true;
-    }
-#ifdef LINUX
-    else if(checkLicense(m_email, m_licenseKey, 1)) // Linux
-    {
-        m_commercial = true;
-        m_licensed = true;
-    }
-#else
-    else if(checkLicense(m_email, m_licenseKey, 2)) // Windows
-    {
-        m_commercial = true;
-        m_licensed = true;
-    }
-#endif
     bool showRulers = settings.value("rulers", "true").toBool();
     if(!showRulers)
     {
@@ -574,9 +546,6 @@ void MainWindow::createActions()
     aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
-    licenseAct = new QAction(tr("&License"), this);
-    connect(licenseAct, SIGNAL(triggered()), this, SLOT(license()));
-
     addAction(copyAct);
     addAction(pasteAct);
     addAction(exitAct);
@@ -627,8 +596,6 @@ void MainWindow::createMenus()
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
-    if(isCommercialRelease())
-        helpMenu->addAction(licenseAct);
 
     this->addAction(undoAct);
     this->addAction(redoAct);
@@ -639,30 +606,10 @@ void MainWindow::createMenus()
 void MainWindow::about()
 {
     QMessageBox msg;
-    if(m_commercial)
-    {
-        msg.setWindowTitle("About AnimationMaker (Commercial Edition)");
-        msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 CrowdWare. All rights reserved.\n\nLicensed to: " + m_email + "\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
-    }
-    else
-    {
-        msg.setWindowTitle("About AnimationMaker (Community Edition)");
-        if(m_email.length() > 0)
-            msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 Olaf Japp. All rights reserved.\n\nLicensed to: " + m_email + "\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
-        else
-            msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
-    }
+    msg.setWindowTitle("About AnimationMaker (Community Edition)");
+    msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
     msg.setIconPixmap(QPixmap(":/images/logo.png"));
     msg.exec();
-}
-
-void MainWindow::license()
-{
-    LicenseDialog dlg(this);
-    dlg.exec();
-
-    if(!m_licensed)
-        close();
 }
 
 void MainWindow::setSelectMode()
@@ -941,17 +888,6 @@ void MainWindow::exportMovie()
         return;
 
     fileName = "\"" + fileName + "\"";
-    QGraphicsSimpleTextItem *branding;
-    if(!m_commercial)
-    {
-        // branding here if not licensed commercial
-        QFont font("Arial");
-        font.setPixelSize(13);
-        branding = m_scene->addSimpleText("Created with AnimationMaker (https://artanidos.github.io/AnimationMaker/)", font);
-        branding->setBrush(QBrush(Qt::white));
-        branding->setPos(10, m_scene->height() - 20);
-    }
-
     m_scene->clearSelection();
     m_view->setUpdatesEnabled(false);
     QGraphicsView *exportView = new QGraphicsView(m_scene);
@@ -1014,8 +950,6 @@ void MainWindow::exportMovie()
     m_view->setUpdatesEnabled(true);
     statusBar()->showMessage("Ready");
     delete exportView;
-    if(!m_commercial)
-        m_scene->removeItem(branding);
 }
 
 void MainWindow::pluginExport()

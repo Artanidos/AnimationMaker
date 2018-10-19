@@ -54,12 +54,6 @@ public:
     ~MainWindow() override;
 
     void setTitle();
-    void setEmail(QString email) {m_email = email;}
-    void setLicenseKey(QString licenseKey) {m_licenseKey = licenseKey;}
-    void setCommercial(bool value) {m_commercial = value;}
-    void setLicensed(bool value) {m_licensed = value;}
-    QString email() {return m_email;}
-    QString licenseKey() {return m_licenseKey;}
     
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -95,12 +89,6 @@ private:
     QDockWidget *m_tooldock;
     QDockWidget *m_elementsdock;
     QTreeWidgetItem *m_root;
-    QTextBrowser *browser;
-    QString m_email;
-    QString m_licenseKey;
-    bool m_commercial;
-    bool m_licensed;
-
     QAction *openAct;
     QAction *newAct;
     QAction *saveAct;
@@ -124,7 +112,6 @@ private:
     QAction *copyAct;
     QAction *pasteAct;
     QAction *delAct;
-    QAction *licenseAct;
     QActionGroup *exportActionGroup;
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -139,7 +126,6 @@ public slots:
     void exportMovie();
     void pluginExport();
     void about();
-    void license();
     void save();
     void saveAs();
     void saveItemAs();

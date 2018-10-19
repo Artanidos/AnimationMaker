@@ -41,7 +41,6 @@ SOURCES += main.cpp\
     scenepropertyeditor.cpp \
     transitioneditor.cpp \
     svgattributeeditor.cpp \
-    licensedialog.cpp \
     sceneview.cpp \
     ruler.cpp
 
@@ -51,7 +50,6 @@ HEADERS  += mainwindow.h \
     transitioneditor.h \
     interfaces.h \
     svgattributeeditor.h \
-    licensedialog.h \
     sceneview.h \
     ruler.h
 
@@ -59,7 +57,6 @@ linux-g++ {
     LIBS += -L$$PWD/lib/
     LIBS += -lm
     LIBS += -ldl
-    DEFINES += LINUX
 }
 
 RESOURCES += \
@@ -86,16 +83,11 @@ DISTFILES += \
     README.md \
     docs/README.md
 
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/Widgets/release/ -lWidgets
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/Widgets/debug/ -lWidgets
-else:linux-g++: LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
+LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/Widgets
 DEPENDPATH += $$PWD/Widgets
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/License/release/ -lLicense
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/License/debug/ -lLicense
-else:linux-g++: LIBS += -L$$OUT_PWD/License/ -lLicense
+LIBS += -L$$OUT_PWD/License/ -lLicense
 INCLUDEPATH += $$PWD/License
 DEPENDPATH += $$PWD/License
 

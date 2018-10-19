@@ -52,6 +52,7 @@ void Rectangle::paint( QPainter *paint, const QStyleOptionGraphicsItem *option, 
     paint->setBrush(brush());
     paint->drawRect(rect());
 
+
     if (option->state & QStyle::State_Selected)
         drawHighlightSelected(paint, option);
 }
