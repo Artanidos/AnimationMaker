@@ -411,7 +411,7 @@ void HtmlExport::exportAnimation(AnimationScene *scene, QStatusBar *bar)
                 html << "transform: ";
                 html << "skewX(" + QString::number(item->shearX() * 100) + "deg) ";
                 html << "skewY(" + QString::number(item->shearY() * 100) + "deg) ";
-                html << "scale(" + QString::number(item->scaleX()) + "," + QString::number(item->scaleY()) + ")";
+                html << "scale(" + QString::number(item->scaleX()) + "," + QString::number(item->scaleY()) + ")\"";
                 html << ">\n";
                 html << "<div id=\"" + cleanId(item->id() + QString::number(i)) + "_x\" style=\"transform: perspective(1000px) rotateX(" + QString::number(item->rotationX()) +"deg); transform-origin: " + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px;\">\n";
                 html << "<div id=\"" + cleanId(item->id() + QString::number(i)) + "_y\" style=\"transform: perspective(1000px) rotateY(" + QString::number(item->rotationY() * -1) +"deg); transform-origin: " + QString::number(item->originX()) + "px " + QString::number(item->originY()) + "px;\">\n";
