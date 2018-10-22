@@ -37,10 +37,6 @@ CONFIG(debug, debug|release) {
 RESOURCES += \
     images.qrc
 
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../Widgets/release/ -lWidgets
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../Widgets/debug/ -lWidgets
-else:linux-g++:!macx: LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
-
+LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/../../Widgets
 DEPENDPATH += $$PWD/../../Widgets
