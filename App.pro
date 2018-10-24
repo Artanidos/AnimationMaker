@@ -86,8 +86,3 @@ DISTFILES += \
 LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/Widgets
 DEPENDPATH += $$PWD/Widgets
-
-LIBS += -L$$OUT_PWD/License/ -lLicense
-INCLUDEPATH += $$PWD/License
-DEPENDPATH += $$PWD/License
-
