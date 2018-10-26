@@ -3,15 +3,6 @@
 **
 **  This file is part of AnimationMaker.
 **
-**  Commercial License Usage
-**  Licensees holding valid commercial CrowdWare licenses may use this file in
-**  accordance with the commercial license agreement provided with the
-**  Software or, alternatively, in accordance with the terms contained in
-**  a written agreement between you and CrowdWare.
-**
-**  GNU General Public License Usage
-**  Alternatively, this file may be used under the terms of the GNU
-**  General Public License version 3
 **  AnimationMaker is free software: you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
 **  the Free Software Foundation, either version 3 of the License, or
@@ -606,7 +597,7 @@ void MainWindow::createMenus()
 void MainWindow::about()
 {
     QMessageBox msg;
-    msg.setWindowTitle("About AnimationMaker (Community Edition)");
+    msg.setWindowTitle("About AnimationMaker");
     msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
     msg.setIconPixmap(QPixmap(":/images/logo.png"));
     msg.exec();

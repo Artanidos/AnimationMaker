@@ -35,23 +35,7 @@ TEMPLATE = app
 target.path += /bin
 INSTALLS += target
 
-SOURCES += main.cpp\
-    mainwindow.cpp \
-    itempropertyeditor.cpp \
-    scenepropertyeditor.cpp \
-    transitioneditor.cpp \
-    svgattributeeditor.cpp \
-    sceneview.cpp \
-    ruler.cpp
-
-HEADERS  += mainwindow.h \
-    itempropertyeditor.h \
-    scenepropertyeditor.h \
-    transitioneditor.h \
-    interfaces.h \
-    svgattributeeditor.h \
-    sceneview.h \
-    ruler.h
+SOURCES += main.cpp
 
 linux-g++ {
     LIBS += -L$$PWD/lib/
@@ -59,29 +43,15 @@ linux-g++ {
     LIBS += -ldl
 }
 
-RESOURCES += \
-    images.qrc
-
 DISTFILES += \
     todo.txt \
-    Deploy/AppImage/default.desktop \
-    Deploy/AppImage/default.png \
-    Deploy/snapcraft/snap/snapcraft.yaml \
-    Deploy/snapcraft/snap/gui/animationmaker.desktop \
-    Deploy/snapcraft/snap/gui/icon.png \
     changelog.txt \
     build.txt \
-    Deploy/snapcraft/bin/xdg-open \
-    news.xml \
-    Deploy/snapcraft/bin/launcher \
-    docs/news.xml \
-    docs/news.html \
     buildAppImage.sh \
     default.desktop \
     default.svg \
     AppRun \
-    README.md \
-    docs/README.md
+    README.md
 
 LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/Widgets

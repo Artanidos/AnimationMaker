@@ -57,8 +57,6 @@ public:
     
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
-
-private:
     void createMenus();
     void createActions();
     void createStatusBar();

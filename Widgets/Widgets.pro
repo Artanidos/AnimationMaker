@@ -16,8 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
-QT       += widgets testlib xml svg
-
+QT       += core widgets testlib xml svg
 TARGET = Widgets
 TEMPLATE = lib
 DEFINES += WIDGETS_LIBRARY
@@ -50,7 +49,14 @@ SOURCES += \
     keyframehandle.cpp \
     transitionhandleright.cpp \
     transitionhandleleft.cpp \
-    transitionhandle.cpp
+    transitionhandle.cpp \
+    itempropertyeditor.cpp \
+    mainwindow.cpp \
+    scenepropertyeditor.cpp \
+    sceneview.cpp \
+    transitioneditor.cpp \
+    svgattributeeditor.cpp \
+    ruler.cpp
     
 
 HEADERS +=\
@@ -83,8 +89,19 @@ HEADERS +=\
     keyframehandle.h \
     transitionhandleright.h \
     transitionhandleleft.h \
-    transitionhandle.h
+    transitionhandle.h \
+    itempropertyeditor.h \
+    mainwindow.h \
+    scenepropertyeditor.h \
+    sceneview.h \
+    transitioneditor.h \
+    interfaces.h \
+    svgattributeeditor.h \
+    ruler.h
     
+RESOURCES += \
+    images.qrc
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
