@@ -20,7 +20,7 @@ var tween15_0 = TweenLite.to("#sagt_die_Erfahrung15", 0, {attr:{x:423}, delay: 0
 var tween15_1 = TweenLite.to("#sagt_die_Erfahrung15", 0.5, {attr:{x:70}, delay: 3, ease:Linear.easeNone});
 var tween17_0 = TweenLite.to("#sagt_der_Verstand17", 0, {attr:{x:418}, delay: 0});
 var tween17_1 = TweenLite.to("#sagt_der_Verstand17", 0.5, {attr:{x:70}, delay: 5, ease:Linear.easeNone});
-var tl = new TimelineLite();
+var tl = new TimelineLite({repeat:-1});
 tl.add([tween1_0, tween1_0, tween1_1, tween2_0, tween2_1, tween3_0, tween3_1, tween5_0, tween5_1, tween7_0, tween7_1, tween9_0, tween9_1, tween11_0, tween11_1, tween13_0, tween13_1, tween15_0, tween15_1, tween17_0, tween17_1]);
 tl.play();
 tl.eventCallback("onComplete", restart);
@@ -28,7 +28,5 @@ tl.eventCallback("onComplete", restart);
 function restart() 
 {
   tl.restart();
-}   
+}  
 }
-
-
