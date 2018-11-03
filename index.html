@@ -370,7 +370,9 @@ The animation is based on SVG and <a href="https://greensock.com/gsap">GSAP</a>.
 		<div class="response" id="mce-success-response" style="display:none"></div>
 	</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
     <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_12db9814ff19f2466f75cf6f4_6e4393133c" tabindex="-1" value=""></div>
-    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+    <div class="clear">
+		<input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-success btn-lg">
+		</div>
     </div>
 </form>
 </div>
@@ -414,7 +416,17 @@ s.setAttribute('data-timestamp', +new Date());
 <div class="row">
 <div class="col-md-12">
 <script>
-$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=index"});
+function getUrlVars() 
+{
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+var ref = getUrlVars()["ref"];
+if(ref != "")
+	Cookies.set('ref', ref, { expires: 180 });
 </script>
 </div>
 </div>
@@ -532,6 +544,7 @@ $.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=index"});
 <script type="text/javascript" src="assets/js/slider_revolution.js"></script>
 
 
+<script type="text/javascript" src="assets/js/js.cookie.js"></script>
 <script type="text/javascript" src="assets/js/scripts.js"></script>
 
 

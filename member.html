@@ -4,7 +4,7 @@
 <!--[if gt IE 9]><!-->	<html> <!--<![endif]-->
 	<head>
 		<meta charset="utf-8" />
-<title>Thanks</title>
+<title>Member</title>
 <meta name="keywords" content="" />
 <meta name="description" content="Desc" />
 <meta name="Author" content="Artanidos" />
@@ -108,56 +108,17 @@
 		
 <header id="page-title">
 	<div class="container">
-		<h1>AnimationMaker Thanks</h1>
+		<h1>AnimationMaker Member</h1>
 		<ul class="breadcrumb">
 			<li><a href="index.html">Home</a></li>
-			<li class="active">Thanks</li>
+			<li class="active">Member</li>
 		</ul>
 	</div>
-</header>
-<section class="container">
+</header><section class="container">
 <div class="row">
 <div class="col-md-12">
-<h3>Thanks for buying <strong id="product_name"></strong>.</h3>
-<p>The charge is made by digistore24.com.</p>
-<p class="lead">Your license key is: </p><input type="text" id="license_key" size="32">
+<h3>Member</h3>
 
-</div>
-</div>
-<div class="row">
-<div class="col-md-12">
-<div class="bs-callout text-center">
-	<h3><strong>Special Offer</strong> - Do you want to get a <strong>FREE</strong> license? <a id="offer" href="offer.html" target="_blank" class="btn btn-primary btn-lg">Get Free License</a></h3>
-</div>
-
-</div>
-</div>
-<div class="row">
-<div class="col-md-12">
-<script>
-function getUrlVars() 
-{
-    var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-        vars[key] = value;
-    });
-    return vars;
-}
-var key = getUrlVars()["license_key"];
-var name = getUrlVars()["product_name"];
-var email = getUrlVars()["buyer_email"];
-var input = document.getElementById("license_key");
-var product_name = document.getElementById("product_name");
-input.value = key;
-product_name.innerText = decodeURI(name).replace(/\+/g, " ");
-
-var offer = document.getElementById("offer");
-offer.href = "offer.html?ref=" + email;
-
-var ref = Cookies.get('ref');
-if(ref != "")
-	alert("Ref: " + ref);
-</script>
 </div>
 </div>
 </section>
@@ -267,11 +228,10 @@ if(ref != "")
 
 
 <script>
-	$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Thanks"});
+	$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Member"});
 </script>
 
 
-<script type="text/javascript" src="assets/js/js.cookie.js"></script>
 <script type="text/javascript" src="assets/js/scripts.js"></script>
 
 
