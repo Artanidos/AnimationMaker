@@ -233,7 +233,7 @@ function getUrlVars()
 var email = getUrlVars()["ref"];
 
 var emailField = document.getElementById("email");
-emailField.value = email;
+emailField.value = unescape(email);
 </script>
 </div>
 </div>
