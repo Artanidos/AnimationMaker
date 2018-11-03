@@ -134,7 +134,7 @@
 </div>
 <div class="row">
 <div class="col-md-12">
-<script type="text/javascript" src="assets/js/js.cookie.js"></script>
+<script type="text/javascript" src="assets/js/cookie.js"></script>
 <script>
 function getUrlVars() 
 {
@@ -158,6 +158,8 @@ offer.href = "offer.html?ref=" + email;
 var ref = Cookies.get('ref');
 if(ref != "")
 	alert("Ref: " + ref);
+else
+	alert("Cookie not set");
 </script>
 </div>
 </div>
