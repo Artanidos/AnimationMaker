@@ -169,72 +169,6 @@
 		</div>
 	</div>
 </form>
-
-<script>
-function validateEmail(email) 
-{
-  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(email);
-}
-
-function error(msg)
-{
-	$("#errorMsg").html('<i class="fa fa-frown-o"></i>' + msg);
-	$("#errorMsg").css("display", "block");
-}
-
-function createLink()
-{
-	$("#errorMsg").css("display", "none");
-	if($("#email").val() == "")
-	{
-		error("Email should be set!");
-		return;
-	}
-	if(!validateEmail($("#email").val()))
-	{
-		error("Email has not the correct format!");
-		return;
-	}
-	var frm = $('#linkform');
-    $.ajax(
-	{
-        type: "POST",
-        url: "https://artanidos.000webhostapp.com/createlink.php",
-        data: frm.serialize(),
-		dataType: 'JSON',
-		crossDomain: true,
-        success: function (response, status, xhr) 
-		{
-        	$("#successMsg").css("display", "block");
-			$('#link').val(response.link);
-        },
-        error: function (xhr, status, error) 
-		{
-        	error("An error occured!");
-        }
-    });
-}
-</script>
-
-</div>
-</div>
-<div class="row">
-<div class="col-md-12">
-<script>
-function getUrlVars() 
-{
-    var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-        vars[key] = value;
-    });
-    return vars;
-}
-var email = getUrlVars()["ref"];
-
-var emailField = document.getElementById("email");
-emailField.value = unescape(email);
-</script>
 </div>
 </div>
 </section>
@@ -343,12 +277,10 @@ emailField.value = unescape(email);
 </script-->
 
 
-<script>
-	$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Free License Offer"});
-</script>
-
-
 <script type="text/javascript" src="assets/js/scripts.js"></script>
+<script type="text/javascript">
+
+</script>
 
 
 	</body>

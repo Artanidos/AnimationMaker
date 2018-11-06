@@ -132,37 +132,6 @@
 
 </div>
 </div>
-<div class="row">
-<div class="col-md-12">
-<script type="text/javascript" src="assets/js/cookie.js"></script>
-<script>
-function getUrlVars() 
-{
-    var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-        vars[key] = value;
-    });
-    return vars;
-}
-var key = getUrlVars()["license_key"];
-var name = getUrlVars()["product_name"];
-var email = getUrlVars()["buyer_email"];
-var input = document.getElementById("license_key");
-var product_name = document.getElementById("product_name");
-input.value = key;
-product_name.innerText = decodeURI(name).replace(/\+/g, " ");
-
-var offer = document.getElementById("offer");
-offer.href = "offer.html?ref=" + email;
-
-var ref = Cookies.get('ref');
-// todo: generate licenseKey here
-
-});
-
-</script>
-</div>
-</div>
 </section>
 	
 </div>
@@ -269,12 +238,10 @@ var ref = Cookies.get('ref');
 </script-->
 
 
-<script>
-	$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Thanks"});
-</script>
-
-
 <script type="text/javascript" src="assets/js/scripts.js"></script>
+<script type="text/javascript">
+
+</script>
 
 
 	</body>

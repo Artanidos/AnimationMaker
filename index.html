@@ -412,29 +412,6 @@ s.setAttribute('data-timestamp', +new Date());
                             
 </div>
 </div>
-</section><section class="container">
-<div class="row">
-<div class="col-md-12">
-<script type="text/javascript" src="assets/js/cookie.js"></script>
-<script>
-function getUrlVars() 
-{
-    var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-        vars[key] = value;
-    });
-    return vars;
-}
-var ref = getUrlVars()["ref"];
-if(ref != "")
-{
-	var cref = Cookies.get('ref');
-	if(cref == "")
-		Cookies.set('ref', ref, { expires: 180 });
-}
-</script>
-</div>
-</div>
 </section>
 	
 </div>
@@ -539,17 +516,32 @@ if(ref != "")
   ga('send', 'pageview');
 
 </script-->
-
-
-<script>
-	$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=AnimationMaker"});
-</script>
 <script type="text/javascript" src="assets/plugins/revolution-slider/js/jquery.themepunch.plugins.min.js"></script>
 <script type="text/javascript" src="assets/plugins/revolution-slider/js/jquery.themepunch.revolution.min.js"></script>
 <script type="text/javascript" src="assets/js/slider_revolution.js"></script>
 
 
 <script type="text/javascript" src="assets/js/scripts.js"></script>
+<script type="text/javascript">
+function getUrlVars() 
+{
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+var ref = getUrlVars()["ref"];
+if(ref != "")
+{
+	var cref = $.cookie('ref');
+	if(cref == "")
+		$.cookie('ref', ref, { expires: 180 });
+}
+
+$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Index"});
+
+</script>
 
 
 	</body>
