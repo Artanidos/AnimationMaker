@@ -252,12 +252,11 @@ var params = getUrlVars();
 var key = params["license_key"];
 var name = params["product_name"];
 var email = params["buyer_email"];
-var input = $("#license_key");
-var product_name = $("#product_name");
-input.value = key;
-product_name.innerText = decodeURI(name).replace(/\+/g, " ");
-var offer = $("#offer");
-offer.href = "offer.html?ref=" + email;
+
+$("#license_key").val(key);  
+$("#product_name").text(decodeURI(name).replace(/\+/g, " "));
+$("#offer").attr("href", "offer.html?ref=" + email)
+
 var ref = $.cookie('ref');
 
 $.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Thanks&product=" + escape(name) + "&ref=" + ref});
