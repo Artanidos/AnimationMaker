@@ -260,7 +260,7 @@ var offer = $("#offer");
 offer.href = "offer.html?ref=" + email;
 var ref = $.cookie('ref');
 
-$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Thanks&product=" + name + "&ref=" + ref});
+$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Thanks&product=" + encode(name) + "&ref=" + ref});
 </script>
 
 
