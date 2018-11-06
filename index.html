@@ -535,7 +535,7 @@ var ref = getUrlVars()["ref"];
 if(ref != "")
 {
 	var cref = $.cookie('ref');
-	//if(cref == "")
+	if(cref == "")
 		$.cookie('ref', ref, { expires: 180 });
 }
 
