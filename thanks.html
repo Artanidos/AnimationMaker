@@ -240,7 +240,31 @@
 
 <script type="text/javascript" src="assets/js/scripts.js"></script>
 <script type="text/javascript">
+function getUrlVars() 
+{
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+var params = getUrlVars();
+var key = params["license_key"];
+var name = params["product_name"];
+var email = params["buyer_email"];
+var input = $("#license_key");
+var product_name = $("#product_name");
+input.value = key;
+product_name.innerText = decodeURI(name).replace(/\+/g, " ");
 
+var offer = $("#offer");
+offer.href = "offer.html?ref=" + email;
+
+var ref = $.cookie('ref');
+// todo: generate licenseKey here
+alert("Cookie: " + ref);
+
+$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Thanks"});
 </script>
 
 
