@@ -258,8 +258,9 @@ input.value = key;
 product_name.innerText = decodeURI(name).replace(/\+/g, " ");
 var offer = $("#offer");
 offer.href = "offer.html?ref=" + email;
+var ref = $.cookie('ref');
 
-$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Thanks&product=" + name});
+$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Thanks&product=" + name + "&ref=" + ref});
 </script>
 
 
