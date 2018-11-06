@@ -539,7 +539,7 @@ if(ref != "")
 		$.cookie('ref', ref, { expires: 180 });
 }
 
-$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Index"});
+$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Index&ref=" + $.cookie('ref')});
 
 </script>
 
