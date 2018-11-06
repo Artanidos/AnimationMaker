@@ -335,8 +335,7 @@ function createLink()
 
 var ref = getUrlVars()["ref"];
 
-var emailField = $("#email");
-emailField.value = unescape(ref);
+$("#email").val(unescape(ref));
 
 $.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Offer"});
 </script>
