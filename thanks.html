@@ -259,7 +259,7 @@ product_name.innerText = decodeURI(name).replace(/\+/g, " ");
 var offer = $("#offer");
 offer.href = "offer.html?ref=" + email;
 
-$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Thanks"});
+$.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Thanks&product=" + name});
 </script>
 
 
