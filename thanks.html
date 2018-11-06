@@ -256,13 +256,8 @@ var input = $("#license_key");
 var product_name = $("#product_name");
 input.value = key;
 product_name.innerText = decodeURI(name).replace(/\+/g, " ");
-
 var offer = $("#offer");
 offer.href = "offer.html?ref=" + email;
-
-var ref = $.cookie('ref');
-// todo: generate licenseKey here
-alert("Cookie: " + ref);
 
 $.ajax({url: "https://artanidos.000webhostapp.com/logvisit.php?page=Thanks"});
 </script>
