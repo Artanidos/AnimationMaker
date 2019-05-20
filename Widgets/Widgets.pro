@@ -44,7 +44,6 @@ SOURCES += \
     colorrect.cpp \
     xmleditor.cpp \
     xmlhighlighter.cpp \
-    installer.cpp \
     transition.cpp \
     keyframehandle.cpp \
     transitionhandleright.cpp \
@@ -84,7 +83,6 @@ HEADERS +=\
     colorrect.h \
     xmleditor.h \
     xmlhighlighter.h \
-    installer.h \
     transition.h \
     keyframehandle.h \
     transitionhandleright.h \

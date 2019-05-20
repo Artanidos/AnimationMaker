@@ -27,7 +27,7 @@
 **
 ****************************************************************************/
 
-#include "winmainwindow.h"
+#include "mainwindow.h"
 #include <QApplication>
 #include <QStyleFactory>
 #include <QTest>
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("AnimationMaker");
-    QCoreApplication::setApplicationVersion("1.8.3");
+    QCoreApplication::setApplicationVersion("1.8.4");
     QCoreApplication::setOrganizationName("Artanidos");
 
     QFont newFont("Sans Serif", 10);

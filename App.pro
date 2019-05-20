@@ -47,7 +47,6 @@ DISTFILES += \
     todo.txt \
     changelog.txt \
     build.txt \
-    buildAppImage.sh \
     default.desktop \
     default.svg \
     AppRun \

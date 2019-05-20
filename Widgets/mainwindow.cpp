@@ -22,7 +22,6 @@
 #include "animationscene.h"
 #include "vectorgraphic.h"
 #include "interfaces.h"
-#include "installer.h"
 #include "plugins.h"
 #include "bitmap.h"
 #include "itempropertyeditor.h"
@@ -51,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_undoStack = new QUndoStack(this);
 
     setDockNestingEnabled(true);
-    install();
     loadPlugins();
     createStatusBar();
     createActions();
@@ -96,20 +94,6 @@ void MainWindow::loadPlugins()
             qDebug() << "Plugin could not ne loaded" << fileName << loader.errorString();
         }
     }
-}
-
-void MainWindow::install()
-{
-    QDir installDir(QDir::homePath() + "/AnimationMaker");
-    if(!installDir.exists())
-    {
-        qDebug() << "Installing plugins";
-        installDir.setPath(QDir::homePath());
-        installDir.mkdir("AnimationMaker");
-        installDir.cd("AnimationMaker");
-    }
-
-    Installer::installFiles(QCoreApplication::applicationDirPath() + "/../../plugins", installDir.absolutePath() + "/plugins", true, false);
 }
 
 void MainWindow::save()
