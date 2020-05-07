@@ -24,3 +24,5 @@
 - ask to save animation closing the pogram or loading / new
 
 - draw select rect when opacity = 0
+
+- Generating a GIF producesa blank border around the image.
