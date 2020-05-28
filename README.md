@@ -13,9 +13,8 @@ Also see a video of the newest features [youtube](https://youtu.be/pa53WfUkbO0).
 If you have any feature requests then just send me an email with your ideas to artanidos@gmail.com
 
 ## Donations
-If you like to support my work on the AnimationMaker you are invited to make a donation.
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/artanidos)
+If you like to support my work on the AnimationMaker you are invited to become a patron.
+[Patreon](https://www.patreon.com/artananda)
 
 
 
