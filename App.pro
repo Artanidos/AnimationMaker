@@ -43,15 +43,6 @@ linux-g++ {
     LIBS += -ldl
 }
 
-DISTFILES += \
-    todo.txt \
-    changelog.txt \
-    build.txt \
-    default.desktop \
-    default.svg \
-    AppRun \
-    README.md
-
 LIBS += -L$$OUT_PWD/Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/Widgets
 DEPENDPATH += $$PWD/Widgets

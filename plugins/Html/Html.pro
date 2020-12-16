@@ -31,9 +31,6 @@ CONFIG(debug, debug|release) {
     DEFINES += DEBUG
 }
 
-DISTFILES += \
-    todo.txt
-
 LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
 INCLUDEPATH += $$PWD/../../Widgets
 DEPENDPATH += $$PWD/../../Widgets
