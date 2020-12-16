@@ -1,4 +1,4 @@
-#    Copyright (C) 2017 Olaf Japp
+#    Copyright (C) 2018 Olaf Japp
 #    https://facebook.com/artanidos
 #
 #    This file is part of AnimationMaker.
@@ -16,21 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
-QT           += widgets gui core testlib xml svg
-TEMPLATE      = lib
-CONFIG       += plugin
-TARGET		  = Html
-INCLUDEPATH  += ../../
-SOURCES      += \
-    htmlexport.cpp
-HEADERS      += \
-    ../../interfaces.h \
-    htmlexport.h
-CONFIG(debug, debug|release) {
-    DESTDIR = ~/AnimationMaker/plugins
-    DEFINES += DEBUG
-}
+QT += widgets testlib xml svg
+SOURCES = testgui.cpp
+DEFINES += TEST
 
-LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
-INCLUDEPATH += $$PWD/../../Widgets
-DEPENDPATH += $$PWD/../../Widgets

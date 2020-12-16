@@ -16,27 +16,20 @@
 #    You should have received a copy of the GNU General Public License
 #    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
-QT           += widgets gui core testlib xml
+QT           += widgets gui core testlib xml svg
 TEMPLATE      = lib
 CONFIG       += plugin
-TARGET		  = Pie
-INCLUDEPATH  += ../../
-SOURCES		 += \
-    pieitem.cpp \
-    propertyeditor.cpp \
-    commands.cpp
-HEADERS		 += \
-    ../../interfaces.h \
-    pieitem.h \
-    propertyeditor.h \
-    commands.h
+TARGET        = Html
+INCLUDEPATH  += ../../App/widgets
+
+SOURCES      += \
+    htmlexport.cpp
+
+HEADERS      += \
+    htmlexport.h
+
 CONFIG(debug, debug|release) {
     DESTDIR = ~/AnimationMaker/plugins
+    DEFINES += DEBUG
 }
 
-RESOURCES += \
-    images.qrc
-
-LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
-INCLUDEPATH += $$PWD/../../Widgets
-DEPENDPATH += $$PWD/../../Widgets
