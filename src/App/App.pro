@@ -35,6 +35,8 @@ TEMPLATE = app
 target.path += /bin
 INSTALLS += target
 
+OBJECTS_DIR = objs/
+
 SOURCES += main.cpp \
     widgets/animationitem.cpp \
     widgets/animationscene.cpp \
@@ -115,3 +117,5 @@ linux-g++ {
     LIBS += -lm
     LIBS += -ldl
 }
+
+RESOURCES += ../images.qrc

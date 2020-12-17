@@ -36,4 +36,4 @@ CONFIG(debug, debug|release) {
 }
 
 RESOURCES += \
-    images.qrc
+    ../../images.qrc
