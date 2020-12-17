@@ -22,4 +22,5 @@ SUBDIRS += \
     src/App \
     src/plugins/Pie \
     src/plugins/Html \
+    src/Test \
 
