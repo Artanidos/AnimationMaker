@@ -19,16 +19,10 @@
 ****************************************************************************/
 
 #include "text.h"
-#include <QTest>
-#include <QStyleOptionGraphicsItem>
-#include <QGraphicsItem>
-#include <QGraphicsView>
-#include <QSvgRenderer>
-#include <QGraphicsSvgItem>
-#include <QByteArray>
-#include <QScreen>
-#include "animationitem.h"
 
+#include <QFontMetrics>
+#include <QTransform>
+#include <QVariant>
 
 QString Text::getHtml(QString id, QString)
 {
