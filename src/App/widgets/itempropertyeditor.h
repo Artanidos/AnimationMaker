@@ -21,24 +21,29 @@
 #ifndef ITEMPROPERTYEDITOR_H
 #define ITEMPROPERTYEDITOR_H
 
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QLabel>
-#include <QFontDatabase>
+#include <QColor>
 #include <QComboBox>
+#include <QFontDatabase>
+#include <QLabel>
+#include <QLineEdit>
+#include <QSlider>
+#include <QSpinBox>
+#include <QString>
+#include <QVariant>
+#include <QVBoxLayout>
+#include <QWidget>
 
-class AnimationItem;
-class Text;
-class ColorEditor;
-class Expander;
-class Rectangle;
-class Ellipse;
-class Vectorgraphic;
-class Timeline;
-class QVBoxLayout;
-class XmlEditor;
-class SvgAttributeEditor;
-class QRadioButton;
+#include "animationitem.h"
+#include "ellipse.h"
+#include "expander.h"
+#include "coloreditor.h"
+#include "rectangle.h"
+#include "svgattributeeditor.h"
+#include "text.h"
+#include "timeline.h"
+#include "vectorgraphic.h"
+#include "xmleditor.h"
+
 class ItemPropertyEditor : public QWidget
 {
     Q_OBJECT

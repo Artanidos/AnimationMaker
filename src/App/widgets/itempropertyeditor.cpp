@@ -19,25 +19,19 @@
 ****************************************************************************/
 
 #include "itempropertyeditor.h"
-#include "animationitem.h"
+
+#include <QFont>
+#include <QGridLayout>
+#include <QLayoutItem>
+#include <QList>
+#include <QScrollArea>
+#include <QStringList>
+#include <QUndoStack>
+
 #include "animationscene.h"
-#include "xmlhighlighter.h"
-#include "propertyeditorinterface.h"
-#include "svgattributeeditor.h"
-#include "xmleditor.h"
-#include "text.h"
-#include "rectangle.h"
-#include "timeline.h"
-#include "ellipse.h"
-#include "flatbutton.h"
-#include "expander.h"
-#include "coloreditor.h"
-#include "vectorgraphic.h"
 #include "commands.h"
-#include <QPushButton>
-#include <QComboBox>
-#include <QFontDatabase>
-#include <QRadioButton>
+#include "flatbutton.h"
+#include "propertyeditorinterface.h"
 
 ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
 {
