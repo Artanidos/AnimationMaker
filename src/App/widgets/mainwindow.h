@@ -21,30 +21,31 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QAction>
+#include <QActionGroup>
+#include <QCloseEvent>
+#include <QDockWidget>
 #include <QFileInfo>
-#include <QDir>
-#include <QDomDocument>
-#include "animationitem.h"
+#include <QGraphicsItem>
+#include <QMainWindow>
+#include <QMenu>
+#include <QProcess>
+#include <QSplitter>
+#include <QString>
+#include <QToolBar>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QUndoStack>
+#include <QWidget>
 
-class String;
-class AnimationScene;
-class Timeline;
-class ItemPropertyEditor;
-class ScenePropertyEditor;
-class TransitionEditor;
-class KeyFrame;
-class QSplitter;
-class QTreeWidget;
-class SceneView;
-class QTreeWidgetItem;
-class QUndoStack;
-class QGraphicsItem;
-class QActionGroup;
-class QTextBrowser;
-class QNetworkReply;
-class QSplitter;
-class QProcess;
+#include "animationitem.h"
+#include "animationscene.h"
+#include "itempropertyeditor.h"
+#include "sceneview.h"
+#include "scenepropertyeditor.h"
+#include "timeline.h"
+#include "transitioneditor.h"
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
