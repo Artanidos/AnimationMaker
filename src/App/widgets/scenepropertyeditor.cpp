@@ -19,11 +19,14 @@
 ****************************************************************************/
 
 #include "scenepropertyeditor.h"
-#include "expander.h"
-#include "commands.h"
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QVariant>
+#include <QVBoxLayout>
+
+#include "commands.h"
+#include "expander.h"
 
 ScenePropertyEditor::ScenePropertyEditor()
 {
