@@ -22,9 +22,11 @@
 #define SCENEVIEW_H
 
 #include <QGraphicsView>
+#include <QMouseEvent>
 
-class AnimationScene;
-class Ruler;
+#include "animationscene.h"
+#include "ruler.h"
+
 class SceneView : public QGraphicsView
 {
 public:

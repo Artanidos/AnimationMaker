@@ -19,9 +19,11 @@
 ****************************************************************************/
 
 #include "sceneview.h"
-#include "animationscene.h"
-#include "ruler.h"
+
 #include <QGridLayout>
+#include <QPalette>
+#include <QPointF>
+#include <QRectF>
 #include <QScrollBar>
 
 SceneView::SceneView(AnimationScene *scene)
