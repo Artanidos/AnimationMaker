@@ -21,11 +21,13 @@
 #ifndef COLORPICKER_H
 #define COLORPICKER_H
 
+#include <QColor>
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <QSize>
 #include <QWidget>
-#include <QSlider>
-#include "widgets_global.h"
 
-class WIDGETSSHARED_EXPORT ColorPicker : public QWidget
+class ColorPicker : public QWidget
 {
     Q_OBJECT
 public:
