@@ -21,16 +21,14 @@
 #ifndef INTERFACES_H
 #define INTERFACES_H
 
-#include <QtPlugin>
+#include <QCursor>
+#include <QDomElement>
+#include <QIcon>
+#include <QStatusBar>
+#include <QString>
 
-QT_BEGIN_NAMESPACE
-class QString;
-class QIcon;
-class AnimationItem;
-class AnimationScene;
-class QDomElement;
-class QStatusBar;
-QT_END_NAMESPACE
+#include "animationitem.h"
+#include "animationscene.h"
 
 class ItemInterface : public QObject
 {
