@@ -21,11 +21,13 @@
 #ifndef PLUGINS_H
 #define PLUGINS_H
 
+#include <QList>
 #include <QMap>
-#include "interfaces.h"
-#include "widgets_global.h"
+#include <QString>
 
-class WIDGETSSHARED_EXPORT Plugins
+#include "interfaces.h"
+
+class  Plugins
 {
 public:
     static ItemInterface *getItemPlugin(QString name);
