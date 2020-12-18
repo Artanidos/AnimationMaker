@@ -306,7 +306,7 @@ void Timeline::forwardAnimation()
     m_playhead->setValue(last);
 }
 
-QString timeString(int val, bool showMinutes)
+QString Timeline::timeString(int val, bool showMinutes)
 {
     int minutes = val / 60000;
     int seconds = (val - minutes * 60000) / 1000;
@@ -321,7 +321,7 @@ QString timeString(int val, bool showMinutes)
 
 void Timeline::playheadValueChanged(int val)
 {
-    m_time->setText(timeString(val));
+    m_time->setText(Timeline::timeString(val));
     m_scene->clearSelection();
     m_scene->setPlayheadPosition(val);
 

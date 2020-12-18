@@ -53,6 +53,8 @@ public:
     void resizeTransition(KeyFrame *key, int startTime, int endTime);
     TransitionLine *getTransitionLine(AnimationItem *item, QString propertyName);
 
+    static QString timeString(int milliseconds, bool showMinutes = true);
+
 public slots:
     void onCustomContextMenu(const QPoint &point);
     void playAnimation();
@@ -103,5 +105,4 @@ private:
     QTreeWidgetItem *search(AnimationItem *item);
     QTreeWidgetItem *search(QTreeWidgetItem *treeItem, QString propertyName);
 };
-QString timeString(int milliseconds, bool showMinutes = true);
 #endif // TIMELINE_H
