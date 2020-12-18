@@ -21,6 +21,10 @@
 #ifndef RULER_H
 #define RULER_H
 
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <QPoint>
+#include <QRectF>
 #include <QWidget>
 
 class Ruler : public QWidget
