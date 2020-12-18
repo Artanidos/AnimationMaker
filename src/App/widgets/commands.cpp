@@ -19,12 +19,14 @@
 ****************************************************************************/
 
 #include "commands.h"
-#include "rectangle.h"
-#include "ellipse.h"
-#include "text.h"
-#include "bitmap.h"
+
+#include <QBrush>
 #include <QException>
-#include "vectorgraphic.h"
+#include <QGraphicsItem>
+#include <QPen>
+#include <QVariant>
+
+#include "ellipse.h"
 #include "interfaces.h"
 #include "plugins.h"
 
