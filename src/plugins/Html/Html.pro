@@ -19,18 +19,17 @@
 QT           += widgets gui core testlib xml svg
 TEMPLATE      = lib
 CONFIG       += plugin
-TARGET		  = Html
-INCLUDEPATH  += ../../
+TARGET        = Html
+INCLUDEPATH  += ../../App/widgets
+
 SOURCES      += \
     htmlexport.cpp
+
 HEADERS      += \
-    ../../interfaces.h \
     htmlexport.h
+
 CONFIG(debug, debug|release) {
     DESTDIR = ~/AnimationMaker/plugins
     DEFINES += DEBUG
 }
 
-LIBS += -L$$OUT_PWD/../../Widgets/ -lWidgets
-INCLUDEPATH += $$PWD/../../Widgets
-DEPENDPATH += $$PWD/../../Widgets

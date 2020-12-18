@@ -1,4 +1,4 @@
-#    Copyright (C) 2018 Olaf Japp
+#    Copyright (C) 2017 Olaf Japp
 #    https://facebook.com/artanidos
 #
 #    This file is part of AnimationMaker.
@@ -16,10 +16,24 @@
 #    You should have received a copy of the GNU General Public License
 #    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
-QT += widgets testlib xml svg
-SOURCES = testgui.cpp
-DEFINES += TEST
-LIBS += -L$$OUT_PWD/../Widgets/ -lWidgets
-INCLUDEPATH += $$PWD/../Widgets
-DEPENDPATH += $$PWD/../Widgets
+QT           += widgets gui core testlib xml
+TEMPLATE      = lib
+CONFIG       += plugin
+TARGET        = Pie
+INCLUDEPATH  += ../../App/widgets/
 
+SOURCES      += \
+    pieitem.cpp \
+    propertyeditor.cpp \
+    commands.cpp \
+
+HEADERS      += \
+    pieitem.h \
+    propertyeditor.h \
+    commands.h
+CONFIG(debug, debug|release) {
+    DESTDIR = ~/AnimationMaker/plugins
+}
+
+RESOURCES += \
+    ../../images.qrc

@@ -19,8 +19,8 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    Widgets \
-    plugins/Pie \
-    plugins/Html \
-    App.pro \
-    test/Test.pro
+    src/App \
+    src/plugins/Pie \
+    src/plugins/Html \
+    src/Test \
+

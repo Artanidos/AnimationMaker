@@ -26,11 +26,11 @@
 **  along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 **
 ****************************************************************************/
-
-#include "mainwindow.h"
 #include <QApplication>
 #include <QStyleFactory>
 #include <QTest>
+
+#include "widgets/mainwindow.h"
 
 int main(int argc, char *argv[])
 {
