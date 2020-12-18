@@ -21,11 +21,13 @@
 #ifndef PROPERTYEDITORINTERFACE_H
 #define PROPERTYEDITORINTERFACE_H
 
+#include <QString>
+#include <QVariant>
 #include <QWidget>
-#include "animationitem.h"
-#include "widgets_global.h"
 
-class WIDGETSSHARED_EXPORT PropertyEditorInterface : public QWidget
+#include "animationitem.h"
+
+class PropertyEditorInterface : public QWidget
 {
     Q_OBJECT
 
