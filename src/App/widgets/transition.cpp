@@ -19,13 +19,13 @@
 ****************************************************************************/
 
 #include "transition.h"
-#include "transitionline.h"
-#include "transitionhandleleft.h"
-#include "transitionhandleright.h"
-#include "commands.h"
-#include <QPainter>
-#include <QMenu>
 
+#include <QColor>
+#include <QList>
+#include <QPainter>
+#include <QPoint>
+
+#include "commands.h"
 
 Transition::Transition(TransitionLine *parent, KeyFrame *key, Timeline *timeline, QUndoStack *undostack)
 {

@@ -21,17 +21,21 @@
 #ifndef TRANSITION_H
 #define TRANSITION_H
 
+#include <QAction>
+#include <QKeyEvent>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <QUndoStack>
 #include <QWidget>
-#include "widgets_global.h"
 
-class TransitionLine;
-class KeyFrame;
-class TransitionHandleLeft;
-class TransitionHandleRight;
-class Timeline;
-class QUndoStack;
-class QMenu;
-class WIDGETSSHARED_EXPORT Transition : public QWidget
+#include "keyframe.h"
+#include "timeline.h"
+#include "transitionhandleleft.h"
+#include "transitionhandleright.h"
+#include "transitionline.h"
+
+class Transition : public QWidget
 {
     Q_OBJECT
 public:
