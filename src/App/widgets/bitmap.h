@@ -21,11 +21,17 @@
 #ifndef BITMAP_H
 #define BITMAP_H
 
-#include <QGraphicsItem>
-#include "animationitem.h"
-#include "widgets_global.h"
+#include <QDomElement>
+#include <QImage>
+#include <QObject>
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
+#include <QString>
 
-class WIDGETSSHARED_EXPORT Bitmap : public AnimationItem
+#include "animationitem.h"
+#include "animationscene.h"
+
+class  Bitmap : public AnimationItem
 {
     Q_OBJECT
 public:
