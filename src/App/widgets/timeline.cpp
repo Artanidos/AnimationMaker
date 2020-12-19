@@ -19,18 +19,18 @@
 ****************************************************************************/
 
 #include "timeline.h"
-#include "animationitem.h"
-#include "keyframe.h"
-#include "commands.h"
-#include "transitionline.h"
-#include "transition.h"
-#include "keyframehandle.h"
-#include <QHeaderView>
-#include <QLabel>
+
 #include <QGridLayout>
-#include <QMenu>
+#include <QHash>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QIcon>
+#include <QList>
 #include <QTest>
-#include <QScrollBar>
+
+#include "commands.h"
+#include "keyframehandle.h"
+#include "transition.h"
 
 Timeline::Timeline(AnimationScene *scene)
     : QWidget(nullptr)
