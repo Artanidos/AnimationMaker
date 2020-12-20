@@ -26,6 +26,9 @@
 #include <QPoint>
 
 #include "commands.h"
+#include "transitionhandleleft.h"
+#include "transitionhandleright.h"
+#include "transitionline.h"
 
 Transition::Transition(TransitionLine *parent, KeyFrame *key, Timeline *timeline, QUndoStack *undostack)
 {

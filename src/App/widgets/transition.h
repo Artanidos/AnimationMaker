@@ -31,8 +31,7 @@
 
 #include "keyframe.h"
 #include "timeline.h"
-#include "transitionhandleleft.h"
-#include "transitionhandleright.h"
+#include "transitionhandle.h"
 #include "transitionline.h"
 
 class Transition : public QWidget
@@ -51,8 +50,8 @@ public:
     void resizeTransition();
 
 #ifdef TEST
-    TransitionHandleLeft *getLeftHandle() {return m_left;}
-    TransitionHandleRight *getRightHandle() {return m_right;}
+    TransitionHandle *getLeftHandle() {return m_left;}
+    TransitionHandle *getRightHandle() {return m_right;}
 #endif
 protected:
     void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
@@ -72,8 +71,8 @@ private slots:
 private:
     KeyFrame *m_key;
     bool m_pressed;
-    TransitionHandleLeft *m_left;
-    TransitionHandleRight *m_right;
+    TransitionHandle *m_left;
+    TransitionHandle *m_right;
     int m_oldX;
     QMenu *m_contextMenu;
     QAction *m_transitionAct;

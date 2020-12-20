@@ -31,6 +31,7 @@
 #include "commands.h"
 #include "keyframehandle.h"
 #include "transition.h"
+#include "transitionline.h"
 
 Timeline::Timeline(AnimationScene *scene)
     : QWidget(nullptr)

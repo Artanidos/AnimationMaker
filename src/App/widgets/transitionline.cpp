@@ -19,16 +19,14 @@
 ****************************************************************************/
 
 #include "transitionline.h"
+
+#include <QColor>
+#include <QList>
+#include <QPainter>
+
 #include "commands.h"
 #include "keyframehandle.h"
-#include "keyframe.h"
 #include "transition.h"
-#include <QPainter>
-#include <QMouseEvent>
-#include <QMenu>
-#include <QUndoCommand>
-#include <QUndoStack>
-#include <QTest>
 
 TransitionLine::TransitionLine(AnimationItem *item, QString propertyName, Timeline *timeline, QUndoStack *undostack)
 {
