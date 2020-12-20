@@ -20,6 +20,9 @@
 
 #include "xmlhighlighter.h"
 
+#include <QColor>
+#include <QFont>
+
 XmlHighlighter::XmlHighlighter(QTextDocument *document)
     : QSyntaxHighlighter(document)
 {
