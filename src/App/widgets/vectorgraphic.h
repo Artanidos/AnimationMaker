@@ -21,14 +21,21 @@
 #ifndef VECTORGRAPHIC_H
 #define VECTORGRAPHIC_H
 
-#include <QGraphicsItem>
+#include <QByteArray>
+#include <QDomElement>
 #include <QGraphicsSvgItem>
-#include "animationitem.h"
-#include "widgets_global.h"
+#include <QHash>
+#include <QObject>
+#include <QPainter>
+#include <QString>
+#include <QStringList>
+#include <QStyleOptionGraphicsItem>
+#include <QSvgRenderer>
 
-class AnimationScene;
-class QDomElement;
-class WIDGETSSHARED_EXPORT Vectorgraphic : public AnimationItem
+#include "animationitem.h"
+#include "animationscene.h"
+
+class Vectorgraphic : public AnimationItem
 {
     Q_OBJECT
 public:

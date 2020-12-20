@@ -19,12 +19,11 @@
 ****************************************************************************/
 
 #include "vectorgraphic.h"
-#include "animationscene.h"
-#include <QtTest/QTest>
-#include <QStyleOptionGraphicsItem>
-#include <QGraphicsItem>
-#include <QSvgRenderer>
-#include <QDomComment>
+
+#include <QDomNode>
+#include <QFile>
+#include <QTransform>
+#include <QVariant>
 
 Vectorgraphic::Vectorgraphic()
     : AnimationItem(NULL)
