@@ -19,14 +19,12 @@
 ****************************************************************************/
 
 #include "transitionhandleleft.h"
+
+#include <QImage>
+#include <QPoint>
+
 #include "transition.h"
-#include "keyframe.h"
 #include "transitionline.h"
-#include <QPainter>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QDebug>
-#include <QMenu>
 
 TransitionHandleLeft::TransitionHandleLeft(Transition *parent, KeyFrame *key)
     : TransitionHandle(parent, key)

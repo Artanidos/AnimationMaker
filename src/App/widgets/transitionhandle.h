@@ -21,13 +21,16 @@
 #ifndef TRANSITIONHANDLE_H
 #define TRANSITIONHANDLE_H
 
+#include <QImage>
+#include <QPaintEvent>
 #include <QWidget>
 
-#include "widgets_global.h"
+#include "keyframe.h"
 
+// pre declare Transition here to avoid circular dependencies
 class Transition;
-class KeyFrame;
-class WIDGETSSHARED_EXPORT TransitionHandle : public QWidget
+
+class TransitionHandle : public QWidget
 {
     Q_OBJECT
 public:

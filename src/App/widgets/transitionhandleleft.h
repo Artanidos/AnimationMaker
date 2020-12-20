@@ -21,15 +21,14 @@
 #ifndef TRANSITIONHANDLELEFT_H
 #define TRANSITIONHANDLELEFT_H
 
+#include <QAction>
+#include <QObject>
+#include <QMenu>
+#include <QMouseEvent>
+
 #include "transitionhandle.h"
-#include <QWidget>
 
-#include "widgets_global.h"
-
-class Transition;
-class KeyFrame;
-class QMenu;
-class WIDGETSSHARED_EXPORT TransitionHandleLeft : public TransitionHandle
+class TransitionHandleLeft : public TransitionHandle
 {
     Q_OBJECT
 public:
