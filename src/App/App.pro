@@ -109,7 +109,6 @@ HEADERS += \
     widgets/transitionhandleright.h \
     widgets/transitionline.h \
     widgets/vectorgraphic.h \
-    widgets/widgets_global.h \
     widgets/xmleditor.h \
     widgets/xmlhighlighter.h \
 
