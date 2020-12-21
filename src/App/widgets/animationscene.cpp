@@ -19,17 +19,30 @@
 ****************************************************************************/
 
 #include "animationscene.h"
-#include "animationitem.h"
-#include "plugins.h"
-#include "ellipse.h"
-#include "text.h"
-#include "bitmap.h"
-#include "vectorgraphic.h"
-#include "keyframe.h"
-#include "commands.h"
-#include <QUndoCommand>
-#include <QBuffer>
+
+#include <QBrush>
+#include <QDomCDATASection>
+#include <QDomNode>
+#include <QDomNodeList>
+#include <QEasingCurve>
+#include <QFile>
+#include <QFileDialog>
+#include <QHash>
+#include <QList>
 #include <QMessageBox>
+#include <QPen>
+#include <QTextStream>
+#include <QVariant>
+
+#include "bitmap.h"
+#include "commands.h"
+#include "ellipse.h"
+#include "interfaces.h"
+#include "itemhandle.h"
+#include "keyframe.h"
+#include "plugins.h"
+#include "text.h"
+#include "vectorgraphic.h"
 
 AnimationScene::AnimationScene()
 {

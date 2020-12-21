@@ -21,21 +21,23 @@
 #ifndef ANIMATIONSCENE_H
 #define ANIMATIONSCENE_H
 
-#include <QGraphicsScene>
-#include <QGraphicsRectItem>
-#include <QGraphicsSceneMouseEvent>
-#include <QDataStream>
-#include <QGraphicsItem>
-#include <QTest>
-#include <QFileDialog>
-#include <QUndoStack>
+#include <QColor>
+#include <QCursor>
 #include <QDomDocument>
-#include "rectangle.h"
-#include "widgets_global.h"
+#include <QDomElement>
+#include <QGraphicsItem>
+#include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsRectItem>
+#include <QKeyEvent>
+#include <QPointF>
+#include <QString>
+#include <QUndoStack>
 
-class AnimationItem;
-class KeyFrame;
-class WIDGETSSHARED_EXPORT AnimationScene : public QGraphicsScene
+#include "animationitem.h"
+#include "rectangle.h"
+
+class AnimationScene : public QGraphicsScene
 {
     Q_OBJECT
     Q_PROPERTY(int fps READ fps)
