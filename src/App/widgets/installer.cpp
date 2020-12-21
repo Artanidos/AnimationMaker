@@ -19,9 +19,11 @@
 ****************************************************************************/
 
 #include "installer.h"
-#include <QDir>
+
 #include <QCryptographicHash>
-#include <QTest>
+#include <QDebug>
+#include <QDir>
+#include <QFile>
 
 void Installer::installFiles(QString sourceDir, QString targetDir, bool readOnly, bool recursive)
 {
