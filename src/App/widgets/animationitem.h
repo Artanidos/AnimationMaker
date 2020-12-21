@@ -21,20 +21,33 @@
 #ifndef ANIMATIONITEM_H
 #define ANIMATIONITEM_H
 
-#include <QGraphicsItem>
-#include <QPropertyAnimation>
 #include <QAction>
-#include <QList>
-#include <QPen>
+#include <QBrush>
+#include <QColor>
+#include <QDomDocument>
 #include <QDomElement>
-#include <QTest>
+#include <QEvent>
+#include <QGraphicsItem>
+#include <QGraphicsSceneContextMenuEvent>
+#include <QHash>
+#include <QList>
+#include <QMenu>
+#include <QPainter>
+#include <QPen>
+#include <QRectF>
+#include <QString>
+#include <QStringList>
+#include <QStyleOptionGraphicsItem>
+#include <QVariant>
+#include <QWidget>
+
 #include "keyframe.h"
 #include "itemhandle.h"
-#include "widgets_global.h"
 
 class AnimationScene;
 class PropertyEditorInterface;
-class WIDGETSSHARED_EXPORT AnimationItem : public QObject, public QGraphicsItem
+
+class  AnimationItem : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal left READ left WRITE setX)

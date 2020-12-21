@@ -21,6 +21,7 @@
 #include "animationscene.h"
 
 #include <QBrush>
+#include <QDebug>
 #include <QDomCDATASection>
 #include <QDomNode>
 #include <QDomNodeList>

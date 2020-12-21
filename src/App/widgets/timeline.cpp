@@ -20,6 +20,7 @@
 
 #include "timeline.h"
 
+#include <QEasingCurve>
 #include <QGridLayout>
 #include <QHash>
 #include <QHBoxLayout>

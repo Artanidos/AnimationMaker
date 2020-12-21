@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QBuffer>
 #include <QDesktopServices>
+#include <QEasingCurve>
 
 QString cleanId(QString id)
 {

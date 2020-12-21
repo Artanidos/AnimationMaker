@@ -21,6 +21,7 @@
 #include "commands.h"
 
 #include <QBrush>
+#include <QDebug>
 #include <QException>
 #include <QGraphicsItem>
 #include <QPen>
