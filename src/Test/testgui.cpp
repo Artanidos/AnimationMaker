@@ -2,6 +2,7 @@
 #include <QtTest/QtTest>
 #include "timeline.h"
 #include "keyframehandle.h"
+#include "rectangle.h"
 #include "transition.h"
 #include "transitionline.h"
 #include "transitionhandleleft.h"

@@ -19,10 +19,6 @@
 ****************************************************************************/
 
 #include "rectangle.h"
-#include <QtTest/QTest>
-#include <QStyleOptionGraphicsItem>
-#include <QGraphicsItem>
-#include "animationscene.h"
 
 Rectangle::Rectangle(AnimationScene *scene, bool isSceneRect)
     : AnimationItem(scene, isSceneRect)

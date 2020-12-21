@@ -42,6 +42,7 @@
 #include "itemhandle.h"
 #include "keyframe.h"
 #include "plugins.h"
+#include "rectangle.h"
 #include "text.h"
 #include "vectorgraphic.h"
 

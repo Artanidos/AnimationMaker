@@ -30,6 +30,7 @@
 #include "ellipse.h"
 #include "interfaces.h"
 #include "plugins.h"
+#include "rectangle.h"
 
 AddItemCommand::AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, QString fileName, AnimationScene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)

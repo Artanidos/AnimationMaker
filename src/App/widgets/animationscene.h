@@ -35,7 +35,6 @@
 #include <QUndoStack>
 
 #include "animationitem.h"
-#include "rectangle.h"
 
 class AnimationScene : public QGraphicsScene
 {
@@ -69,7 +68,7 @@ public:
         m_rect->setBrush(QBrush(QColor(m_backgroundColor)));
         emit backgroundColorChanged(value);
     }
-    Rectangle *backgroundRect() {return m_rect;}
+    AnimationItem *backgroundRect() {return m_rect;}
 
     inline int playheadPosition() {return m_playheadPosition;}
 
@@ -117,7 +116,7 @@ private:
     int m_fps;
     AnimationItem *m_copy;
     QColor m_backgroundColor;
-    Rectangle *m_rect;
+    AnimationItem *m_rect;
     int m_playheadPosition;
     bool m_autokeyframes;
     bool m_autotransitions;
