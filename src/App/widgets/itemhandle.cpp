@@ -19,8 +19,8 @@
 ****************************************************************************/
 
 #include "itemhandle.h"
+
 #include "animationitem.h"
-#include <QTest>
 
 ItemHandle::ItemHandle(AnimationItem *parent, int corner, int scaling) :
     QGraphicsItem(parent),

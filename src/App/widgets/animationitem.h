@@ -25,10 +25,11 @@
 #include <QPropertyAnimation>
 #include <QAction>
 #include <QList>
+#include <QPen>
 #include <QDomElement>
 #include <QTest>
-#include "itemhandle.h"
 #include "keyframe.h"
+#include "itemhandle.h"
 #include "widgets_global.h"
 
 class AnimationScene;
