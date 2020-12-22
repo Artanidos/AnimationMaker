@@ -130,6 +130,7 @@ Timeline::Timeline(AnimationScene *scene)
 
 Timeline::~Timeline()
 {
+    delete m_contextMenu;
     delete m_delAct;
     delete m_forwardAct;
     delete m_pauseAct;

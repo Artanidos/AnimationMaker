@@ -125,14 +125,12 @@ ItemPropertyEditor::ItemPropertyEditor(Timeline *timeline)
     QLabel *labelOrig = new QLabel("Origin");
     QLabel *labelOrigX = new QLabel("X");
     QLabel *labelOrigY = new QLabel("Y");
-    QLabel *labelOrigZ = new QLabel("Z");
     labelScaleX->setFixedWidth(15);
     labelScaleY->setFixedWidth(15);
     labelShearX->setFixedWidth(15);
     labelShearY->setFixedWidth(15);
     labelOrigX->setFixedWidth(15);
     labelOrigY->setFixedWidth(15);
-    labelOrigZ->setFixedWidth(15);
     m_scaleX = new QSpinBox();
     m_scaleX->setMinimum(-10000);
     m_scaleX->setMaximum(10000);
