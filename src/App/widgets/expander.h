@@ -22,12 +22,12 @@
 #define EXPANDER_H
 
 #include <QLayout>
-#include <QVBoxLayout>
+#include <QString>
 #include <QToolButton>
-#include <QScrollArea>
-#include "widgets_global.h"
+#include <QVBoxLayout>
+#include <QWidget>
 
-class WIDGETSSHARED_EXPORT Expander : public QWidget
+class Expander : public QWidget
 {
     Q_OBJECT
 public:

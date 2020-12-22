@@ -21,10 +21,12 @@
 #ifndef PLAYHEAD_H
 #define PLAYHEAD_H
 
+#include <QImage>
+#include <QMouseEvent>
+#include <QPaintEvent>
 #include <QWidget>
-#include "widgets_global.h"
 
-class WIDGETSSHARED_EXPORT PlayHead : public QWidget
+class PlayHead : public QWidget
 {
     Q_OBJECT
 public:

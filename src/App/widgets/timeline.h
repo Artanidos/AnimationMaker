@@ -21,18 +21,25 @@
 #ifndef TIMELINE_H
 #define TIMELINE_H
 
-#include <QTreeWidget>
-#include <QGraphicsItem>
+#include <QAction>
 #include <QLabel>
+#include <QMenu>
+#include <QPoint>
+#include <QScrollBar>
+#include <QString>
 #include <QToolButton>
-#include <QPropertyAnimation>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QVariant>
+#include <QWidget>
+
 #include "animationitem.h"
 #include "animationscene.h"
+#include "keyframe.h"
 #include "playhead.h"
-#include "widgets_global.h"
+#include "transitionline.h"
 
-class TransitionLine;
-class WIDGETSSHARED_EXPORT Timeline : public QWidget
+class Timeline : public QWidget
 {
     Q_OBJECT
 public:
@@ -52,6 +59,8 @@ public:
     void moveTransition(KeyFrame *key, int time);
     void resizeTransition(KeyFrame *key, int startTime, int endTime);
     TransitionLine *getTransitionLine(AnimationItem *item, QString propertyName);
+
+    static QString timeString(int milliseconds, bool showMinutes = true);
 
 public slots:
     void onCustomContextMenu(const QPoint &point);
@@ -103,5 +112,4 @@ private:
     QTreeWidgetItem *search(AnimationItem *item);
     QTreeWidgetItem *search(QTreeWidgetItem *treeItem, QString propertyName);
 };
-QString timeString(int milliseconds, bool showMinutes = true);
 #endif // TIMELINE_H

@@ -19,16 +19,12 @@
 ****************************************************************************/
 
 #include "animationitem.h"
-#include "animationscene.h"
-#include "keyframe.h"
-#include "commands.h"
-#include <QStyleOptionGraphicsItem>
-#include <QGraphicsItem>
-#include <QGuiApplication>
 
-#include <QTest>
-#include <QGraphicsScene>
-#include <QMenu>
+#include <QEasingCurve>
+#include <QGuiApplication>
+#include <QUndoStack>
+
+#include "commands.h"
 
 AnimationItem::AnimationItem(AnimationScene *scene, bool isSceneRect)
 {

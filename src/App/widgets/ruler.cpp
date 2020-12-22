@@ -19,9 +19,12 @@
 ****************************************************************************/
 
 #include "ruler.h"
-#include <QPainter>
-#include <QMouseEvent>
+
 #include <QDebug>
+#include <QFont>
+#include <QPainter>
+#include <QPen>
+#include <QPointF>
 
 Ruler::Ruler(Ruler::RulerType rulerType, QWidget* parent)
     : QWidget(parent)

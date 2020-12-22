@@ -21,15 +21,19 @@
 #ifndef KEYFRAMEHANDLE_H
 #define KEYFRAMEHANDLE_H
 
+#include <QAction>
+#include <QImage>
+#include <QKeyEvent>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <QPoint>
 #include <QWidget>
 
-#include "widgets_global.h"
+#include "keyframe.h"
+#include "transitionline.h"
 
-class QMenu;
-class TransitionLine;
-class KeyFrame;
-class AnimationItem;
-class WIDGETSSHARED_EXPORT KeyframeHandle : public QWidget
+class KeyframeHandle : public QWidget
 {
     Q_OBJECT
 public:

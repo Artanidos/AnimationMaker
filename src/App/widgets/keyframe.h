@@ -21,10 +21,10 @@
 #ifndef KEYFRAME_H
 #define KEYFRAME_H
 
+#include <QObject>
 #include <QVariant>
-#include "widgets_global.h"
 
-class WIDGETSSHARED_EXPORT KeyFrame : public QObject
+class KeyFrame : public QObject
 {
     Q_OBJECT
 public:

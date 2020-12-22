@@ -21,10 +21,13 @@
 #ifndef FLATBUTTON_H
 #define FLATBUTTON_H
 
+#include <QEvent>
 #include <QLabel>
-#include "widgets_global.h"
+#include <QMouseEvent>
+#include <QPixmap>
+#include <QString>
 
-class WIDGETSSHARED_EXPORT FlatButton : public QLabel
+class  FlatButton : public QLabel
 {
     Q_OBJECT
 

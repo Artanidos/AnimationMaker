@@ -20,8 +20,8 @@
 
 #include "colorpicker.h"
 
+#include <QImage>
 #include <QPainter>
-#include <QTest>
 
 ColorPicker::ColorPicker()
 {

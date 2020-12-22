@@ -21,10 +21,10 @@
 #ifndef XMLEDITOR_H
 #define XMLEDITOR_H
 
+#include <QFocusEvent>
 #include <QTextEdit>
-#include "widgets_global.h"
 
-class WIDGETSSHARED_EXPORT XmlEditor : public QTextEdit
+class XmlEditor : public QTextEdit
 {
     Q_OBJECT
 

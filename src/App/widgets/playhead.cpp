@@ -19,10 +19,14 @@
 ****************************************************************************/
 
 #include "playhead.h"
-#include "timeline.h"
-#include <QStyle>
+
+#include <QColor>
+#include <QFont>
+#include <QFontMetrics>
 #include <QPainter>
-#include <QTest>
+#include <QString>
+
+#include "timeline.h"
 
 PlayHead::PlayHead()
 {
@@ -55,7 +59,7 @@ void PlayHead::paintEvent(QPaintEvent *)
         painter.drawLine(i, 12, i, 20);
         if(i > 0)
         {
-            QString posString = timeString((i + offset) * 5, false);
+            QString posString = Timeline::timeString((i + offset) * 5, false);
             int width = fm.width(posString);
             painter.drawText(i - width / 2, 0, width, fm.height(), 0, posString);
         }

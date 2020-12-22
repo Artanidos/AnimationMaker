@@ -19,9 +19,8 @@
 ****************************************************************************/
 
 #include "coloreditor.h"
-#include "flatbutton.h"
+
 #include <QGridLayout>
-#include <QTest>
 
 ColorEditor::ColorEditor(QString label)
 {

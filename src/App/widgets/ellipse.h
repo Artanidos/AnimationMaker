@@ -21,13 +21,16 @@
 #ifndef ELLIPSE_H
 #define ELLIPSE_H
 
-#include <QGraphicsItem>
+#include <QDomElement>
 #include <QObject>
-#include "animationitem.h"
-#include "widgets_global.h"
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
+#include <QWidget>
 
-class AnimationScene;
-class WIDGETSSHARED_EXPORT Ellipse : public AnimationItem
+#include "animationitem.h"
+#include "animationscene.h"
+
+class Ellipse : public AnimationItem
 {
     Q_OBJECT
 public:

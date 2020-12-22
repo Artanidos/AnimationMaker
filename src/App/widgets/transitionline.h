@@ -21,15 +21,20 @@
 #ifndef TRANSITIONLINE_H
 #define TRANSITIONLINE_H
 
+#include <QPaintEvent>
+#include <QString>
+#include <QUndoStack>
 #include <QWidget>
-#include "animationitem.h"
-#include "widgets_global.h"
 
+#include "animationitem.h"
+#include "keyframe.h"
+
+// pre declare these to avoid circular dependencies
 class KeyframeHandle;
-class Transition;
-class QUndoStack;
 class Timeline;
-class WIDGETSSHARED_EXPORT TransitionLine : public QWidget
+class Transition;
+
+class TransitionLine : public QWidget
 {
     Q_OBJECT
 public:

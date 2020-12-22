@@ -21,12 +21,17 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
-#include <QGraphicsItem>
+#include <QDomElement>
 #include <QObject>
-#include "animationitem.h"
-#include "widgets_global.h"
+#include <QPainter>
+#include <QString>
+#include <QStyleOptionGraphicsItem>
+#include <QWidget>
 
-class WIDGETSSHARED_EXPORT Rectangle : public AnimationItem
+#include "animationitem.h"
+#include "animationscene.h"
+
+class  Rectangle : public AnimationItem
 {
     Q_OBJECT
 public:

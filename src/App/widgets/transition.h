@@ -21,17 +21,20 @@
 #ifndef TRANSITION_H
 #define TRANSITION_H
 
+#include <QAction>
+#include <QKeyEvent>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <QUndoStack>
 #include <QWidget>
-#include "widgets_global.h"
 
-class TransitionLine;
-class KeyFrame;
-class TransitionHandleLeft;
-class TransitionHandleRight;
-class Timeline;
-class QUndoStack;
-class QMenu;
-class WIDGETSSHARED_EXPORT Transition : public QWidget
+#include "keyframe.h"
+#include "timeline.h"
+#include "transitionhandle.h"
+#include "transitionline.h"
+
+class Transition : public QWidget
 {
     Q_OBJECT
 public:
@@ -47,8 +50,8 @@ public:
     void resizeTransition();
 
 #ifdef TEST
-    TransitionHandleLeft *getLeftHandle() {return m_left;}
-    TransitionHandleRight *getRightHandle() {return m_right;}
+    TransitionHandle *getLeftHandle() {return m_left;}
+    TransitionHandle *getRightHandle() {return m_right;}
 #endif
 protected:
     void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
@@ -68,8 +71,8 @@ private slots:
 private:
     KeyFrame *m_key;
     bool m_pressed;
-    TransitionHandleLeft *m_left;
-    TransitionHandleRight *m_right;
+    TransitionHandle *m_left;
+    TransitionHandle *m_right;
     int m_oldX;
     QMenu *m_contextMenu;
     QAction *m_transitionAct;

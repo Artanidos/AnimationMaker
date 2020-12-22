@@ -21,16 +21,21 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
+#include <QByteArray>
+#include <QColor>
+#include <QFont>
+#include <QString>
 #include <QUndoCommand>
-#include "animationscene.h"
-#include "animationitem.h"
-#include "vectorgraphic.h"
-#include "bitmap.h"
-#include "timeline.h"
-#include "text.h"
-#include "widgets_global.h"
 
-class WIDGETSSHARED_EXPORT AddItemCommand : public QUndoCommand
+#include "animationitem.h"
+#include "animationscene.h"
+#include "bitmap.h"
+#include "keyframe.h"
+#include "text.h"
+#include "timeline.h"
+#include "vectorgraphic.h"
+
+class AddItemCommand : public QUndoCommand
 {
 public:
     AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, QString fileName, AnimationScene *scene, QUndoCommand *parent = 0);
@@ -44,7 +49,7 @@ private:
 };
 
 
-class WIDGETSSHARED_EXPORT DeleteItemCommand : public QUndoCommand
+class  DeleteItemCommand : public QUndoCommand
 {
 public:
     DeleteItemCommand(AnimationItem *item, AnimationScene *scene, QUndoCommand *parent = 0);
@@ -58,7 +63,7 @@ private:
 };
 
 
-class WIDGETSSHARED_EXPORT MoveItemCommand : public QUndoCommand
+class MoveItemCommand : public QUndoCommand
 {
 public:
     MoveItemCommand(qreal x, qreal y, qreal oldx, qreal oldy, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -77,7 +82,7 @@ private:
 };
 
 
-class WIDGETSSHARED_EXPORT ResizeItemCommand : public QUndoCommand
+class ResizeItemCommand : public QUndoCommand
 {
 public:
     ResizeItemCommand(qreal width, qreal height, qreal oldwidth, qreal oldheight, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -96,7 +101,7 @@ private:
 };
 
 
-class WIDGETSSHARED_EXPORT ScaleItemCommand : public QUndoCommand
+class ScaleItemCommand : public QUndoCommand
 {
 public:
     ScaleItemCommand(qreal x, qreal y, qreal width, qreal height, qreal oldx, qreal oldy, qreal oldwidth, qreal oldheight, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -117,7 +122,7 @@ private:
 };
 
 
-class WIDGETSSHARED_EXPORT ChangeIdCommand : public QUndoCommand
+class ChangeIdCommand : public QUndoCommand
 {
 public:
     ChangeIdCommand(QString id, QString oldid, AnimationItem *item, QUndoCommand *parent = 0);
@@ -130,7 +135,7 @@ private:
     QString m_id, m_oldid;
 };
 
-class WIDGETSSHARED_EXPORT ChangeColorCommand : public QUndoCommand
+class ChangeColorCommand : public QUndoCommand
 {
 public:
     ChangeColorCommand(QColor color, QColor oldcolor, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -147,7 +152,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangePenCommand : public QUndoCommand
+class ChangePenCommand : public QUndoCommand
 {
 public:
     ChangePenCommand(QColor color, QColor oldcolor, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -164,7 +169,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangeTextcolorCommand : public QUndoCommand
+class ChangeTextcolorCommand : public QUndoCommand
 {
 public:
     ChangeTextcolorCommand(QColor color, QColor oldcolor, AnimationScene *scene, Text *item, QUndoCommand *parent = 0);
@@ -181,7 +186,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangeOpacityCommand : public QUndoCommand
+class ChangeOpacityCommand : public QUndoCommand
 {
 public:
     ChangeOpacityCommand(int opacity, int oldopacity, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -198,7 +203,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT AddKeyframeCommand : public QUndoCommand
+class AddKeyframeCommand : public QUndoCommand
 {
 public:
     AddKeyframeCommand(QString propertyname, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent = 0);
@@ -213,7 +218,7 @@ private:
     Timeline *m_timeline;
 };
 
-class WIDGETSSHARED_EXPORT DeleteKeyframeCommand : public QUndoCommand
+class DeleteKeyframeCommand : public QUndoCommand
 {
 public:
     DeleteKeyframeCommand(QString propertyname, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent = 0);
@@ -228,7 +233,7 @@ private:
     Timeline *m_timeline;
 };
 
-class WIDGETSSHARED_EXPORT AddTransitionCommand : public QUndoCommand
+class AddTransitionCommand : public QUndoCommand
 {
 public:
     AddTransitionCommand(QString propertyname, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent = 0);
@@ -243,7 +248,7 @@ private:
     Timeline *m_timeline;
 };
 
-class WIDGETSSHARED_EXPORT DeleteTransitionCommand : public QUndoCommand
+class DeleteTransitionCommand : public QUndoCommand
 {
 public:
     DeleteTransitionCommand(QString propertyname, KeyFrame *frame, AnimationItem *item, Timeline *timeline, QUndoCommand *parent = 0);
@@ -258,7 +263,7 @@ private:
     Timeline *m_timeline;
 };
 
-class WIDGETSSHARED_EXPORT ChangeEasingCommand : public QUndoCommand
+class ChangeEasingCommand : public QUndoCommand
 {
 public:
     ChangeEasingCommand(int easing, int oldeasing, KeyFrame *frame, QUndoCommand *parent = 0);
@@ -271,7 +276,7 @@ private:
     int m_easing, m_oldeasing;
 };
 
-class WIDGETSSHARED_EXPORT ChangeFontCommand : public QUndoCommand
+class ChangeFontCommand : public QUndoCommand
 {
 public:
     ChangeFontCommand(QFont font, QFont oldfont, Text *text, QUndoCommand *parent = 0);
@@ -284,7 +289,7 @@ private:
     QFont m_font, m_oldfont;
 };
 
-class WIDGETSSHARED_EXPORT RaiseItemCommand : public QUndoCommand
+class RaiseItemCommand : public QUndoCommand
 {
 public:
     RaiseItemCommand(AnimationItem *item, QUndoCommand *parent = 0);
@@ -296,7 +301,7 @@ private:
     AnimationItem *m_item;
 };
 
-class WIDGETSSHARED_EXPORT LowerItemCommand : public QUndoCommand
+class LowerItemCommand : public QUndoCommand
 {
 public:
     LowerItemCommand(AnimationItem *item, QUndoCommand *parent = 0);
@@ -308,7 +313,7 @@ private:
     AnimationItem *m_item;
 };
 
-class WIDGETSSHARED_EXPORT BringItemToFrontCommand : public QUndoCommand
+class BringItemToFrontCommand : public QUndoCommand
 {
 public:
     BringItemToFrontCommand(AnimationItem *item, QUndoCommand *parent = 0);
@@ -320,7 +325,7 @@ private:
     AnimationItem *m_item;
 };
 
-class WIDGETSSHARED_EXPORT SendItemToBackCommand : public QUndoCommand
+class SendItemToBackCommand : public QUndoCommand
 {
 public:
     SendItemToBackCommand(AnimationItem *item, QUndoCommand *parent = 0);
@@ -332,7 +337,7 @@ private:
     AnimationItem *m_item;
 };
 
-class WIDGETSSHARED_EXPORT ChangeAttributeCommand : public QUndoCommand
+class ChangeAttributeCommand : public QUndoCommand
 {
 public:
     ChangeAttributeCommand(QString attributeName, QString newValue, QString oldValue, AnimationScene *scene, Vectorgraphic *item, QUndoCommand *parent = 0);
@@ -350,7 +355,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangeSvgCommand : public QUndoCommand
+class ChangeSvgCommand : public QUndoCommand
 {
 public:
     ChangeSvgCommand(QByteArray newValue, QByteArray oldValue, Vectorgraphic *item, QUndoCommand *parent = 0);
@@ -363,7 +368,7 @@ private:
     QByteArray m_newValue, m_oldValue;
 };
 
-class WIDGETSSHARED_EXPORT RemoveAttributeCommand : public QUndoCommand
+class RemoveAttributeCommand : public QUndoCommand
 {
 public:
     RemoveAttributeCommand(QString attributeName, QString value, Vectorgraphic *item, QUndoCommand *parent = 0);
@@ -377,7 +382,7 @@ private:
     QString m_value;
 };
 
-class WIDGETSSHARED_EXPORT ExchangeBitmapCommand : public QUndoCommand
+class ExchangeBitmapCommand : public QUndoCommand
 {
 public:
     ExchangeBitmapCommand(Bitmap *item, QString fileName, QUndoCommand *parent = nullptr);
@@ -392,7 +397,7 @@ private:
     QImage m_newImage;
 };
 
-class WIDGETSSHARED_EXPORT MoveKeyframeCommand : public QUndoCommand
+class MoveKeyframeCommand : public QUndoCommand
 {
 public:
     MoveKeyframeCommand(KeyFrame *key, int oldTime, int newTime, Timeline *timeline, QUndoCommand *parent = nullptr);
@@ -407,7 +412,7 @@ private:
     Timeline *m_timeline;
 };
 
-class WIDGETSSHARED_EXPORT MoveTransitionCommand : public QUndoCommand
+class MoveTransitionCommand : public QUndoCommand
 {
 public:
     MoveTransitionCommand(KeyFrame *key, int oldTime, int newTime, Timeline *timeline, QUndoCommand *parent = nullptr);
@@ -422,7 +427,7 @@ private:
     Timeline *m_timeline;
 };
 
-class WIDGETSSHARED_EXPORT ResizeTransitionCommand : public QUndoCommand
+class ResizeTransitionCommand : public QUndoCommand
 {
 public:
     ResizeTransitionCommand(KeyFrame *key, int oldStartTime, int newStartTime, int oldEndTime, int newEndTime, Timeline *timeline, QUndoCommand *parent = nullptr);
@@ -439,7 +444,7 @@ private:
     Timeline *m_timeline;
 };
 
-class WIDGETSSHARED_EXPORT ChangeScaleXCommand : public QUndoCommand
+class ChangeScaleXCommand : public QUndoCommand
 {
 public:
     ChangeScaleXCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -456,7 +461,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangeScaleYCommand : public QUndoCommand
+class ChangeScaleYCommand : public QUndoCommand
 {
 public:
     ChangeScaleYCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -473,7 +478,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangeShearXCommand : public QUndoCommand
+class ChangeShearXCommand : public QUndoCommand
 {
 public:
     ChangeShearXCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -490,7 +495,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangeShearYCommand : public QUndoCommand
+class ChangeShearYCommand : public QUndoCommand
 {
 public:
     ChangeShearYCommand(double value, double oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -507,7 +512,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangeRotationXCommand : public QUndoCommand
+class ChangeRotationXCommand : public QUndoCommand
 {
 public:
     ChangeRotationXCommand(int value, int oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -524,7 +529,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangeRotationYCommand : public QUndoCommand
+class ChangeRotationYCommand : public QUndoCommand
 {
 public:
     ChangeRotationYCommand(int value, int oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -541,7 +546,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangeRotationZCommand : public QUndoCommand
+class ChangeRotationZCommand : public QUndoCommand
 {
 public:
     ChangeRotationZCommand(int value, int oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -558,7 +563,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangeOriginXCommand : public QUndoCommand
+class ChangeOriginXCommand : public QUndoCommand
 {
 public:
     ChangeOriginXCommand(int value, int oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);
@@ -575,7 +580,7 @@ private:
     KeyFrame *m_keyframe;
 };
 
-class WIDGETSSHARED_EXPORT ChangeOriginYCommand : public QUndoCommand
+class ChangeOriginYCommand : public QUndoCommand
 {
 public:
     ChangeOriginYCommand(int value, int oldvalue, AnimationScene *scene, AnimationItem *item, QUndoCommand *parent = 0);

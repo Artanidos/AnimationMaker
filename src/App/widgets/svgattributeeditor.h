@@ -21,8 +21,9 @@
 #ifndef SVGATTRIBUTEEDITOR_H
 #define SVGATTRIBUTEEDITOR_H
 
-#include <QWidget>
 #include <QLineEdit>
+#include <QString>
+#include <QWidget>
 
 class SvgAttributeEditor : public QWidget
 {

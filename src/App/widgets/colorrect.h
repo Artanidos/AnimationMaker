@@ -21,10 +21,12 @@
 #ifndef COLORRECT_H
 #define COLORRECT_H
 
+#include <QColor>
+#include <QMouseEvent>
+#include <QPaintEvent>
 #include <QWidget>
-#include "widgets_global.h"
 
-class WIDGETSSHARED_EXPORT ColorRect : public QWidget
+class ColorRect : public QWidget
 {
     Q_OBJECT
 public:

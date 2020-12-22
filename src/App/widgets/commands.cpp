@@ -19,14 +19,18 @@
 ****************************************************************************/
 
 #include "commands.h"
-#include "rectangle.h"
-#include "ellipse.h"
-#include "text.h"
-#include "bitmap.h"
+
+#include <QBrush>
+#include <QDebug>
 #include <QException>
-#include "vectorgraphic.h"
+#include <QGraphicsItem>
+#include <QPen>
+#include <QVariant>
+
+#include "ellipse.h"
 #include "interfaces.h"
 #include "plugins.h"
+#include "rectangle.h"
 
 AddItemCommand::AddItemCommand(qreal x, qreal y, AnimationScene::EditMode mode, QString fileName, AnimationScene *scene, QUndoCommand *parent)
     : QUndoCommand(parent)

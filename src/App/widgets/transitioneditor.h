@@ -21,10 +21,12 @@
 #ifndef TRANSITIONEDITOR_H
 #define TRANSITIONEDITOR_H
 
-#include <QWidget>
-#include <QListWidget>
 #include <QLabel>
+#include <QListWidget>
+#include <QPixmap>
 #include <QUndoStack>
+#include <QWidget>
+
 #include "keyframe.h"
 
 class TransitionEditor : public QWidget

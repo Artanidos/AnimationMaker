@@ -21,21 +21,22 @@
 #ifndef ANIMATIONSCENE_H
 #define ANIMATIONSCENE_H
 
-#include <QGraphicsScene>
-#include <QGraphicsRectItem>
-#include <QGraphicsSceneMouseEvent>
-#include <QDataStream>
-#include <QGraphicsItem>
-#include <QTest>
-#include <QFileDialog>
-#include <QUndoStack>
+#include <QColor>
+#include <QCursor>
 #include <QDomDocument>
-#include "rectangle.h"
-#include "widgets_global.h"
+#include <QDomElement>
+#include <QGraphicsItem>
+#include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsRectItem>
+#include <QKeyEvent>
+#include <QPointF>
+#include <QString>
+#include <QUndoStack>
 
-class AnimationItem;
-class KeyFrame;
-class WIDGETSSHARED_EXPORT AnimationScene : public QGraphicsScene
+#include "animationitem.h"
+
+class AnimationScene : public QGraphicsScene
 {
     Q_OBJECT
     Q_PROPERTY(int fps READ fps)
@@ -67,7 +68,7 @@ public:
         m_rect->setBrush(QBrush(QColor(m_backgroundColor)));
         emit backgroundColorChanged(value);
     }
-    Rectangle *backgroundRect() {return m_rect;}
+    AnimationItem *backgroundRect() {return m_rect;}
 
     inline int playheadPosition() {return m_playheadPosition;}
 
@@ -115,7 +116,7 @@ private:
     int m_fps;
     AnimationItem *m_copy;
     QColor m_backgroundColor;
-    Rectangle *m_rect;
+    AnimationItem *m_rect;
     int m_playheadPosition;
     bool m_autokeyframes;
     bool m_autotransitions;

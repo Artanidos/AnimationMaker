@@ -21,16 +21,19 @@
 #ifndef COLOREDITOR_H
 #define COLOREDITOR_H
 
-#include <QWidget>
-#include <QSpinBox>
+#include <QColor>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSlider>
+#include <QSpinBox>
+#include <QString>
+#include <QWidget>
+
 #include "colorpicker.h"
 #include "colorrect.h"
-#include "widgets_global.h"
+#include "flatbutton.h"
 
-class FlatButton;
-class WIDGETSSHARED_EXPORT ColorEditor : public QWidget
+class ColorEditor : public QWidget
 {
     Q_OBJECT
 public:

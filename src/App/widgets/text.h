@@ -21,17 +21,22 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include <QGraphicsItem>
-#include <QGraphicsRectItem>
+#include <QByteArray>
 #include <QColor>
+#include <QDomElement>
 #include <QFont>
-#include "animationitem.h"
-#include "widgets_global.h"
+#include <QGraphicsSimpleTextItem>
+#include <QGraphicsSvgItem>
+#include <QObject>
+#include <QPainter>
+#include <QString>
+#include <QStyleOptionGraphicsItem>
+#include <QSvgRenderer>
 
-class AnimationScene;
-class QGraphicsSvgItem;
-class QSvgRenderer;
-class WIDGETSSHARED_EXPORT Text : public AnimationItem
+#include "animationitem.h"
+#include "animationscene.h"
+
+class Text : public AnimationItem
 {
     Q_OBJECT
     Q_PROPERTY(QColor textColor READ textColor WRITE setTextColor)

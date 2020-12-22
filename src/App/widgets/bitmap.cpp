@@ -19,14 +19,14 @@
 ****************************************************************************/
 
 #include "bitmap.h"
-#include "commands.h"
-#include <QtTest/QTest>
-#include <QStyleOptionGraphicsItem>
-#include <QGraphicsItem>
+
+#include <QAction>
 #include <QBuffer>
-#include <QUndoCommand>
+#include <QByteArray>
 #include <QFileDialog>
 #include <QMenu>
+
+#include "commands.h"
 
 Bitmap::Bitmap()
     : AnimationItem(NULL)

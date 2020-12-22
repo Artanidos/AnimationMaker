@@ -19,12 +19,11 @@
 ****************************************************************************/
 
 #include "transitionhandle.h"
-#include "transition.h"
-#include "keyframe.h"
+
+#include <QColor>
 #include <QPainter>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QDebug>
+
+#include "transition.h"
 
 TransitionHandle::TransitionHandle(Transition *parent, KeyFrame *key)
 {

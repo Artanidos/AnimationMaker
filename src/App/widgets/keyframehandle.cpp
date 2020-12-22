@@ -19,11 +19,8 @@
 ****************************************************************************/
 
 #include "keyframehandle.h"
-#include "keyframe.h"
-#include "transitionline.h"
-#include "animationscene.h"
+
 #include <QPainter>
-#include <QMenu>
 
 KeyframeHandle::KeyframeHandle(TransitionLine *parent, KeyFrame *key)
 {

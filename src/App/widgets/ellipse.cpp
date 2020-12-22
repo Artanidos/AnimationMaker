@@ -19,9 +19,8 @@
 ****************************************************************************/
 
 #include "ellipse.h"
-#include <QtTest/QTest>
-#include <QStyleOptionGraphicsItem>
-#include <QGraphicsItem>
+
+#include <QString>
 
 Ellipse::Ellipse(AnimationScene *scene)
     : AnimationItem(scene)

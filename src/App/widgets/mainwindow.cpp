@@ -17,32 +17,38 @@
 **  along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 **
 ****************************************************************************/
-
 #include "mainwindow.h"
-#include "animationscene.h"
-#include "vectorgraphic.h"
+
+#include <QByteArray>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QCoreApplication>
+#include <QCursor>
+#include <QDesktopWidget>
+#include <QDir>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QIcon>
+#include <QImage>
+#include <QKeySequence>
+#include <QList>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPixmap>
+#include <QPluginLoader>
+#include <QRect>
+#include <QSettings>
+#include <QStatusBar>
+#include <QString>
+#include <QTest>
+#include <QToolBar>
+#include <QVariant>
+#include <QVBoxLayout>
+
 #include "interfaces.h"
 #include "plugins.h"
-#include "bitmap.h"
-#include "itempropertyeditor.h"
-#include "timeline.h"
-#include "scenepropertyeditor.h"
-#include "sceneview.h"
-#include "transitioneditor.h"
-#include "expander.h"
-#include "rectangle.h"
-#include "ellipse.h"
-#include "text.h"
-#include "bitmap.h"
-#include "vectorgraphic.h"
-#include "keyframe.h"
-#include <QtTest/QTest>
-#include <QMessageBox>
-#include <QGraphicsSvgItem>
-#include <QTreeWidget>
-#include <QMainWindow>
-#include <QtWidgets>
-#include <QTextBrowser>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)

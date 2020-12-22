@@ -19,14 +19,13 @@
 ****************************************************************************/
 
 #include "transitioneditor.h"
-#include "expander.h"
-#include "commands.h"
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-#include <QHeaderView>
+
 #include <QEasingCurve>
+#include <QGridLayout>
+#include <QVBoxLayout>
+
+#include "commands.h"
+#include "expander.h"
 
 TransitionEditor::TransitionEditor()
 {

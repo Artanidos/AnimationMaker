@@ -20,9 +20,10 @@
 
 #include "expander.h"
 
-#include <QVBoxLayout>
-#include <QLabel>
-
+#include <QColor>
+#include <QFont>
+#include <QHBoxLayout>
+#include <QPalette>
 
 Expander::Expander(QString header)
 {

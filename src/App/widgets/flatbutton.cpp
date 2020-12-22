@@ -19,7 +19,8 @@
 ****************************************************************************/
 
 #include "flatbutton.h"
-#include <QMouseEvent>
+
+#include <QImage>
 
 FlatButton::FlatButton()
 {

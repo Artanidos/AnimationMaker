@@ -19,8 +19,11 @@
 ****************************************************************************/
 
 #include "svgattributeeditor.h"
-#include "flatbutton.h"
+
 #include <QGridLayout>
+#include <QLabel>
+
+#include "flatbutton.h"
 
 SvgAttributeEditor::SvgAttributeEditor()
 {

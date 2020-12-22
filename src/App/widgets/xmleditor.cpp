@@ -19,6 +19,10 @@
 ****************************************************************************/
 
 #include "xmleditor.h"
+
+#include <QFont>
+#include <QFontMetrics>
+
 #include "xmlhighlighter.h"
 
 XmlEditor::XmlEditor()

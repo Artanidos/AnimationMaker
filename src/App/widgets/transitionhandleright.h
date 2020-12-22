@@ -21,14 +21,12 @@
 #ifndef TRANSITIONHANDLERIGHT_H
 #define TRANSITIONHANDLERIGHT_H
 
+#include <QMouseEvent>
+#include <QObject>
+
 #include "transitionhandle.h"
-#include <QWidget>
 
-#include "widgets_global.h"
-
-class Transition;
-class KeyFrame;
-class WIDGETSSHARED_EXPORT TransitionHandleRight : public TransitionHandle
+class TransitionHandleRight : public TransitionHandle
 {
     Q_OBJECT
 public:
