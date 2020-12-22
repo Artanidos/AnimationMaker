@@ -61,30 +61,30 @@ Timeline::Timeline(AnimationScene *scene)
     m_time = new QLabel();
     m_time->setText("0:00.0");
 
-    QAction *playAct = new QAction("Play");
-    playAct->setIcon(QIcon(":/images/play.png"));
-    playAct->setToolTip("Start the animation");
-    connect(playAct, SIGNAL(triggered()), this, SLOT(playAnimation()));
+    m_playAct = new QAction("Play");
+    m_playAct->setIcon(QIcon(":/images/play.png"));
+    m_playAct->setToolTip("Start the animation");
+    connect(m_playAct, SIGNAL(triggered()), this, SLOT(playAnimation()));
 
-    QAction *pauseAct = new QAction("Pause");
-    pauseAct->setIcon(QIcon(":/images/pause.png"));
-    pauseAct->setToolTip("Pause the animation");
-    connect(pauseAct, SIGNAL(triggered()), this, SLOT(pauseAnimation()));
+    m_pauseAct = new QAction("Pause");
+    m_pauseAct->setIcon(QIcon(":/images/pause.png"));
+    m_pauseAct->setToolTip("Pause the animation");
+    connect(m_pauseAct, SIGNAL(triggered()), this, SLOT(pauseAnimation()));
 
-    QAction *reverseAct = new QAction("Reverse");
-    reverseAct->setIcon(QIcon(":/images/reverse.png"));
-    reverseAct->setToolTip("Reverse the animation");
-    connect(reverseAct, SIGNAL(triggered()), this, SLOT(revertAnimation()));
+    m_reverseAct = new QAction("Reverse");
+    m_reverseAct->setIcon(QIcon(":/images/reverse.png"));
+    m_reverseAct->setToolTip("Reverse the animation");
+    connect(m_reverseAct, SIGNAL(triggered()), this, SLOT(revertAnimation()));
 
-    QAction *forwardAct = new QAction("Forward");
-    forwardAct->setIcon(QIcon(":/images/forward.png"));
-    forwardAct->setToolTip("Forward the animation");
-    connect(forwardAct, SIGNAL(triggered()), this, SLOT(forwardAnimation()));
+    m_forwardAct = new QAction("Forward");
+    m_forwardAct->setIcon(QIcon(":/images/forward.png"));
+    m_forwardAct->setToolTip("Forward the animation");
+    connect(m_forwardAct, SIGNAL(triggered()), this, SLOT(forwardAnimation()));
 
-    revertButton->setDefaultAction(reverseAct);
-    playButton->setDefaultAction(playAct);
-    pauseButton->setDefaultAction(pauseAct);
-    forwardButton->setDefaultAction(forwardAct);
+    revertButton->setDefaultAction(m_reverseAct);
+    playButton->setDefaultAction(m_playAct);
+    pauseButton->setDefaultAction(m_pauseAct);
+    forwardButton->setDefaultAction(m_forwardAct);
 
     hbox->addWidget(revertButton);
     hbox->addWidget(playButton);
@@ -126,6 +126,15 @@ Timeline::Timeline(AnimationScene *scene)
     connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(treeCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
     connect(m_playhead, SIGNAL(valueChanged(int)), scene, SLOT(setPlayheadPosition(int)));
     connect(m_scene, SIGNAL(keyframeAdded(AnimationItem*, QString, KeyFrame*)), this, SLOT(keyframeAdded(AnimationItem*, QString, KeyFrame*)));
+}
+
+Timeline::~Timeline()
+{
+    delete m_delAct;
+    delete m_forwardAct;
+    delete m_pauseAct;
+    delete m_playAct;
+    delete m_reverseAct;
 }
 
 void Timeline::scrollValueChanged(int value)

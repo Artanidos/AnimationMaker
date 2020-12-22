@@ -44,6 +44,7 @@ class Timeline : public QWidget
     Q_OBJECT
 public:
     Timeline(AnimationScene *scene);
+    ~Timeline();
 
     void reset();
     inline void setPlayheadPosition(int value) {m_playhead->setValue(value);}
@@ -93,6 +94,10 @@ private:
     QTreeWidget *m_tree;
     QMenu *m_contextMenu;
     QAction *m_delAct;
+    QAction *m_forwardAct;
+    QAction *m_pauseAct;
+    QAction *m_playAct;
+    QAction *m_reverseAct;
     AnimationScene *m_scene;
     PlayHead *m_playhead;
     QLabel *m_time;

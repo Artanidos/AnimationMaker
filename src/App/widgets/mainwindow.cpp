@@ -66,10 +66,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete exportMenu;
+    delete m_itemPropertyEditor;
     delete m_scene;
+    delete importMenu;
     delete m_timeline;
     delete m_elementTree;
     delete m_view;
+    delete showElementsAct;
+    delete showPropertyPanelAct;
+    delete showRulerAct;
+    delete showToolPanelAct;
 }
 
 void MainWindow::loadPlugins()
