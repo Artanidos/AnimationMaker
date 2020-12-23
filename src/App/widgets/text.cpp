@@ -87,6 +87,12 @@ Text::Text(QString text, AnimationScene *scene)
    setRect(0, 0, m_svg->boundingRect().width(), m_svg->boundingRect().height());
 }
 
+Text::~Text()
+{
+    delete m_renderer;
+    delete m_svg;
+}
+
 int Text::type() const
 {
     return Text::Type;

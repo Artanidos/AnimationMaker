@@ -87,6 +87,7 @@ AnimationItem::~AnimationItem()
         }
         delete frame;
     }
+    delete m_contextMenu;
     delete m_keyframes;
     delete delAct;
     delete bringToFrontAct;

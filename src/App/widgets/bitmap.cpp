@@ -50,11 +50,16 @@ Bitmap::Bitmap(QImage image, AnimationScene *scene)
     addMenu();
 }
 
+Bitmap::~Bitmap()
+{
+    delete m_exchangeBitmapAct;
+}
+
 void Bitmap::addMenu()
 {
-    QAction *exchangeBitmapAct = new QAction("Exchange Bitmap");
-    connect(exchangeBitmapAct, SIGNAL(triggered()), this, SLOT(exchangeBitmapAction()));
-    m_contextMenu->addAction(exchangeBitmapAct);
+    m_exchangeBitmapAct = new QAction("Exchange Bitmap");
+    connect(m_exchangeBitmapAct, SIGNAL(triggered()), this, SLOT(exchangeBitmapAction()));
+    m_contextMenu->addAction(m_exchangeBitmapAct);
 }
 
 void Bitmap::exchangeBitmapAction()

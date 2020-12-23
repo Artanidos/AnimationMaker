@@ -21,6 +21,7 @@
 #ifndef BITMAP_H
 #define BITMAP_H
 
+#include <QAction>
 #include <QDomElement>
 #include <QImage>
 #include <QObject>
@@ -38,6 +39,7 @@ public:
     Bitmap();
     Bitmap(QString filename, AnimationScene *scene);
     Bitmap(QImage img, AnimationScene *scene);
+    ~Bitmap();
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
     QString getHtml(QString id, QString assetsPath) Q_DECL_OVERRIDE;
@@ -55,6 +57,7 @@ private slots:
 
 private:
     QImage m_image;
+    QAction *m_exchangeBitmapAct;
 
     void addMenu();
 };
