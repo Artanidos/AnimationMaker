@@ -80,12 +80,13 @@ AnimationItem::~AnimationItem()
     for(it = m_keyframes->begin(); it != m_keyframes->end(); it++)
     {
         KeyFrame *frame = it.value();
-        for(; frame != nullptr; frame = frame->next())
-        {
-            if(frame->prev())
-                delete frame->prev();
+        KeyFrame *next = nullptr;
+        while (frame) {
+            next = frame->next();
+            delete frame;
+
+            frame = next;
         }
-        delete frame;
     }
     delete m_contextMenu;
     delete m_keyframes;

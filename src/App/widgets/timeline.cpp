@@ -136,6 +136,7 @@ Timeline::~Timeline()
     delete m_pauseAct;
     delete m_playAct;
     delete m_reverseAct;
+    delete m_tree;
 }
 
 void Timeline::scrollValueChanged(int value)
@@ -558,20 +559,21 @@ void Timeline::addKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *
     item->addKeyframe(propertyName, key);
     if(treeChildItem)
     {
-        QVariant var = treeChildItem->data(0, 1);
-        QList<KeyFrame*> *list = (QList<KeyFrame*>*) var.value<void *>();
-        list->append(key);
+        QVariantList list = treeChildItem->data(0, 1).toList();
+        list.append(QVariant::fromValue(key));
+        treeChildItem->setData(0, 1, list);
         addPropertyKey(treeChildItem, item, propertyName, key);
     }
     else
     {
-        QList<KeyFrame*> *list = new QList<KeyFrame*>();
-        list->append(key);
+        QList<KeyFrame*> list = QList<KeyFrame *>();
+        list.append(key);
         treeChildItem = new QTreeWidgetItem();
         treeChildItem->setText(0, propertyName);
-        treeChildItem->setData(0, 1, qVariantFromValue((void *) list));
+        treeChildItem->setData(0, 1, qVariantFromValue(list));
         treeChildItem->setData(1, 0, 2);
         treeItem->addChild(treeChildItem);
+
         addProperty(treeChildItem, item, propertyName);
         addPropertyKey(treeChildItem, item, propertyName, key);
     }
@@ -600,18 +602,18 @@ void Timeline::keyframeAdded(AnimationItem * item, QString propertyName, KeyFram
 
     if(treeChildItem)
     {
-        QVariant var = treeChildItem->data(0, 1);
-        QList<KeyFrame*> *list = (QList<KeyFrame*>*) var.value<void *>();
-        list->append(key);
+        QVariantList list = treeChildItem->data(0, 1).toList();
+        list.append(QVariant::fromValue(key));
+        treeChildItem->setData(0, 1, list);
         addPropertyKey(treeChildItem, item, propertyName, key);
     }
     else
     {
-        QList<KeyFrame*> *list = new QList<KeyFrame*>();
-        list->append(key);
+        QList<KeyFrame*> list = QList<KeyFrame*>();
+        list.append(key);
         treeChildItem = new QTreeWidgetItem();
         treeChildItem->setText(0, propertyName);
-        treeChildItem->setData(0, 1, qVariantFromValue((void *) list));
+        treeChildItem->setData(0, 1, qVariantFromValue(list));
         treeChildItem->setData(1, 0, 2);
         treeItem->addChild(treeChildItem);
         addProperty(treeChildItem, item, propertyName);

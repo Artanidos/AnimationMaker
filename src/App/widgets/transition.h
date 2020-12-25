@@ -39,6 +39,7 @@ class Transition : public QWidget
     Q_OBJECT
 public:
     Transition(TransitionLine *parent, KeyFrame *key, Timeline *timeline, QUndoStack *undostack);
+    ~Transition();
 
     void paintEvent(QPaintEvent *ev) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
