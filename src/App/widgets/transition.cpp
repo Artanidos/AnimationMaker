@@ -58,6 +58,12 @@ Transition::Transition(TransitionLine *parent, KeyFrame *key, Timeline *timeline
     setVisible(true);
 }
 
+Transition::~Transition()
+{
+    delete m_contextMenu;
+    delete m_transitionAct;
+}
+
 void Transition::paintEvent(QPaintEvent *)
 {
     QColor orange(255, 127, 42, 150);

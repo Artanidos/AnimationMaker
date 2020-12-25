@@ -49,6 +49,13 @@ KeyframeHandle::KeyframeHandle(TransitionLine *parent, KeyFrame *key)
     setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
+KeyframeHandle::~KeyframeHandle()
+{
+    delete m_delKeyframeAct;
+    delete m_transitionAct;
+    delete m_contextMenu;
+}
+
 void KeyframeHandle::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);

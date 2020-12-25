@@ -38,6 +38,7 @@ class KeyframeHandle : public QWidget
     Q_OBJECT
 public:
     KeyframeHandle(TransitionLine *parent, KeyFrame *key);
+    ~KeyframeHandle();
 
     void paintEvent(QPaintEvent *ev) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;

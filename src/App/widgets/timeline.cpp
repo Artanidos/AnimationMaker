@@ -136,6 +136,7 @@ Timeline::~Timeline()
     delete m_pauseAct;
     delete m_playAct;
     delete m_reverseAct;
+    delete m_tree;
 }
 
 void Timeline::scrollValueChanged(int value)
@@ -356,10 +357,10 @@ void Timeline::treeCurrentItemChanged(QTreeWidgetItem *currentItem, QTreeWidgetI
 {
     if(currentItem)
     {
-        QVariant level = currentItem->data(1,0);
+        QVariant level = currentItem->data(1, Qt::DisplayRole);
         if(level == 1)
         {
-            AnimationItem *item = (AnimationItem *)currentItem->data(0,1).value<void *>();
+            AnimationItem *item = (AnimationItem *)currentItem->data(0, Qt::DecorationRole).value<void *>();
             if(item)
                 emit itemSelectionChanged(item);
         }
@@ -371,7 +372,7 @@ QTreeWidgetItem *Timeline::search(AnimationItem *item)
     for(int i=0; i < m_tree->topLevelItemCount(); i++)
     {
         QTreeWidgetItem *twi = m_tree->topLevelItem(i);
-        if(twi->data(0, 1).value<void *>() == item)
+        if(twi->data(0, Qt::DecorationRole).value<void *>() == item)
             return twi;
     }
     return nullptr;
@@ -548,8 +549,8 @@ void Timeline::addKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *
     {
         treeItem = new QTreeWidgetItem();
         treeItem->setText(0, item->id());
-        treeItem->setData(0, 1, qVariantFromValue((void *) item));
-        treeItem->setData(1, 0, 1);
+        treeItem->setData(0, Qt::DecorationRole, QVariant::fromValue((void *) item));
+        treeItem->setData(1, Qt::DisplayRole, 1);
         connect(item, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
         m_tree->addTopLevelItem(treeItem);
         addTransitionLine(treeItem, item);
@@ -558,20 +559,21 @@ void Timeline::addKeyFrame(AnimationItem *item, QString propertyName, KeyFrame *
     item->addKeyframe(propertyName, key);
     if(treeChildItem)
     {
-        QVariant var = treeChildItem->data(0, 1);
-        QList<KeyFrame*> *list = (QList<KeyFrame*>*) var.value<void *>();
-        list->append(key);
+        QVariantList list = treeChildItem->data(0, Qt::DecorationRole).toList();
+        list.append(QVariant::fromValue(key));
+        treeChildItem->setData(0, Qt::DecorationRole, list);
         addPropertyKey(treeChildItem, item, propertyName, key);
     }
     else
     {
-        QList<KeyFrame*> *list = new QList<KeyFrame*>();
-        list->append(key);
+        QList<KeyFrame*> list = QList<KeyFrame *>();
+        list.append(key);
         treeChildItem = new QTreeWidgetItem();
         treeChildItem->setText(0, propertyName);
-        treeChildItem->setData(0, 1, qVariantFromValue((void *) list));
-        treeChildItem->setData(1, 0, 2);
+        treeChildItem->setData(0, Qt::DecorationRole, QVariant::fromValue(list));
+        treeChildItem->setData(1, Qt::DisplayRole, 2);
         treeItem->addChild(treeChildItem);
+
         addProperty(treeChildItem, item, propertyName);
         addPropertyKey(treeChildItem, item, propertyName, key);
     }
@@ -591,8 +593,8 @@ void Timeline::keyframeAdded(AnimationItem * item, QString propertyName, KeyFram
     {
         treeItem = new QTreeWidgetItem();
         treeItem->setText(0, item->id());
-        treeItem->setData(0, 1, qVariantFromValue((void *) item));
-        treeItem->setData(1, 0, 1);
+        treeItem->setData(0, Qt::DecorationRole, QVariant::fromValue((void *) item));
+        treeItem->setData(1, Qt::DisplayRole, 1);
         connect(item, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
         m_tree->addTopLevelItem(treeItem);
         addTransitionLine(treeItem, item);
@@ -600,19 +602,19 @@ void Timeline::keyframeAdded(AnimationItem * item, QString propertyName, KeyFram
 
     if(treeChildItem)
     {
-        QVariant var = treeChildItem->data(0, 1);
-        QList<KeyFrame*> *list = (QList<KeyFrame*>*) var.value<void *>();
-        list->append(key);
+        QVariantList list = treeChildItem->data(0, Qt::DecorationRole).toList();
+        list.append(QVariant::fromValue(key));
+        treeChildItem->setData(0, Qt::DecorationRole, list);
         addPropertyKey(treeChildItem, item, propertyName, key);
     }
     else
     {
-        QList<KeyFrame*> *list = new QList<KeyFrame*>();
-        list->append(key);
+        QList<KeyFrame*> list = QList<KeyFrame*>();
+        list.append(key);
         treeChildItem = new QTreeWidgetItem();
         treeChildItem->setText(0, propertyName);
-        treeChildItem->setData(0, 1, qVariantFromValue((void *) list));
-        treeChildItem->setData(1, 0, 2);
+        treeChildItem->setData(0, Qt::DecorationRole, QVariant::fromValue(list));
+        treeChildItem->setData(1, Qt::DisplayRole, 2);
         treeItem->addChild(treeChildItem);
         addProperty(treeChildItem, item, propertyName);
         addPropertyKey(treeChildItem, item, propertyName, key);
@@ -636,7 +638,7 @@ void Timeline::removeItem(AnimationItem *item)
     for(int i=0; i < m_tree->topLevelItemCount(); i++)
     {
         QTreeWidgetItem *treeItem = m_tree->topLevelItem(i);
-        if(treeItem->data(0, 1).value<void *>() == item)
+        if(treeItem->data(0, Qt::DecorationRole).value<void *>() == item)
         {
             m_tree->takeTopLevelItem(i);
             delete treeItem;
@@ -649,7 +651,7 @@ void Timeline::selectItem(AnimationItem *item)
     for(int i=0; i < m_tree->topLevelItemCount(); i++)
     {
         QTreeWidgetItem *treeItem = m_tree->topLevelItem(i);
-        if(treeItem->data(0, 1).value<void *>() == item)
+        if(treeItem->data(0, Qt::DecorationRole).value<void *>() == item)
             treeItem->setSelected(true);
         else
             treeItem->setSelected(false);
@@ -662,7 +664,7 @@ int Timeline::lastKeyframe()
     for(int i = 0; i < m_tree->topLevelItemCount(); i++)
     {
         QTreeWidgetItem *treeItem = m_tree->topLevelItem(i);
-        AnimationItem *item = (AnimationItem *) treeItem->data(0, 1).value<void *>();
+        AnimationItem *item = (AnimationItem *) treeItem->data(0, Qt::DecorationRole).value<void *>();
 
         QHash<QString, KeyFrame*>::iterator it;
         for (it = item->keyframes()->begin(); it != item->keyframes()->end(); it++)
