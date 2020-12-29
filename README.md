@@ -57,9 +57,4 @@ make -j2 # replace 2 with the number of cores on your CPU to speed up the build
 ## Contact
 If you have any feature requests then just send me an email with your ideas to artanidos@gmail.com
 
-## Donations
-If you like to support my work on the AnimationMaker you are invited to become a patron.
-[Patreon](https://www.patreon.com/artananda)
-
-
 
