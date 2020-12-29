@@ -875,7 +875,6 @@ void MainWindow::exportMovie()
     if(fileName.isEmpty())
         return;
 
-    fileName = "\"" + fileName + "\"";
     m_scene->clearSelection();
     m_view->setUpdatesEnabled(false);
     QGraphicsView *exportView = new QGraphicsView(m_scene);
@@ -916,22 +915,27 @@ void MainWindow::exportMovie()
     list.close();
     statusBar()->showMessage(QString("Creating movie file"));
 
-
+    QStringList args;
     if(fileName.endsWith(".gif"))
     {
         QString output = tmp.absolutePath() + "/temp.mp4";
         statusBar()->showMessage("Creating temp movie");
-        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(m_scene->fps()) + " -safe 0 -f concat -i list -b 4M -y " + output, tmp.absolutePath());
+        args << "-r" << QString::number(m_scene->fps()) << "-safe" << "0" << "-f" << "concat" << "-i" << "list" << "-b:v" << "4M" << output;
+        runExport(args, tmp.absolutePath());
         statusBar()->showMessage("Creating palette file");
-        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -i " + output + " -vf palettegen -y " + tmp.absolutePath() + "/temp.png", tmp.absolutePath());
+        args.clear();
+        args << "-i" << output << "-vf" << "palettegen" << "-y" << tmp.absolutePath() + "/temp.png";
+        runExport(args, tmp.absolutePath());
         statusBar()->showMessage("Converting temp movie");
-        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(m_scene->fps()) + " -i " + output + " -i " + tmp.absolutePath() + "/temp.png -lavfi paletteuse -y " + fileName, tmp.absolutePath());
+        args.clear();
+        args << QString::number(m_scene->fps()) << "-i" << output << "-i" << tmp.absolutePath() + "/temp.png" << "-lavfi" << "paleteuse" << fileName;
+        runExport(args, tmp.absolutePath());
     }
     else
     {
         statusBar()->showMessage("Creating movie file");
-        qDebug() << "\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(m_scene->fps()) + " -safe 0 -f concat -i list -b 4M -y " + fileName, tmp.absolutePath();
-        runCommand("\"" + qApp->applicationDirPath() + "/ffmpeg\" -r " + QString::number(m_scene->fps()) + " -safe 0 -f concat -i list -b 4M -y " + fileName, tmp.absolutePath());
+        args << "-r" << QString::number(m_scene->fps()) << "-safe" << QString::number(0) << "-f" << "concat" << "-i" << "list" << "-basdf:v" << "4M" << fileName;
+        runExport(args, tmp.absolutePath());
     }
 
     tmp.removeRecursively();
@@ -950,13 +954,46 @@ void MainWindow::pluginExport()
     }
 }
 
-void MainWindow::runCommand(QString cmd, QString path)
+void MainWindow::runExport(QStringList &args, QString path)
 {
     QProcess *proc = new QProcess();
+
+    // check first that the FFMPEG is installed.
+    proc->start(this->FFMPEG, {"-version"});
+    proc->waitForStarted(300);
+    proc->waitForFinished(300);
+    if (proc->error() == QProcess::FailedToStart) {
+        QMessageBox missing;
+        missing.setIcon(QMessageBox::Warning);
+        missing.setWindowTitle("Missing dependency");
+        missing.setText("The program FFMPEG is mandatory in order to export the animation\n"
+                        "Please install it first. No animation has been created");
+
+        missing.exec();
+        delete proc;
+
+        return;
+    }
+
+    QStringList completeArgs;
+    // Show all errors
+    completeArgs << "-y" << "-loglevel" << "error" << args;
     proc->setWorkingDirectory(path);
-    proc->start(cmd);
+    proc->start(this->FFMPEG, completeArgs);
     proc->waitForFinished(-1);
-    qDebug() << proc->readAllStandardOutput();
-    qDebug() << proc->readAllStandardError();
+
+    int exitCode = proc->exitCode();
+    if (proc->error() != QProcess::UnknownError || exitCode != 0) {
+        QMessageBox failure;
+        failure.setIcon(QMessageBox::Critical);
+        failure.setWindowTitle("Oups... Something happened");
+        failure.setText("FFMPEG encountered an error.\nExit code: " + QString::number(exitCode));
+        failure.setDetailedText(proc->readAllStandardError());
+        failure.setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        failure.setBaseSize(600, 400);
+
+        failure.exec();
+    }
+
     delete proc;
 }
