@@ -68,7 +68,7 @@ protected:
     void readSettings();
     void writeFile(QString fileName);
     void fillTree();
-    void runCommand(QString cmd, QString path);
+    void runExport(QStringList &args, QString path);
     void addCheckboxes(QTreeWidgetItem *treeItem, AnimationItem *item);
 
     QProcess *m_proc;
@@ -119,6 +119,7 @@ protected:
     QMenu *importMenu;
     QMenu *exportMenu;
     QUndoStack *m_undoStack;
+    const QString FFMPEG = "ffmpeg";
     
 public slots:
     void reset();
