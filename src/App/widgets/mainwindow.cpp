@@ -934,7 +934,7 @@ void MainWindow::exportMovie()
     else
     {
         statusBar()->showMessage("Creating movie file");
-        args << "-r" << QString::number(m_scene->fps()) << "-safe" << QString::number(0) << "-f" << "concat" << "-i" << "list" << "-basdf:v" << "4M" << fileName;
+        args << "-r" << QString::number(m_scene->fps()) << "-safe" << QString::number(0) << "-f" << "concat" << "-i" << "list" << "-b:v" << "4M" << fileName;
         runExport(args, tmp.absolutePath());
     }
 
