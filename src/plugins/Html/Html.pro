@@ -20,12 +20,15 @@ QT           += core widgets xml
 TEMPLATE      = lib
 CONFIG       += plugin
 TARGET        = $$qtLibraryTarget(Html)
+INSTALLS     += target
 
 OBJECTS_DIR   = objs/
 MOC_DIR       = mocs/
 
 DEPENDPATH   += ../../AnimationItems/
 INCLUDEPATH  += ../../AnimationItems/
+DESTDIR = $$OUT_PWD/../../../output/plugins
+target.path = /opt/animationmaker/plugins
 
 LIBS         += -L$$OUT_PWD/../../AnimationItems -lAnimationItems
 
@@ -36,6 +39,5 @@ HEADERS      += \
     htmlexport.h
 
 CONFIG(debug, debug|release) {
-    DESTDIR = ~/AnimationMaker/plugins
     DEFINES += DEBUG
 }

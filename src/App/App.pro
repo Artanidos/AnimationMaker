@@ -29,12 +29,13 @@ debug {
 
 TARGET = AnimationMaker
 TEMPLATE = app
-target.path += /bin
 INSTALLS += target
 
 OBJECTS_DIR = objs/
 MOC_DIR = mocs/
 INCLUDEPATH += ../AnimationItems/
+DESTDIR = $$OUT_PWD/../../output
+target.path = /opt/animationmaker/
 
 LIBS += -L$$OUT_PWD/../AnimationItems -lAnimationItems
 

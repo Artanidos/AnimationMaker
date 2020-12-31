@@ -20,6 +20,7 @@
 
 #include "htmlexport.h"
 
+#include <QCoreApplication>
 #include <QDebug>
 #include <QDesktopServices>
 #include <QDir>

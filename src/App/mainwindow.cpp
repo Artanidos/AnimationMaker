@@ -82,7 +82,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::loadPlugins()
 {
-    QDir pluginsDir(QDir::homePath() + "/AnimationMaker/plugins");
+    QDir pluginsDir(QCoreApplication::applicationDirPath());
+
+    if (!pluginsDir.cd(PLUGIN_DIR)) {
+        statusBar()->showMessage("Could not access plugin directory '" + PLUGIN_DIR + "'", 5000);
+
+        return;
+    }
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {
@@ -429,7 +435,9 @@ void MainWindow::sceneSizeChanged(int width, int height)
 
 void MainWindow::createStatusBar()
 {
-    statusBar()->showMessage(tr("Ready"));
+    if (statusBar()->currentMessage().isEmpty()) {
+        statusBar()->showMessage(tr("Ready"));
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
