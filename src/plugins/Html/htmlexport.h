@@ -21,14 +21,13 @@
 #ifndef HTMLEXPORT_H
 #define HTMLEXPORT_H
 
-#include <QtPlugin>
-#include <QObject>
-#include <QIcon>
-#include <QImage>
-#include <QPixmap>
-#include <QCursor>
-#include "interfaces.h"
+#include <QStatusBar>
+#include <QString>
+#include <QStringList>
+
 #include "animationitem.h"
+#include "animationscene.h"
+#include "interfaces.h"
 
 class HtmlExport : public ExportInterface
 {

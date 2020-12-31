@@ -19,8 +19,19 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    src/App \
-    src/plugins/Pie \
-    src/plugins/Html \
-    src/Test \
+    AnimationItems \
+    App \
+    Html \
+    Pie \
+    Test
 
+App.subdir            = src/App
+AnimationItems.subdir = src/AnimationItems
+Html.subdir           = src/plugins/Html
+Pie.subdir            = src/plugins/Pie
+Test.subdir           = src/Test
+
+App.depends  = AnimationItems
+Pie.depends  = AnimationItems
+Html.depends = AnimationItems
+Test.depends = AnimationItems

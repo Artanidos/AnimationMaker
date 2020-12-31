@@ -16,11 +16,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with AnimationMaker.  If not, see <http://www.gnu.org/licenses/>.
 
-QT           += widgets gui core testlib xml svg
+QT           += core widgets xml
 TEMPLATE      = lib
 CONFIG       += plugin
-TARGET        = Html
-INCLUDEPATH  += ../../App/widgets
+TARGET        = $$qtLibraryTarget(Html)
+
+OBJECTS_DIR   = objs/
+MOC_DIR       = mocs/
+
+DEPENDPATH   += ../../AnimationItems/
+INCLUDEPATH  += ../../AnimationItems/
+
+LIBS         += -L$$OUT_PWD/../../AnimationItems -lAnimationItems
 
 SOURCES      += \
     htmlexport.cpp
@@ -32,4 +39,3 @@ CONFIG(debug, debug|release) {
     DESTDIR = ~/AnimationMaker/plugins
     DEFINES += DEBUG
 }
-

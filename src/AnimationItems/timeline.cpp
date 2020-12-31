@@ -20,6 +20,7 @@
 
 #include "timeline.h"
 
+#include <QCoreApplication>
 #include <QEasingCurve>
 #include <QGridLayout>
 #include <QHash>
@@ -27,7 +28,7 @@
 #include <QHeaderView>
 #include <QIcon>
 #include <QList>
-#include <QTest>
+#include <QThread>
 
 #include "commands.h"
 #include "keyframehandle.h"
@@ -288,7 +289,7 @@ void Timeline::playAnimation()
     for(int i=0; i < frames; i++)
     {
         m_playhead->setValue(i * delay);
-        QTest::qSleep(delay / 2);
+        QThread::msleep(delay / 2);
         QCoreApplication::processEvents(QEventLoop::AllEvents, delay / 2);
         if(!m_playing)
             break;

@@ -28,9 +28,8 @@
 ****************************************************************************/
 #include <QApplication>
 #include <QStyleFactory>
-#include <QTest>
 
-#include "widgets/mainwindow.h"
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {

@@ -19,20 +19,19 @@
 ****************************************************************************/
 
 #include "htmlexport.h"
-#include "installer.h"
-#include "animationitem.h"
-#include "animationscene.h"
-#include "bitmap.h"
-#include "ellipse.h"
-#include "text.h"
-#include "vectorgraphic.h"
-#include <QStatusBar>
-#include <QFileDialog>
-#include <QTest>
-#include <QMessageBox>
-#include <QBuffer>
+
+#include <QDebug>
 #include <QDesktopServices>
+#include <QDir>
 #include <QEasingCurve>
+#include <QFileDialog>
+#include <QList>
+#include <QMessageBox>
+#include <QTextStream>
+
+#include "ellipse.h"
+#include "installer.h"
+#include "keyframe.h"
 
 QString cleanId(QString id)
 {

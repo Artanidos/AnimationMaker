@@ -19,6 +19,7 @@
 ****************************************************************************/
 #include "mainwindow.h"
 
+#include <QApplication>
 #include <QByteArray>
 #include <QCheckBox>
 #include <QComboBox>
@@ -42,7 +43,7 @@
 #include <QSettings>
 #include <QStatusBar>
 #include <QString>
-#include <QTest>
+#include <QThread>
 #include <QToolBar>
 #include <QVariant>
 #include <QVBoxLayout>
@@ -903,7 +904,7 @@ void MainWindow::exportMovie()
 
         m_timeline->setPlayheadPosition(i * delay);
 
-        QTest::qSleep(delay);
+        QThread::msleep(delay);
         QCoreApplication::processEvents(QEventLoop::AllEvents, delay);
 
         QImage img = exportView->grab().toImage();
