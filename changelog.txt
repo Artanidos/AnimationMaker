@@ -1,3 +1,13 @@
+1.9.0
+- Build the UI as static library
+- Build single binary application using the UI static library
+- Organize headers in all source files (.cpp, .h)
+- Provide build instructions
+- Fix memory leaks in some basic scenarios (open/close/add keyframes/...)
+- Remove embeded use of binary `FFmpeg` use the one installed on the system
+- Provide .deb & .rpm package as installer
+- Add internal Qt project dependencies (All => depend on => AnimationItem.pro)
+
 1.8.4
 - Setup program added (Appimage is not supported anymore)
 - Use AppRun to start the application
