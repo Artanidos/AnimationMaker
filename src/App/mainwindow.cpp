@@ -19,11 +19,13 @@
 ****************************************************************************/
 #include "mainwindow.h"
 
+#include <QApplication>
 #include <QByteArray>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QCursor>
+#include <QDebug>
 #include <QDesktopWidget>
 #include <QDir>
 #include <QFileDialog>
@@ -42,7 +44,7 @@
 #include <QSettings>
 #include <QStatusBar>
 #include <QString>
-#include <QTest>
+#include <QThread>
 #include <QToolBar>
 #include <QVariant>
 #include <QVBoxLayout>
@@ -81,7 +83,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::loadPlugins()
 {
-    QDir pluginsDir(QDir::homePath() + "/AnimationMaker/plugins");
+    QDir pluginsDir(QCoreApplication::applicationDirPath());
+
+    if (!pluginsDir.cd(PLUGIN_DIR)) {
+        statusBar()->showMessage("Could not access plugin directory '" + PLUGIN_DIR + "'", 5000);
+
+        return;
+    }
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files))
     {
@@ -428,7 +436,9 @@ void MainWindow::sceneSizeChanged(int width, int height)
 
 void MainWindow::createStatusBar()
 {
-    statusBar()->showMessage(tr("Ready"));
+    if (statusBar()->currentMessage().isEmpty()) {
+        statusBar()->showMessage(tr("Ready"));
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -903,7 +913,7 @@ void MainWindow::exportMovie()
 
         m_timeline->setPlayheadPosition(i * delay);
 
-        QTest::qSleep(delay);
+        QThread::msleep(delay);
         QCoreApplication::processEvents(QEventLoop::AllEvents, delay);
 
         QImage img = exportView->grab().toImage();

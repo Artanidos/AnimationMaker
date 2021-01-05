@@ -11,9 +11,7 @@ Also see a video of the newest features [youtube](https://youtu.be/pa53WfUkbO0).
 
 # Installation
 
-AnimationMaker can be downloaded using the release section of this repository [releases](https://github.com/Artanidos/AnimationMaker/releases), the latest release provides an installer.
-
-Once installed the software is located in your home directory (to be changed later)
+AnimationMaker can be downloaded using the release section of this repository [releases](https://github.com/Artanidos/AnimationMaker/releases), the latest release provides a `.deb` and a `.rpm` package installer.
 
 # Build
 
@@ -24,7 +22,8 @@ In order to build AnimationMaker you must first setup either *QtCreator* or inst
 First you must download and install QtCreator
 
 1. Download the QtCreator installer from [Qt website](https://www.qt.io/download-qt-installer).
-2. Run it, when choosing Qt library, choose **version  5.12**, this is the currently used version
+2. Run it, when choosing Qt library, choose **version  5.12**, this is the currently used version.
+   Don't forget to pick the component 'gcc' in Qt version in order to obtain the necessary libraries
 3. Start QtCreator
 
 Then you can open the project and build it using QtCreator
@@ -51,7 +50,7 @@ mkdir build
 cd build
 qmake ../AnimationMaker.pro
 make -j2 # replace 2 with the number of cores on your CPU to speed up the build
-./src/App/AnimationMaker # to start it
+./output/AnimationMaker # to start it
 ```
 
 ## Contact

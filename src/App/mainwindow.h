@@ -120,6 +120,7 @@ protected:
     QMenu *exportMenu;
     QUndoStack *m_undoStack;
     const QString FFMPEG = "ffmpeg";
+    const QString PLUGIN_DIR = "plugins";
     
 public slots:
     void reset();
