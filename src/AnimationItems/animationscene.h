@@ -93,6 +93,7 @@ public:
 
     int scaling() {return m_scaling;}
     void setScaling(int scaling) {m_scaling = scaling;}
+    void addNewImage(QString filename, EditMode mode);
         
 signals:
     void itemAdded(QGraphicsItem *item);

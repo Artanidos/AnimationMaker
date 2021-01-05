@@ -86,6 +86,12 @@ void AnimationScene::deleteItem(AnimationItem *item)
     m_undoStack->push(deleteCommand);
 }
 
+void AnimationScene::addNewImage(QString filename, EditMode mode)
+{
+    QUndoCommand *addCommand = new AddItemCommand((width() / 2), (height() / 2), mode, filename, this);
+    m_undoStack->push(addCommand);
+}
+
 void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() != Qt::LeftButton)
@@ -123,34 +129,7 @@ void AnimationScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     else
     {
-        QString fileName;
-        QString filter;
-        QString title;
-        if(m_editMode == EditMode::ModeBitmap)
-        {
-            filter = "Image Files (*.png *.jpeg *.jpg *.gif *.bmp);;All Files (*)";
-            title = "Open Bitmap";
-        }
-        else if(m_editMode == EditMode::ModeSvg)
-        {
-            filter = "SVG Files (*.svg);;All Files (*)";
-            title = "Open SVG";
-        }
-        if(!filter.isEmpty())
-        {
-            QFileDialog *dialog = new QFileDialog();
-            dialog->setFileMode(QFileDialog::AnyFile);
-            dialog->setNameFilter(filter);
-            dialog->setWindowTitle(title);
-            dialog->setOption(QFileDialog::DontUseNativeDialog, true);
-            dialog->setAcceptMode(QFileDialog::AcceptOpen);
-            if(dialog->exec())
-                fileName = dialog->selectedFiles().first();
-            delete dialog;
-            if(fileName.isEmpty())
-                return;
-        }
-        QUndoCommand *addCommand = new AddItemCommand(mouseEvent->scenePos().x(), mouseEvent->scenePos().y(), m_editMode, fileName, this);
+        QUndoCommand *addCommand = new AddItemCommand(mouseEvent->scenePos().x(), mouseEvent->scenePos().y(), m_editMode, nullptr, this);
         m_undoStack->push(addCommand);
     }
 }

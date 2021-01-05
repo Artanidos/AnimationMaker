@@ -70,6 +70,7 @@ protected:
     void fillTree();
     void runExport(QStringList &args, QString path);
     void addCheckboxes(QTreeWidgetItem *treeItem, AnimationItem *item);
+    void addNewImage(AnimationScene::EditMode mode);
 
     QProcess *m_proc;
     QString m_url;
@@ -136,8 +137,8 @@ public slots:
     void setRectangleMode();
     void setEllipseMode();
     void setTextMode();
-    void setBitmapMode();
-    void setSvgMode();
+    void loadNewBitmap();
+    void loadNewSvg();
     void setPluginMode();
     void elementTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*);
     void sceneItemAdded(QGraphicsItem *);
