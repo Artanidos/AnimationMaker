@@ -25,6 +25,7 @@
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QCursor>
+#include <QDebug>
 #include <QDesktopWidget>
 #include <QDir>
 #include <QFileDialog>
