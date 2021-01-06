@@ -6,35 +6,11 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="32"
-   height="32"
-   viewBox="0 0 32 32"
+   width="63.999863"
+   height="64.013519"
+   viewBox="0 0 63.999863 64.01352"
    id="svg2"
-   version="1.1"
-   sodipodi:docname="logo.svg"
-   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1056"
-     id="namedview116"
-     showgrid="false"
-     inkscape:zoom="26.657659"
-     inkscape:cx="16.000839"
-     inkscape:cy="9.9972874"
-     inkscape:window-x="1920"
-     inkscape:window-y="444"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
+   version="1.1">
   <defs
      id="defs4">
     <linearGradient
@@ -102,17 +78,17 @@
   </metadata>
   <g
      id="layer1"
-     transform="translate(-296.84729,-723.42382)">
+     transform="translate(-296.84266,-723.79095)">
     <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.212651;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.425302;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect5425"
-       width="31.787348"
-       height="31.787348"
-       x="296.95361"
-       y="723.53033" />
+       width="63.574696"
+       height="63.574699"
+       x="297.0553"
+       y="724.0036" />
     <g
        id="g5409"
-       transform="matrix(-0.13548776,-0.00122388,-0.05882697,0.12406211,343.24416,632.95703)"
+       transform="matrix(-0.27097766,-0.00244827,-0.11765486,0.24817546,389.6368,542.82001)"
        style="filter:url(#filter5413)">
       <path
          id="rect5009"
