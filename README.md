@@ -53,6 +53,16 @@ make -j2 # replace 2 with the number of cores on your CPU to speed up the build
 ./output/AnimationMaker # to start it
 ```
 
+## Documentation
+
+This project comes with a _Doxygen_ source code documentation. To generate it use the following command:
+
+```bash
+doxygen ./Doxyfile
+```
+
+The documentation can then be accessed using the following entry page: `doc/html/index.html`
+
 ## Contact
 If you have any feature requests then just send me an email with your ideas to artanidos@gmail.com
 
