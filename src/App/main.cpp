@@ -28,15 +28,18 @@
 ****************************************************************************/
 #include <QApplication>
 #include <QStyleFactory>
+#include <QVersionNumber>
 
 #include "mainwindow.h"
+#include "version.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("AnimationMaker");
-    QCoreApplication::setApplicationVersion("1.8.4");
+    QVersionNumber version(VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD);
+    QCoreApplication::setApplicationVersion(version.toString());
     QCoreApplication::setOrganizationName("Artanidos");
 
     QFont newFont("Sans Serif", 10);

@@ -42,8 +42,11 @@ LIBS += -L$$OUT_PWD/../AnimationItems -lAnimationItems
 SOURCES += main.cpp \
     mainwindow.cpp \
 
-
 HEADERS += \
     mainwindow.h \
+    version.h \
 
 RESOURCES += ../images.qrc
+
+VERSION = VERSION_MAJOR.VERSION_MINOR.VERSION_BUILD
+

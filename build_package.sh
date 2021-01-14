@@ -38,6 +38,17 @@ then
     echo "Plugin folder not found, build package without plugins"
 fi
 
+_extract_version()
+{
+    local seg="$1"
+    echo "$(grep "VERSION_${seg}" ./src/App/version.h | cut -d" "  -f 3)"
+}
+
+major=$(_extract_version "MAJOR")
+minor=$(_extract_version "MINOR")
+build=$(_extract_version "BUILD")
+VERSION="${major}.${minor}.${build}"
+
 # rename the binary to lowercase letter to comply with deb packages
 mv ${SOURCE_DIR}/AnimationMaker ${SOURCE_DIR}/animationmaker
 
@@ -67,6 +78,6 @@ fpm \
     -m "Alexandre LAVIGNE" \
     --description "${PACKAGE_DESCRIPTION}" \
     --url "https://github.com/Artanidos/AnimationMaker" \
-    --version 1.9 \
+    --version ${VERSION} \
     ${deps[@]} \
     animationmaker plugins
