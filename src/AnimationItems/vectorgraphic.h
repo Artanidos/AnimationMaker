@@ -42,6 +42,7 @@ public:
     Vectorgraphic();
     Vectorgraphic(QString filename, AnimationScene *scene);
     Vectorgraphic(QByteArray arr, AnimationScene *scene);
+    ~Vectorgraphic();
     QString getHtml(QString id, QString assetsPath) Q_DECL_OVERRIDE;
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
     void scaleObjects();

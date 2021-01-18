@@ -61,6 +61,12 @@ Vectorgraphic::Vectorgraphic(QByteArray arr, AnimationScene *scene)
     setRect(0, 0, m_svg->boundingRect().width(), m_svg->boundingRect().height());
 }
 
+Vectorgraphic::~Vectorgraphic()
+{
+    delete m_renderer;
+    delete m_svg;
+}
+
 QString Vectorgraphic::getHtml(QString id, QString)
 {
     QString svg = QString(m_data);
