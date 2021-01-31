@@ -27,7 +27,7 @@ MOC_DIR       = mocs/
 
 DEPENDPATH   += ../../AnimationItems/
 INCLUDEPATH  += ../../AnimationItems/
-DESTDIR = $$OUT_PWD/../../../output/plugins
+DESTDIR = $$OUT_PWD/../../../output/opt/animationmaker/plugins/
 target.path = /opt/animationmaker/plugins
 
 LIBS         += -L$$OUT_PWD/../../AnimationItems -lAnimationItems

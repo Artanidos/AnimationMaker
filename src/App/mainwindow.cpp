@@ -84,11 +84,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::loadPlugins()
 {
-    QDir pluginsDir(QCoreApplication::applicationDirPath());
+    QDir pluginsDir = QDir();
 
     if (!pluginsDir.cd(PLUGIN_DIR)) {
         statusBar()->showMessage("Could not access plugin directory '" + PLUGIN_DIR + "'", 5000);
-
         return;
     }
 
