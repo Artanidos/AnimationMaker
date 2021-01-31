@@ -1,8 +1,9 @@
 [Desktop Entry]
 Type=Application
 Name=AnimationMaker
-Exec=usr/bin/AnimationMaker
-Icon=default
-Comment=AnimationMaker
-Terminal=true
+Exec=animationmaker
+Icon=animationmaker.svg
+Comment=AnimationMaker - quicly build animations
+Terminal=false
+Version=1.0
 Categories=Graphics;

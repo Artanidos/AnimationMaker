@@ -27,15 +27,15 @@ debug {
     DEFINES += DEBUG
 }
 
-TARGET = AnimationMaker
+TARGET = animationmaker
 TEMPLATE = app
 INSTALLS += target
 
 OBJECTS_DIR = objs/
 MOC_DIR = mocs/
 INCLUDEPATH += ../AnimationItems/
-DESTDIR = $$OUT_PWD/../../output
-target.path = /opt/animationmaker/
+DESTDIR = $$OUT_PWD/../../output/usr/bin/
+target.path = /usr/bin/animationmaker
 
 LIBS += -L$$OUT_PWD/../AnimationItems -lAnimationItems
 

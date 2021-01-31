@@ -121,7 +121,7 @@ protected:
     QMenu *exportMenu;
     QUndoStack *m_undoStack;
     const QString FFMPEG = "ffmpeg";
-    const QString PLUGIN_DIR = "plugins";
+    const QString PLUGIN_DIR = "/opt/animationmaker/plugins";
     
 public slots:
     void reset();

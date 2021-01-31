@@ -22,7 +22,7 @@ In order to build AnimationMaker you must first setup either *QtCreator* or inst
 First you must download and install QtCreator
 
 1. Download the QtCreator installer from [Qt website](https://www.qt.io/download-qt-installer).
-2. Run it, when choosing Qt library, choose **version  5.12**, this is the currently used version.
+2. Run it, when choosing Qt library, choose any version above **version 5.9.5**.
    Don't forget to pick the component 'gcc' in Qt version in order to obtain the necessary libraries
 3. Start QtCreator
 
