@@ -1,3 +1,13 @@
+1.9.1
+- Open bitmap/SVG takes one click, no need to click on the frame first
+- Add doxygen file to generate documentation
+- Resized mainWindow icon to 32x32 pixels
+- Better handle version numbers
+- Fix a memory leak/crash
+- Add Desktop file
+- move binary to /usr/bin, standard binary location
+- Update minimal version of Qt
+
 1.9.0
 - Build the UI as static library
 - Build single binary application using the UI static library
