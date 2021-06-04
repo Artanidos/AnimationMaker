@@ -124,6 +124,11 @@ void MainWindow::save()
 
 void MainWindow::saveAs()
 {
+    this->_saveAs();
+}
+
+bool MainWindow::_saveAs()
+{
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
     dialog->setFileMode(QFileDialog::AnyFile);
@@ -136,12 +141,14 @@ void MainWindow::saveAs()
         fileName = dialog->selectedFiles().first();
     delete dialog;
     if(fileName.isEmpty())
-        return;
+        return false;
 
     writeFile(fileName);
     loadedFile.setFile(fileName);
     saveAct->setEnabled(true);
     setTitle();
+
+    return true;
 }
 
 void MainWindow::saveItemAs()
@@ -443,8 +450,41 @@ void MainWindow::createStatusBar()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    // save user window preferences
     writeSettings();
-    event->accept();
+
+    // check if project should be saved or discard
+    QMessageBox save;
+    save.setText("The project has been modified.");
+    save.setInformativeText("Would you like to save ?");
+    save.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    save.setDefaultButton(QMessageBox::Save);
+    save.setIcon(QMessageBox::Warning);
+    int ret = save.exec();
+    switch (ret) {
+    case QMessageBox::Save:
+        //if project already linked to a file just save it
+        if (this->saveAct->isEnabled()) {
+            this->save();
+        } else {
+            if (!this->_saveAs()) {
+                // failed to save, do not quit
+                event->ignore();
+                return;
+            }
+        }
+        // fall through
+    case QMessageBox::Discard:
+        event->accept();
+        break;
+    case QMessageBox::Cancel:
+        // do not quit, reject the event
+        event->ignore();
+        break;
+    default:
+        QMessageBox::warning(this, "Unknown action", "The current action is unknown, do not quit");
+        event->ignore();
+    }
 }
 
 void MainWindow::writeSettings()

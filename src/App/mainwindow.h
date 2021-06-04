@@ -71,6 +71,7 @@ protected:
     void runExport(QStringList &args, QString path);
     void addCheckboxes(QTreeWidgetItem *treeItem, AnimationItem *item);
     void addNewImage(AnimationScene::EditMode mode);
+    bool _saveAs();
 
     QProcess *m_proc;
     QString m_url;
