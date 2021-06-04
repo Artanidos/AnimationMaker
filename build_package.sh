@@ -77,12 +77,14 @@ then
         "-d" "libqt5xml5"
         "-d" "libqt5widgets5"
         "-d" "libqt5svg5"
+        "-d" "ffmpeg"
     )
 else
     deps=(
         "-d" "qt5-qtbase"
         "-d" "qt5-qtbase-gui"
         "-d" "qt5-qtsvg"
+        "-d" "ffmpeg"
     )
 fi
 
