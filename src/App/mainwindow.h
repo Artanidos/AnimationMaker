@@ -55,6 +55,11 @@ public:
     ~MainWindow() override;
 
     void setTitle();
+
+signals:
+    void enableSave(bool enabled);
+    void enableSaveItem(bool enabled);
+    void setCheckedSelectAct(bool checked);
     
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -90,29 +95,14 @@ protected:
     QDockWidget *m_tooldock;
     QDockWidget *m_elementsdock;
     QTreeWidgetItem *m_root;
-    QAction *openAct;
-    QAction *newAct;
-    QAction *saveAct;
-    QAction *saveAsAct;
-    QAction *saveItemAsAct;
+    QList<QAction *> fileMenuActions;
     QAction *exitAct;
     QAction *aboutAct;
-    QAction *m_selectAct;
-    QAction *m_rectangleAct;
-    QAction *m_ellipseAct;
-    QAction *m_textAct;
-    QAction *m_svgAct;
-    QAction *m_bitmapAct;
-    QAction *showPropertyPanelAct;
-    QAction *showToolPanelAct;
-    QAction *showElementsAct;
+    QList<QAction *> toolPanelActions;
     QAction *showRulerAct;
+    QList<QAction *> viewMenuActions;
     QAction *exportMovieAct;
-    QAction *undoAct;
-    QAction *redoAct;
-    QAction *copyAct;
-    QAction *pasteAct;
-    QAction *delAct;
+    QList<QAction *> editMenuActions;
     QActionGroup *exportActionGroup;
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -146,7 +136,7 @@ public slots:
     void showPropertyPanel();
     void showToolPanel();
     void showElementsPanel();
-    void showRuler();
+    void showRuler(bool checked);
     void sceneSelectionChanged();
     void timelineSelectionChanged(AnimationItem*);
     void copy();
@@ -159,6 +149,7 @@ public slots:
     void changeZoom(int zoom);
     void elementVisibleStateChanged(int);
     void elementLockStateChanged(int);
+
 };
 
 #endif // MAINWINDOW_H

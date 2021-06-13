@@ -94,10 +94,10 @@ private:
     QTreeWidget *m_tree;
     QMenu *m_contextMenu;
     QAction *m_delAct;
-    QAction *m_forwardAct;
-    QAction *m_pauseAct;
-    QAction *m_playAct;
-    QAction *m_reverseAct;
+    QAction *forwardAct;
+    QAction *pauseAct;
+    QAction *playAct;
+    QAction *reverseAct;
     AnimationScene *m_scene;
     PlayHead *m_playhead;
     QLabel *m_time;

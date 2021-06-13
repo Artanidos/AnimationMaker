@@ -48,21 +48,27 @@ AnimationItem::AnimationItem(AnimationScene *scene, bool isSceneRect)
 
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 
-    delAct = new QAction(tr("Delete"), this);
+    QAction *delAct = new QAction(tr("Delete"), this);
     delAct->setShortcut(tr("Delete"));
     connect(delAct, SIGNAL(triggered()), this, SLOT(deleteItem()));
 
-    bringToFrontAct = new QAction("Bring to front");
+    QAction *bringToFrontAct = new QAction("Bring to front", this);
     connect(bringToFrontAct, SIGNAL(triggered()), this, SLOT(bringToFrontAction()));
 
-    sendToBackAct = new QAction("Send to back");
+    QAction *sendToBackAct = new QAction("Send to back", this);
     connect(sendToBackAct, SIGNAL(triggered()), this, SLOT(sendToBackAction()));
 
-    raiseAct = new QAction("Raise");
+    QAction *raiseAct = new QAction("Raise", this);
     connect(raiseAct, SIGNAL(triggered()), this, SLOT(raiseAction()));
 
-    lowerAct = new QAction("Lower");
+    QAction *lowerAct = new QAction("Lower", this);
     connect(lowerAct, SIGNAL(triggered()), this, SLOT(lowerAction()));
+
+    contextMenuActions.append(delAct);
+    contextMenuActions.append(bringToFrontAct);
+    contextMenuActions.append(sendToBackAct);
+    contextMenuActions.append(raiseAct);
+    contextMenuActions.append(lowerAct);
 
     m_contextMenu = new QMenu();
     m_contextMenu->addAction(delAct);
@@ -90,11 +96,6 @@ AnimationItem::~AnimationItem()
     }
     delete m_contextMenu;
     delete m_keyframes;
-    delete delAct;
-    delete bringToFrontAct;
-    delete sendToBackAct;
-    delete raiseAct;
-    delete lowerAct;
     if(m_hasHandles)
     {
         for(int i = 0; i < 8; i++)

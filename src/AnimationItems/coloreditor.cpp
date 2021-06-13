@@ -38,27 +38,33 @@ ColorEditor::ColorEditor(QString label)
     m_hue = new QSpinBox();
     m_saturation = new QSpinBox();
     m_lightness = new QSpinBox();
-    m_labelHue = new QLabel("H");
-    m_labelSaturation = new QLabel("S");
-    m_labelLightness = new QLabel("L");
+    QLabel *m_labelHue = new QLabel("H");
+    QLabel *m_labelSaturation = new QLabel("S", this);
+    QLabel *m_labelLightness = new QLabel("L", this);
+
     m_red = new QSpinBox();
     m_green = new QSpinBox();
     m_blue = new QSpinBox();
-    m_labelRed = new QLabel("R");
-    m_labelGreen = new QLabel("G");
-    m_labelBlue = new QLabel("B");
+    QLabel *m_labelRed = new QLabel("R", this);
+    QLabel *m_labelGreen = new QLabel("G", this);
+    QLabel *m_labelBlue = new QLabel("B", this);
+
+    labelsRGB.append(m_labelRed);
+    labelsRGB.append(m_labelGreen);
+    labelsRGB.append(m_labelBlue);
+    labelsSHL.append(m_labelHue);
+    labelsSHL.append(m_labelLightness);
+    labelsSHL.append(m_labelSaturation);
+
     m_hue->setVisible(false);
     m_saturation->setVisible(false);
     m_lightness->setVisible(false);
     m_red->setVisible(false);
     m_green->setVisible(false);
     m_blue->setVisible(false);
-    m_labelHue->setVisible(false);
-    m_labelSaturation->setVisible(false);
-    m_labelLightness->setVisible(false);
-    m_labelRed->setVisible(false);
-    m_labelGreen->setVisible(false);
-    m_labelBlue->setVisible(false);
+    foreach(QLabel *l, labelsRGB + labelsSHL) {
+        l->setVisible(false);
+    }
     m_red->setMinimum(0);
     m_red->setMaximum(255);
     m_green->setMinimum(0);
@@ -71,12 +77,9 @@ ColorEditor::ColorEditor(QString label)
     m_saturation->setMaximum(100);
     m_lightness->setMinimum(0);
     m_lightness->setMaximum(100);
-    m_labelHue->setFixedWidth(15);
-    m_labelSaturation->setFixedWidth(15);
-    m_labelLightness->setFixedWidth(15);
-    m_labelRed->setFixedWidth(15);
-    m_labelGreen->setFixedWidth(15);
-    m_labelBlue->setFixedWidth(15);
+    foreach (QLabel *l, labelsRGB + labelsSHL) {
+        l->setFixedWidth(15);
+    }
     QLabel *l = new QLabel(label);
     l->setMinimumWidth(100);
     m_addKeyframe = new FlatButton(":/images/raute.png", ":/images/raute-hover.png");
@@ -156,15 +159,12 @@ void ColorEditor::setExpanded(bool value)
 {
     m_colorPicker->setVisible(value);
     m_hueSlider->setVisible(value);
-    m_labelHue->setVisible(value);
-    m_labelSaturation->setVisible(value);
-    m_labelLightness->setVisible(value);
     m_hue->setVisible(value);
     m_saturation->setVisible(value);
     m_lightness->setVisible(value);
-    m_labelRed->setVisible(value);
-    m_labelGreen->setVisible(value);
-    m_labelBlue->setVisible(value);
+    foreach (QLabel *l, labelsRGB + labelsSHL) {
+        l->setVisible(value);
+    }
     m_red->setVisible(value);
     m_green->setVisible(value);
     m_blue->setVisible(value);
