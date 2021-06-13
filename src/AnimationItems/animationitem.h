@@ -185,11 +185,7 @@ private:
     QRectF m_rect;
     QPen m_pen;
     QBrush m_brush;
-    QAction *delAct;
-    QAction *bringToFrontAct;
-    QAction *sendToBackAct;
-    QAction *lowerAct;
-    QAction *raiseAct;
+    QList<QAction *> contextMenuActions;
     QHash<QString, KeyFrame*> *m_keyframes;
     qreal m_oldx, m_oldy, m_oldwidth, m_oldheight;
     int m_opacity;

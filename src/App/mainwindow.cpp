@@ -76,10 +76,6 @@ MainWindow::~MainWindow()
     delete m_timeline;
     delete m_elementTree;
     delete m_view;
-    delete showElementsAct;
-    delete showPropertyPanelAct;
-    delete showRulerAct;
-    delete showToolPanelAct;
 }
 
 void MainWindow::loadPlugins()
@@ -145,7 +141,7 @@ bool MainWindow::_saveAs()
 
     writeFile(fileName);
     loadedFile.setFile(fileName);
-    saveAct->setEnabled(true);
+    emit this->enableSave(true);
     setTitle();
 
     return true;
@@ -201,7 +197,7 @@ void MainWindow::newfile()
 {
     reset();
     fillTree();
-    saveAct->setEnabled(false);
+    emit this->enableSave(false);
     loadedFile.setFile("");
     setTitle();
     m_scenePropertyEditor->setScene(m_scene);
@@ -235,7 +231,7 @@ void MainWindow::open()
     if(fullyLoaded)
     {
         loadedFile.setFile(fileName);
-        saveAct->setEnabled(true);
+        emit this->enableSave(true);
         setTitle();
     }
     m_timeline->setPlayheadPosition(0);
@@ -282,30 +278,31 @@ void MainWindow::idChanged(AnimationItem *item, QString id)
 
 void MainWindow::createGui()
 {
-    QToolBar *toolpanel = new QToolBar();
+    QToolBar *toolpanel = new QToolBar(this);
     toolpanel->setOrientation(Qt::Vertical);
     QActionGroup *anActionGroup = new QActionGroup(toolpanel);
-    m_selectAct = new QAction("Select", anActionGroup);
+    QAction *m_selectAct = new QAction("Select", anActionGroup);
     m_selectAct->setIcon(QIcon(":/images/arrow.png"));
     m_selectAct->setCheckable(true);
+    connect(this, SIGNAL(setCheckedSelectAct(bool)), m_selectAct, SLOT(setChecked(bool)));
 
-    m_rectangleAct = new QAction("Rectangle", anActionGroup);
+    QAction *m_rectangleAct = new QAction("Rectangle", anActionGroup);
     m_rectangleAct->setIcon(QIcon(":/images/rectangle.png"));
     m_rectangleAct->setCheckable(true);
 
-    m_ellipseAct = new QAction("Ellipse", anActionGroup);
+    QAction *m_ellipseAct = new QAction("Ellipse", anActionGroup);
     m_ellipseAct->setIcon(QIcon(":/images/ellipse.png"));
     m_ellipseAct->setCheckable(true);
 
-    m_textAct = new QAction("Text", anActionGroup);
+    QAction *m_textAct = new QAction("Text", anActionGroup);
     m_textAct->setIcon(QIcon(":/images/text.png"));
     m_textAct->setCheckable(true);
 
-    m_bitmapAct = new QAction("Bitmap", anActionGroup);
+    QAction *m_bitmapAct = new QAction("Bitmap", anActionGroup);
     m_bitmapAct->setIcon(QIcon(":/images/camera.png"));
     m_bitmapAct->setCheckable(true);
 
-    m_svgAct = new QAction("Vectorgraphic", anActionGroup);
+    QAction *m_svgAct = new QAction("Vectorgraphic", anActionGroup);
     m_svgAct->setIcon(QIcon(":/images/svg.png"));
     m_svgAct->setCheckable(true);
 
@@ -464,7 +461,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     switch (ret) {
     case QMessageBox::Save:
         //if project already linked to a file just save it
-        if (this->saveAct->isEnabled()) {
+        if (!loadedFile.fileName().isEmpty()) {
             this->save();
         } else {
             if (!this->_saveAs()) {
@@ -513,33 +510,39 @@ void MainWindow::readSettings()
     bool showRulers = settings.value("rulers", "true").toBool();
     if(!showRulers)
     {
-        showRulerAct->setChecked(false);
-        m_view->showRulers(false);
+        emit showRulerAct->toggled(false);
     }
 }
 
 void MainWindow::createActions()
 {
-    openAct = new QAction(tr("&Open..."), this);
+    QAction *openAct = new QAction(tr("&Open..."), this);
     openAct->setShortcut(QKeySequence::Open);
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
+    this->fileMenuActions.append(openAct);
 
-    newAct = new QAction(tr("&New"), this);
+    QAction *newAct = new QAction(tr("&New"), this);
     newAct->setShortcut(QKeySequence::New);
     connect(newAct, SIGNAL(triggered()), this, SLOT(newfile()));
+    this->fileMenuActions.append(newAct);
 
-    saveAct = new QAction(tr("&Save"), this);
+    QAction *saveAct = new QAction(tr("&Save"), this);
     saveAct->setEnabled(false);
     saveAct->setShortcut(QKeySequence::Save);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
+    connect(this, SIGNAL(enableSave(bool)), saveAct, SLOT(setEnabled(bool)));
+    this->fileMenuActions.append(saveAct);
 
-    saveAsAct = new QAction(tr("Save &As..."), this);
+    QAction *saveAsAct = new QAction(tr("Save &As..."), this);
     saveAsAct->setShortcut(QKeySequence::SaveAs);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+    this->fileMenuActions.append(saveAsAct);
 
-    saveItemAsAct = new QAction(tr("Save &Item as..."), this);
+    QAction *saveItemAsAct = new QAction(tr("Save &Item as..."), this);
     saveItemAsAct->setEnabled(false);
     connect(saveItemAsAct, SIGNAL(triggered()), this, SLOT(saveItemAs()));
+    connect(this, SIGNAL(enableSaveItem(bool)), saveItemAsAct, SLOT(setEnabled(bool)));
+    this->fileMenuActions.append(saveItemAsAct);
 
     exportMovieAct = new QAction(tr("Export Movie"), this);
     connect(exportMovieAct, SIGNAL(triggered()), this, SLOT(exportMovie()));
@@ -549,37 +552,46 @@ void MainWindow::createActions()
     exitAct->setStatusTip(tr("Exit the application"));
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    undoAct = m_undoStack->createUndoAction(this, tr("&Undo"));
+    QAction *undoAct = m_undoStack->createUndoAction(this, tr("&Undo"));
     undoAct->setShortcuts(QKeySequence::Undo);
+    this->editMenuActions.append(undoAct);
 
-    redoAct = m_undoStack->createRedoAction(this, tr("&Redo"));
+    QAction *redoAct = m_undoStack->createRedoAction(this, tr("&Redo"));
     redoAct->setShortcuts(QKeySequence::Redo);
+    this->editMenuActions.append(redoAct);
 
-    copyAct = new QAction(tr("&Copy"), this);
+    QAction *copyAct = new QAction(tr("&Copy"), this);
     copyAct->setShortcuts(QKeySequence::Copy);
     connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
+    this->editMenuActions.append(copyAct);
 
-    pasteAct = new QAction(tr("&Paste"), this);
+    QAction *pasteAct = new QAction(tr("&Paste"), this);
     pasteAct->setShortcuts(QKeySequence::Paste);
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
+    this->editMenuActions.append(pasteAct);
 
-    delAct = new QAction(tr("&Delete"), this);
+    QAction *delAct = new QAction(tr("&Delete"), this);
     delAct->setShortcut(QKeySequence::Delete);
     connect(delAct, SIGNAL(triggered()), this, SLOT(del()));
+    this->editMenuActions.append(delAct);
 
-    showElementsAct = new QAction("Elements");
+    QAction *showElementsAct = new QAction("Elements", this);
     connect(showElementsAct, SIGNAL(triggered()), this, SLOT(showElementsPanel()));
+    this->viewMenuActions.append(showElementsAct);
 
-    showPropertyPanelAct = new QAction("Properties");
+    QAction *showPropertyPanelAct = new QAction("Properties", this);
     connect(showPropertyPanelAct, SIGNAL(triggered()), this, SLOT(showPropertyPanel()));
+    this->viewMenuActions.append(showPropertyPanelAct);
 
-    showToolPanelAct = new QAction("Tools");
+    QAction *showToolPanelAct = new QAction("Tools", this);
     connect(showToolPanelAct, SIGNAL(triggered()), this, SLOT(showToolPanel()));
+    this->viewMenuActions.append(showToolPanelAct);
 
-    showRulerAct = new QAction("Rulers");
+    showRulerAct = new QAction("Rulers", this);
     showRulerAct->setCheckable(true);
     showRulerAct->setChecked(true);
-    connect(showRulerAct, SIGNAL(triggered()), this, SLOT(showRuler()));
+    connect(showRulerAct, SIGNAL(triggered(bool)), this, SLOT(showRuler(bool)));
+    this->viewMenuActions.append(showRulerAct);
 
     aboutAct = new QAction(tr("&About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
@@ -595,15 +607,11 @@ void MainWindow::createMenus()
     importMenu = new QMenu(tr("Import"));
     importMenu->setEnabled(false);
 
-    exportMenu = new QMenu(tr("Export"));
-    exportMenu->setEnabled(false);
-
     fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(newAct);
-    fileMenu->addAction(openAct);
-    fileMenu->addAction(saveAct);
-    fileMenu->addAction(saveAsAct);
-    fileMenu->addAction(saveItemAsAct);
+    foreach (QAction *action, this->fileMenuActions) {
+        fileMenu->addAction(action);
+    }
+
     fileMenu->addSeparator();
     QMenu *exportMenu = fileMenu->addMenu("Export");
     exportMenu->addAction(exportMovieAct);
@@ -618,27 +626,20 @@ void MainWindow::createMenus()
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
-    editMenu->addAction(undoAct);
-    editMenu->addAction(redoAct);
-    editMenu->addAction(copyAct);
-    editMenu->addAction(pasteAct);
-    editMenu->addAction(delAct);
+    foreach(QAction *action, this->editMenuActions) {
+        editMenu->addAction(action);
+        this->addAction(action);
+    }
 
     viewMenu = menuBar()->addMenu(tr("&View"));
-    viewMenu->addAction(showToolPanelAct);
-    viewMenu->addAction(showElementsAct);
-    viewMenu->addAction(showPropertyPanelAct);
-    viewMenu->addAction(showRulerAct);
+    foreach(QAction *action, this->viewMenuActions) {
+        viewMenu->addAction(action);
+    }
 
     menuBar()->addSeparator();
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
-
-    this->addAction(undoAct);
-    this->addAction(redoAct);
-    this->addAction(copyAct);
-    this->addAction(pasteAct);
 }
 
 void MainWindow::about()
@@ -752,10 +753,10 @@ void MainWindow::sceneSelectionChanged()
     if(m_scene->selectedItems().count())
     {
         item = dynamic_cast<AnimationItem*>(m_scene->selectedItems().first());
-        saveItemAsAct->setEnabled(true);
+        emit this->enableSaveItem(true);
     }
     else
-        saveItemAsAct->setEnabled(false);
+        emit this->enableSaveItem(false);
 
     if(item)
     {
@@ -832,7 +833,7 @@ void MainWindow::sceneItemAdded(QGraphicsItem *item)
     treeItem->setSelected(true);
 
     item->setSelected(true);
-    m_selectAct->setChecked(true);
+    emit this->setCheckedSelectAct(true);
     m_scene->setEditMode(AnimationScene::EditMode::ModeSelect);
     m_scene->setCursor(Qt::ArrowCursor);
 }
@@ -852,9 +853,9 @@ void MainWindow::showElementsPanel()
     m_elementsdock->setVisible(true);
 }
 
-void MainWindow::showRuler()
+void MainWindow::showRuler(bool checked)
 {
-    m_view->showRulers(showRulerAct->isChecked());
+    m_view->showRulers(checked);
 }
 
 void MainWindow::copy()

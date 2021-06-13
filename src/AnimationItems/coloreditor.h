@@ -59,12 +59,8 @@ private:
     QSpinBox *m_blue;
     QLineEdit *m_color;
     ColorRect *m_rect;
-    QLabel *m_labelHue;
-    QLabel *m_labelSaturation;
-    QLabel *m_labelLightness;
-    QLabel *m_labelRed;
-    QLabel *m_labelGreen;
-    QLabel *m_labelBlue;
+    QList<QLabel *> labelsRGB;
+    QList<QLabel *> labelsSHL;
     FlatButton *m_addKeyframe;
 
     void setColorParts(QColor value);
