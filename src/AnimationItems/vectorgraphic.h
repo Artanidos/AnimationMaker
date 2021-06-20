@@ -55,7 +55,7 @@ public:
     void changeAttributeName(QString oldName, QString newName);
     QHash<QString, QString> attributes() {return m_attributes;}
 
-    enum { Type = UserType + 5 };
+    enum { Type = UserType + SVG_TYPE };
     int type() const Q_DECL_OVERRIDE;
     QString typeName() {return "Vectorgraphic";}
     QDomElement getXml(QDomDocument);

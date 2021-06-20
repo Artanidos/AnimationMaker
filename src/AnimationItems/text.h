@@ -58,7 +58,7 @@ public:
     inline QFont font() {return m_font;}
     void setFont(QFont font);
 
-    enum { Type = UserType + 3 };
+    enum { Type = UserType + TEXT_TYPE };
     int type() const Q_DECL_OVERRIDE;
     QString typeName() Q_DECL_OVERRIDE {return "Text";}
     QDomElement getXml(QDomDocument) Q_DECL_OVERRIDE;

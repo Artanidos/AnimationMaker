@@ -38,7 +38,7 @@ public:
 
     void paint( QPainter *paint, const QStyleOptionGraphicsItem *, QWidget *);
     QString getHtml(QString id, QString assetsPath) Q_DECL_OVERRIDE;
-    enum { Type = UserType + 2 };
+    enum { Type = UserType + ELLIPSE_TYPE };
     int type() const Q_DECL_OVERRIDE;
     QString typeName() {return "Ellipse";}
     QDomElement getXml(QDomDocument);

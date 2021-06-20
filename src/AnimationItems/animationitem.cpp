@@ -26,6 +26,8 @@
 
 #include "commands.h"
 
+#define NR_HANDLES 8
+
 AnimationItem::AnimationItem(AnimationScene *scene, bool isSceneRect)
 {
     m_scene = scene;
@@ -98,7 +100,7 @@ AnimationItem::~AnimationItem()
     delete m_keyframes;
     if(m_hasHandles)
     {
-        for(int i = 0; i < 8; i++)
+        for(int i = 0; i < NR_HANDLES; i++)
         {
             delete m_handles[i];
         }
@@ -680,7 +682,7 @@ QVariant AnimationItem::itemChange(GraphicsItemChange change, const QVariant &va
         {
             if(!m_hasHandles)
             {
-                for(int i = 0; i < 8; i++)
+                for(int i = 0; i < NR_HANDLES; i++)
                 {
                     m_handles[i] = new ItemHandle(this, i, scene()->scaling());
                     m_handles[i]->installSceneEventFilter(this);
@@ -691,7 +693,7 @@ QVariant AnimationItem::itemChange(GraphicsItemChange change, const QVariant &va
         }
         else
         {
-            for(int i = 0; i < 8; i++)
+            for(int i = 0; i < NR_HANDLES; i++)
             {
                 delete m_handles[i];
             }
@@ -729,7 +731,7 @@ void AnimationItem::adjustKeyframes(QString propertyName, QVariant value, int ti
         {
             if(autotransition)
             {
-                if((*key)->prev()->easing() > -1)
+                if((*key)->prev()->easing() > NO_TRANSITION)
                 {
                     (*key)->prev()->setEasing(-1);
                     emit transitionRemoved(propertyName, (*key)->prev());

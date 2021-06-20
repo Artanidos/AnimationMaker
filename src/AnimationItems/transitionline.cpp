@@ -86,7 +86,7 @@ void TransitionLine::addKeyframe(QString propertyName, KeyFrame *key)
     if(propertyName != m_propertyName)
         return;
 
-    if(key->prev() && key->prev()->easing() > -1)
+    if(key->prev() && key->prev()->easing() > NO_TRANSITION)
     {
         Transition *trans = new Transition(this, key->prev(), m_timeline, m_undostack);
         trans->move(key->prev()->time() / 5 - m_horizontalScrollValue * 20,0);
@@ -98,7 +98,7 @@ void TransitionLine::addKeyframe(QString propertyName, KeyFrame *key)
         removeKeyframe(propertyName, key->prev());
         return;
     }
-    if(key->easing() > -1)
+    if(key->easing() > NO_TRANSITION)
     {
         // no need to add a keyframehandle when a transition exists
         // transition will be added with next keyframe
@@ -139,7 +139,7 @@ void TransitionLine::removeTransition(QString propertyName, KeyFrame *key)
             update();
         }
     }
-    if(!key->prev() || key->prev()->easing() == -1)
+    if(!key->prev() || key->prev()->easing() == NO_TRANSITION)
     {
         KeyframeHandle *handleLeft = new KeyframeHandle(this, key);
         connect(handleLeft, SIGNAL(keyframeDeleted(KeyframeHandle*)), this, SLOT(deleteKeyframe(KeyframeHandle*)));
@@ -147,7 +147,7 @@ void TransitionLine::removeTransition(QString propertyName, KeyFrame *key)
         connect(handleLeft, SIGNAL(keyframeMoved(KeyframeHandle*,int)), this, SLOT(moveKeyframe(KeyframeHandle*,int)));
         handleLeft->move(key->time() / 5 - m_horizontalScrollValue * 20 - 6, 2);
     }
-    if(!key->next()->next() || key->next()->easing() == -1)
+    if(!key->next()->next() || key->next()->easing() == NO_TRANSITION)
     {
         KeyframeHandle *handleRight = new KeyframeHandle(this, key->next());
         connect(handleRight, SIGNAL(keyframeDeleted(KeyframeHandle*)), this, SLOT(deleteKeyframe(KeyframeHandle*)));
@@ -243,10 +243,10 @@ void TransitionLine::moveTransition(Transition *transition, int time)
     if(time >= 0
             && transition->key()->time() != time
             && (transition->key()->next()->next() == nullptr
-                 || (transition->key()->next()->easing() > -1 && transition->key()->next()->next()->time() - 100 >= transition->key()->next()->time() - transition->key()->time() + time)
+                 || (transition->key()->next()->easing() > NO_TRANSITION && transition->key()->next()->next()->time() - 100 >= transition->key()->next()->time() - transition->key()->time() + time)
                  || (transition->key()->next()->easing() < 0 && transition->key()->next()->next()->time() >= transition->key()->next()->time() - transition->key()->time() + time))
             && (transition->key()->prev() == nullptr
-                || (transition->key()->prev()->easing() > -1 && transition->key()->prev()->time() + 100 <= time)
+                || (transition->key()->prev()->easing() > NO_TRANSITION && transition->key()->prev()->time() + 100 <= time)
                 || (transition->key()->prev()->easing() < 0 && transition->key()->prev()->time() <= time)))
     {
         QUndoCommand *cmd = new MoveTransitionCommand(transition->key(), transition->key()->time(), time, m_timeline);

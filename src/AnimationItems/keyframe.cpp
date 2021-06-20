@@ -22,7 +22,7 @@
 
 KeyFrame::KeyFrame()
 {
-    m_easing = -1; // no transition
+    m_easing = NO_TRANSITION; // no transition
     m_next = NULL;
     m_prev = NULL;
 }

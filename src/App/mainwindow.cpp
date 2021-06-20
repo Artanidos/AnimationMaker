@@ -53,6 +53,8 @@
 #include "interfaces.h"
 #include "plugins.h"
 
+#define FILE_SAVE_EXT "amx"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
@@ -132,7 +134,7 @@ bool MainWindow::_saveAs()
     dialog->setWindowTitle(tr("Save Animation"));
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptSave);
-    dialog->setDefaultSuffix("amx");
+    dialog->setDefaultSuffix(FILE_SAVE_EXT);
     if(dialog->exec())
         fileName = dialog->selectedFiles().first();
     delete dialog;
@@ -156,7 +158,7 @@ void MainWindow::saveItemAs()
     dialog->setWindowTitle(tr("Save Animation"));
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptSave);
-    dialog->setDefaultSuffix("amx");
+    dialog->setDefaultSuffix(FILE_SAVE_EXT);
     if(dialog->exec())
         fileName = dialog->selectedFiles().first();
     delete dialog;
@@ -209,7 +211,7 @@ void MainWindow::open()
     QString fileName;
     QFileDialog *dialog = new QFileDialog();
     dialog->setFileMode(QFileDialog::AnyFile);
-    dialog->setNameFilter(tr("AnimationMaker (*.amx);;All Files (*)"));
+    dialog->setNameFilter(tr("AnimationMaker (*." FILE_SAVE_EXT ");;All Files (*)"));
     dialog->setWindowTitle(tr("Open Animation"));
     dialog->setOption(QFileDialog::DontUseNativeDialog, true);
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
@@ -256,10 +258,10 @@ void MainWindow::fillTree()
 
             treeItem->setText(0, ri->id());
             treeItem->setIcon(0, QIcon(":/images/rect.png"));
-            treeItem->setData(0, 3, qVariantFromValue((void *) ri));
+            treeItem->setData(0,  Qt::ToolTipRole, qVariantFromValue((void *) ri));
             m_root->addChild(treeItem);
             addCheckboxes(treeItem, ri);
-            connect(ri, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
+            connect(ri, SIGNAL(idChanged(AnimationItem*,QString)), this, SLOT(idChanged(AnimationItem*,QString)));
         }
     }
 }
@@ -268,7 +270,7 @@ void MainWindow::idChanged(AnimationItem *item, QString id)
 {
     for(int i=0; i < m_root->childCount(); i++)
     {
-        if(m_root->child(i)->data(0, 3).value<void *>() == item)
+        if(m_root->child(i)->data(0, Qt::ToolTipRole).value<void *>() == item)
         {
             m_root->child(i)->setText(0, id);
             break;
@@ -420,7 +422,7 @@ void MainWindow::createGui()
 void MainWindow::elementTreeItemChanged(QTreeWidgetItem *newItem, QTreeWidgetItem *)
 {
     m_scene->clearSelection();
-    AnimationItem *item = (AnimationItem *)  newItem->data(0, 3).value<void *>();
+    AnimationItem *item = (AnimationItem *)  newItem->data(0, Qt::ToolTipRole).value<void *>();
     if(item)
     {
         item->setSelected(true);
@@ -646,7 +648,13 @@ void MainWindow::about()
 {
     QMessageBox msg;
     msg.setWindowTitle("About AnimationMaker");
-    msg.setText("AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n(C) Copyright 2018 Olaf Japp. All rights reserved.\n\nThe program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.");
+    msg.setText(
+        "AnimationMaker\nVersion: " + QCoreApplication::applicationVersion() + "\n"
+        "(C) Copyright 2018 Olaf Japp. All rights reserved.\n"
+        "\n"
+        "The program is provided AS IS with NO WARRANTY OF ANY KIND,"
+        "INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE."
+    );
     msg.setIconPixmap(QPixmap(":/images/logo.png"));
     msg.exec();
 }
@@ -765,7 +773,7 @@ void MainWindow::sceneSelectionChanged()
         for(int i=0; i<m_root->childCount(); i++)
         {
             QTreeWidgetItem *treeItem = m_root->child(i);
-            if(treeItem->data(0, 3).value<void *>() == item)
+            if(treeItem->data(0, Qt::ToolTipRole).value<void *>() == item)
                 treeItem->setSelected(true);
             else
                 treeItem->setSelected(false);
@@ -819,7 +827,7 @@ void MainWindow::sceneItemAdded(QGraphicsItem *item)
     QTreeWidgetItem *treeItem = new QTreeWidgetItem();
     treeItem->setText(0, ri->id());
     treeItem->setIcon(0, QIcon(":/images/rect.png"));
-    treeItem->setData(0, 3, qVariantFromValue((void *) ri));
+    treeItem->setData(0, Qt::ToolTipRole, qVariantFromValue((void *) ri));
     connect(ri, SIGNAL(idChanged(AnimationItem *, QString)), this, SLOT(idChanged(AnimationItem *, QString)));
 
     m_root->addChild(treeItem);
@@ -882,7 +890,7 @@ void MainWindow::sceneItemRemoved(AnimationItem *item)
 {
     for(int i=0; i<m_root->childCount(); i++)
     {
-        if(m_root->child(i)->data(0, 3).value<void *>() == item)
+        if(m_root->child(i)->data(0, Qt::ToolTipRole).value<void *>() == item)
         {
             QTreeWidgetItem *treeItem = m_root->child(i);
             m_root->removeChild(treeItem);
