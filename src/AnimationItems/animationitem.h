@@ -44,6 +44,14 @@
 #include "keyframe.h"
 #include "itemhandle.h"
 
+// Defined user type for custome AnimationItems
+#define RECTANGLE_TYPE 1
+#define ELLIPSE_TYPE 2
+#define TEXT_TYPE 3
+#define BITMAP_TYPE 4
+#define SVG_TYPE 5
+
+
 class AnimationScene;
 class PropertyEditorInterface;
 

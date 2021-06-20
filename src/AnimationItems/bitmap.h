@@ -46,7 +46,7 @@ public:
     QImage getImage();
     void setImage(QImage image);
 
-    enum { Type = UserType + 4 };
+    enum { Type = UserType + BITMAP_TYPE };
     int type() const Q_DECL_OVERRIDE;
     QString typeName() {return "Bitmap";}
     QDomElement getXml(QDomDocument);

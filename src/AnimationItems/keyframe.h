@@ -24,6 +24,8 @@
 #include <QObject>
 #include <QVariant>
 
+#define NO_TRANSITION -1
+
 class KeyFrame : public QObject
 {
     Q_OBJECT

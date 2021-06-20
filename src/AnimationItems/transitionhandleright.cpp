@@ -50,12 +50,12 @@ void TransitionHandleRight::mouseMoveEvent(QMouseEvent *ev)
             newVal = m_key->next()->time();
         if(m_key->prev()->time() >= newVal)
             newVal = m_key->prev()->time() + 100;
-        if(m_key->easing() > -1 && m_key->next()->time() <= newVal)
+        if(m_key->easing() > NO_TRANSITION && m_key->next()->time() <= newVal)
             newVal = m_key->next()->time() - 100;
         m_key->setTime(newVal);
         Transition *transition = dynamic_cast<Transition*>(parent());
         transition->resizeTransition();
-        if(m_key->easing() > -1)
+        if(m_key->easing() > NO_TRANSITION)
         {
             TransitionLine *tl = dynamic_cast<TransitionLine*>(transition->parent());
             tl->getTransition(m_key)->resizeTransition();

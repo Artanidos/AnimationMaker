@@ -207,9 +207,9 @@ void Timeline::transitionResized(KeyFrame *key)
             if(transition)
             {
                 transition->resizeTransition();
-                if(key->next()->easing() > -1)
+                if(key->next()->easing() > NO_TRANSITION)
                     line->getTransition(key->next())->resizeTransition();
-                if(key->prev() && key->prev()->easing() > -1)
+                if(key->prev() && key->prev()->easing() > NO_TRANSITION)
                     line->getTransition(key->prev())->resizeTransition();
                 return;
             }
@@ -437,9 +437,9 @@ void Timeline::moveTransition(KeyFrame *key, int time)
 {
     key->next()->setTime(key->next()->time() - key->time() + time);
     key->setTime(time);
-    if(key->next()->easing() > -1)
+    if(key->next()->easing() > NO_TRANSITION)
         transitionResized(key->next());
-    if(key->prev() && key->prev()->easing() > -1)
+    if(key->prev() && key->prev()->easing() > NO_TRANSITION)
         transitionResized(key->prev());
     transitionMoved(key);
 }

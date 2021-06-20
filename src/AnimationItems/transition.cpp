@@ -100,7 +100,7 @@ void Transition::mouseMoveEvent(QMouseEvent *ev)
     {
         TransitionLine *tl = dynamic_cast<TransitionLine*>(parent());
         m_newTime = calculatePos(ev->x(), tl->horizontalScrollValue());
-        if(m_key->prev() && m_key->prev()->easing() > -1)
+        if(m_key->prev() && m_key->prev()->easing() > NO_TRANSITION)
         {
             QList<Transition*> transitions = tl->findChildren<Transition*>();
             foreach(Transition *trans, transitions)
@@ -112,7 +112,7 @@ void Transition::mouseMoveEvent(QMouseEvent *ev)
                 }
             }
         }
-        if(m_key->next()->easing() > -1)
+        if(m_key->next()->easing() > NO_TRANSITION)
         {
             QList<Transition*> transitions = tl->findChildren<Transition*>();
             foreach(Transition *trans, transitions)
@@ -154,14 +154,14 @@ int Transition::calculatePos(int pos, int scrollPos)
         newVal = 0;
     if(m_key->next()->next())
     {
-        if(m_key->next()->easing() > -1 && m_key->next()->next()->time() - 100 < newVal + m_key->next()->time() - m_key->time())
+        if(m_key->next()->easing() > NO_TRANSITION && m_key->next()->next()->time() - 100 < newVal + m_key->next()->time() - m_key->time())
             newVal = m_key->next()->next()->time() - (m_key->next()->time() - m_key->time()) - 100;
         else if(m_key->next()->next()->time() < newVal + m_key->next()->time() - m_key->time())
             newVal = m_key->next()->next()->time() - (m_key->next()->time() - m_key->time());
     }
     if(m_key->prev())
     {
-        if(m_key->prev()->easing() > -1 && m_key->prev()->time() + 100 > newVal)
+        if(m_key->prev()->easing() > NO_TRANSITION && m_key->prev()->time() + 100 > newVal)
             newVal = m_key->prev()->time() + 100;
         else if(m_key->prev()->time() > newVal)
             newVal = m_key->prev()->time();
@@ -194,7 +194,7 @@ void Transition::keyPressEvent(QKeyEvent *e)
 void Transition::sizeTransitionLeft(int time)
 {
     int width = (m_key->next()->time() - time) / 5;
-    if(width > 0 && time >= 0 && (m_key->prev() == nullptr || (m_key->prev()->easing() < 0 && m_key->prev()->time() <= time) || (m_key->prev()->easing() > -1 && m_key->prev()->time() < time)))
+    if(width > 0 && time >= 0 && (m_key->prev() == nullptr || (m_key->prev()->easing() < 0 && m_key->prev()->time() <= time) || (m_key->prev()->easing() > NO_TRANSITION && m_key->prev()->time() < time)))
     {
         QUndoCommand *cmd = new ResizeTransitionCommand(m_key, m_key->time(), time, m_key->next()->time(), m_key->next()->time(), m_timeline);
         m_undostack->push(cmd);
@@ -204,7 +204,7 @@ void Transition::sizeTransitionLeft(int time)
 void Transition::sizeTransitionRight(int time)
 {
     int width = (time - m_key->time()) / 5;
-    if(width > 0 && (m_key->next()->next() == nullptr || (m_key->next()->easing() < 0 && m_key->next()->next()->time() >= time) || (m_key->next()->easing() > -1 && m_key->next()->next()->time() > time)))
+    if(width > 0 && (m_key->next()->next() == nullptr || (m_key->next()->easing() < 0 && m_key->next()->next()->time() >= time) || (m_key->next()->easing() > NO_TRANSITION && m_key->next()->next()->time() > time)))
     {
         QUndoCommand *cmd = new ResizeTransitionCommand(m_key, m_key->time(), m_key->time(), m_key->next()->time(), time, m_timeline);
         m_undostack->push(cmd);
