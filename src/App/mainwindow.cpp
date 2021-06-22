@@ -71,8 +71,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete exportMenu;
     delete m_itemPropertyEditor;
+    delete m_transitionEditor;
     delete m_scene;
     delete importMenu;
     delete m_timeline;
