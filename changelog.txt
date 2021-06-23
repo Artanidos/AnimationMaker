@@ -1,3 +1,9 @@
+1.9.2
+- Prevent closing the app without saving current project
+- Add ffmpeg as dependency of the installer
+- Reformat/clean code
+- Fix memory leak when exiting the application
+
 1.9.1
 - Open bitmap/SVG takes one click, no need to click on the frame first
 - Add doxygen file to generate documentation
