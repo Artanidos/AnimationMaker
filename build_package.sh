@@ -11,6 +11,13 @@ then
     exit 1
 fi
 
+FPM=$(which fpm 2>/dev/null)
+if [[ $? -ne 0 ]]
+then
+    echo "package 'fpm' is required to build animationmaker package, please install it first"
+    exit 1
+fi
+
 BUILD_DIR="${2}"
 TYPE="${1}"
 SOURCE_DIR="${BUILD_DIR}/output"
